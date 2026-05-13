@@ -2,7 +2,7 @@
   "name": "bm-questhub",
   "private": true,
   "scripts": {
-    "build": "npm --prefix apps/web run build",
+    "build": "npm --prefix apps/web ci --include=dev && npm --prefix apps/web run build",
     "start": "npm --prefix apps/web run start",
     "dev": "npm --prefix apps/web run dev:host",
     "lint": "npm --prefix apps/web run lint",
