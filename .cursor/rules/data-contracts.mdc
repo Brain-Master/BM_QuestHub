@@ -1,0 +1,30 @@
+---
+description: Data contract and referential integrity rules
+globs: **/*.{ts,tsx,json,sql}
+alwaysApply: false
+---
+
+# Data Contracts
+
+Apply these rules when changing API contracts, DTOs, seeds, JSON data, or SQL.
+
+## Contract First
+
+- Treat API contracts, DTO schemas, and persisted data shapes as the source of truth.
+- Keep field names consistent across UI, mappers, selectors, fixtures, and tests.
+- Do not silently rename contract fields in UI code. For example, do not turn `startsAt` into `startTime` without an explicit mapper.
+- If naming must differ across boundaries, create a small explicit mapper near the boundary and keep it easy to find.
+
+## Mapping Rules
+
+- Keep mappers localized and deterministic.
+- Avoid spreading shape conversion across components.
+- Update tests, fixtures, examples, and indexes when contract names change.
+- Prefer typed schemas or generated types when the project provides them.
+
+## Referential Integrity
+
+- Keep all data sources relationally valid: in-memory data, JSON seeds, SQL seeds, fixtures, and examples.
+- Do not create orphan records. References such as `groupId`, `studentId`, `questId`, `campId`, and similar fields must point to existing entities.
+- When changing IDs or deleting entities, search for every dependent reference and update or remove it in the same change.
+- Prefer constraints, validation scripts, or focused tests when relationships become non-trivial.

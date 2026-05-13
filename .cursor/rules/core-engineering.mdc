@@ -1,0 +1,41 @@
+---
+description: Core engineering rules for safe, searchable, maintainable changes
+alwaysApply: true
+---
+
+# Core Engineering
+
+Follow these rules for every change in this repository.
+
+## Git Hygiene
+
+- Keep commits atomic: one logical task per commit.
+- Use Conventional Commits (`feat:`, `fix:`, `refactor:`, `docs:`, `chore:`).
+- Never run `git push` unless the user explicitly asks for it.
+- Never run destructive git commands unless the user explicitly approves them.
+
+## Prefer Make Targets
+
+- If a `Makefile` exists, prefer documented `make` targets over ad hoc shell commands.
+- Use `make help` to discover available targets.
+- Use `make check` for repo-level verification when it exists.
+- Use `make docs-index` after adding, moving, renaming, or removing code symbols that should appear in indexes.
+
+## Search Before Build
+
+- Before creating a new function, module, component, hook, utility, or feature, search for an existing implementation.
+- Check `docs/indexes/` first when it exists, then inspect the source files behind relevant entries.
+- Extend existing code only when the semantics match and a shared API is clearer than a local solution.
+- Do not generalize a component or helper just because the UI or code shape looks similar.
+
+## Zero Dead Code
+
+- A refactor is not complete until stale imports, unused variables, old state, removed components, and obsolete references are cleaned up.
+- When deleting or moving files, search for all references across the repository.
+- Prefer removing obsolete compatibility layers on unshipped branch work instead of stacking shims.
+
+## YAGNI
+
+- Implement only what the current business task needs.
+- Prefer a simple function or local module over a new abstraction unless the abstraction removes real complexity.
+- Avoid speculative extension points, unused configuration, and broad rewrites unrelated to the task.

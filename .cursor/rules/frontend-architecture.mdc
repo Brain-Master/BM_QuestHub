@@ -1,0 +1,40 @@
+---
+description: Frontend architecture rules for FSD, thin components, and TanStack Query
+globs: **/*.{ts,tsx,js,jsx}
+alwaysApply: false
+---
+
+# Frontend Architecture
+
+Apply these rules when working with frontend source files.
+
+## Strict FSD
+
+- Respect Feature-Sliced Design layer direction: imports may go down to lower layers, not up to higher layers.
+- Do not cross-import between slices of the same layer through internal files.
+- Import from another slice only through its public API (`index.ts` or `index.js`).
+- If a slice has no public API for the needed behavior, add or adjust the public API intentionally instead of importing internals.
+
+## Thin Components
+
+- UI components should focus on rendering, composition, and simple interaction wiring.
+- Move business rules, aggregation, data shaping, and side effects into hooks, model modules, entity logic, or `shared/api`.
+- Keep component props explicit and close to the UI contract.
+- Avoid embedding domain workflows directly inside reusable presentational components.
+
+## Server State
+
+- Use TanStack Query as the source of truth for server and domain data.
+- Do not mirror query data into local `useState` or `useReducer` unless there is a clear local editing workflow.
+- Prefer query invalidation, cache updates, selectors, and derived values over duplicated domain state.
+
+Allowed local state includes:
+- form inputs and draft edits;
+- UI state such as expanded panels, dialogs, active tabs, and hover/focus state;
+- transient filters, sorting, pagination controls, and optimistic input before persistence.
+
+## Reuse Without Overgeneralizing
+
+- Before adding a component, hook, or utility, check `docs/indexes/` and nearby source files.
+- Extend an existing abstraction only when the semantics match and the resulting API stays clear.
+- Prefer a small local solution when shared behavior is not stable yet.
