@@ -2,14 +2,11 @@ import "server-only";
 
 import fs from "node:fs/promises";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 
 import { venueOfferSchema } from "@/lib/schemas";
 import { z } from "zod";
 
 import type { OffersSnapshotV1 } from "./snapshot-types";
-
-const WEB_ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 
 const snapshotSchema = z.object({
   version: z.literal(1),
@@ -21,7 +18,7 @@ const snapshotSchema = z.object({
 function snapshotPath(): string {
   const override = process.env.OFFERS_SNAPSHOT_PATH;
   if (override && override.length > 0) return path.resolve(override);
-  return path.join(WEB_ROOT, "data", "offers-snapshot.json");
+  return path.join(/*turbopackIgnore: true*/ process.cwd(), "data", "offers-snapshot.json");
 }
 
 /** Чтение последнего успешного снимка; при отсутствии или ошибке — пустой объект. */

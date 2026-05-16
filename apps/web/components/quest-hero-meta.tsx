@@ -1,13 +1,15 @@
+import { Suspense } from "react";
+
 import { Badge } from "@/components/ui/badge";
+import { SchoolScopeBadge } from "@/components/school-scope-badge";
 import type { Quest } from "@/lib/schemas";
 import { durationLabelOrDefault, priceHintOrDefault } from "@/lib/quest-hero-defaults";
 
 type Props = {
   quest: Quest;
-  schoolSlug?: string;
 };
 
-export function QuestHeroMeta({ quest, schoolSlug }: Props) {
+export function QuestHeroMeta({ quest }: Props) {
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap gap-2">
@@ -21,11 +23,9 @@ export function QuestHeroMeta({ quest, schoolSlug }: Props) {
             Сложность: {quest.difficulty}
           </Badge>
         ) : null}
-        {schoolSlug ? (
-          <Badge variant="outline" className="border-white/10 bg-transparent">
-            school={schoolSlug}
-          </Badge>
-        ) : null}
+        <Suspense fallback={null}>
+          <SchoolScopeBadge />
+        </Suspense>
       </div>
 
       <div className="grid gap-4 rounded-2xl border border-white/10 bg-card/45 p-5 text-sm shadow-inner backdrop-blur-md md:grid-cols-2 md:p-6">

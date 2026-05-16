@@ -3,11 +3,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 
-import { submitLead } from "@/app/actions/submit-lead";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { submitLeadToYandex } from "@/lib/lead-submit-client";
 import { leadSchema, type LeadPayload } from "@/lib/schemas";
 
 type Props = {
@@ -30,7 +30,7 @@ export function BookingForm({ defaults, onSuccess }: Props) {
   });
 
   async function onSubmit(values: LeadPayload) {
-    const res = await submitLead(values);
+    const res = await submitLeadToYandex(values);
     if (!res.ok) {
       form.setError("root", { message: res.error });
       return;

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 import { ContentSection } from "@/components/content-section";
 import { QuestHeroBanner } from "@/components/quest-hero-banner";
@@ -16,7 +17,6 @@ import {
 
 type Props = {
   params: Promise<{ slug: string }>;
-  searchParams?: Promise<{ school?: string }>;
 };
 
 export async function generateStaticParams() {
@@ -50,11 +50,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function QuestPage({ params, searchParams }: Props) {
+export default async function QuestPage({ params }: Props) {
   const { slug } = await params;
-  const sp = (await searchParams) ?? {};
-  const schoolSlug =
-    typeof sp.school === "string" ? sp.school : undefined;
 
   const quest = await loadQuestBySlug(slug);
   if (!quest) notFound();
@@ -107,7 +104,7 @@ export default async function QuestPage({ params, searchParams }: Props) {
 
         <QuestHeroBanner quest={quest} world={world} />
 
-        <QuestHeroMeta quest={quest} schoolSlug={schoolSlug} />
+        <QuestHeroMeta quest={quest} />
       </div>
 
       <ContentSection title="Сюжет">
@@ -138,11 +135,16 @@ export default async function QuestPage({ params, searchParams }: Props) {
           Если для строки ещё нет карточки mos.ru, кнопка открывает форму заявки
           в модальном окне — без потери контекста смены и площадки.
         </p>
-        <OfferScheduleTable
-          quest={{ slug: quest.slug, title: quest.title }}
-          rows={rows}
-          schoolSlug={schoolSlug}
-        />
+        <Suspense
+          fallback={
+            <div className="h-32 animate-pulse rounded-2xl bg-white/5" />
+          }
+        >
+          <OfferScheduleTable
+            quest={{ slug: quest.slug, title: quest.title }}
+            rows={rows}
+          />
+        </Suspense>
       </section>
     </article>
   );

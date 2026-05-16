@@ -16,7 +16,7 @@ import {
 import { readOffersSnapshot } from "@/lib/offers/snapshot-io";
 import { filterQuestsForSchool as filterQuestsForSchoolPure } from "@/lib/school-scope";
 
-const CONTENT_ROOT = path.join(process.cwd(), "content");
+const CONTENT_ROOT = path.join(/*turbopackIgnore: true*/ process.cwd(), "content");
 
 async function loadDirYaml<T>(
   dirName: string,

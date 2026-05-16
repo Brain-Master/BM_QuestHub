@@ -1,7 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  output: "export",
+  distDir: "out",
+  trailingSlash: true,
   images: {
+    unoptimized: true,
     remotePatterns: [
       { protocol: "https", hostname: "pp.userapi.com", pathname: "/**" },
       { protocol: "https", hostname: "sun9-21.userapi.com", pathname: "/**" },

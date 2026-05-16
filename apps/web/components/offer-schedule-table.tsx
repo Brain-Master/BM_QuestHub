@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useSearchParams } from "next/navigation";
 
 import { BookingForm } from "@/components/booking-form";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -28,10 +29,11 @@ export type ScheduleRowModel = {
 type Props = {
   quest: Pick<Quest, "slug" | "title">;
   rows: ScheduleRowModel[];
-  schoolSlug?: string;
 };
 
-export function OfferScheduleTable({ quest, rows, schoolSlug }: Props) {
+export function OfferScheduleTable({ quest, rows }: Props) {
+  const searchParams = useSearchParams();
+  const schoolSlug = searchParams.get("school")?.trim() || undefined;
   const [open, setOpen] = React.useState(false);
   const [active, setActive] = React.useState<ScheduleRowModel | null>(null);
 
