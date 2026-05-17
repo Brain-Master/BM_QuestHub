@@ -14,8 +14,8 @@ export function SiteFooter() {
           </p>
         </div>
         <div className="flex flex-col gap-3 text-sm md:text-right">
-          <Link className="text-muted-foreground hover:text-foreground" href="/">
-            Каталог
+          <Link className="text-muted-foreground hover:text-foreground" href="/catalog">
+            Курсы
           </Link>
           <span className="text-muted-foreground text-xs">
             © {new Date().getFullYear()} BrainMaster

@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import * as React from "react";
 import { usePathname } from "next/navigation";
-import { Menu, X } from "lucide-react";
+import { ChevronDown, Menu, X } from "lucide-react";
 
 import {
   parsePreferredSchool,
@@ -17,37 +17,108 @@ type Props = {
   worlds: World[];
 };
 
+type ProgramNavItem = {
+  label: string;
+  slug: string;
+};
+
+type WorldNavGroup = {
+  label: string;
+  slug: string;
+  programs: ProgramNavItem[];
+};
+
+const WORLD_NAV_GROUPS: WorldNavGroup[] = [
+  {
+    label: "Мехвариум",
+    slug: "mekhvarium",
+    programs: [
+      {
+        label: "Лаборатория кинетических монстров",
+        slug: "mekhvarium-laboratoriya-kineticheskih-monstrov",
+      },
+      {
+        label: "Мастерская гидравлических монстров",
+        slug: "mekhvarium-masterskaya-gidravlicheskih-monstrov",
+      },
+    ],
+  },
+  {
+    label: "Minecraft",
+    slug: "minecraft",
+    programs: [
+      {
+        label: "Тайна древних инженеров",
+        slug: "minecraft-taina-drevnih-inzhenerov",
+      },
+      {
+        label: "Пробуждение стражей",
+        slug: "minecraft-probuzhdenie-strazhey",
+      },
+    ],
+  },
+  {
+    label: "КиберРитм",
+    slug: "cyber-rhythm",
+    programs: [
+      {
+        label: "Инженерия звука",
+        slug: "cyber-rhythm",
+      },
+    ],
+  },
+];
+
 export function SiteHeader({ worlds }: Props) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = React.useState(false);
+  const [openMobileWorldSlug, setOpenMobileWorldSlug] = React.useState<string | null>(null);
   const [preferredSchoolSlug, setPreferredSchoolSlug] = React.useState<string | null>(null);
   const menuRef = React.useRef<HTMLElement | null>(null);
   const swipeStartX = React.useRef<number | null>(null);
   const pathSchoolSlug = pathname.match(/^\/sites\/([^/]+)/)?.[1] ?? null;
   const effectiveSchoolSlug = pathSchoolSlug ?? preferredSchoolSlug;
+  const knownWorldSlugs = React.useMemo(
+    () => new Set(worlds.map((world) => world.slug)),
+    [worlds],
+  );
+  const worldNavGroups = React.useMemo(
+    () => WORLD_NAV_GROUPS.filter((group) => knownWorldSlugs.has(group.slug)),
+    [knownWorldSlugs],
+  );
   const navItems = [
     {
       href: effectiveSchoolSlug ? `/sites/${effectiveSchoolSlug}/agenda` : "/agenda",
       label: "Расписание",
+      active: pathname === "/agenda" || /^\/sites\/[^/]+\/agenda$/.test(pathname),
+    },
+    {
+      href: "/sites",
+      label: "Площадки",
+      active: pathname === "/sites" || /^\/sites\/[^/]+$/.test(pathname),
     },
     {
       href: effectiveSchoolSlug ? `/sites/${effectiveSchoolSlug}/catalog` : "/catalog",
-      label: "Каталог",
+      label: "Курсы",
+      active: pathname === "/catalog" || /^\/sites\/[^/]+\/catalog$/.test(pathname),
     },
-    { href: "/sites", label: "Площадки" },
-    ...worlds.map((world) => ({
-      href: `/worlds/${world.slug}`,
-      label: world.name,
-    })),
   ];
-  const linkClassName = cn(
+  const linkClassName = (active = false) => cn(
     "rounded-full px-3 py-1.5 text-muted-foreground transition",
     "hover:bg-white/5 hover:text-foreground",
+    active && "bg-white/10 text-foreground",
   );
-  const mobileLinkClassName = cn(
+  const mobileLinkClassName = (active = false) => cn(
     "flex min-h-12 items-center rounded-2xl px-4 text-base font-medium text-foreground transition",
     "hover:bg-white/[0.08] active:bg-white/10",
+    active && "bg-white/[0.08]",
   );
+  const activeWorldSlug =
+    worldNavGroups.find(
+      (group) =>
+        pathname === `/worlds/${group.slug}` ||
+        group.programs.some((program) => pathname === `/quests/${program.slug}`),
+    )?.slug ?? null;
 
   React.useEffect(() => {
     if (!menuOpen) return;
@@ -139,7 +210,10 @@ export function SiteHeader({ worlds }: Props) {
           aria-label="Открыть меню"
           aria-expanded={menuOpen}
           aria-controls="site-mobile-menu"
-          onClick={() => setMenuOpen(true)}
+          onClick={() => {
+            setOpenMobileWorldSlug(activeWorldSlug);
+            setMenuOpen(true);
+          }}
         >
           <span className="sr-only">Открыть меню</span>
           <span className="relative flex size-5 items-center justify-center">
@@ -184,17 +258,98 @@ export function SiteHeader({ worlds }: Props) {
                 <X className="size-5" aria-hidden />
               </button>
             </div>
-            <nav className="mt-4 grid gap-2">
+            <nav className="mt-4 grid flex-1 gap-2 overflow-y-auto pr-1">
               {navItems.map((item) => (
                 <Link
                   key={item.href}
-                  className={mobileLinkClassName}
+                  className={mobileLinkClassName(item.active)}
                   href={item.href}
                   onClick={() => setMenuOpen(false)}
                 >
                   {item.label}
                 </Link>
               ))}
+              <div className="my-2 h-px bg-white/10" aria-hidden />
+              {worldNavGroups.map((group) => {
+                const groupActive = activeWorldSlug === group.slug;
+                const panelId = `mobile-world-programs-${group.slug}`;
+                const isExpanded = openMobileWorldSlug === group.slug;
+
+                return (
+                  <div
+                    key={group.slug}
+                    className={cn(
+                      "rounded-2xl border border-white/10 bg-white/[0.03] p-2",
+                      groupActive && "border-white/20 bg-white/[0.06]",
+                    )}
+                  >
+                    <div className="flex items-center gap-2">
+                      <Link
+                        className={cn(
+                          mobileLinkClassName(pathname === `/worlds/${group.slug}`),
+                          "min-w-0 flex-1",
+                        )}
+                        href={`/worlds/${group.slug}`}
+                        onClick={() => setMenuOpen(false)}
+                      >
+                        {group.label}
+                      </Link>
+                      <button
+                        type="button"
+                        className={cn(
+                          "flex size-11 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-foreground transition",
+                          "hover:bg-white/10 active:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+                        )}
+                        aria-expanded={isExpanded}
+                        aria-controls={panelId}
+                        aria-label={`${isExpanded ? "Свернуть" : "Развернуть"} программы ${group.label}`}
+                        onClick={() =>
+                          setOpenMobileWorldSlug((current) =>
+                            current === group.slug ? null : group.slug,
+                          )
+                        }
+                      >
+                        <ChevronDown
+                          className={cn(
+                            "size-4 text-muted-foreground transition-transform",
+                            isExpanded && "rotate-180",
+                          )}
+                          aria-hidden
+                        />
+                      </button>
+                    </div>
+                    <div
+                      id={panelId}
+                      className={cn(
+                        "grid overflow-hidden transition-[grid-template-rows,opacity] duration-200",
+                        isExpanded
+                          ? "grid-rows-[1fr] opacity-100"
+                          : "grid-rows-[0fr] opacity-0",
+                      )}
+                    >
+                      <div className="min-h-0">
+                        <div className="mt-1 grid gap-1 border-white/10 border-l pl-3">
+                          {group.programs.map((program) => (
+                            <Link
+                              key={program.slug}
+                              className={cn(
+                                "rounded-xl px-3 py-2.5 text-muted-foreground text-sm transition",
+                                "hover:bg-white/[0.08] hover:text-foreground active:bg-white/10",
+                                pathname === `/quests/${program.slug}` &&
+                                  "bg-white/[0.08] text-foreground",
+                              )}
+                              href={`/quests/${program.slug}`}
+                              onClick={() => setMenuOpen(false)}
+                            >
+                              {program.label}
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </nav>
             <p className="mt-auto pt-6 text-muted-foreground text-xs">
               Свайпните меню вправо или нажмите вне панели, чтобы закрыть.
@@ -206,12 +361,66 @@ export function SiteHeader({ worlds }: Props) {
           {navItems.map((item) => (
             <Link
               key={item.href}
-              className={linkClassName}
+              className={linkClassName(item.active)}
               href={item.href}
             >
               {item.label}
             </Link>
           ))}
+          <span className="mx-1 h-5 w-px bg-white/10" aria-hidden />
+          {worldNavGroups.map((group) => {
+            const groupActive = activeWorldSlug === group.slug;
+
+            return (
+              <div key={group.slug} className="group relative">
+                <Link
+                  className={cn(
+                    linkClassName(groupActive),
+                    "inline-flex items-center gap-1.5",
+                  )}
+                  href={`/worlds/${group.slug}`}
+                  aria-label={`${group.label}: страница мира и программы`}
+                >
+                  {group.label}
+                  <ChevronDown
+                    className="size-3.5 text-muted-foreground transition group-hover:rotate-180"
+                    aria-hidden
+                  />
+                </Link>
+                <div
+                  className={cn(
+                    "invisible absolute right-0 top-full z-50 w-72 translate-y-1 rounded-2xl border border-white/10 bg-background/95 p-2 opacity-0 shadow-[0_18px_60px_rgba(0,0,0,0.38)] backdrop-blur-xl transition duration-150",
+                    "before:absolute before:-top-2 before:right-0 before:h-2 before:w-full before:content-['']",
+                    "group-hover:visible group-hover:translate-y-0 group-hover:opacity-100",
+                  )}
+                >
+                  <Link
+                    className={cn(
+                      "block rounded-xl px-3 py-2.5 font-medium text-foreground transition hover:bg-white/[0.08]",
+                      pathname === `/worlds/${group.slug}` && "bg-white/[0.08]",
+                    )}
+                    href={`/worlds/${group.slug}`}
+                  >
+                    Открыть мир {group.label}
+                  </Link>
+                  <div className="my-1 h-px bg-white/10" aria-hidden />
+                  {group.programs.map((program) => (
+                    <Link
+                      key={program.slug}
+                      className={cn(
+                        "block rounded-xl px-3 py-2.5 text-muted-foreground transition hover:bg-white/[0.08] hover:text-foreground",
+                        pathname === `/quests/${program.slug}` &&
+                          "bg-white/[0.08] text-foreground",
+                      )}
+                      href={`/quests/${program.slug}`}
+                    >
+                      {program.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
         </nav>
       </div>
     </header>
