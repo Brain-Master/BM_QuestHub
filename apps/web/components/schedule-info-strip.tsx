@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 type Props = {
   item: ScheduleBoardItem;
   compact?: boolean;
+  mobileDense?: boolean;
   className?: string;
 };
 
@@ -57,14 +58,21 @@ function yandexMapsHref(item: ScheduleBoardItem): string {
   return `https://yandex.ru/maps/?text=${encodeURIComponent(query)}`;
 }
 
-export function ScheduleInfoStrip({ item, compact = false, className }: Props) {
+export function ScheduleInfoStrip({
+  item,
+  compact = false,
+  mobileDense = false,
+  className,
+}: Props) {
   const teacherName = teacherDisplayName(item.teacherName);
   const dateLabel = splitDateLabel(item.shortDateLabel);
+  const denseDateLabel = item.shortDateLabel.replace(/\s+\(.+\)$/, "");
 
-  return (
+  const fullStrip = (
     <div
       className={cn(
         "grid rounded-xl text-sm",
+        mobileDense && "hidden sm:grid",
         compact
           ? "gap-2 px-1 py-2 lg:grid-cols-[minmax(0,1.18fr)_minmax(8rem,0.65fr)_minmax(0,0.9fr)]"
           : "gap-3 px-1 py-3 md:grid-cols-[minmax(0,1.22fr)_minmax(10rem,0.7fr)_minmax(0,0.9fr)] md:items-center",
@@ -148,5 +156,25 @@ export function ScheduleInfoStrip({ item, compact = false, className }: Props) {
         </span>
       </div>
     </div>
+  );
+
+  if (!mobileDense) return fullStrip;
+
+  return (
+    <>
+      <div className={cn("grid gap-1.5 rounded-xl text-xs sm:hidden", className)}>
+        <div className="grid gap-1.5">
+          <span className="inline-flex items-start gap-1.5 font-medium text-primary">
+            <Train className="size-3.5 shrink-0" aria-hidden />
+            <span className="leading-snug">{item.venue.name}</span>
+          </span>
+          <span className="inline-flex items-center gap-1.5 text-foreground">
+            <CalendarDays className="size-3.5 text-primary" aria-hidden />
+            {denseDateLabel}
+          </span>
+        </div>
+      </div>
+      {fullStrip}
+    </>
   );
 }

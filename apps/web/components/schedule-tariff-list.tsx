@@ -11,6 +11,7 @@ type Props = {
   item: ScheduleBoardItem;
   schoolSlug?: string;
   compact?: boolean;
+  mobileDense?: boolean;
   className?: string;
 };
 
@@ -120,6 +121,63 @@ function CompactTariffRow({ item, variant, schoolSlug }: TariffRowProps) {
   );
 }
 
+function DenseMobileTariffRow({ item, variant, schoolSlug }: TariffRowProps) {
+  return (
+    <div
+      data-testid="schedule-tariff-row"
+      className="grid gap-2 rounded-xl border border-white/10 bg-white/[0.035] px-2.5 py-2"
+    >
+      <div className="flex min-w-0 items-start justify-between gap-2">
+        <div className="min-w-0">
+          <p className="line-clamp-1 font-medium text-foreground text-sm leading-snug">
+            {variant.type}
+          </p>
+          <div className="mt-1 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-muted-foreground text-[11px]">
+            <span className="inline-flex min-w-0 items-center gap-1">
+              <Clock className="size-3 text-primary" aria-hidden />
+              <span className="truncate">{variant.time}</span>
+            </span>
+            {!item.commonAgeLabel && variant.ageLabel ? (
+              <span className="rounded-full border border-white/10 bg-black/20 px-1.5 py-0.5 text-primary">
+                {variant.ageLabel}
+              </span>
+            ) : null}
+          </div>
+        </div>
+        <div className="grid shrink-0 justify-items-end gap-0.5 text-right">
+          <div className="font-heading font-semibold text-foreground text-sm">
+            {variant.priceLabel}
+          </div>
+          {variant.mosRuCode ? (
+            <p className="text-[10px] text-muted-foreground leading-tight">
+              Код: <span className="text-foreground/85">{variant.mosRuCode}</span>
+            </p>
+          ) : null}
+        </div>
+      </div>
+
+      {variant.note ? (
+        <p className="line-clamp-1 text-muted-foreground text-[11px] leading-snug">
+          {variant.note}
+        </p>
+      ) : null}
+
+      <div className="grid min-w-0">
+        <OfferBookingAction
+          quest={item.quest}
+          offer={item.offer}
+          venue={item.venue}
+          schoolSlug={schoolSlug}
+          mode={variant.bookingMode}
+          variant={variant}
+          compact
+          className="w-full"
+        />
+      </div>
+    </div>
+  );
+}
+
 function DetailedTariffRow({ item, variant, schoolSlug }: TariffRowProps) {
   return (
     <div
@@ -162,6 +220,7 @@ export function ScheduleTariffList({
   item,
   schoolSlug,
   compact = false,
+  mobileDense = false,
   className,
 }: Props) {
   const variants = item.variants.length
@@ -178,6 +237,33 @@ export function ScheduleTariffList({
           bookingMode: item.bookingMode,
         },
       ];
+
+  if (mobileDense) {
+    return (
+      <div data-testid="schedule-tariffs" className={cn("grid", className)}>
+        <div className="grid gap-1.5 sm:hidden">
+          {variants.map((variant) => (
+            <DenseMobileTariffRow
+              key={variant.id}
+              item={item}
+              variant={variant}
+              schoolSlug={schoolSlug}
+            />
+          ))}
+        </div>
+        <div className="hidden gap-1 sm:grid">
+          {variants.map((variant) => (
+            <CompactTariffRow
+              key={variant.id}
+              item={item}
+              variant={variant}
+              schoolSlug={schoolSlug}
+            />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div

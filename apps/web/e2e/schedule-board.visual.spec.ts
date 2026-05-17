@@ -1,6 +1,7 @@
 import { expect, test, type Page, type TestInfo } from "@playwright/test";
 
 const FROZEN_NOW = "2026-05-20T12:00:00.000Z";
+const QUEST_PATH = "/quests/minecraft-probuzhdenie-strazhey";
 
 async function prepareVisualPage(page: Page, testInfo: TestInfo) {
   test.skip(
@@ -115,6 +116,35 @@ test.describe("Schedule Board visual regression", () => {
     await expect(page).toHaveScreenshot("schedule-board-mobile.png", {
       animations: "disabled",
       fullPage: false,
+      maxDiffPixelRatio: 0.02,
+    });
+  });
+
+  test("mobile quest schedule keeps dense tariff cards", async ({ page }, testInfo) => {
+    await prepareVisualPage(page, testInfo);
+    await page.setViewportSize({ width: 375, height: 1100 });
+    await page.goto(QUEST_PATH);
+    await stabilizeScheduleBoard(page);
+
+    const firstCard = page.getByTestId("schedule-card").first();
+    await expect(firstCard.getByTestId("schedule-tariffs")).toBeVisible();
+    await expect(firstCard).toHaveScreenshot("schedule-board-quest-mobile-card.png", {
+      animations: "disabled",
+      maxDiffPixelRatio: 0.02,
+    });
+  });
+
+  test("mobile quest schedule reveals venue details", async ({ page }, testInfo) => {
+    await prepareVisualPage(page, testInfo);
+    await page.setViewportSize({ width: 375, height: 1100 });
+    await page.goto(QUEST_PATH);
+    await stabilizeScheduleBoard(page);
+
+    const firstCard = page.getByTestId("schedule-card").first();
+    await firstCard.getByTestId("schedule-quest-details-toggle").click();
+    await expect(firstCard.getByTestId("schedule-quest-details")).toBeVisible();
+    await expect(firstCard).toHaveScreenshot("schedule-board-quest-mobile-details.png", {
+      animations: "disabled",
       maxDiffPixelRatio: 0.02,
     });
   });

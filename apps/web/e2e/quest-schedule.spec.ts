@@ -67,12 +67,17 @@ test.describe("Quest schedule", () => {
     await page.setViewportSize({ width: 375, height: 812 });
     await page.goto(QUEST_PATH);
 
-    await expect(page.getByTestId("schedule-card").first()).toBeVisible();
-    await expect(
-      page.getByTestId("schedule-card").first().getByRole("button", {
-        name: /Показать форматы|Подробнее о смене/,
-      }),
-    ).toBeVisible();
+    const firstCard = page.getByTestId("schedule-card").first();
+    await expect(firstCard).toBeVisible();
+    await expect(firstCard.getByTestId("schedule-tariffs")).toBeVisible();
+    await expect(firstCard.getByTestId("schedule-tariff-row").first()).toBeVisible();
+    await expect(firstCard.getByText(/Школа №2103/).first()).toBeVisible();
+    await expect(firstCard.getByTestId("schedule-quest-details-toggle")).toBeVisible();
+
+    await firstCard.getByTestId("schedule-quest-details-toggle").click();
+    await expect(firstCard.getByTestId("schedule-quest-details")).toBeVisible();
+    await expect(firstCard.getByRole("link", { name: /Открыть адрес/ })).toBeVisible();
+    await expect(firstCard.getByText(/Наставник:/)).toBeVisible();
 
     const overflow = await page.evaluate(
       () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
@@ -85,7 +90,7 @@ test.describe("Quest schedule", () => {
     await page.goto(QUEST_PATH);
 
     const firstCard = page.getByTestId("schedule-card").first();
-    await firstCard.getByRole("button", { name: /Показать форматы|Подробнее о смене/ }).click();
+    await expect(firstCard.getByTestId("schedule-tariffs")).toBeVisible();
 
     const formButtons = firstCard.getByRole("button", {
       name: /Записаться|В лист ожидания|Узнать о старте|Предварительная заявка/,
@@ -97,6 +102,8 @@ test.describe("Quest schedule", () => {
       return;
     }
 
-    await expect(firstCard.getByRole("link", { name: /mos\.ru|На mos\.ru/ }).first()).toBeVisible();
+    await expect(
+      firstCard.getByRole("link", { name: /Записаться|mos\.ru/i }).first(),
+    ).toBeVisible();
   });
 });
