@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 
 import { CatalogPageClient } from "@/components/catalog-page-client";
-import { PortalHero } from "@/components/portal-hero";
 import { PreferredSchoolBanner } from "@/components/preferred-school-banner";
 import { loadQuests, loadVenues, loadWorlds } from "@/lib/content/load";
 
@@ -18,13 +17,7 @@ export default async function CatalogPage() {
   ]);
 
   return (
-    <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-10">
-      <PortalHero
-        eyebrow="BrainMaster Quest Hub"
-        title="Глобальный каталог миссий"
-        description="Все инженерные квесты и смены без фильтра по школе. Если вы уже выбрали площадку, можно быстро вернуться к её каталогу."
-      />
-
+    <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:py-10">
       <PreferredSchoolBanner mode="catalog" />
 
       <Suspense

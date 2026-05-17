@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import * as React from "react";
+import { flushSync } from "react-dom";
 import { ChevronUp } from "lucide-react";
 
 import { ScheduleBoardCard, type ScheduleViewMode } from "@/components/schedule-board-card";
@@ -12,12 +13,13 @@ import {
   buildScheduleBoardItem,
   type ScheduleBoardItem,
 } from "@/lib/offers/schedule-board";
+import { PREFERRED_SCHOOL_STORAGE_KEY } from "@/lib/preferred-school";
 import { cn } from "@/lib/utils";
 
 type Props = {
   groups: AgendaOfferGroup[];
   schoolSlug?: string;
-  catalogHref: string;
+  schoolName?: string;
   allAgendaHref?: string;
   sitesHref?: string;
 };
@@ -39,7 +41,7 @@ function getDesktopSnapshot(): boolean {
 }
 
 function getServerDesktopSnapshot(): boolean {
-  return true;
+  return false;
 }
 
 function formatShiftCount(count: number): string {
@@ -71,7 +73,7 @@ function groupVisibleItems(
 export function ScheduleBoard({
   groups,
   schoolSlug,
-  catalogHref,
+  schoolName,
   allAgendaHref,
   sitesHref = "/sites",
 }: Props) {
@@ -84,13 +86,13 @@ export function ScheduleBoard({
   const [expandedCardId, setExpandedCardId] = React.useState<string | null>(null);
   const [highlightedOfferId, setHighlightedOfferId] = React.useState<string | null>(null);
   const [showTopButton, setShowTopButton] = React.useState(false);
+  const pendingMobileOpenTimeout = React.useRef<number | null>(null);
   const isDesktopLayout = React.useSyncExternalStore(
     subscribeToDesktopQuery,
     getDesktopSnapshot,
     getServerDesktopSnapshot,
   );
-  const effectiveViewMode =
-    viewMode === "compact" && !isDesktopLayout ? "detailed" : viewMode;
+  const effectiveViewMode = isDesktopLayout ? viewMode : "mobile";
 
   const boardItems = React.useMemo(
     () =>
@@ -181,75 +183,95 @@ export function ScheduleBoard({
   }, []);
 
   React.useEffect(() => {
+    const previousRestoration = window.history.scrollRestoration;
+    window.history.scrollRestoration = "manual";
+    sessionStorage.removeItem("schedule:return:y");
+
     const savedPath = sessionStorage.getItem("schedule:return:path");
-    const savedY = sessionStorage.getItem("schedule:return:y");
     const savedOfferId = sessionStorage.getItem("schedule:return:offerId");
     const currentPath = `${window.location.pathname}${window.location.search}`;
-    if ((savedPath === currentPath && savedY) || savedOfferId) {
-      window.requestAnimationFrame(() => {
-        if (savedOfferId) setHighlightedOfferId(savedOfferId);
-        if (!savedY || savedPath !== currentPath) return;
-        window.scrollTo({ top: Number(savedY), behavior: "smooth" });
-      });
+    if (savedPath === currentPath && savedOfferId) {
+      window.requestAnimationFrame(() => setHighlightedOfferId(savedOfferId));
     }
+
+    return () => {
+      window.history.scrollRestoration = previousRestoration;
+      if (pendingMobileOpenTimeout.current) {
+        window.clearTimeout(pendingMobileOpenTimeout.current);
+      }
+    };
   }, []);
 
   const rememberNavigation = React.useCallback(
     (offerId: string) => {
       sessionStorage.setItem("schedule:return:path", window.location.pathname + window.location.search);
-      sessionStorage.setItem("schedule:return:y", String(window.scrollY));
       sessionStorage.setItem("schedule:return:offerId", offerId);
       setHighlightedOfferId(offerId);
     },
     [],
   );
 
+  const changeExpandedCard = React.useCallback(
+    (offerId: string, expanded: boolean, anchor: HTMLElement | null) => {
+      if (pendingMobileOpenTimeout.current) {
+        window.clearTimeout(pendingMobileOpenTimeout.current);
+        pendingMobileOpenTimeout.current = null;
+      }
+
+      if (isDesktopLayout || !expanded) {
+        setExpandedCardId(expanded ? offerId : null);
+        return;
+      }
+
+      const card = anchor?.closest<HTMLElement>("[data-testid='schedule-card']");
+      flushSync(() => setExpandedCardId(null));
+
+      if (!card) {
+        setExpandedCardId(offerId);
+        return;
+      }
+
+      const targetTop = Math.max(
+        0,
+        card.getBoundingClientRect().top + window.scrollY - 96,
+      );
+      window.scrollTo({ top: targetTop, behavior: "smooth" });
+
+      pendingMobileOpenTimeout.current = window.setTimeout(() => {
+        setExpandedCardId(offerId);
+        pendingMobileOpenTimeout.current = null;
+      }, 520);
+    },
+    [isDesktopLayout],
+  );
+
   return (
-    <section className="schedule-board space-y-8">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-4">
+    <section className="schedule-board space-y-8 [overflow-anchor:none]">
+      <div className="flex flex-col items-start justify-between gap-3 border-b border-white/10 pb-4 sm:flex-row sm:items-center">
         <div>
           <h2 className="font-heading text-2xl font-semibold tracking-tight">
-            Расписание смен
+            {schoolName ? `Расписание: ${schoolName}` : "Расписание смен"}
           </h2>
           <p className="mt-1 text-muted-foreground text-sm">
-            Найдено в выбранном интервале:{" "}
+            {schoolName ? "Площадка зафиксирована. " : null}
+            Показано:{" "}
             <span className="font-medium text-foreground">
               {formatShiftCount(visibleItems.length)}
             </span>
           </p>
         </div>
-        <div className="flex flex-wrap gap-2">
+        {allAgendaHref ? (
           <Link
-            href={catalogHref}
+            href={allAgendaHref}
+            onClick={() => localStorage.removeItem(PREFERRED_SCHOOL_STORAGE_KEY)}
             className={cn(
-              buttonVariants({ variant: "secondary", size: "sm" }),
-              "border border-white/10 bg-white/5 hover:bg-white/10",
+              buttonVariants({ variant: "outline", size: "sm" }),
+              "w-full border-white/10 bg-transparent hover:bg-white/5 sm:w-auto",
             )}
           >
-            Перейти в каталог
+            Посмотреть смены всех площадок
           </Link>
-          {allAgendaHref ? (
-            <Link
-              href={allAgendaHref}
-              className={cn(
-                buttonVariants({ variant: "outline", size: "sm" }),
-                "border-white/10 bg-transparent hover:bg-white/5",
-              )}
-            >
-              Показать все площадки
-            </Link>
-          ) : (
-            <Link
-              href={sitesHref}
-              className={cn(
-                buttonVariants({ variant: "outline", size: "sm" }),
-                "border-white/10 bg-transparent hover:bg-white/5",
-              )}
-            >
-              Выбрать площадку
-            </Link>
-          )}
-        </div>
+        ) : null}
       </div>
 
       <ScheduleBoardToolbar
@@ -299,14 +321,14 @@ export function ScheduleBoard({
           </div>
         </div>
       ) : (
-        <ol className="relative space-y-8 before:absolute before:top-3 before:bottom-3 before:left-4 before:w-px before:bg-[color:var(--schedule-timeline-line)] lg:before:left-[12rem]">
+        <ol className="relative space-y-8 before:absolute before:top-3 before:bottom-3 before:left-3 before:w-px before:bg-[color:var(--schedule-timeline-line)] lg:before:left-[12rem]">
           {visibleGroups.map((group) => (
             <li
               key={group.key}
-              className="group/timeline relative grid gap-4 pl-10 lg:grid-cols-[12rem_minmax(0,1fr)] lg:gap-6 lg:pl-0"
+              className="group/timeline relative grid gap-4 pl-7 lg:grid-cols-[12rem_minmax(0,1fr)] lg:gap-6 lg:pl-0"
             >
-              <div className="lg:pr-8 lg:text-right">
-                <div className="absolute top-2 left-2 size-4 rounded-full border border-[color:var(--schedule-timeline-node)] bg-background shadow-[0_0_18px_color-mix(in_oklch,var(--schedule-timeline-node)_45%,transparent)] transition-transform before:absolute before:inset-0 before:animate-ping before:rounded-full before:bg-[color:var(--schedule-timeline-node)] before:opacity-30 group-hover/timeline:scale-125 lg:left-[11.5rem]" />
+              <div className="lg:sticky lg:top-24 lg:self-start lg:pr-8 lg:text-right">
+                <div className="absolute top-2 left-1 size-4 rounded-full border border-[color:var(--schedule-timeline-node)] bg-background shadow-[0_0_18px_color-mix(in_oklch,var(--schedule-timeline-node)_45%,transparent)] transition-transform before:absolute before:inset-0 before:animate-ping before:rounded-full before:bg-[color:var(--schedule-timeline-node)] before:opacity-30 group-hover/timeline:scale-125 lg:left-[11.5rem]" />
                 <p className="font-heading text-lg font-semibold text-foreground">
                   {group.label}
                 </p>
@@ -329,8 +351,8 @@ export function ScheduleBoard({
                     schoolSlug={schoolSlug}
                     expanded={expandedCardId === item.offer.id}
                     highlighted={highlightedOfferId === item.offer.id}
-                    onExpandChange={(expanded) =>
-                      setExpandedCardId(expanded ? item.offer.id : null)
+                    onExpandChange={(expanded, anchor) =>
+                      changeExpandedCard(item.offer.id, expanded, anchor)
                     }
                     onNavigate={() => rememberNavigation(item.offer.id)}
                   />

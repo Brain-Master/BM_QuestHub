@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { OfferAgenda } from "@/components/offer-agenda";
-import { PortalHero } from "@/components/portal-hero";
 import { RememberSchoolOnVisit } from "@/components/remember-school-on-visit";
 import { loadQuests, loadVenues, loadWorlds } from "@/lib/content/load";
 import {
@@ -49,19 +48,13 @@ export default async function SchoolAgendaPage({ params }: Props) {
   );
 
   return (
-    <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-10">
+    <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:py-10">
       <RememberSchoolOnVisit slug={school.slug} name={school.name} />
-
-      <PortalHero
-        eyebrow="Расписание площадки"
-        title={`Смены: ${school.name}`}
-        description="Таймлайн смен для выбранной школы. Общие базы BrainMaster остаются видимыми, если они доступны для любого школьного скоупа."
-      />
 
       <OfferAgenda
         groups={groups}
         schoolSlug={school.slug}
-        catalogHref={`/sites/${school.slug}/catalog`}
+        schoolName={school.name}
         allAgendaHref="/agenda"
         sitesHref="/sites"
       />

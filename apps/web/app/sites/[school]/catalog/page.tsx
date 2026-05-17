@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 import { CatalogPageClient } from "@/components/catalog-page-client";
-import { PortalHero } from "@/components/portal-hero";
 import { RememberSchoolOnVisit } from "@/components/remember-school-on-visit";
 import { loadQuests, loadVenues, loadWorlds } from "@/lib/content/load";
 import { getSchoolScopes, resolveSchoolScope } from "@/lib/offers/agenda";
@@ -41,14 +40,8 @@ export default async function SchoolCatalogPage({ params }: Props) {
   if (!school) notFound();
 
   return (
-    <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-10">
+    <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:py-10">
       <RememberSchoolOnVisit slug={school.slug} name={school.name} />
-
-      <PortalHero
-        eyebrow="Каталог площадки"
-        title={`Каталог: ${school.name}`}
-        description="Квесты и смены, доступные для выбранной школы. Из карточки можно открыть подробности и записаться на конкретную смену."
-      />
 
       <Suspense
         fallback={

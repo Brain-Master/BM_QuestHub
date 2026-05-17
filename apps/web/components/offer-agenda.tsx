@@ -6,7 +6,7 @@ import type { AgendaOfferGroup } from "@/lib/offers/agenda";
 type Props = {
   groups: AgendaOfferGroup[];
   schoolSlug?: string;
-  catalogHref: string;
+  schoolName?: string;
   allAgendaHref?: string;
   sitesHref?: string;
 };
@@ -14,7 +14,7 @@ type Props = {
 export function OfferAgenda({
   groups,
   schoolSlug,
-  catalogHref,
+  schoolName,
   allAgendaHref,
   sitesHref = "/sites",
 }: Props) {
@@ -22,7 +22,7 @@ export function OfferAgenda({
     <ScheduleBoard
       groups={groups}
       schoolSlug={schoolSlug}
-      catalogHref={catalogHref}
+      schoolName={schoolName}
       allAgendaHref={allAgendaHref}
       sitesHref={sitesHref}
     />

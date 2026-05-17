@@ -1,6 +1,7 @@
 "use client";
 
-import { LayoutList, List, RotateCcw } from "lucide-react";
+import * as React from "react";
+import { ChevronDown, LayoutList, List, RotateCcw } from "lucide-react";
 
 import type { ScheduleViewMode } from "@/components/schedule-board-card";
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 
 type Props = {
   viewMode: ScheduleViewMode;
@@ -57,19 +59,71 @@ export function ScheduleBoardToolbar({
   hasActiveFilters,
   onReset,
 }: Props) {
+  const [filtersOpen, setFiltersOpen] = React.useState(false);
+  const activeFiltersCount = [
+    program !== programs[0],
+    showSiteFilter && site !== sites[0],
+    showAgeFilter && age !== ages[0],
+    status !== statuses[0],
+    showArchived,
+  ].filter(Boolean).length;
+
+  React.useEffect(() => {
+    const media = window.matchMedia("(min-width: 1024px)");
+    const syncOpenState = () => setFiltersOpen(media.matches);
+    syncOpenState();
+    media.addEventListener("change", syncOpenState);
+    return () => media.removeEventListener("change", syncOpenState);
+  }, []);
+
   return (
     <div
       data-testid="schedule-toolbar"
-      className="flex flex-col gap-4 rounded-2xl border border-[color:var(--schedule-card-border)] bg-[color:var(--schedule-toolbar-bg)] p-4 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)] backdrop-blur-md md:flex-row md:items-center md:justify-between"
+      className="rounded-2xl border border-[color:var(--schedule-card-border)] bg-[color:var(--schedule-toolbar-bg)] p-4 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)] backdrop-blur-md"
     >
-      <div>
-        <p className="font-heading font-semibold text-lg">Фильтры расписания</p>
-        <p className="text-muted-foreground text-sm">
-          Сравните смены по программе, площадке, статусу и формату отображения.
-        </p>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <button
+          type="button"
+          className="group/filter flex min-w-0 flex-1 items-center gap-3 rounded-xl text-left outline-none transition focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          aria-expanded={filtersOpen}
+          aria-controls="schedule-filter-panel"
+          onClick={() => setFiltersOpen((value) => !value)}
+        >
+          <span className="flex min-w-0 flex-1 flex-col">
+            <span className="font-heading font-semibold text-lg">
+              Фильтры расписания
+            </span>
+            <span className="text-muted-foreground text-sm">
+              {activeFiltersCount > 0
+                ? `Активно: ${activeFiltersCount}`
+                : "Программа, площадка, возраст, статус"}
+            </span>
+          </span>
+          <ChevronDown
+            className={cn(
+              "size-5 shrink-0 text-muted-foreground transition-transform duration-200 group-hover/filter:text-foreground",
+              filtersOpen && "rotate-180",
+            )}
+            aria-hidden
+          />
+        </button>
+
+        <div className="hidden rounded-full border border-white/10 bg-black/20 px-3 py-1 text-muted-foreground text-xs lg:block">
+          {filtersOpen ? "Свернуть" : "Показать фильтры"}
+        </div>
       </div>
 
-      <div className="flex flex-wrap items-center gap-3">
+      <div
+        id="schedule-filter-panel"
+        className={cn(
+          "w-full grid-cols-1 items-center gap-3 sm:grid-cols-2 xl:grid-cols-4",
+          filtersOpen
+            ? "mt-4 grid opacity-100"
+            : "hidden opacity-0 pointer-events-none",
+        )}
+        aria-hidden={!filtersOpen}
+      >
+        <div className="grid min-h-0 grid-cols-1 gap-3 overflow-hidden sm:col-span-2 sm:grid-cols-2 xl:col-span-4 xl:grid-cols-4">
         <Select
           value={program}
           onValueChange={(value) => {
@@ -78,7 +132,7 @@ export function ScheduleBoardToolbar({
         >
           <SelectTrigger
             data-testid="schedule-program-filter"
-            className="w-full min-w-44 border-white/10 bg-black/20 sm:w-56"
+            className="w-full border-white/10 bg-black/20"
           >
             <SelectValue placeholder="Программа" />
           </SelectTrigger>
@@ -100,7 +154,7 @@ export function ScheduleBoardToolbar({
           >
             <SelectTrigger
               data-testid="schedule-site-filter"
-              className="w-full min-w-44 border-white/10 bg-black/20 sm:w-52"
+              className="w-full border-white/10 bg-black/20"
             >
               <SelectValue placeholder="Площадка" />
             </SelectTrigger>
@@ -123,7 +177,7 @@ export function ScheduleBoardToolbar({
           >
             <SelectTrigger
               data-testid="schedule-age-filter"
-              className="w-full min-w-40 border-white/10 bg-black/20 sm:w-44"
+              className="w-full border-white/10 bg-black/20"
             >
               <SelectValue placeholder="Возраст" />
             </SelectTrigger>
@@ -145,7 +199,7 @@ export function ScheduleBoardToolbar({
         >
           <SelectTrigger
             data-testid="schedule-status-filter"
-            className="w-full min-w-44 border-white/10 bg-black/20 sm:w-52"
+            className="w-full border-white/10 bg-black/20"
           >
             <SelectValue placeholder="Статус" />
           </SelectTrigger>
@@ -158,7 +212,7 @@ export function ScheduleBoardToolbar({
           </SelectContent>
         </Select>
 
-        <label className="inline-flex h-9 cursor-pointer items-center gap-2 rounded-lg border border-white/10 bg-black/20 px-3 text-sm transition hover:bg-white/5">
+        <label className="inline-flex h-9 w-full cursor-pointer items-center gap-2 rounded-lg border border-white/10 bg-black/20 px-3 text-sm transition hover:bg-white/5 xl:col-start-3">
           <input
             data-testid="schedule-archive-toggle"
             type="checkbox"
@@ -171,7 +225,7 @@ export function ScheduleBoardToolbar({
 
         <div
           data-testid="schedule-view-toggle"
-          className="inline-flex rounded-lg border border-white/10 bg-black/20 p-1"
+          className="hidden w-fit rounded-lg border border-white/10 bg-black/20 p-1 lg:inline-flex xl:col-start-4"
         >
           <Button
             type="button"
@@ -200,13 +254,14 @@ export function ScheduleBoardToolbar({
           size="sm"
           onClick={onReset}
           disabled={!hasActiveFilters}
-          className={!hasActiveFilters ? "invisible" : undefined}
+          className={!hasActiveFilters ? "hidden" : undefined}
           aria-hidden={!hasActiveFilters}
           tabIndex={hasActiveFilters ? 0 : -1}
         >
-            <RotateCcw className="size-3.5" aria-hidden />
-            Сбросить
+          <RotateCcw className="size-3.5" aria-hidden />
+          Сбросить
         </Button>
+        </div>
       </div>
     </div>
   );
