@@ -5,6 +5,7 @@
     "build": "npm --prefix apps/web ci --include=dev && npm --prefix apps/web run build",
     "start": "npm --prefix apps/web run start",
     "dev": "npm --prefix apps/web run dev:host",
+    "dev:restart": "node scripts/restart-next-dev.mjs",
     "lint": "npm --prefix apps/web run lint",
     "check": "npm --prefix apps/web run check"
   }
