@@ -3,8 +3,10 @@
 import { useMemo } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-import { CalendarDays, Globe2, School } from "lucide-react";
+import { Activity, CalendarDays, MapPin, School, Shapes, Users } from "lucide-react";
 
+import { FilterDisclosure } from "@/components/filter-disclosure";
+import { ProgramFilterSelect } from "@/components/program-filter-select";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -13,10 +15,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { World } from "@/lib/schemas";
-import { cn } from "@/lib/utils";
+import {
+  ALL_PROGRAM_FILTER_VALUE,
+  buildProgramFilterGroups,
+  makeSeriesProgramFilterValue,
+} from "@/lib/program-filter-options";
+import { getSchoolScopes } from "@/lib/offers/agenda";
+import { filterQuestsForSchool } from "@/lib/school-scope";
+import type { Quest, Venue, World } from "@/lib/schemas";
 
 type Props = {
+  quests: Quest[];
+  venues: Venue[];
   worlds: World[];
   fixedSchool?: {
     slug: string;
@@ -24,23 +34,63 @@ type Props = {
   };
 };
 
-export function CatalogToolbar({ worlds, fixedSchool }: Props) {
+const ALL_VALUE = "all";
+const DEFAULT_CATALOG_STATUS = "active";
+
+export function CatalogToolbar({ quests, venues, worlds, fixedSchool }: Props) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const { format, world, school } = useMemo(() => {
+  const { format, program, age, status, school } = useMemo(() => {
+    const legacyWorld = searchParams.get("world");
     return {
-      format: searchParams.get("format") ?? "all",
-      world: searchParams.get("world") ?? "all",
+      format: searchParams.get("format") ?? ALL_VALUE,
+      program: searchParams.get("program") ?? (legacyWorld ? makeSeriesProgramFilterValue(legacyWorld) : ALL_PROGRAM_FILTER_VALUE),
+      age: searchParams.get("age") ?? ALL_VALUE,
+      status: searchParams.get("status") ?? DEFAULT_CATALOG_STATUS,
       school: searchParams.get("school") ?? "",
     };
   }, [searchParams]);
 
+  const effectiveSchool = fixedSchool?.slug ?? school;
+  const scopedQuests = useMemo(
+    () =>
+      effectiveSchool
+        ? filterQuestsForSchool(quests, venues, effectiveSchool)
+        : quests,
+    [effectiveSchool, quests, venues],
+  );
+  const programGroups = useMemo(
+    () => buildProgramFilterGroups(scopedQuests, worlds),
+    [scopedQuests, worlds],
+  );
+  const schoolScopes = useMemo(() => getSchoolScopes(venues), [venues]);
+  const ages = useMemo(() => {
+    const unique = Array.from(new Set(scopedQuests.map((q) => q.ageLabel))).sort(
+      (a, b) => a.localeCompare(b, "ru", { numeric: true }),
+    );
+    return [ALL_VALUE, ...unique];
+  }, [scopedQuests]);
+
+  const activeFiltersCount = [
+    program !== ALL_PROGRAM_FILTER_VALUE,
+    !fixedSchool && Boolean(school),
+    format !== ALL_VALUE,
+    age !== ALL_VALUE,
+    status !== DEFAULT_CATALOG_STATUS,
+  ].filter(Boolean).length;
+
   function pushNext(next: Record<string, string | null>) {
     const params = new URLSearchParams(searchParams.toString());
     for (const [k, v] of Object.entries(next)) {
-      if (v === null || v === "" || v === "all") {
+      if (k === "program") params.delete("world");
+      if (
+        v === null ||
+        v === "" ||
+        (v === ALL_VALUE && k !== "status") ||
+        (k === "status" && v === DEFAULT_CATALOG_STATUS)
+      ) {
         params.delete(k);
       } else {
         params.set(k, v);
@@ -51,51 +101,28 @@ export function CatalogToolbar({ worlds, fixedSchool }: Props) {
   }
 
   return (
-    <div
-      className={cn(
-        "flex flex-col gap-4 rounded-2xl border border-white/10 bg-card/50 p-5 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)] backdrop-blur-md",
-        "md:flex-row md:flex-wrap md:items-end md:justify-between",
-      )}
+    <FilterDisclosure
+      title="Фильтры каталога"
+      summary="Программа, площадка, формат, возраст, статус"
+      panelId="catalog-filter-panel"
+      activeCount={activeFiltersCount}
+      contentClassName="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-5"
     >
       <label className="grid gap-2 text-sm">
         <span className="flex items-center gap-2 text-muted-foreground">
-          <CalendarDays className="size-4 opacity-80" aria-hidden />
-          Формат
+          <Shapes className="size-4 opacity-80" aria-hidden />
+          Программа
         </span>
-        <Select value={format} onValueChange={(v) => pushNext({ format: v })}>
-          <SelectTrigger className="w-full min-w-[220px] border-white/10 bg-black/20 md:w-[240px]">
-            <SelectValue placeholder="Формат" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Все</SelectItem>
-            <SelectItem value="intensive">Интенсив 5 дней</SelectItem>
-            <SelectItem value="year">Годовой трек</SelectItem>
-          </SelectContent>
-        </Select>
-      </label>
-
-      <label className="grid gap-2 text-sm">
-        <span className="flex items-center gap-2 text-muted-foreground">
-          <Globe2 className="size-4 opacity-80" aria-hidden />
-          Мир
-        </span>
-        <Select value={world} onValueChange={(v) => pushNext({ world: v })}>
-          <SelectTrigger className="w-full min-w-[220px] border-white/10 bg-black/20 md:w-[260px]">
-            <SelectValue placeholder="Мир" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Все миры</SelectItem>
-            {worlds.map((w) => (
-              <SelectItem key={w.slug} value={w.slug}>
-                {w.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <ProgramFilterSelect
+          value={program}
+          groups={programGroups}
+          onValueChange={(v) => pushNext({ program: v })}
+          triggerTestId="catalog-program-filter"
+        />
       </label>
 
       {fixedSchool ? (
-        <div className="grid min-w-0 gap-2 text-sm md:min-w-[280px] md:flex-1">
+        <div className="grid min-w-0 gap-2 text-sm">
           <span className="flex items-center gap-2 text-muted-foreground">
             <School className="size-4 opacity-80" aria-hidden />
             Площадка
@@ -105,47 +132,93 @@ export function CatalogToolbar({ worlds, fixedSchool }: Props) {
           </div>
         </div>
       ) : (
-        <label className="grid min-w-0 gap-2 text-sm md:min-w-[280px] md:flex-1">
+        <label className="grid min-w-0 gap-2 text-sm">
           <span className="flex items-center gap-2 text-muted-foreground">
-            <School className="size-4 opacity-80" aria-hidden />
-            Школьный скоуп{" "}
-            <span className="text-[11px] text-muted-foreground/70">(?school=)</span>
+            <MapPin className="size-4 opacity-80" aria-hidden />
+            Площадка
           </span>
-          <input
-            key={school || "none"}
-            className="h-10 w-full rounded-lg border border-white/10 bg-black/25 px-3 text-sm text-foreground shadow-inner outline-none transition placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/35"
-            defaultValue={school}
-            placeholder="например school-1212"
-            name="school"
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                const v = (e.target as HTMLInputElement).value.trim();
-                pushNext({ school: v });
-              }
-            }}
-          />
+          <Select value={school || ALL_VALUE} onValueChange={(v) => pushNext({ school: v })}>
+            <SelectTrigger
+              data-testid="catalog-site-filter"
+              className="w-full border-white/10 bg-black/20"
+            >
+              <SelectValue placeholder="Площадка" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={ALL_VALUE}>Все площадки</SelectItem>
+              {schoolScopes.map((scope) => (
+                <SelectItem key={scope.slug} value={scope.slug}>
+                  {scope.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </label>
       )}
 
-      <div className="flex flex-wrap gap-2 md:justify-end">
-        {fixedSchool ? null : (
-          <Button
-            type="button"
-            variant="secondary"
-            size="sm"
-            className="border border-white/5 bg-white/5 hover:bg-white/10"
-            onClick={() => {
-              const el = document.querySelector(
-                "input[name=school]",
-              ) as HTMLInputElement | null;
-              const v = el?.value.trim() ?? "";
-              pushNext({ school: v });
-            }}
+      <label className="grid gap-2 text-sm">
+        <span className="flex items-center gap-2 text-muted-foreground">
+          <CalendarDays className="size-4 opacity-80" aria-hidden />
+          Формат
+        </span>
+        <Select value={format} onValueChange={(v) => pushNext({ format: v })}>
+          <SelectTrigger
+            data-testid="catalog-format-filter"
+            className="w-full border-white/10 bg-black/20"
           >
-            Применить школу
-          </Button>
-        )}
+            <SelectValue placeholder="Формат" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value={ALL_VALUE}>Все форматы</SelectItem>
+            <SelectItem value="intensive">Интенсив 5 дней</SelectItem>
+            <SelectItem value="year">Годовой трек</SelectItem>
+          </SelectContent>
+        </Select>
+      </label>
+
+      <label className="grid gap-2 text-sm">
+        <span className="flex items-center gap-2 text-muted-foreground">
+          <Users className="size-4 opacity-80" aria-hidden />
+          Возраст
+        </span>
+        <Select value={age} onValueChange={(v) => pushNext({ age: v })}>
+          <SelectTrigger
+            data-testid="catalog-age-filter"
+            className="w-full border-white/10 bg-black/20"
+          >
+            <SelectValue placeholder="Возраст" />
+          </SelectTrigger>
+          <SelectContent>
+            {ages.map((value) => (
+              <SelectItem key={value} value={value}>
+                {value === ALL_VALUE ? "Все возрасты" : value}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </label>
+
+      <label className="grid gap-2 text-sm">
+        <span className="flex items-center gap-2 text-muted-foreground">
+          <Activity className="size-4 opacity-80" aria-hidden />
+          Статус
+        </span>
+        <Select value={status} onValueChange={(v) => pushNext({ status: v })}>
+          <SelectTrigger
+            data-testid="catalog-status-filter"
+            className="w-full border-white/10 bg-black/20"
+          >
+            <SelectValue placeholder="Статус" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value={DEFAULT_CATALOG_STATUS}>Активные</SelectItem>
+            <SelectItem value={ALL_VALUE}>Все статусы</SelectItem>
+            <SelectItem value="archived">Архивные</SelectItem>
+          </SelectContent>
+        </Select>
+      </label>
+
+      <div className="flex flex-wrap gap-2 sm:col-span-2 xl:col-span-5 xl:justify-end">
         <Button
           type="button"
           variant="outline"
@@ -156,6 +229,6 @@ export function CatalogToolbar({ worlds, fixedSchool }: Props) {
           Сбросить фильтры
         </Button>
       </div>
-    </div>
+    </FilterDisclosure>
   );
 }

@@ -1,9 +1,12 @@
 "use client";
 
 import * as React from "react";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { RotateCcw, School } from "lucide-react";
 
+import { FilterDisclosure } from "@/components/filter-disclosure";
 import { OfferBookingAction } from "@/components/offer-booking-action";
+import { Button } from "@/components/ui/button";
 import type { ScheduleBoardVariant } from "@/lib/offers/schedule-board";
 import type { Quest, Venue, VenueOffer } from "@/lib/schemas";
 import { venueVisibleForSchoolScope } from "@/lib/school-scope";
@@ -20,9 +23,12 @@ type Props = {
 };
 
 export function OfferScheduleTable({ quest, rows }: Props) {
+  const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const schoolSlug = searchParams.get("school")?.trim() || undefined;
   const offerId = searchParams.get("offer")?.trim() || undefined;
+  const variantId = searchParams.get("variant")?.trim() || undefined;
 
   const visibleRows = React.useMemo(() => {
     if (!schoolSlug) return rows;
@@ -37,8 +43,76 @@ export function OfferScheduleTable({ quest, rows }: Props) {
     el?.scrollIntoView({ behavior: "smooth", block: "center" });
   }, [offerId, visibleRows]);
 
+  function pushSchoolFilter(value: string | null) {
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("offer");
+    params.delete("variant");
+    if (value?.trim()) {
+      params.set("school", value.trim());
+    } else {
+      params.delete("school");
+    }
+    const qs = params.toString();
+    router.push(qs ? `${pathname}?${qs}` : pathname);
+  }
+
   return (
-    <div className="overflow-hidden rounded-2xl border border-white/10 bg-black/20 shadow-inner">
+    <div className="space-y-4">
+      <FilterDisclosure
+        title="Фильтры расписания"
+        summary="Площадка для записи"
+        panelId="quest-schedule-filter-panel"
+        activeCount={schoolSlug ? 1 : 0}
+        contentClassName="flex flex-col gap-3 md:flex-row md:items-end"
+      >
+        <label className="grid min-w-0 flex-1 gap-2 text-sm">
+          <span className="flex items-center gap-2 text-muted-foreground">
+            <School className="size-4 opacity-80" aria-hidden />
+            Школьный скоуп
+          </span>
+          <input
+            key={schoolSlug ?? "none"}
+            className="h-10 w-full rounded-lg border border-white/10 bg-black/25 px-3 text-sm text-foreground shadow-inner outline-none transition placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/35"
+            defaultValue={schoolSlug}
+            placeholder="например school-1212"
+            name="quest-schedule-school"
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                event.preventDefault();
+                pushSchoolFilter((event.target as HTMLInputElement).value);
+              }
+            }}
+          />
+        </label>
+        <div className="flex flex-wrap gap-2 md:justify-end">
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
+            className="border border-white/5 bg-white/5 hover:bg-white/10"
+            onClick={() => {
+              const input = document.querySelector(
+                "input[name=quest-schedule-school]",
+              ) as HTMLInputElement | null;
+              pushSchoolFilter(input?.value ?? null);
+            }}
+          >
+            Применить
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="border-white/10 bg-transparent hover:bg-white/5"
+            onClick={() => pushSchoolFilter(null)}
+          >
+            <RotateCcw className="size-3.5" aria-hidden />
+            Сбросить
+          </Button>
+        </div>
+      </FilterDisclosure>
+
+      <div className="overflow-hidden rounded-2xl border border-white/10 bg-black/20 shadow-inner">
       <div className="overflow-x-auto">
         <table className="w-full min-w-[720px] border-collapse text-sm">
           <thead className="bg-white/[0.04] text-left text-muted-foreground">
@@ -86,7 +160,14 @@ export function OfferScheduleTable({ quest, rows }: Props) {
                   <td className="px-4 py-4 align-top">
                     <div className="grid gap-2">
                       {variants.map((variant) => (
-                        <div key={variant.id} className="text-xs">
+                        <div
+                          key={variant.id}
+                          className={cn(
+                            "rounded-lg p-1.5 text-xs transition-colors",
+                            variantId === variant.id &&
+                              "bg-primary/10 text-primary ring-1 ring-primary/35",
+                          )}
+                        >
                           <div className="font-medium text-foreground">
                             {variant.type}
                           </div>
@@ -103,7 +184,15 @@ export function OfferScheduleTable({ quest, rows }: Props) {
                   <td className="px-4 py-4 align-top">
                     <div className="grid gap-2">
                       {variants.map((variant) => (
-                        <div key={variant.id}>{variant.priceLabel}</div>
+                        <div
+                          key={variant.id}
+                          className={cn(
+                            "rounded-lg px-1.5 py-1",
+                            variantId === variant.id && "bg-primary/10 text-primary",
+                          )}
+                        >
+                          {variant.priceLabel}
+                        </div>
                       ))}
                     </div>
                   </td>
@@ -130,6 +219,7 @@ export function OfferScheduleTable({ quest, rows }: Props) {
           </tbody>
         </table>
       </div>
+    </div>
     </div>
   );
 }

@@ -13,6 +13,11 @@ import {
   buildScheduleBoardItem,
   type ScheduleBoardItem,
 } from "@/lib/offers/schedule-board";
+import {
+  ALL_PROGRAM_FILTER_VALUE,
+  buildProgramFilterGroups,
+  parseProgramFilterValue,
+} from "@/lib/program-filter-options";
 import { PREFERRED_SCHOOL_STORAGE_KEY } from "@/lib/preferred-school";
 import { cn } from "@/lib/utils";
 
@@ -25,8 +30,8 @@ type Props = {
 };
 
 const ALL_STATUSES = "Все статусы";
-const ALL_PROGRAMS = "Все программы";
 const ALL_SITES = "Все площадки";
+const ALL_FORMATS = "Все форматы";
 const ALL_AGES = "Все возрасты";
 const DESKTOP_QUERY = "(min-width: 1024px)";
 
@@ -54,6 +59,10 @@ function formatShiftCount(count: number): string {
   return `${count} смен`;
 }
 
+function easeInOutCubic(t: number): number {
+  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+}
+
 function groupVisibleItems(
   source: AgendaOfferGroup[],
   items: ScheduleBoardItem[],
@@ -79,14 +88,16 @@ export function ScheduleBoard({
 }: Props) {
   const [viewMode, setViewMode] = React.useState<ScheduleViewMode>("compact");
   const [status, setStatus] = React.useState(ALL_STATUSES);
-  const [program, setProgram] = React.useState(ALL_PROGRAMS);
+  const [program, setProgram] = React.useState(ALL_PROGRAM_FILTER_VALUE);
   const [site, setSite] = React.useState(ALL_SITES);
+  const [format, setFormat] = React.useState(ALL_FORMATS);
   const [age, setAge] = React.useState(ALL_AGES);
   const [showArchived, setShowArchived] = React.useState(false);
   const [expandedCardId, setExpandedCardId] = React.useState<string | null>(null);
   const [highlightedOfferId, setHighlightedOfferId] = React.useState<string | null>(null);
   const [showTopButton, setShowTopButton] = React.useState(false);
   const pendingMobileOpenTimeout = React.useRef<number | null>(null);
+  const pendingMobileScrollFrame = React.useRef<number | null>(null);
   const isDesktopLayout = React.useSyncExternalStore(
     subscribeToDesktopQuery,
     getDesktopSnapshot,
@@ -107,11 +118,16 @@ export function ScheduleBoard({
     return [ALL_STATUSES, ...unique];
   }, [boardItems]);
 
-  const programs = React.useMemo(() => {
-    const unique = Array.from(
-      new Set(boardItems.map((item) => item.programFilterLabel)),
-    ).sort((a, b) => a.localeCompare(b, "ru"));
-    return [ALL_PROGRAMS, ...unique];
+  const programGroups = React.useMemo(() => {
+    return buildProgramFilterGroups(
+      boardItems.map((item) => ({
+        slug: item.quest.slug,
+        title: item.quest.title,
+        worldSlug: item.quest.worldSlug,
+        worldName: item.world?.name,
+        programLabel: item.programFilterLabel,
+      })),
+    );
   }, [boardItems]);
 
   const sites = React.useMemo(() => {
@@ -119,6 +135,13 @@ export function ScheduleBoard({
       (a, b) => a.localeCompare(b, "ru"),
     );
     return [ALL_SITES, ...unique];
+  }, [boardItems]);
+
+  const formats = React.useMemo(() => {
+    const unique = Array.from(new Set(boardItems.map((item) => item.formatType))).sort(
+      (a, b) => a.localeCompare(b, "ru"),
+    );
+    return [ALL_FORMATS, ...unique];
   }, [boardItems]);
 
   const ages = React.useMemo(() => {
@@ -140,11 +163,20 @@ export function ScheduleBoard({
   const activeAge = showAgeFilter && ages.includes(age) ? age : ALL_AGES;
 
   const visibleItems = React.useMemo(() => {
+    const selectedProgram = parseProgramFilterValue(program);
     return boardItems.filter((item) => {
-      if (!showArchived && item.status.isArchivedState) return false;
+      if (!showArchived && status === ALL_STATUSES && item.status.isArchivedState) {
+        return false;
+      }
       if (status !== ALL_STATUSES && item.status.label !== status) return false;
-      if (program !== ALL_PROGRAMS && item.programFilterLabel !== program) return false;
+      if (selectedProgram.kind === "series" && item.quest.worldSlug !== selectedProgram.slug) {
+        return false;
+      }
+      if (selectedProgram.kind === "quest" && item.quest.slug !== selectedProgram.slug) {
+        return false;
+      }
       if (!schoolSlug && site !== ALL_SITES && item.venue.name !== site) return false;
+      if (format !== ALL_FORMATS && item.formatType !== format) return false;
       if (showAgeFilter && activeAge !== ALL_AGES) {
         const itemAges = [
           item.commonAgeLabel,
@@ -154,7 +186,17 @@ export function ScheduleBoard({
       }
       return true;
     });
-  }, [activeAge, boardItems, program, schoolSlug, showAgeFilter, showArchived, site, status]);
+  }, [
+    activeAge,
+    boardItems,
+    format,
+    program,
+    schoolSlug,
+    showAgeFilter,
+    showArchived,
+    site,
+    status,
+  ]);
 
   const visibleGroups = React.useMemo(
     () => groupVisibleItems(groups, visibleItems),
@@ -164,14 +206,16 @@ export function ScheduleBoard({
   const hasActiveFilters =
     showArchived ||
     status !== ALL_STATUSES ||
-    program !== ALL_PROGRAMS ||
+    program !== ALL_PROGRAM_FILTER_VALUE ||
     (!schoolSlug && site !== ALL_SITES) ||
+    format !== ALL_FORMATS ||
     (showAgeFilter && activeAge !== ALL_AGES);
   const resetFilters = () => {
     setShowArchived(false);
     setStatus(ALL_STATUSES);
-    setProgram(ALL_PROGRAMS);
+    setProgram(ALL_PROGRAM_FILTER_VALUE);
     setSite(ALL_SITES);
+    setFormat(ALL_FORMATS);
     setAge(ALL_AGES);
   };
 
@@ -199,6 +243,9 @@ export function ScheduleBoard({
       if (pendingMobileOpenTimeout.current) {
         window.clearTimeout(pendingMobileOpenTimeout.current);
       }
+      if (pendingMobileScrollFrame.current) {
+        window.cancelAnimationFrame(pendingMobileScrollFrame.current);
+      }
     };
   }, []);
 
@@ -217,6 +264,10 @@ export function ScheduleBoard({
         window.clearTimeout(pendingMobileOpenTimeout.current);
         pendingMobileOpenTimeout.current = null;
       }
+      if (pendingMobileScrollFrame.current) {
+        window.cancelAnimationFrame(pendingMobileScrollFrame.current);
+        pendingMobileScrollFrame.current = null;
+      }
 
       if (isDesktopLayout || !expanded) {
         setExpandedCardId(expanded ? offerId : null);
@@ -224,23 +275,52 @@ export function ScheduleBoard({
       }
 
       const card = anchor?.closest<HTMLElement>("[data-testid='schedule-card']");
-      flushSync(() => setExpandedCardId(null));
-
       if (!card) {
         setExpandedCardId(offerId);
         return;
       }
 
-      const targetTop = Math.max(
+      const maxScroll = Math.max(
         0,
-        card.getBoundingClientRect().top + window.scrollY - 96,
+        document.documentElement.scrollHeight - window.innerHeight,
       );
-      window.scrollTo({ top: targetTop, behavior: "smooth" });
+      const targetTop = Math.min(
+        maxScroll,
+        Math.max(0, card.getBoundingClientRect().top + window.scrollY - 96),
+      );
+      const startTop = window.scrollY;
+      const distance = targetTop - startTop;
+      const duration = Math.min(620, Math.max(320, Math.abs(distance) * 0.65));
+      const startedAt = performance.now();
 
-      pendingMobileOpenTimeout.current = window.setTimeout(() => {
-        setExpandedCardId(offerId);
+      const finishOpen = () => {
+        flushSync(() => setExpandedCardId(offerId));
+        const startedCorrectionAt = performance.now();
+        const correctToTarget = () => {
+          const delta = card.getBoundingClientRect().top - 96;
+          if (Math.abs(delta) > 0.5) window.scrollBy(0, delta);
+          if (performance.now() - startedCorrectionAt < 420) {
+            window.requestAnimationFrame(correctToTarget);
+          }
+        };
+        correctToTarget();
+        window.setTimeout(correctToTarget, 460);
+        window.setTimeout(correctToTarget, 900);
         pendingMobileOpenTimeout.current = null;
-      }, 520);
+        pendingMobileScrollFrame.current = null;
+      };
+
+      const step = (now: number) => {
+        const progress = Math.min(1, (now - startedAt) / duration);
+        window.scrollTo(0, startTop + distance * easeInOutCubic(progress));
+        if (progress < 1) {
+          pendingMobileScrollFrame.current = window.requestAnimationFrame(step);
+          return;
+        }
+        pendingMobileOpenTimeout.current = window.setTimeout(finishOpen, 80);
+      };
+
+      pendingMobileScrollFrame.current = window.requestAnimationFrame(step);
     },
     [isDesktopLayout],
   );
@@ -281,12 +361,15 @@ export function ScheduleBoard({
         statuses={statuses}
         onStatusChange={setStatus}
         program={program}
-        programs={programs}
+        programGroups={programGroups}
         onProgramChange={setProgram}
         site={site}
         sites={sites}
         onSiteChange={setSite}
         showSiteFilter={!schoolSlug}
+        format={format}
+        formats={formats}
+        onFormatChange={setFormat}
         age={activeAge}
         ages={ages}
         onAgeChange={setAge}

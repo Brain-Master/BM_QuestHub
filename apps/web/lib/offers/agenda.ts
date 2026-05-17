@@ -8,6 +8,7 @@ export type AgendaOfferItem = {
     | "slug"
     | "title"
     | "worldSlug"
+    | "format"
     | "ageLabel"
     | "catalogTagline"
     | "tagline"
@@ -105,6 +106,7 @@ export function buildAgendaItems(params: {
           slug: quest.slug,
           title: quest.title,
           worldSlug: quest.worldSlug,
+          format: quest.format,
           ageLabel: quest.ageLabel,
           catalogTagline: quest.catalogTagline,
           tagline: quest.tagline,

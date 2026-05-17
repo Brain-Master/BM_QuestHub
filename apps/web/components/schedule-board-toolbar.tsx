@@ -1,8 +1,9 @@
 "use client";
 
-import * as React from "react";
-import { ChevronDown, LayoutList, List, RotateCcw } from "lucide-react";
+import { Activity, CalendarDays, LayoutList, List, MapPin, RotateCcw, Shapes, Users } from "lucide-react";
 
+import { FilterDisclosure } from "@/components/filter-disclosure";
+import { ProgramFilterSelect } from "@/components/program-filter-select";
 import type { ScheduleViewMode } from "@/components/schedule-board-card";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { cn } from "@/lib/utils";
+import { ALL_PROGRAM_FILTER_VALUE, type ProgramFilterGroup } from "@/lib/program-filter-options";
 
 type Props = {
   viewMode: ScheduleViewMode;
@@ -21,12 +22,15 @@ type Props = {
   statuses: string[];
   onStatusChange: (status: string) => void;
   program: string;
-  programs: string[];
+  programGroups: ProgramFilterGroup[];
   onProgramChange: (program: string) => void;
   site: string;
   sites: string[];
   onSiteChange: (site: string) => void;
   showSiteFilter: boolean;
+  format: string;
+  formats: string[];
+  onFormatChange: (format: string) => void;
   age: string;
   ages: string[];
   onAgeChange: (age: string) => void;
@@ -44,12 +48,15 @@ export function ScheduleBoardToolbar({
   statuses,
   onStatusChange,
   program,
-  programs,
+  programGroups,
   onProgramChange,
   site,
   sites,
   onSiteChange,
   showSiteFilter,
+  format,
+  formats,
+  onFormatChange,
   age,
   ages,
   onAgeChange,
@@ -59,160 +66,152 @@ export function ScheduleBoardToolbar({
   hasActiveFilters,
   onReset,
 }: Props) {
-  const [filtersOpen, setFiltersOpen] = React.useState(false);
   const activeFiltersCount = [
-    program !== programs[0],
+    program !== ALL_PROGRAM_FILTER_VALUE,
     showSiteFilter && site !== sites[0],
+    format !== formats[0],
     showAgeFilter && age !== ages[0],
     status !== statuses[0],
     showArchived,
   ].filter(Boolean).length;
 
-  React.useEffect(() => {
-    const media = window.matchMedia("(min-width: 1024px)");
-    const syncOpenState = () => setFiltersOpen(media.matches);
-    syncOpenState();
-    media.addEventListener("change", syncOpenState);
-    return () => media.removeEventListener("change", syncOpenState);
-  }, []);
-
   return (
-    <div
+    <FilterDisclosure
       data-testid="schedule-toolbar"
-      className="rounded-2xl border border-[color:var(--schedule-card-border)] bg-[color:var(--schedule-toolbar-bg)] p-4 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)] backdrop-blur-md"
+      title="Фильтры расписания"
+      summary="Программа, площадка, формат, возраст, статус"
+      panelId="schedule-filter-panel"
+      activeCount={activeFiltersCount}
+      contentClassName="grid grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-5"
     >
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <button
-          type="button"
-          className="group/filter flex min-w-0 flex-1 items-center gap-3 rounded-xl text-left outline-none transition focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-          aria-expanded={filtersOpen}
-          aria-controls="schedule-filter-panel"
-          onClick={() => setFiltersOpen((value) => !value)}
-        >
-          <span className="flex min-w-0 flex-1 flex-col">
-            <span className="font-heading font-semibold text-lg">
-              Фильтры расписания
-            </span>
-            <span className="text-muted-foreground text-sm">
-              {activeFiltersCount > 0
-                ? `Активно: ${activeFiltersCount}`
-                : "Программа, площадка, возраст, статус"}
-            </span>
+        <label className="grid gap-2 text-sm">
+          <span className="flex items-center gap-2 text-muted-foreground">
+            <Shapes className="size-4 opacity-80" aria-hidden />
+            Программа
           </span>
-          <ChevronDown
-            className={cn(
-              "size-5 shrink-0 text-muted-foreground transition-transform duration-200 group-hover/filter:text-foreground",
-              filtersOpen && "rotate-180",
-            )}
-            aria-hidden
+          <ProgramFilterSelect
+            value={program}
+            groups={programGroups}
+            onValueChange={(value) => {
+              if (value) onProgramChange(value);
+            }}
+            triggerTestId="schedule-program-filter"
           />
-        </button>
-
-        <div className="hidden rounded-full border border-white/10 bg-black/20 px-3 py-1 text-muted-foreground text-xs lg:block">
-          {filtersOpen ? "Свернуть" : "Показать фильтры"}
-        </div>
-      </div>
-
-      <div
-        id="schedule-filter-panel"
-        className={cn(
-          "w-full grid-cols-1 items-center gap-3 sm:grid-cols-2 xl:grid-cols-4",
-          filtersOpen
-            ? "mt-4 grid opacity-100"
-            : "hidden opacity-0 pointer-events-none",
-        )}
-        aria-hidden={!filtersOpen}
-      >
-        <div className="grid min-h-0 grid-cols-1 gap-3 overflow-hidden sm:col-span-2 sm:grid-cols-2 xl:col-span-4 xl:grid-cols-4">
-        <Select
-          value={program}
-          onValueChange={(value) => {
-            if (value) onProgramChange(value);
-          }}
-        >
-          <SelectTrigger
-            data-testid="schedule-program-filter"
-            className="w-full border-white/10 bg-black/20"
-          >
-            <SelectValue placeholder="Программа" />
-          </SelectTrigger>
-          <SelectContent>
-            {programs.map((p) => (
-              <SelectItem key={p} value={p}>
-                {p}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        </label>
 
         {showSiteFilter ? (
+          <label className="grid gap-2 text-sm">
+            <span className="flex items-center gap-2 text-muted-foreground">
+              <MapPin className="size-4 opacity-80" aria-hidden />
+              Площадка
+            </span>
+            <Select
+              value={site}
+              onValueChange={(value) => {
+                if (value) onSiteChange(value);
+              }}
+            >
+              <SelectTrigger
+                data-testid="schedule-site-filter"
+                className="w-full border-white/10 bg-black/20"
+              >
+                <SelectValue placeholder="Площадка" />
+              </SelectTrigger>
+              <SelectContent>
+                {sites.map((s) => (
+                  <SelectItem key={s} value={s}>
+                    {s}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </label>
+        ) : null}
+
+        <label className="grid gap-2 text-sm">
+          <span className="flex items-center gap-2 text-muted-foreground">
+            <CalendarDays className="size-4 opacity-80" aria-hidden />
+            Формат
+          </span>
           <Select
-            value={site}
+            value={format}
             onValueChange={(value) => {
-              if (value) onSiteChange(value);
+              if (value) onFormatChange(value);
             }}
           >
             <SelectTrigger
-              data-testid="schedule-site-filter"
+              data-testid="schedule-format-filter"
               className="w-full border-white/10 bg-black/20"
             >
-              <SelectValue placeholder="Площадка" />
+              <SelectValue placeholder="Формат" />
             </SelectTrigger>
             <SelectContent>
-              {sites.map((s) => (
+              {formats.map((f) => (
+                <SelectItem key={f} value={f}>
+                  {f}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </label>
+
+        {showAgeFilter ? (
+          <label className="grid gap-2 text-sm">
+            <span className="flex items-center gap-2 text-muted-foreground">
+              <Users className="size-4 opacity-80" aria-hidden />
+              Возраст
+            </span>
+            <Select
+              value={age}
+              onValueChange={(value) => {
+                if (value) onAgeChange(value);
+              }}
+            >
+              <SelectTrigger
+                data-testid="schedule-age-filter"
+                className="w-full border-white/10 bg-black/20"
+              >
+                <SelectValue placeholder="Возраст" />
+              </SelectTrigger>
+              <SelectContent>
+                {ages.map((a) => (
+                  <SelectItem key={a} value={a}>
+                    {a}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </label>
+        ) : null}
+
+        <label className="grid gap-2 text-sm">
+          <span className="flex items-center gap-2 text-muted-foreground">
+            <Activity className="size-4 opacity-80" aria-hidden />
+            Статус
+          </span>
+          <Select
+            value={status}
+            onValueChange={(value) => {
+              if (value) onStatusChange(value);
+            }}
+          >
+            <SelectTrigger
+              data-testid="schedule-status-filter"
+              className="w-full border-white/10 bg-black/20"
+            >
+              <SelectValue placeholder="Статус" />
+            </SelectTrigger>
+            <SelectContent>
+              {statuses.map((s) => (
                 <SelectItem key={s} value={s}>
                   {s}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
-        ) : null}
+        </label>
 
-        {showAgeFilter ? (
-          <Select
-            value={age}
-            onValueChange={(value) => {
-              if (value) onAgeChange(value);
-            }}
-          >
-            <SelectTrigger
-              data-testid="schedule-age-filter"
-              className="w-full border-white/10 bg-black/20"
-            >
-              <SelectValue placeholder="Возраст" />
-            </SelectTrigger>
-            <SelectContent>
-              {ages.map((a) => (
-                <SelectItem key={a} value={a}>
-                  {a}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        ) : null}
-
-        <Select
-          value={status}
-          onValueChange={(value) => {
-            if (value) onStatusChange(value);
-          }}
-        >
-          <SelectTrigger
-            data-testid="schedule-status-filter"
-            className="w-full border-white/10 bg-black/20"
-          >
-            <SelectValue placeholder="Статус" />
-          </SelectTrigger>
-          <SelectContent>
-            {statuses.map((s) => (
-              <SelectItem key={s} value={s}>
-                {s}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        <label className="inline-flex h-9 w-full cursor-pointer items-center gap-2 rounded-lg border border-white/10 bg-black/20 px-3 text-sm transition hover:bg-white/5 xl:col-start-3">
+        <label className="inline-flex h-9 w-full cursor-pointer items-center gap-2 rounded-lg border border-white/10 bg-black/20 px-3 text-sm transition hover:bg-white/5 xl:col-start-4">
           <input
             data-testid="schedule-archive-toggle"
             type="checkbox"
@@ -225,7 +224,7 @@ export function ScheduleBoardToolbar({
 
         <div
           data-testid="schedule-view-toggle"
-          className="hidden w-fit rounded-lg border border-white/10 bg-black/20 p-1 lg:inline-flex xl:col-start-4"
+          className="hidden w-fit rounded-lg border border-white/10 bg-black/20 p-1 lg:inline-flex xl:col-start-5"
         >
           <Button
             type="button"
@@ -261,8 +260,6 @@ export function ScheduleBoardToolbar({
           <RotateCcw className="size-3.5" aria-hidden />
           Сбросить
         </Button>
-        </div>
-      </div>
-    </div>
+    </FilterDisclosure>
   );
 }

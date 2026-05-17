@@ -30,12 +30,15 @@ export function CatalogPageClient({
 }: Props) {
   const searchParams = useSearchParams();
   const format = searchParams.get("format") ?? undefined;
+  const program = searchParams.get("program") ?? undefined;
   const world = searchParams.get("world") ?? undefined;
+  const age = searchParams.get("age") ?? undefined;
+  const status = searchParams.get("status") ?? undefined;
   const school = fixedSchool?.slug ?? searchParams.get("school") ?? undefined;
 
   const filtered = useMemo(
-    () => filterCatalog(quests, venues, { format, world, school }),
-    [quests, venues, format, world, school],
+    () => filterCatalog(quests, venues, { format, program, world, age, status, school }),
+    [quests, venues, format, program, world, age, status, school],
   );
   const worldNames = useMemo(
     () => Object.fromEntries(worlds.map((w) => [w.slug, w.name])),
@@ -45,7 +48,12 @@ export function CatalogPageClient({
   return (
     <>
       <div className="mb-10">
-        <CatalogToolbar worlds={worlds} fixedSchool={fixedSchool} />
+        <CatalogToolbar
+          quests={quests}
+          venues={venues}
+          worlds={worlds}
+          fixedSchool={fixedSchool}
+        />
       </div>
 
       <section className="space-y-8">
