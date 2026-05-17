@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils";
 type Props = {
   item: ScheduleBoardItem;
   schoolSlug?: string;
+  bookingSchoolSlug?: string;
   expanded?: boolean;
   highlighted?: boolean;
   onExpandChange?: (expanded: boolean, anchor: HTMLElement | null) => void;
@@ -56,6 +57,7 @@ function priceSummary(variants: ScheduleBoardVariant[]): string {
 export function ScheduleBoardCardMobile({
   item,
   schoolSlug,
+  bookingSchoolSlug,
   expanded = false,
   highlighted = false,
   onExpandChange,
@@ -218,7 +220,7 @@ export function ScheduleBoardCardMobile({
                   quest={item.quest}
                   offer={item.offer}
                   venue={item.venue}
-                  schoolSlug={schoolSlug}
+                  schoolSlug={bookingSchoolSlug ?? schoolSlug}
                   mode={variant.bookingMode}
                   variant={variant}
                   className="mt-3"

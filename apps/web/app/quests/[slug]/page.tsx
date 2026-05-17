@@ -15,17 +15,11 @@ import {
 } from "@/lib/content/load";
 import {
   groupAgendaItems,
-  resolveSchoolScope,
   type AgendaOfferItem,
 } from "@/lib/offers/agenda";
 
 type Props = {
   params: Promise<{ slug: string }>;
-  searchParams?: Promise<{
-    school?: string;
-    offer?: string;
-    variant?: string;
-  }>;
 };
 
 export async function generateStaticParams() {
@@ -59,9 +53,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function QuestPage({ params, searchParams }: Props) {
+export default async function QuestPage({ params }: Props) {
   const { slug } = await params;
-  const query = await searchParams;
 
   const quest = await loadQuestBySlug(slug);
   if (!quest) notFound();
@@ -72,11 +65,6 @@ export default async function QuestPage({ params, searchParams }: Props) {
   ]);
 
   const vmap = venueBySlugMap(venues);
-  const selectedSchoolSlug = query?.school?.trim() || undefined;
-  const selectedSchool = selectedSchoolSlug
-    ? resolveSchoolScope(venues, selectedSchoolSlug)
-    : undefined;
-  const highlightedOfferId = query?.offer?.trim() || undefined;
   const agendaItems: AgendaOfferItem[] = quest.offers
     .map((offer) => {
       const venue = vmap.get(offer.venueSlug);
@@ -168,9 +156,6 @@ export default async function QuestPage({ params, searchParams }: Props) {
           title="Площадки и запись"
           description="Если для смены ещё нет карточки mos.ru, кнопка открывает форму заявки в модальном окне."
           showProgramFilter={false}
-          initialSite={selectedSchool?.name}
-          initialHighlightedOfferId={highlightedOfferId}
-          questHrefSchoolSlug={selectedSchool?.slug ?? selectedSchoolSlug}
         />
       </section>
     </article>

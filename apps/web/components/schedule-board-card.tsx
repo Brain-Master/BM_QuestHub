@@ -10,6 +10,7 @@ type Props = {
   item: ScheduleBoardItem;
   mode: ScheduleCardMode;
   schoolSlug?: string;
+  bookingSchoolSlug?: string;
   expanded?: boolean;
   highlighted?: boolean;
   onExpandChange?: (expanded: boolean, anchor: HTMLElement | null) => void;
@@ -20,6 +21,7 @@ export function ScheduleBoardCard({
   item,
   mode,
   schoolSlug,
+  bookingSchoolSlug,
   expanded = false,
   highlighted = false,
   onExpandChange,
@@ -30,6 +32,7 @@ export function ScheduleBoardCard({
       <ScheduleBoardCardMobile
         item={item}
         schoolSlug={schoolSlug}
+        bookingSchoolSlug={bookingSchoolSlug}
         expanded={expanded}
         highlighted={highlighted}
         onExpandChange={onExpandChange}
@@ -43,6 +46,7 @@ export function ScheduleBoardCard({
       <ScheduleBoardCardCompact
         item={item}
         schoolSlug={schoolSlug}
+        bookingSchoolSlug={bookingSchoolSlug}
         expanded={expanded}
         highlighted={highlighted}
         onExpandChange={onExpandChange}
@@ -54,7 +58,7 @@ export function ScheduleBoardCard({
   return (
     <ScheduleBoardCardDetailed
       item={item}
-      schoolSlug={schoolSlug}
+      schoolSlug={bookingSchoolSlug ?? schoolSlug}
       highlighted={highlighted}
       onNavigate={onNavigate}
     />

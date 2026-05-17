@@ -149,7 +149,7 @@ export function SiteHeader({ worlds }: Props) {
 
         <div
           className={cn(
-            "fixed top-0 right-0 z-50 h-dvh w-screen bg-black/55 backdrop-blur-sm transition-opacity duration-300 sm:hidden",
+            "fixed top-0 right-0 z-50 h-dvh w-screen overflow-hidden bg-black/55 backdrop-blur-sm transition-opacity duration-300 sm:hidden",
             menuOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0",
           )}
           aria-hidden={!menuOpen}

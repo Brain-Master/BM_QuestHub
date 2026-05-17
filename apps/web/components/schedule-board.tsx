@@ -19,6 +19,7 @@ import {
   parseProgramFilterValue,
 } from "@/lib/program-filter-options";
 import { PREFERRED_SCHOOL_STORAGE_KEY } from "@/lib/preferred-school";
+import { venueVisibleForSchoolScope } from "@/lib/school-scope";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -30,15 +31,13 @@ type Props = {
   title?: string;
   description?: string;
   showProgramFilter?: boolean;
-  initialSite?: string;
-  initialHighlightedOfferId?: string;
-  questHrefSchoolSlug?: string;
 };
 
 const ALL_STATUSES = "Все статусы";
 const ALL_SITES = "Все площадки";
 const ALL_FORMATS = "Все форматы";
 const ALL_AGES = "Все возрасты";
+const QUERY_SITE = "__query_site__";
 const DESKTOP_QUERY = "(min-width: 1024px)";
 
 function subscribeToDesktopQuery(onStoreChange: () => void): () => void {
@@ -53,6 +52,19 @@ function getDesktopSnapshot(): boolean {
 
 function getServerDesktopSnapshot(): boolean {
   return false;
+}
+
+function subscribeToSearchParams(onStoreChange: () => void): () => void {
+  window.addEventListener("popstate", onStoreChange);
+  return () => window.removeEventListener("popstate", onStoreChange);
+}
+
+function getSearchSnapshot(): string {
+  return window.location.search;
+}
+
+function getServerSearchSnapshot(): string {
+  return "";
 }
 
 function formatShiftCount(count: number): string {
@@ -94,21 +106,18 @@ export function ScheduleBoard({
   title,
   description,
   showProgramFilter = true,
-  initialSite,
-  initialHighlightedOfferId,
-  questHrefSchoolSlug,
 }: Props) {
   const [viewMode, setViewMode] = React.useState<ScheduleViewMode>("compact");
   const [status, setStatus] = React.useState(ALL_STATUSES);
   const [program, setProgram] = React.useState(ALL_PROGRAM_FILTER_VALUE);
-  const [site, setSite] = React.useState(initialSite ?? ALL_SITES);
+  const [site, setSite] = React.useState(QUERY_SITE);
   const [format, setFormat] = React.useState(ALL_FORMATS);
   const [age, setAge] = React.useState(ALL_AGES);
   const [showArchived, setShowArchived] = React.useState(false);
   const [expandedCardId, setExpandedCardId] = React.useState<string | null>(null);
-  const [highlightedOfferId, setHighlightedOfferId] = React.useState<string | null>(
-    initialHighlightedOfferId ?? null,
-  );
+  const [rememberedHighlightedOfferId, setRememberedHighlightedOfferId] = React.useState<
+    string | null
+  >(null);
   const [showTopButton, setShowTopButton] = React.useState(false);
   const pendingMobileOpenTimeout = React.useRef<number | null>(null);
   const pendingMobileScrollFrame = React.useRef<number | null>(null);
@@ -117,16 +126,25 @@ export function ScheduleBoard({
     getDesktopSnapshot,
     getServerDesktopSnapshot,
   );
+  const currentSearch = React.useSyncExternalStore(
+    subscribeToSearchParams,
+    getSearchSnapshot,
+    getServerSearchSnapshot,
+  );
+  const queryParams = React.useMemo(() => new URLSearchParams(currentSearch), [currentSearch]);
+  const querySchoolSlug = queryParams.get("school")?.trim() || undefined;
+  const queryOfferId = queryParams.get("offer")?.trim() || undefined;
+  const highlightedOfferId = queryOfferId ?? rememberedHighlightedOfferId;
   const effectiveViewMode = isDesktopLayout ? viewMode : "mobile";
 
   const boardItems = React.useMemo(
     () =>
       groups.flatMap((group) =>
         group.items.map((item) =>
-          buildScheduleBoardItem(item, questHrefSchoolSlug ?? schoolSlug),
+          buildScheduleBoardItem(item, querySchoolSlug ?? schoolSlug),
         ),
       ),
-    [groups, questHrefSchoolSlug, schoolSlug],
+    [groups, querySchoolSlug, schoolSlug],
   );
 
   const statuses = React.useMemo(() => {
@@ -152,7 +170,20 @@ export function ScheduleBoard({
     );
     return [ALL_SITES, ...unique];
   }, [boardItems]);
-  const activeSite = sites.includes(site) ? site : ALL_SITES;
+  const querySite = React.useMemo(() => {
+    if (!querySchoolSlug || schoolSlug) return undefined;
+    return (
+      boardItems.find((item) => item.venue.schoolScopeSlug === querySchoolSlug) ??
+      boardItems.find((item) => venueVisibleForSchoolScope(item.venue, querySchoolSlug))
+    )?.venue.name;
+  }, [boardItems, querySchoolSlug, schoolSlug]);
+  const activeSite =
+    site === QUERY_SITE && querySite && sites.includes(querySite)
+      ? querySite
+      : sites.includes(site)
+        ? site
+        : ALL_SITES;
+  const bookingSchoolSlug = schoolSlug ?? querySchoolSlug;
 
   const formats = React.useMemo(() => {
     const unique = Array.from(new Set(boardItems.map((item) => item.formatType))).sort(
@@ -254,10 +285,8 @@ export function ScheduleBoard({
     const savedPath = sessionStorage.getItem("schedule:return:path");
     const savedOfferId = sessionStorage.getItem("schedule:return:offerId");
     const currentPath = `${window.location.pathname}${window.location.search}`;
-    if (initialHighlightedOfferId) {
-      window.requestAnimationFrame(() => setHighlightedOfferId(initialHighlightedOfferId));
-    } else if (savedPath === currentPath && savedOfferId) {
-      window.requestAnimationFrame(() => setHighlightedOfferId(savedOfferId));
+    if (!queryOfferId && savedPath === currentPath && savedOfferId) {
+      window.requestAnimationFrame(() => setRememberedHighlightedOfferId(savedOfferId));
     }
 
     return () => {
@@ -269,13 +298,13 @@ export function ScheduleBoard({
         window.cancelAnimationFrame(pendingMobileScrollFrame.current);
       }
     };
-  }, [initialHighlightedOfferId]);
+  }, [queryOfferId]);
 
   const rememberNavigation = React.useCallback(
     (offerId: string) => {
       sessionStorage.setItem("schedule:return:path", window.location.pathname + window.location.search);
       sessionStorage.setItem("schedule:return:offerId", offerId);
-      setHighlightedOfferId(offerId);
+      setRememberedHighlightedOfferId(offerId);
     },
     [],
   );
@@ -455,6 +484,7 @@ export function ScheduleBoard({
                     item={item}
                     mode={effectiveViewMode}
                     schoolSlug={schoolSlug}
+                    bookingSchoolSlug={bookingSchoolSlug}
                     expanded={expandedCardId === item.offer.id}
                     highlighted={highlightedOfferId === item.offer.id}
                     onExpandChange={(expanded, anchor) =>
@@ -468,17 +498,21 @@ export function ScheduleBoard({
           ))}
         </ol>
       )}
-      <button
-        type="button"
-        className={cn(
-          "fixed right-5 bottom-5 z-40 inline-flex size-11 items-center justify-center rounded-full border border-white/15 bg-card/90 text-foreground shadow-lg backdrop-blur transition duration-200 hover:-translate-y-0.5 hover:bg-card",
-          showTopButton ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-4 opacity-0",
-        )}
-        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-        aria-label="Наверх"
-      >
-        <ChevronUp className="size-5" aria-hidden />
-      </button>
+      <div className="pointer-events-none fixed inset-x-0 bottom-5 z-40">
+        <div className="mx-auto flex w-full max-w-6xl justify-end px-4">
+          <button
+            type="button"
+            className={cn(
+              "pointer-events-auto inline-flex size-11 items-center justify-center rounded-full border border-white/15 bg-card/90 text-foreground shadow-lg backdrop-blur transition duration-200 hover:-translate-y-0.5 hover:bg-card",
+              showTopButton ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-4 opacity-0",
+            )}
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            aria-label="Наверх"
+          >
+            <ChevronUp className="size-5" aria-hidden />
+          </button>
+        </div>
+      </div>
     </section>
   );
 }

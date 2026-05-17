@@ -4,7 +4,11 @@ const QUEST_PATH = "/quests/minecraft-probuzhdenie-strazhey";
 
 async function openQuestFilters(page: Page) {
   const siteFilter = page.getByTestId("schedule-site-filter");
-  if (!(await siteFilter.isVisible())) {
+  await expect(page.getByTestId("schedule-toolbar")).toBeVisible();
+  try {
+    await expect(siteFilter).toBeVisible({ timeout: 1000 });
+    return;
+  } catch {
     await page.getByRole("button", { name: /Фильтры расписания/ }).click();
   }
   await expect(siteFilter).toBeVisible();
@@ -40,12 +44,21 @@ test.describe("Quest schedule", () => {
     );
 
     await page.goto("/agenda");
-    await page.getByTestId("schedule-card").first().getByRole("link", { name: /Открыть/ }).first().click();
+    const href = await page
+      .getByTestId("schedule-card")
+      .first()
+      .locator('a[href*="/quests/"]')
+      .first()
+      .getAttribute("href");
+    expect(href).toBeTruthy();
+    await page.goto(href!);
 
     await expect(page).toHaveURL(/\/quests\/.+offer=/);
     const offerId = new URL(page.url()).searchParams.get("offer");
     expect(offerId).toBeTruthy();
-    await expect(page.locator(`#schedule-offer-${offerId}`)).toBeVisible();
+    await expect(
+      page.locator(`[id=${JSON.stringify(`schedule-offer-${offerId}`)}]`),
+    ).toBeVisible();
   });
 
   test("keeps quest schedule usable on mobile without horizontal overflow", async ({

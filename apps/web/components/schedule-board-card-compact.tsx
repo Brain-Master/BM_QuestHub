@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils";
 type Props = {
   item: ScheduleBoardItem;
   schoolSlug?: string;
+  bookingSchoolSlug?: string;
   expanded?: boolean;
   highlighted?: boolean;
   onExpandChange?: (expanded: boolean, anchor: HTMLElement | null) => void;
@@ -24,6 +25,7 @@ type Props = {
 export function ScheduleBoardCardCompact({
   item,
   schoolSlug,
+  bookingSchoolSlug,
   expanded = false,
   highlighted = false,
   onExpandChange,
@@ -149,7 +151,11 @@ export function ScheduleBoardCardCompact({
               ) : null}
 
               <div data-testid="variants-container">
-                <ScheduleTariffList item={item} schoolSlug={schoolSlug} compact />
+                <ScheduleTariffList
+                  item={item}
+                  schoolSlug={bookingSchoolSlug ?? schoolSlug}
+                  compact
+                />
               </div>
             </div>
           </div>
