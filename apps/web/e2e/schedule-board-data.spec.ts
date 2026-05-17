@@ -1,6 +1,8 @@
 import { expect, test } from "@playwright/test";
 
 import {
+  buildScheduleBoardItem,
+  formatScheduleDateRange,
   getScheduleBookingMode,
   getScheduleCapacity,
   getScheduleDisplayStatus,
@@ -87,15 +89,88 @@ test.describe("Schedule Board data rules", () => {
     });
   });
 
+  test("planning status uses a clearer preliminary CTA", () => {
+    const item = offer({ sheetStatus: "Согласование" });
+    const status = getScheduleDisplayStatus(item, now);
+
+    expect(status).toBe("Скоро старт");
+    expect(getScheduleBookingMode(item, status)).toEqual({
+      kind: "waitlist",
+      label: "Предварительная заявка",
+    });
+  });
+
+  test("date range is displayed as a human Russian range", () => {
+    expect(formatScheduleDateRange("2026-05-01", "2026-05-05")).toBe(
+      "1–5 мая",
+    );
+    expect(formatScheduleDateRange("2026-06-30", "2026-07-04")).toBe(
+      "30 июня – 4 июля",
+    );
+  });
+
+  test("schedule card variants are normalized into one board item", () => {
+    const item = offer({
+      scheduleCard: {
+        isArchived: false,
+        tags: [],
+        variants: [
+          {
+            id: "half",
+            type: "Интенсив (полдня)",
+            time: "Пн-Пт, 9:00 – 12:30",
+            priceLabel: "8 500 ₽",
+            note: "Перекус включён",
+            ageLabel: "6–13 лет",
+          },
+          {
+            id: "full",
+            type: "Полный день",
+            time: "Пн-Пт, 8:00 – 18:00",
+            priceLabel: "14 000 ₽",
+            note: "Питание включено",
+            ageLabel: "6–13 лет",
+          },
+        ],
+      },
+    });
+
+    const boardItem = buildScheduleBoardItem({
+      offer: item,
+      quest: {
+        slug: "test",
+        title: "Тестовая программа",
+        worldSlug: "test-world",
+        ageLabel: "6–13 лет",
+        tagline: "Тест",
+      },
+      venue: {
+        slug: "test-venue",
+        name: "Тестовая площадка",
+        type: "school",
+        address: "Тестовый адрес",
+      },
+      world: null,
+    });
+
+    expect(boardItem.variants).toHaveLength(2);
+    expect(boardItem.commonAgeLabel).toBe("6–13 лет");
+  });
+
   test("waitlist lead payload keeps an explicit lead type", () => {
     const parsed = leadSchema.parse({
       leadType: "waitlist",
       parentName: "Тест",
       contact: "+7 999 000-00-00",
+      childName: "Петя",
+      childAge: "8 лет",
+      comment: "Нет аллергий",
       consent: true,
       questSlug: "minecraft",
       questTitle: "Minecraft",
       offerId: "test-offer",
+      variantId: "half",
+      variantTitle: "Интенсив (полдня)",
       venueSlug: "test-venue",
       venueName: "Тестовая площадка",
     });

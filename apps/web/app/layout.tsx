@@ -43,6 +43,7 @@ export default async function RootLayout({
       lang="ru"
       className={`${bodySans.variable} ${headingSans.variable} dark h-full antialiased`}
       data-world="portal"
+      data-scroll-behavior="smooth"
     >
       <body className="bm-page-bg flex min-h-full flex-col bg-background text-foreground">
         <YandexMetrika />

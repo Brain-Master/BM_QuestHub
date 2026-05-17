@@ -13,7 +13,13 @@ import { leadSchema, type LeadFormInput, type LeadPayload } from "@/lib/schemas"
 type Props = {
   defaults: Omit<
     LeadFormInput,
-    "leadType" | "parentName" | "contact" | "consent"
+    | "leadType"
+    | "parentName"
+    | "contact"
+    | "childName"
+    | "childAge"
+    | "comment"
+    | "consent"
   > & {
     consent?: boolean;
     leadType?: LeadFormInput["leadType"];
@@ -33,6 +39,9 @@ export function BookingForm({
       leadType: "booking",
       parentName: "",
       contact: "",
+      childName: "",
+      childAge: "",
+      comment: "",
       consent: false,
       ...defaults,
     },
@@ -50,6 +59,9 @@ export function BookingForm({
       ...defaults,
       parentName: "",
       contact: "",
+      childName: "",
+      childAge: "",
+      comment: "",
       consent: false,
     });
   }
@@ -83,6 +95,47 @@ export function BookingForm({
             {form.formState.errors.contact.message}
           </p>
         ) : null}
+      </div>
+
+      <div className="grid gap-2 sm:grid-cols-2">
+        <div className="grid gap-2">
+          <Label htmlFor="childName">Имя ребёнка</Label>
+          <Input
+            id="childName"
+            autoComplete="given-name"
+            {...form.register("childName")}
+          />
+          {form.formState.errors.childName?.message ? (
+            <p className="text-xs text-destructive">
+              {form.formState.errors.childName.message}
+            </p>
+          ) : null}
+        </div>
+
+        <div className="grid gap-2">
+          <Label htmlFor="childAge">Возраст или класс</Label>
+          <Input
+            id="childAge"
+            placeholder="Например, 8 лет или 2 класс"
+            {...form.register("childAge")}
+          />
+          {form.formState.errors.childAge?.message ? (
+            <p className="text-xs text-destructive">
+              {form.formState.errors.childAge.message}
+            </p>
+          ) : null}
+        </div>
+      </div>
+
+      <div className="grid gap-2">
+        <Label htmlFor="comment">Комментарий</Label>
+        <textarea
+          id="comment"
+          rows={3}
+          placeholder="Аллергии, особенности, вопросы по расписанию"
+          className="min-h-20 rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm outline-none transition-colors placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+          {...form.register("comment")}
+        />
       </div>
 
       <div className="flex items-start gap-2">

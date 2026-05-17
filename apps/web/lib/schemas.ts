@@ -59,25 +59,50 @@ export const scheduleMediaSchema = z.object({
   fallback: scheduleMediaImageSchema.optional(),
 });
 
+const nullableOptionalString = z
+  .string()
+  .nullable()
+  .optional()
+  .transform((value) => value ?? undefined);
+
+export const scheduleVariantSchema = z.object({
+  id: z.string().min(1),
+  type: z.string().min(1),
+  time: z.string().min(1),
+  priceLabel: z.string().min(1),
+  note: z.string().nullable().optional(),
+  ageLabel: nullableOptionalString,
+  mosRuCode: nullableOptionalString,
+  mosBookingUrl: nullableOptionalString,
+});
+
 export const scheduleCardSchema = z.object({
-  displayTitle: z.string().optional(),
-  description: z.string().optional(),
-  teacherName: z.string().optional(),
+  displayTitle: nullableOptionalString,
+  description: nullableOptionalString,
+  teacherName: nullableOptionalString,
   tags: z.array(z.string()).default([]),
-  formatType: z.string().optional(),
-  formatTime: z.string().optional(),
-  formatNote: z.string().optional(),
-  mosRuCode: z.string().optional(),
+  timelineDate: nullableOptionalString,
+  shortDate: nullableOptionalString,
+  shiftNumber: nullableOptionalString,
+  locationNote: nullableOptionalString,
+  programFilterLabel: nullableOptionalString,
+  ageLabel: nullableOptionalString,
+  formatType: nullableOptionalString,
+  formatTime: nullableOptionalString,
+  formatNote: nullableOptionalString,
+  mosRuCode: nullableOptionalString,
   /** Сырой операционный статус источника данных для UI-маппера расписания. */
   status: z.string().optional(),
   isArchived: z.boolean().default(false),
   /** Управляет CTA для sold-out: disabled или заявка в лист ожидания. */
   allowWaitlistWhenSoldOut: z.boolean().default(false),
+  variants: z.array(scheduleVariantSchema).default([]),
   media: scheduleMediaSchema.optional(),
 });
 
 export type ScheduleMediaImage = z.infer<typeof scheduleMediaImageSchema>;
 export type ScheduleMedia = z.infer<typeof scheduleMediaSchema>;
+export type ScheduleVariant = z.infer<typeof scheduleVariantSchema>;
 export type ScheduleCard = z.infer<typeof scheduleCardSchema>;
 
 export const venueOfferSchema = z.object({
@@ -141,12 +166,17 @@ export const leadSchema = z.object({
   leadType: z.enum(["booking", "waitlist"]).default("booking"),
   parentName: z.string().min(1, "Укажите имя"),
   contact: z.string().min(5, "Телефон или email"),
+  childName: z.string().min(1, "Укажите имя ребёнка"),
+  childAge: z.string().min(1, "Укажите возраст или класс"),
+  comment: z.string().optional(),
   consent: z
     .boolean()
     .refine((v) => v === true, { message: "Нужно согласие на обработку данных" }),
   questSlug: z.string(),
   questTitle: z.string(),
   offerId: z.string(),
+  variantId: z.string().optional(),
+  variantTitle: z.string().optional(),
   venueSlug: z.string(),
   venueName: z.string(),
   schoolSlug: z.string().optional(),

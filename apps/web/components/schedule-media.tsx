@@ -21,7 +21,7 @@ export function ScheduleMedia({ image, title, mode, className }: Props) {
       className={cn(
         "relative isolate overflow-hidden bg-gradient-to-br from-primary/25 via-card to-background",
         mode === "compact"
-          ? "h-56 sm:h-auto sm:min-h-full sm:w-64 md:w-72"
+          ? "h-56 lg:h-auto lg:min-h-full lg:w-80"
           : "h-64 sm:h-80 md:h-[22rem]",
         className,
       )}
@@ -41,8 +41,8 @@ export function ScheduleMedia({ image, title, mode, className }: Props) {
         className={cn(
           "absolute inset-0 pointer-events-none",
           mode === "compact"
-            ? "bg-gradient-to-t from-[color:var(--schedule-card-bg)] via-[color:var(--schedule-card-bg)]/55 to-transparent sm:bg-gradient-to-r sm:from-transparent sm:via-[color:var(--schedule-card-bg)]/10 sm:to-[color:var(--schedule-card-bg)]"
-            : "bg-gradient-to-t from-[color:var(--schedule-card-bg)] via-[color:var(--schedule-card-bg)]/70 to-transparent",
+            ? "bg-gradient-to-t from-[color:var(--schedule-card-bg)] via-[color:var(--schedule-card-bg)]/70 to-transparent lg:bg-[linear-gradient(90deg,transparent_0%,color-mix(in_oklch,var(--schedule-card-bg)_10%,transparent)_34%,color-mix(in_oklch,var(--schedule-card-bg)_48%,transparent)_58%,color-mix(in_oklch,var(--schedule-card-bg)_92%,transparent)_82%,var(--schedule-card-bg)_100%)]"
+            : "bg-gradient-to-t from-[color:var(--schedule-card-bg)] via-[color:var(--schedule-card-bg)]/78 to-transparent",
         )}
       />
     </div>

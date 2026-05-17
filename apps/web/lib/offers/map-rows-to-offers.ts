@@ -63,6 +63,11 @@ function inferFormatType(row: SheetRow): string {
   return days === 4 ? "Интенсив (4 дня)" : "Интенсив (полдня)";
 }
 
+function inferLocationNote(row: SheetRow): string | undefined {
+  const note = row.notes?.match(/(?:корпус|шо-\d+)[^.\n]*/i)?.[0]?.trim();
+  return note || undefined;
+}
+
 function buildImage(
   url: string | undefined,
   alt: string | undefined,
@@ -97,20 +102,43 @@ function buildScheduleCard(row: SheetRow): ScheduleCard {
     row.image_focal_y,
   );
   const fallback = buildImage(row.fallback_image_url, imageAlt, undefined, undefined);
+  const formatType = row.format_type?.trim() || inferFormatType(row);
+  const formatTime =
+    row.format_time?.trim() || `Пн-Пт, ${row.start_time} – ${row.end_time}`;
+  const formatNote = row.format_note?.trim() || row.notes?.trim() || undefined;
+  const priceLabel = formatPriceLabel(row.price);
+  const mosBookingUrl = parseMosUrl(row.mos_ru_link);
 
   return {
     displayTitle: row.display_title?.trim() || row.program_name,
     description: row.description?.trim() || undefined,
     teacherName: row.teacher?.trim() || undefined,
     tags: splitTags(row.tags),
-    formatType: row.format_type?.trim() || inferFormatType(row),
-    formatTime:
-      row.format_time?.trim() || `Пн-Пт, ${row.start_time} – ${row.end_time}`,
-    formatNote: row.format_note?.trim() || row.notes?.trim() || undefined,
+    timelineDate: undefined,
+    shortDate: undefined,
+    shiftNumber: undefined,
+    locationNote: inferLocationNote(row),
+    programFilterLabel: row.program_name,
+    ageLabel: row.age_group?.trim() || undefined,
+    formatType,
+    formatTime,
+    formatNote,
     mosRuCode: row.mos_ru_code?.trim() || undefined,
     status: row.status,
     isArchived: row.is_archived ?? false,
     allowWaitlistWhenSoldOut: row.allow_waitlist_when_sold_out ?? false,
+    variants: [
+      {
+        id: `${row.venue_slug}:${row.start_date}:${row.start_time}`,
+        type: formatType,
+        time: formatTime,
+        priceLabel,
+        note: formatNote ?? null,
+        ageLabel: row.age_group?.trim() || undefined,
+        mosRuCode: row.mos_ru_code?.trim() || undefined,
+        mosBookingUrl: mosBookingUrl ?? undefined,
+      },
+    ],
     media:
       hero || compact || fallback
         ? {

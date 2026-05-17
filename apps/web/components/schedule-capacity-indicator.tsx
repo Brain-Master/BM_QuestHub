@@ -20,25 +20,25 @@ export function ScheduleCapacityIndicator({
     <div
       data-testid="schedule-capacity"
       className={cn(
-        "flex items-center gap-2 text-xs font-semibold tracking-wide",
+        "inline-flex items-center gap-2.5 rounded-full border bg-black/22 px-2.5 py-1.5 font-bold text-[0.78rem] tracking-wide whitespace-nowrap shadow-[0_0_20px_color-mix(in_oklch,currentColor_14%,transparent)] backdrop-blur-md",
         capacity.isSoldOut
-          ? "text-[color:var(--schedule-capacity-full)]"
+          ? "border-[color:var(--schedule-capacity-full)]/35 text-[color:var(--schedule-capacity-full)]"
           : capacity.isLow
-            ? "text-[color:var(--schedule-capacity-low)]"
-            : "text-[color:var(--schedule-capacity-open)]",
+            ? "border-[color:var(--schedule-capacity-low)]/35 text-[color:var(--schedule-capacity-low)]"
+            : "border-[color:var(--schedule-capacity-open)]/30 text-[color:var(--schedule-capacity-open)]",
         className,
       )}
     >
       <div
         className={cn(
-          "hidden overflow-hidden rounded-full border border-white/10 bg-black/35 sm:block",
-          compact ? "h-2 w-20" : "h-2.5 w-32",
+          "hidden overflow-hidden rounded-full border border-white/15 bg-white/12 sm:block",
+          compact ? "h-2.5 w-24" : "h-3 w-36",
         )}
         aria-hidden
       >
         <div
           className={cn(
-            "h-full rounded-full transition-[width] duration-300",
+            "h-full min-w-1 rounded-full transition-[width] duration-300 shadow-[0_0_10px_currentColor]",
             capacity.isSoldOut
               ? "bg-[color:var(--schedule-capacity-full)]"
               : capacity.isLow

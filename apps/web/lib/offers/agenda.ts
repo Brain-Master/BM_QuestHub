@@ -39,8 +39,46 @@ function compareAgendaItems(a: AgendaOfferItem, b: AgendaOfferItem): number {
 }
 
 function formatAgendaRange(offer: VenueOffer): string {
-  if (offer.startDate === offer.endDate) return offer.dateRange;
-  return offer.dateRange;
+  return offer.scheduleCard?.timelineDate ?? formatRuDateRange(offer.startDate, offer.endDate);
+}
+
+const RU_MONTHS = [
+  "января",
+  "февраля",
+  "марта",
+  "апреля",
+  "мая",
+  "июня",
+  "июля",
+  "августа",
+  "сентября",
+  "октября",
+  "ноября",
+  "декабря",
+] as const;
+
+function formatRuDateRange(start: string, end: string): string {
+  const startDate = parseIsoDate(start);
+  const endDate = parseIsoDate(end);
+  if (!startDate || !endDate) return offerDateFallback(start, end);
+  const startDay = startDate.getUTCDate();
+  const endDay = endDate.getUTCDate();
+  const startMonth = startDate.getUTCMonth();
+  const endMonth = endDate.getUTCMonth();
+  if (start === end) return `${startDay} ${RU_MONTHS[startMonth]}`;
+  if (startMonth === endMonth) return `${startDay}–${endDay} ${RU_MONTHS[startMonth]}`;
+  return `${startDay} ${RU_MONTHS[startMonth]} – ${endDay} ${RU_MONTHS[endMonth]}`;
+}
+
+function parseIsoDate(iso: string): Date | null {
+  const match = iso.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) return null;
+  const [, year, month, day] = match;
+  return new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
+}
+
+function offerDateFallback(start: string, end: string): string {
+  return start === end ? start : `${start} – ${end}`;
 }
 
 export function buildAgendaItems(params: {

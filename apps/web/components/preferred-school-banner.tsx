@@ -17,10 +17,13 @@ type Props = {
 };
 
 export function PreferredSchoolBanner({ mode }: Props) {
-  const [preferred, setPreferred] = React.useState<PreferredSchool | null>(() => {
-    if (typeof window === "undefined") return null;
-    return parsePreferredSchool(localStorage.getItem(PREFERRED_SCHOOL_STORAGE_KEY));
-  });
+  const [preferred, setPreferred] = React.useState<PreferredSchool | null>(null);
+
+  React.useEffect(() => {
+    window.requestAnimationFrame(() => {
+      setPreferred(parsePreferredSchool(localStorage.getItem(PREFERRED_SCHOOL_STORAGE_KEY)));
+    });
+  }, []);
 
   if (!preferred) return null;
 

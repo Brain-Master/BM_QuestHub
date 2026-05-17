@@ -1,7 +1,11 @@
+"use client";
+
 import Link from "next/link";
-import { ArrowUpRight, CalendarDays, MapPin, Train, User } from "lucide-react";
+import * as React from "react";
+import { ArrowUpRight } from "lucide-react";
 
 import { ScheduleCapacityIndicator } from "@/components/schedule-capacity-indicator";
+import { ScheduleInfoStrip } from "@/components/schedule-info-strip";
 import { ScheduleMedia } from "@/components/schedule-media";
 import { ScheduleStatusBadge } from "@/components/schedule-status-badge";
 import { ScheduleTariffList } from "@/components/schedule-tariff-list";
@@ -12,24 +16,43 @@ import { cn } from "@/lib/utils";
 type Props = {
   item: ScheduleBoardItem;
   schoolSlug?: string;
+  highlighted?: boolean;
+  onNavigate?: () => void;
 };
 
-export function ScheduleBoardCardDetailed({ item, schoolSlug }: Props) {
+export function ScheduleBoardCardDetailed({
+  item,
+  schoolSlug,
+  highlighted = false,
+  onNavigate,
+}: Props) {
+  const [expandedDescription, setExpandedDescription] = React.useState(false);
+  const isLongDescription = item.description.length > 220;
+
   return (
     <article
+      id={`schedule-offer-${item.offer.id}`}
       data-testid="schedule-card"
       className={cn(
         "group/schedule-card overflow-hidden rounded-2xl border border-[color:var(--schedule-card-border)] bg-[color:var(--schedule-card-bg)] shadow-[var(--schedule-card-shadow)] backdrop-blur-md transition",
         item.status.isArchivedState
           ? "opacity-70 grayscale"
           : "hover:border-[color:var(--schedule-card-border-hover)]",
+        highlighted && "ring-2 ring-primary/70 ring-offset-2 ring-offset-background",
       )}
     >
       <div className="grid">
         <div className="relative">
-          <Link href={item.questHref} aria-label={`Открыть ${item.displayTitle}`}>
+          <Link
+            href={item.questHref}
+            aria-label={`Открыть ${item.displayTitle}`}
+            className="block"
+            onClick={onNavigate}
+          >
             <ScheduleMedia image={item.media.hero} title={item.displayTitle} mode="detailed" />
           </Link>
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/45 via-transparent to-transparent" />
           <div className="absolute top-4 left-4 z-10 flex flex-wrap gap-2">
             <ScheduleStatusBadge
               label={item.status.label}
@@ -51,14 +74,28 @@ export function ScheduleBoardCardDetailed({ item, schoolSlug }: Props) {
             <div className="min-w-0">
               <div className="mb-3 flex flex-wrap gap-2">
                 {item.tags.map((tag) => (
-                  <Badge key={tag} variant="outline" className="border-white/10 bg-black/25">
+                  <Badge
+                    key={tag}
+                    variant="outline"
+                    className="border-white/15 bg-slate-950/70 text-sky-100 shadow-[0_0_12px_rgba(56,189,248,0.18)] backdrop-blur"
+                  >
                     {tag}
                   </Badge>
                 ))}
+                {item.commonAgeLabel ? (
+                  <Badge
+                    variant="outline"
+                    className="border-white/15 bg-slate-950/70 text-emerald-100"
+                  >
+                    {item.commonAgeLabel}
+                  </Badge>
+                ) : null}
               </div>
               <Link
                 href={item.questHref}
+                aria-label={`Открыть ${item.displayTitle}`}
                 className="group/title inline-flex items-start gap-2 text-foreground transition hover:text-primary"
+                onClick={onNavigate}
               >
                 <h3 className="font-heading text-2xl font-semibold leading-tight tracking-tight sm:text-3xl">
                   {item.displayTitle}
@@ -69,50 +106,43 @@ export function ScheduleBoardCardDetailed({ item, schoolSlug }: Props) {
                 />
               </Link>
             </div>
-            <ScheduleCapacityIndicator
-              capacity={item.capacity}
-              archived={item.status.isArchivedState}
-              className="mt-1"
-            />
           </div>
 
-          <p className="max-w-4xl text-muted-foreground text-sm leading-relaxed sm:text-base">
+          <p
+            className={cn(
+              "max-w-4xl text-muted-foreground text-sm leading-relaxed sm:text-base",
+              !expandedDescription && "line-clamp-2",
+            )}
+          >
             {item.description}
           </p>
+          {isLongDescription ? (
+            <button
+              type="button"
+              className="w-fit text-primary text-sm transition hover:text-primary/80"
+              onClick={() => setExpandedDescription((value) => !value)}
+            >
+              {expandedDescription ? "Скрыть описание" : "Подробнее о смене"}
+            </button>
+          ) : null}
 
-          <div className="grid gap-3 rounded-xl border border-[color:var(--schedule-card-border)] bg-[color:var(--schedule-info-bg)] p-4 text-sm md:grid-cols-12 md:items-center md:p-5">
-            <div className="min-w-0 md:col-span-5">
-              <div className="mb-1.5 flex items-center gap-2 font-medium text-primary">
-                <Train className="size-4 shrink-0" aria-hidden />
-                <span className="truncate">{item.venue.name}</span>
+          <ScheduleInfoStrip item={item} />
+
+          <div className="grid gap-3">
+            <div className="grid grid-cols-[minmax(0,1fr)_9rem] items-end gap-4 px-1">
+              <h4 className="font-semibold text-muted-foreground text-sm uppercase tracking-wider">
+                Форматы участия
+              </h4>
+              <div className="flex justify-end">
+                <ScheduleCapacityIndicator
+                  capacity={item.capacity}
+                  archived={item.status.isArchivedState}
+                  className="justify-end"
+                />
               </div>
-              <div className="flex items-start gap-2 text-muted-foreground text-xs">
-                <MapPin className="mt-0.5 size-4 shrink-0" aria-hidden />
-                <span className="line-clamp-2">
-                  {item.venue.metro ? `м. ${item.venue.metro} · ` : null}
-                  {item.venue.address}
-                </span>
-              </div>
             </div>
-            <div className="flex items-center gap-3 border-white/10 border-t pt-3 md:col-span-3 md:border-t-0 md:border-l md:pl-5 md:pt-0">
-              <CalendarDays className="size-5 shrink-0 text-primary" aria-hidden />
-              <span>
-                <span className="block text-muted-foreground text-xs">Даты</span>
-                {item.dateLabel}
-              </span>
-            </div>
-            <div className="flex min-w-0 items-center gap-3 border-white/10 border-t pt-3 md:col-span-4 md:border-t-0 md:border-l md:pl-5 md:pt-0">
-              <User className="size-5 shrink-0 text-primary" aria-hidden />
-              <span className="min-w-0">
-                <span className="block text-muted-foreground text-xs">Наставник</span>
-                <span className="block truncate">
-                  {item.teacherName ?? "Наставник назначается"}
-                </span>
-              </span>
-            </div>
+            <ScheduleTariffList item={item} schoolSlug={schoolSlug} />
           </div>
-
-          <ScheduleTariffList item={item} schoolSlug={schoolSlug} />
         </div>
       </div>
     </article>

@@ -1,5 +1,5 @@
 import type { AgendaOfferItem } from "@/lib/offers/agenda";
-import type { ScheduleMediaImage, VenueOffer } from "@/lib/schemas";
+import type { ScheduleMediaImage, ScheduleVariant, VenueOffer } from "@/lib/schemas";
 
 export type ScheduleDisplayStatus =
   | "Идёт набор"
@@ -23,6 +23,17 @@ export type ScheduleBookingMode =
   | { kind: "waitlist"; label: string }
   | { kind: "disabled"; label: string };
 
+export type ScheduleBoardVariant = {
+  id: string;
+  type: string;
+  time: string;
+  priceLabel: string;
+  note: string | null;
+  ageLabel: string | null;
+  mosRuCode: string | null;
+  bookingMode: ScheduleBookingMode;
+};
+
 export type ScheduleCapacityView = {
   total: number;
   booked: number;
@@ -38,11 +49,18 @@ export type ScheduleBoardItem = AgendaOfferItem & {
   description: string;
   teacherName: string | null;
   tags: string[];
+  timelineDateLabel: string;
+  shortDateLabel: string;
+  shiftNumber: string | null;
+  locationNote: string | null;
+  programFilterLabel: string;
+  commonAgeLabel: string | null;
   dateLabel: string;
   timeLabel: string;
   formatType: string;
   formatNote: string | null;
   mosRuCode: string | null;
+  variants: ScheduleBoardVariant[];
   media: {
     hero: ScheduleMediaImage | null;
     compact: ScheduleMediaImage | null;
@@ -61,6 +79,20 @@ export type ScheduleBoardItem = AgendaOfferItem & {
 };
 
 const PLANNING_STATUSES = new Set(["Планируется", "Согласование"]);
+const RU_MONTHS = [
+  "января",
+  "февраля",
+  "марта",
+  "апреля",
+  "мая",
+  "июня",
+  "июля",
+  "августа",
+  "сентября",
+  "октября",
+  "ноября",
+  "декабря",
+] as const;
 
 function endOfLocalDate(isoDate: string): Date {
   return new Date(`${isoDate}T23:59:59`);
@@ -136,6 +168,7 @@ export function getScheduleStatusVariant(
 export function getScheduleBookingMode(
   offer: VenueOffer,
   status: ScheduleDisplayStatus,
+  variant?: Pick<ScheduleVariant, "mosBookingUrl">,
 ): ScheduleBookingMode {
   if (status === "Отменено") return { kind: "disabled", label: "Отменено" };
   if (status === "Завершено") return { kind: "disabled", label: "Завершено" };
@@ -145,12 +178,97 @@ export function getScheduleBookingMode(
       : { kind: "disabled", label: "Мест нет" };
   }
 
-  if (offer.mosBookingUrl) {
-    return { kind: "mos", label: "На mos.ru", url: offer.mosBookingUrl };
+  const mosBookingUrl = variant?.mosBookingUrl ?? offer.mosBookingUrl;
+  if (mosBookingUrl) {
+    return { kind: "mos", label: "На mos.ru", url: mosBookingUrl };
   }
 
-  if (status === "Скоро старт") return { kind: "form", label: "Оставить заявку" };
+  if (status === "Скоро старт") {
+    return { kind: "waitlist", label: "Узнать о старте" };
+  }
   return { kind: "form", label: "Записаться" };
+}
+
+export function formatScheduleDateRange(start: string, end: string): string {
+  const startDate = parseIsoDate(start);
+  const endDate = parseIsoDate(end);
+  if (!startDate || !endDate) return `${start} – ${end}`;
+
+  const startDay = startDate.getUTCDate();
+  const endDay = endDate.getUTCDate();
+  const startMonth = startDate.getUTCMonth();
+  const endMonth = endDate.getUTCMonth();
+
+  if (start === end) return `${startDay} ${RU_MONTHS[startMonth]}`;
+  if (startMonth === endMonth) {
+    return `${startDay}–${endDay} ${RU_MONTHS[startMonth]}`;
+  }
+  return `${startDay} ${RU_MONTHS[startMonth]} – ${endDay} ${RU_MONTHS[endMonth]}`;
+}
+
+function parseIsoDate(iso: string): Date | null {
+  const match = iso.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) return null;
+  const [, year, month, day] = match;
+  return new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
+}
+
+function buildQuestHref(questSlug: string, offerId: string, schoolSlug?: string): string {
+  const params = new URLSearchParams();
+  if (schoolSlug) params.set("school", schoolSlug);
+  params.set("offer", offerId);
+  const query = params.toString();
+  return `/quests/${questSlug}${query ? `?${query}` : ""}#schedule-offers`;
+}
+
+function normalizeVariants(
+  offer: VenueOffer,
+  status: ScheduleDisplayStatus,
+): ScheduleBoardVariant[] {
+  const source =
+    offer.scheduleCard?.variants && offer.scheduleCard.variants.length > 0
+      ? offer.scheduleCard.variants
+      : [
+          {
+            id: offer.id,
+            type: offer.scheduleCard?.formatType ?? offer.shiftLabel,
+            time:
+              offer.scheduleCard?.formatTime ??
+              `Пн-Пт, ${offer.startTime}–${offer.endTime}`,
+            priceLabel: offer.priceLabel,
+            note:
+              offer.scheduleCard?.formatNote ??
+              offer.includedNote ??
+              null,
+            ageLabel: offer.scheduleCard?.ageLabel ?? null,
+            mosRuCode: offer.scheduleCard?.mosRuCode ?? null,
+            mosBookingUrl: offer.mosBookingUrl ?? undefined,
+          },
+        ];
+
+  return source.map((variant) => ({
+    id: variant.id,
+    type: variant.type,
+    time: variant.time,
+    priceLabel: variant.priceLabel,
+    note: variant.note?.trim() ? variant.note : null,
+    ageLabel: variant.ageLabel?.trim() ? variant.ageLabel : null,
+    mosRuCode: variant.mosRuCode?.trim() ? variant.mosRuCode : null,
+    bookingMode: getScheduleBookingMode(offer, status, variant),
+  }));
+}
+
+function getCommonAgeLabel(
+  variants: ScheduleBoardVariant[],
+  fallback: string | undefined,
+): string | null {
+  const labels = variants
+    .map((variant) => variant.ageLabel?.trim())
+    .filter((label): label is string => Boolean(label));
+  if (labels.length === variants.length && new Set(labels).size === 1) {
+    return labels[0];
+  }
+  return fallback?.trim() || null;
 }
 
 export function buildScheduleBoardItem(
@@ -162,24 +280,34 @@ export function buildScheduleBoardItem(
   const card = offer.scheduleCard;
   const statusLabel = getScheduleDisplayStatus(offer, now);
   const capacity = getScheduleCapacity(offer);
+  const variants = normalizeVariants(offer, statusLabel);
+  const commonAgeLabel = getCommonAgeLabel(variants, card?.ageLabel ?? quest.ageLabel);
   const hero = card?.media?.hero ?? card?.media?.fallback ?? null;
   const compact = card?.media?.compact ?? hero;
   const fallbackFromQuest = quest.catalogTagline ?? quest.tagline;
-  const questHref = schoolSlug
-    ? `/quests/${quest.slug}?school=${encodeURIComponent(schoolSlug)}`
-    : `/quests/${quest.slug}`;
+  const questHref = buildQuestHref(quest.slug, offer.id, schoolSlug);
+  const dateLabel = card?.shortDate ?? formatScheduleDateRange(offer.startDate, offer.endDate);
+  const primaryVariant = variants[0];
 
   return {
     ...item,
     displayTitle: card?.displayTitle ?? quest.title,
     description: card?.description ?? fallbackFromQuest,
     teacherName: card?.teacherName ?? null,
+    timelineDateLabel:
+      card?.timelineDate ?? formatScheduleDateRange(offer.startDate, offer.endDate),
+    shortDateLabel: dateLabel,
+    shiftNumber: card?.shiftNumber ?? null,
+    locationNote: card?.locationNote ?? null,
+    programFilterLabel: card?.programFilterLabel ?? quest.title,
+    commonAgeLabel,
     tags: card?.tags.length ? card.tags : [world?.name ?? quest.worldSlug],
-    dateLabel: offer.dateRange,
-    timeLabel: card?.formatTime ?? `${offer.startTime}–${offer.endTime}`,
-    formatType: card?.formatType ?? offer.shiftLabel,
-    formatNote: card?.formatNote ?? offer.includedNote ?? null,
-    mosRuCode: card?.mosRuCode ?? null,
+    dateLabel,
+    timeLabel: primaryVariant?.time ?? `${offer.startTime}–${offer.endTime}`,
+    formatType: primaryVariant?.type ?? offer.shiftLabel,
+    formatNote: primaryVariant?.note ?? null,
+    mosRuCode: card?.mosRuCode ?? primaryVariant?.mosRuCode ?? null,
+    variants,
     media: {
       hero:
         hero ??
@@ -201,7 +329,7 @@ export function buildScheduleBoardItem(
       isCancelled: statusLabel === "Отменено",
     },
     capacity,
-    bookingMode: getScheduleBookingMode(offer, statusLabel),
+    bookingMode: primaryVariant?.bookingMode ?? getScheduleBookingMode(offer, statusLabel),
     questHref,
   };
 }

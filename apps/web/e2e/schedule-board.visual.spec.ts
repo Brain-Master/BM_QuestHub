@@ -48,6 +48,7 @@ test.describe("Schedule Board visual regression", () => {
     await prepareVisualPage(page, testInfo);
     await page.setViewportSize({ width: 1440, height: 1100 });
     await page.goto("/agenda");
+    await page.getByRole("button", { name: "Подробный вид" }).click();
     await stabilizeScheduleBoard(page);
 
     const firstCard = page.getByTestId("schedule-card").first();
@@ -63,7 +64,6 @@ test.describe("Schedule Board visual regression", () => {
     await prepareVisualPage(page, testInfo);
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("/agenda");
-    await page.getByRole("button", { name: "Компактный вид" }).click();
     await stabilizeScheduleBoard(page);
 
     const firstCard = page.getByTestId("schedule-card").first();

@@ -18,6 +18,17 @@ type Props = {
   status: string;
   statuses: string[];
   onStatusChange: (status: string) => void;
+  program: string;
+  programs: string[];
+  onProgramChange: (program: string) => void;
+  site: string;
+  sites: string[];
+  onSiteChange: (site: string) => void;
+  showSiteFilter: boolean;
+  age: string;
+  ages: string[];
+  onAgeChange: (age: string) => void;
+  showAgeFilter: boolean;
   showArchived: boolean;
   onShowArchivedChange: (show: boolean) => void;
   hasActiveFilters: boolean;
@@ -30,6 +41,17 @@ export function ScheduleBoardToolbar({
   status,
   statuses,
   onStatusChange,
+  program,
+  programs,
+  onProgramChange,
+  site,
+  sites,
+  onSiteChange,
+  showSiteFilter,
+  age,
+  ages,
+  onAgeChange,
+  showAgeFilter,
   showArchived,
   onShowArchivedChange,
   hasActiveFilters,
@@ -43,11 +65,78 @@ export function ScheduleBoardToolbar({
       <div>
         <p className="font-heading font-semibold text-lg">Фильтры расписания</p>
         <p className="text-muted-foreground text-sm">
-          Сравните смены по статусу, датам и формату отображения.
+          Сравните смены по программе, площадке, статусу и формату отображения.
         </p>
       </div>
 
       <div className="flex flex-wrap items-center gap-3">
+        <Select
+          value={program}
+          onValueChange={(value) => {
+            if (value) onProgramChange(value);
+          }}
+        >
+          <SelectTrigger
+            data-testid="schedule-program-filter"
+            className="w-full min-w-44 border-white/10 bg-black/20 sm:w-56"
+          >
+            <SelectValue placeholder="Программа" />
+          </SelectTrigger>
+          <SelectContent>
+            {programs.map((p) => (
+              <SelectItem key={p} value={p}>
+                {p}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        {showSiteFilter ? (
+          <Select
+            value={site}
+            onValueChange={(value) => {
+              if (value) onSiteChange(value);
+            }}
+          >
+            <SelectTrigger
+              data-testid="schedule-site-filter"
+              className="w-full min-w-44 border-white/10 bg-black/20 sm:w-52"
+            >
+              <SelectValue placeholder="Площадка" />
+            </SelectTrigger>
+            <SelectContent>
+              {sites.map((s) => (
+                <SelectItem key={s} value={s}>
+                  {s}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        ) : null}
+
+        {showAgeFilter ? (
+          <Select
+            value={age}
+            onValueChange={(value) => {
+              if (value) onAgeChange(value);
+            }}
+          >
+            <SelectTrigger
+              data-testid="schedule-age-filter"
+              className="w-full min-w-40 border-white/10 bg-black/20 sm:w-44"
+            >
+              <SelectValue placeholder="Возраст" />
+            </SelectTrigger>
+            <SelectContent>
+              {ages.map((a) => (
+                <SelectItem key={a} value={a}>
+                  {a}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        ) : null}
+
         <Select
           value={status}
           onValueChange={(value) => {
@@ -104,12 +193,20 @@ export function ScheduleBoardToolbar({
           </Button>
         </div>
 
-        {hasActiveFilters ? (
-          <Button type="button" variant="outline" size="sm" onClick={onReset}>
+        <Button
+          type="button"
+          data-testid="schedule-reset-filter"
+          variant="outline"
+          size="sm"
+          onClick={onReset}
+          disabled={!hasActiveFilters}
+          className={!hasActiveFilters ? "invisible" : undefined}
+          aria-hidden={!hasActiveFilters}
+          tabIndex={hasActiveFilters ? 0 : -1}
+        >
             <RotateCcw className="size-3.5" aria-hidden />
             Сбросить
-          </Button>
-        ) : null}
+        </Button>
       </div>
     </div>
   );

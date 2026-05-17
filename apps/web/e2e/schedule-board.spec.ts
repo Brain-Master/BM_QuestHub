@@ -10,20 +10,65 @@ test.describe("Schedule Board UX", () => {
     await expect(firstCard.getByTestId("schedule-status")).toBeVisible();
     await expect(firstCard.getByTestId("schedule-media")).toBeVisible();
     await expect(firstCard.getByTestId("schedule-tariffs")).toBeVisible();
+    await expect(firstCard.getByTestId("schedule-tariff-row").first()).toBeVisible();
     await expect(
       firstCard.getByRole("link", { name: /Открыть|Minecraft|Мехвариум|Кибер/i }).first(),
     ).toBeVisible();
   });
 
-  test("switches to compact mode without losing cards or CTA zone", async ({ page }) => {
+  test("starts in compact mode without losing cards or CTA zone", async ({
+    page,
+  }, testInfo) => {
     await page.goto("/agenda");
-
-    await page.getByRole("button", { name: "Компактный вид" }).click();
 
     const firstCard = page.getByTestId("schedule-card").first();
     await expect(firstCard).toBeVisible();
     await expect(firstCard.getByTestId("schedule-tariffs")).toBeVisible();
+    if (testInfo.project.name === "mobile-chrome") {
+      await expect(firstCard.getByRole("button", { name: /Подробнее о смене/ })).toBeVisible();
+      await expect(page.getByTestId("schedule-card")).not.toHaveCount(0);
+      return;
+    }
+
+    const before = await firstCard.boundingBox();
+    await firstCard.getByRole("button", { name: /Подробнее о смене/ }).click();
+    await expect(firstCard.getByText(/Скрыть описание/)).toBeVisible();
+    const after = await firstCard.boundingBox();
+    expect(Math.round(after?.height ?? 0)).toBe(Math.round(before?.height ?? 0));
     await expect(page.getByTestId("schedule-card")).not.toHaveCount(0);
+  });
+
+  test("filters by program and site without shifting reset controls", async ({ page }) => {
+    await page.goto("/agenda");
+
+    await expect(page.getByTestId("schedule-program-filter")).toBeVisible();
+    await expect(page.getByTestId("schedule-site-filter")).toBeVisible();
+    const resetButton = page.getByTestId("schedule-reset-filter");
+    const before = await resetButton.boundingBox();
+
+    await page.getByTestId("schedule-program-filter").click();
+    await page.getByRole("option", { name: /Minecraft|Мехвариум|Кибер/ }).first().click();
+
+    const after = await resetButton.boundingBox();
+    expect(Math.round(after?.x ?? 0)).toBe(Math.round(before?.x ?? 0));
+    await expect(page.getByTestId("schedule-card").first()).toBeVisible();
+  });
+
+  test("opens a quest page with the selected offer highlighted", async ({
+    page,
+  }, testInfo) => {
+    test.skip(
+      testInfo.project.name === "mobile-chrome",
+      "Mobile layout renders detailed cards; route highlighting is covered in desktop navigation.",
+    );
+
+    await page.goto("/agenda");
+
+    const firstCard = page.getByTestId("schedule-card").first();
+    await firstCard.getByRole("link", { name: /Открыть/ }).first().click();
+
+    await expect(page).toHaveURL(/offer=/);
+    await expect(page.locator('[id^="quest-offer-"]').first()).toBeVisible();
   });
 
   test("does not create horizontal overflow on mobile", async ({ page }) => {

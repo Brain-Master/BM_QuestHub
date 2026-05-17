@@ -28,21 +28,27 @@ type Props = {
 
 export function ScheduleStatusBadge({ label, variant, className }: Props) {
   const isLive = label === "Идёт набор" || label === "Можно присоединиться";
+  const isPlanning = label === "Скоро старт";
 
   return (
     <Badge
       variant="outline"
       data-testid="schedule-status"
       className={cn(
-        "h-7 border px-3 text-xs shadow-[0_0_20px_color-mix(in_oklch,currentColor_16%,transparent)] backdrop-blur-md",
-        variantClass[variant],
+        "h-7 border px-3 text-xs backdrop-blur-md",
+        isPlanning
+          ? "border-violet-300/55 bg-violet-400/12 font-semibold text-white shadow-[0_0_18px_rgba(168,85,247,0.62),inset_0_1px_0_rgba(255,255,255,0.18)]"
+          : [
+              "shadow-[0_0_20px_color-mix(in_oklch,currentColor_16%,transparent)]",
+              variantClass[variant],
+            ],
         className,
       )}
     >
       {isLive ? (
         <span
           aria-hidden
-          className="size-1.5 rounded-full bg-current shadow-[0_0_8px_currentColor]"
+          className="size-1.5 animate-pulse rounded-full bg-current shadow-[0_0_8px_currentColor]"
         />
       ) : null}
       {label}
