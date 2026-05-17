@@ -31,13 +31,14 @@ export function ScheduleBoardCardCompact({
 }: Props) {
   const variantsCount = item.variants.length || 1;
   const showDescriptionPreview = variantsCount === 1;
+  const isLongDescription = item.description.length > 260;
 
   return (
     <article
       id={`schedule-offer-${item.offer.id}`}
       data-testid="schedule-card"
       className={cn(
-        "group/schedule-card isolate overflow-hidden rounded-2xl border border-[color:var(--schedule-card-border)] bg-[color:var(--schedule-card-bg)] shadow-[var(--schedule-card-shadow)] backdrop-blur-md transition lg:flex lg:h-[22.9rem]",
+        "group/schedule-card isolate overflow-hidden rounded-2xl border border-[color:var(--schedule-card-border)] bg-[color:var(--schedule-card-bg)] shadow-[var(--schedule-card-shadow)] backdrop-blur-md transition lg:flex lg:h-[23rem]",
         item.status.isArchivedState
           ? "opacity-70 grayscale"
           : "hover:border-[color:var(--schedule-card-border-hover)]",
@@ -118,16 +119,16 @@ export function ScheduleBoardCardCompact({
 
         <ScheduleInfoStrip item={item} compact />
 
-        <div className="relative mt-auto flex min-h-0 flex-col">
+        <div className="relative flex min-h-0 flex-1 flex-col">
           <div
             className={cn(
               "flex h-full flex-col transition-opacity duration-300",
               expanded ? "invisible opacity-0 pointer-events-none" : "visible opacity-100",
             )}
           >
-            {showDescriptionPreview ? (
-              <div className="mb-2 min-h-0 overflow-hidden">
-                <p className="line-clamp-1 text-muted-foreground text-sm leading-relaxed lg:line-clamp-2">
+            {showDescriptionPreview || !isLongDescription ? (
+              <div className="mb-2 min-h-0 flex-1 overflow-hidden">
+                <p className="line-clamp-[var(--schedule-description-lines)] text-muted-foreground text-sm leading-relaxed [--schedule-description-lines:3] min-[1180px]:[--schedule-description-lines:4]">
                   {item.description}
                 </p>
               </div>
@@ -135,15 +136,17 @@ export function ScheduleBoardCardCompact({
               <div className="sr-only" aria-hidden />
             )}
 
-            <div>
-              <button
-                type="button"
-                className="mb-2 inline-flex w-fit items-center gap-1 text-primary text-sm transition hover:text-primary/80"
-                onClick={() => onExpandChange?.(true)}
-              >
-                Подробнее о смене
-                <ChevronDown className="size-4 transition-transform" aria-hidden />
-              </button>
+            <div className="mt-auto">
+              {isLongDescription ? (
+                <button
+                  type="button"
+                  className="mb-2 inline-flex w-fit items-center gap-1 text-primary text-sm transition hover:text-primary/80"
+                  onClick={() => onExpandChange?.(true)}
+                >
+                  Подробнее о смене
+                  <ChevronDown className="size-4 transition-transform" aria-hidden />
+                </button>
+              ) : null}
 
               <div data-testid="variants-container">
                 <ScheduleTariffList item={item} schoolSlug={schoolSlug} compact />

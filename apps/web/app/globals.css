@@ -92,24 +92,24 @@
   --schedule-capacity-open: oklch(0.64 0.17 150);
   --schedule-capacity-low: oklch(0.7 0.17 65);
   --schedule-capacity-full: oklch(0.62 0.21 30);
-  --schedule-status-success-bg: oklch(0.95 0.04 150);
-  --schedule-status-success-fg: oklch(0.35 0.12 150);
-  --schedule-status-success-border: oklch(0.64 0.17 150 / 0.45);
-  --schedule-status-info-bg: oklch(0.94 0.04 220);
-  --schedule-status-info-fg: oklch(0.36 0.13 220);
-  --schedule-status-info-border: oklch(0.66 0.14 220 / 0.45);
-  --schedule-status-purple-bg: oklch(0.94 0.04 310);
-  --schedule-status-purple-fg: oklch(0.42 0.16 310);
-  --schedule-status-purple-border: oklch(0.68 0.17 310 / 0.45);
-  --schedule-status-warning-bg: oklch(0.95 0.05 65);
-  --schedule-status-warning-fg: oklch(0.43 0.14 65);
-  --schedule-status-warning-border: oklch(0.72 0.16 65 / 0.5);
-  --schedule-status-default-bg: color-mix(in oklch, var(--muted) 72%, transparent);
-  --schedule-status-default-fg: var(--muted-foreground);
-  --schedule-status-default-border: color-mix(in oklch, var(--border) 86%, transparent);
-  --schedule-status-destructive-bg: color-mix(in oklch, var(--destructive) 14%, transparent);
-  --schedule-status-destructive-fg: var(--destructive);
-  --schedule-status-destructive-border: color-mix(in oklch, var(--destructive) 45%, transparent);
+  --schedule-status-success-bg: oklch(0.36 0.13 150 / 0.92);
+  --schedule-status-success-fg: oklch(0.98 0.03 150);
+  --schedule-status-success-border: oklch(0.66 0.18 150 / 0.68);
+  --schedule-status-info-bg: oklch(0.34 0.13 225 / 0.92);
+  --schedule-status-info-fg: oklch(0.98 0.03 225);
+  --schedule-status-info-border: oklch(0.68 0.16 225 / 0.68);
+  --schedule-status-purple-bg: oklch(0.36 0.15 305 / 0.92);
+  --schedule-status-purple-fg: oklch(0.98 0.03 305);
+  --schedule-status-purple-border: oklch(0.72 0.18 305 / 0.68);
+  --schedule-status-warning-bg: oklch(0.39 0.13 70 / 0.92);
+  --schedule-status-warning-fg: oklch(0.99 0.05 80);
+  --schedule-status-warning-border: oklch(0.78 0.17 75 / 0.72);
+  --schedule-status-default-bg: oklch(0.34 0.035 268 / 0.9);
+  --schedule-status-default-fg: oklch(0.96 0.015 268);
+  --schedule-status-default-border: oklch(0.68 0.025 268 / 0.52);
+  --schedule-status-destructive-bg: oklch(0.38 0.14 25 / 0.92);
+  --schedule-status-destructive-fg: oklch(0.98 0.03 25);
+  --schedule-status-destructive-border: oklch(0.72 0.2 25 / 0.72);
 }
 
 .dark {
@@ -156,24 +156,24 @@
   --schedule-capacity-open: oklch(0.76 0.18 155);
   --schedule-capacity-low: oklch(0.78 0.17 70);
   --schedule-capacity-full: oklch(0.72 0.2 30);
-  --schedule-status-success-bg: oklch(0.24 0.08 155 / 0.58);
-  --schedule-status-success-fg: oklch(0.78 0.18 155);
-  --schedule-status-success-border: oklch(0.78 0.18 155 / 0.35);
-  --schedule-status-info-bg: oklch(0.24 0.08 220 / 0.58);
-  --schedule-status-info-fg: oklch(0.78 0.15 220);
-  --schedule-status-info-border: oklch(0.78 0.15 220 / 0.35);
-  --schedule-status-purple-bg: oklch(0.26 0.09 310 / 0.58);
-  --schedule-status-purple-fg: oklch(0.8 0.18 310);
-  --schedule-status-purple-border: oklch(0.8 0.18 310 / 0.35);
-  --schedule-status-warning-bg: oklch(0.26 0.09 70 / 0.58);
-  --schedule-status-warning-fg: oklch(0.82 0.16 70);
-  --schedule-status-warning-border: oklch(0.82 0.16 70 / 0.36);
-  --schedule-status-default-bg: oklch(0.24 0.035 268 / 0.7);
-  --schedule-status-default-fg: var(--muted-foreground);
-  --schedule-status-default-border: oklch(1 0 0 / 0.12);
-  --schedule-status-destructive-bg: oklch(0.26 0.09 25 / 0.58);
-  --schedule-status-destructive-fg: oklch(0.78 0.2 25);
-  --schedule-status-destructive-border: oklch(0.78 0.2 25 / 0.35);
+  --schedule-status-success-bg: oklch(0.28 0.1 155 / 0.9);
+  --schedule-status-success-fg: oklch(0.9 0.13 155);
+  --schedule-status-success-border: oklch(0.78 0.18 155 / 0.58);
+  --schedule-status-info-bg: oklch(0.28 0.1 220 / 0.9);
+  --schedule-status-info-fg: oklch(0.9 0.1 220);
+  --schedule-status-info-border: oklch(0.78 0.15 220 / 0.58);
+  --schedule-status-purple-bg: oklch(0.3 0.12 310 / 0.9);
+  --schedule-status-purple-fg: oklch(0.91 0.12 310);
+  --schedule-status-purple-border: oklch(0.8 0.18 310 / 0.58);
+  --schedule-status-warning-bg: oklch(0.3 0.11 70 / 0.9);
+  --schedule-status-warning-fg: oklch(0.92 0.12 75);
+  --schedule-status-warning-border: oklch(0.82 0.16 70 / 0.6);
+  --schedule-status-default-bg: oklch(0.28 0.035 268 / 0.9);
+  --schedule-status-default-fg: oklch(0.86 0.02 268);
+  --schedule-status-default-border: oklch(1 0 0 / 0.22);
+  --schedule-status-destructive-bg: oklch(0.3 0.12 25 / 0.9);
+  --schedule-status-destructive-fg: oklch(0.9 0.13 25);
+  --schedule-status-destructive-border: oklch(0.78 0.2 25 / 0.6);
 }
 
 @layer base {

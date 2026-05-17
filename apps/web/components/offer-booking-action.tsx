@@ -32,6 +32,7 @@ type Props = {
   className?: string;
   buttonLabel?: string;
   showIncludedNote?: boolean;
+  compact?: boolean;
   mode?: ScheduleBookingMode;
   variant?: Pick<ScheduleBoardVariant, "id" | "type" | "time" | "bookingMode">;
 };
@@ -44,6 +45,7 @@ export function OfferBookingAction({
   className,
   buttonLabel = "Записаться",
   showIncludedNote = false,
+  compact = false,
   mode,
   variant,
 }: Props) {
@@ -57,7 +59,8 @@ export function OfferBookingAction({
       : { kind: "form", label: buttonLabel });
   const isWaitlistAction = action.kind === "waitlist";
   const buttonClassName = cn(
-    "relative h-9 w-40 max-w-full overflow-hidden border-white/10 px-3 font-semibold text-xs shadow-lg transition-all duration-200 before:absolute before:inset-0 before:bg-white/20 before:opacity-0 before:transition-opacity hover:-translate-y-0.5 hover:before:opacity-100",
+    "relative max-w-full overflow-hidden border-white/10 font-semibold text-xs shadow-lg transition-all duration-200 before:absolute before:inset-0 before:bg-white/20 before:opacity-0 before:transition-opacity hover:-translate-y-0.5 hover:before:opacity-100",
+    compact ? "h-8 w-36 px-2" : "h-9 w-40 px-3",
     action.kind === "form" &&
       "bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 text-slate-950 shadow-emerald-950/25 hover:from-emerald-300 hover:to-cyan-300",
     action.kind === "waitlist" &&

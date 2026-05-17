@@ -35,7 +35,7 @@ export function ScheduleTariffList({
   return (
     <div
       data-testid="schedule-tariffs"
-      className={cn("grid", compact ? "gap-1.5" : "gap-3", className)}
+      className={cn("grid", compact ? "gap-1" : "gap-3", className)}
     >
       {variants.map((variant) => (
         <div
@@ -44,7 +44,7 @@ export function ScheduleTariffList({
           className={cn(
             "grid rounded-xl border",
             compact
-              ? "gap-1.5 border-white/7 bg-white/[0.035] p-2.5 lg:grid-cols-[1fr_auto]"
+              ? "gap-1 border-white/7 bg-white/[0.035] p-2 lg:grid-cols-[1fr_auto]"
               : "gap-3 border-[color:var(--schedule-card-border)] bg-[color:var(--schedule-tariff-bg)] p-4 lg:grid-cols-[1fr_12rem_auto]",
             "lg:items-center",
           )}
@@ -81,7 +81,7 @@ export function ScheduleTariffList({
           <div
             className={cn(
               "flex flex-wrap items-center justify-between border-white/10 border-t lg:justify-end lg:border-t-0 lg:pt-0",
-              compact ? "gap-2 pt-2" : "gap-3 pt-3",
+              compact ? "gap-1.5 pt-1.5" : "gap-3 pt-3",
             )}
           >
             {compact ? (
@@ -105,6 +105,7 @@ export function ScheduleTariffList({
               schoolSlug={schoolSlug}
               mode={variant.bookingMode}
               variant={variant}
+              compact={compact}
             />
           </div>
         </div>
