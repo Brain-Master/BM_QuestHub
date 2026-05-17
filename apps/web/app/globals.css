@@ -110,6 +110,21 @@
   --schedule-status-destructive-bg: oklch(0.38 0.14 25 / 0.92);
   --schedule-status-destructive-fg: oklch(0.98 0.03 25);
   --schedule-status-destructive-border: oklch(0.72 0.2 25 / 0.72);
+  --page-bg-base: oklch(0.13 0.045 264);
+  --page-bg-vignette: oklch(0.09 0.04 264);
+  --page-bg-blob-primary: oklch(0.75 0.16 195 / 0.16);
+  --page-bg-blob-secondary: oklch(0.68 0.18 315 / 0.12);
+  --page-bg-blob-tertiary: oklch(0.48 0.18 260 / 0.13);
+  --page-bg-grid-line: oklch(0.78 0.13 220 / 0.055);
+  --page-bg-grid-dot: oklch(0.82 0.14 205 / 0.18);
+  --page-bg-pattern: radial-gradient(
+      circle,
+      var(--page-bg-grid-dot) 0 1px,
+      transparent 1.4px
+    ),
+    linear-gradient(to right, var(--page-bg-grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--page-bg-grid-line) 1px, transparent 1px);
+  --page-bg-pattern-size: 28px 28px, 96px 96px, 96px 96px;
 }
 
 .dark {
@@ -144,13 +159,13 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
-  --schedule-card-bg: oklch(0.17 0.04 268 / 0.82);
-  --schedule-card-border: oklch(1 0 0 / 0.1);
+  --schedule-card-bg: oklch(0.17 0.04 268 / 0.88);
+  --schedule-card-border: oklch(1 0 0 / 0.13);
   --schedule-card-border-hover: oklch(1 0 0 / 0.18);
   --schedule-card-shadow: 0 24px 90px oklch(0 0 0 / 0.32);
-  --schedule-toolbar-bg: oklch(0.17 0.04 268 / 0.62);
-  --schedule-info-bg: oklch(0.1 0.035 264 / 0.48);
-  --schedule-tariff-bg: oklch(0.12 0.035 264 / 0.5);
+  --schedule-toolbar-bg: oklch(0.17 0.04 268 / 0.76);
+  --schedule-info-bg: oklch(0.1 0.035 264 / 0.58);
+  --schedule-tariff-bg: oklch(0.12 0.035 264 / 0.6);
   --schedule-timeline-line: color-mix(in oklch, var(--primary) 34%, transparent);
   --schedule-timeline-node: var(--primary);
   --schedule-capacity-open: oklch(0.76 0.18 155);
@@ -174,6 +189,21 @@
   --schedule-status-destructive-bg: oklch(0.3 0.12 25 / 0.9);
   --schedule-status-destructive-fg: oklch(0.9 0.13 25);
   --schedule-status-destructive-border: oklch(0.78 0.2 25 / 0.6);
+  --page-bg-base: oklch(0.13 0.045 264);
+  --page-bg-vignette: oklch(0.08 0.04 264);
+  --page-bg-blob-primary: oklch(0.75 0.16 195 / 0.16);
+  --page-bg-blob-secondary: oklch(0.68 0.18 315 / 0.12);
+  --page-bg-blob-tertiary: oklch(0.48 0.18 260 / 0.13);
+  --page-bg-grid-line: oklch(0.78 0.13 220 / 0.055);
+  --page-bg-grid-dot: oklch(0.82 0.14 205 / 0.18);
+  --page-bg-pattern: radial-gradient(
+      circle,
+      var(--page-bg-grid-dot) 0 1px,
+      transparent 1.4px
+    ),
+    linear-gradient(to right, var(--page-bg-grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--page-bg-grid-line) 1px, transparent 1px);
+  --page-bg-pattern-size: 28px 28px, 96px 96px, 96px 96px;
 }
 
 @layer base {
@@ -199,58 +229,147 @@
   }
 }
 
-/* Фон «портала»: глубина + лёгкая сетка */
+/* Фон «портала»: blobs + tech pattern + виньетка без дополнительных DOM-слоёв */
 .bm-page-bg {
-  background-color: var(--background);
+  background-color: var(--page-bg-base);
   background-image:
     radial-gradient(
-      ellipse 120% 80% at 50% -10%,
-      color-mix(in oklch, var(--primary) 22%, transparent),
-      transparent 55%
+      ellipse at center,
+      transparent 20%,
+      var(--page-bg-vignette) 112%
     ),
     radial-gradient(
-      circle at 90% 20%,
-      oklch(0.55 0.14 195 / 0.08),
-      transparent 42%
+      ellipse 70vw 70vw at -10% -18%,
+      var(--page-bg-blob-primary),
+      transparent 58%
     ),
-    linear-gradient(
-      to bottom,
-      oklch(0.18 0.05 268 / 0.55),
-      oklch(0.13 0.045 264 / 0.98)
-    );
-  background-blend-mode: normal, normal, normal;
+    radial-gradient(
+      ellipse 62vw 62vw at 110% 88%,
+      var(--page-bg-blob-secondary),
+      transparent 58%
+    ),
+    radial-gradient(
+      ellipse 80vw 54vw at 50% -12%,
+      var(--page-bg-blob-tertiary),
+      transparent 62%
+    ),
+    var(--page-bg-pattern),
+    linear-gradient(180deg, oklch(0.18 0.05 268 / 0.38), var(--page-bg-base));
+  background-attachment: fixed;
+  background-blend-mode: normal, screen, screen, screen, normal, normal, normal, normal;
+  background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, repeat, repeat, repeat, no-repeat;
+  background-size:
+    auto,
+    auto,
+    auto,
+    auto,
+    var(--page-bg-pattern-size),
+    auto;
 }
 
 /* Темы миров (data-world на корневом контейнере страницы) */
 [data-world="portal"] {
   --world-accent: oklch(0.72 0.17 285);
   --world-surface: oklch(0.17 0.04 268);
+  --page-bg-base: oklch(0.13 0.045 264);
+  --page-bg-vignette: oklch(0.08 0.04 264);
+  --page-bg-blob-primary: oklch(0.75 0.16 195 / 0.16);
+  --page-bg-blob-secondary: oklch(0.68 0.18 315 / 0.12);
+  --page-bg-blob-tertiary: oklch(0.48 0.18 260 / 0.13);
+  --page-bg-grid-line: oklch(0.78 0.13 220 / 0.055);
+  --page-bg-grid-dot: oklch(0.82 0.14 205 / 0.18);
+  --page-bg-pattern: radial-gradient(
+      circle,
+      var(--page-bg-grid-dot) 0 1px,
+      transparent 1.4px
+    ),
+    linear-gradient(to right, var(--page-bg-grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--page-bg-grid-line) 1px, transparent 1px);
+  --page-bg-pattern-size: 28px 28px, 96px 96px, 96px 96px;
 }
 
 [data-world="cyber-rhythm"] {
   --world-accent: oklch(0.72 0.22 310);
   --world-surface: oklch(0.22 0.06 280);
+  --page-bg-base: oklch(0.12 0.05 282);
+  --page-bg-vignette: oklch(0.07 0.045 282);
+  --page-bg-blob-primary: oklch(0.76 0.2 315 / 0.16);
+  --page-bg-blob-secondary: oklch(0.76 0.15 205 / 0.13);
+  --page-bg-blob-tertiary: oklch(0.58 0.2 275 / 0.12);
+  --page-bg-pattern: url("data:image/svg+xml,%3Csvg width='100' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 20 Q 25 0, 50 20 T 100 20' fill='none' stroke='%2338bdf8' stroke-width='1' stroke-opacity='0.14'/%3E%3Cpath d='M0 30 Q 25 10, 50 30 T 100 30' fill='none' stroke='%23a78bfa' stroke-width='1' stroke-opacity='0.1'/%3E%3C/svg%3E"),
+    linear-gradient(to right, oklch(0.78 0.15 210 / 0.032) 1px, transparent 1px);
+  --page-bg-pattern-size: 100px 40px, 40px 100%;
 }
 
 [data-world="minecraft"] {
   --world-accent: oklch(0.72 0.18 145);
   --world-surface: oklch(0.26 0.05 145);
+  --page-bg-base: oklch(0.11 0.045 152);
+  --page-bg-vignette: oklch(0.07 0.04 152);
+  --page-bg-blob-primary: oklch(0.72 0.19 150 / 0.16);
+  --page-bg-blob-secondary: oklch(0.8 0.16 110 / 0.1);
+  --page-bg-blob-tertiary: oklch(0.72 0.15 195 / 0.1);
+  --page-bg-pattern: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='smallGrid' width='10' height='10' patternUnits='userSpaceOnUse'%3E%3Cpath d='M 10 0 L 0 0 0 10' fill='none' stroke='%2334d399' stroke-width='0.5' stroke-opacity='0.12'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100' height='100' fill='url(%23smallGrid)'/%3E%3Cpath d='M 100 0 L 0 0 0 100' fill='none' stroke='%2384cc16' stroke-width='1' stroke-opacity='0.22'/%3E%3Crect x='20' y='20' width='10' height='10' fill='%2334d399' fill-opacity='0.08'/%3E%3Crect x='70' y='50' width='10' height='10' fill='%2384cc16' fill-opacity='0.08'/%3E%3C/svg%3E");
+  --page-bg-pattern-size: 100px 100px;
 }
 
 [data-world="mekhvarium"] {
   --world-accent: oklch(0.72 0.16 55);
   --world-surface: oklch(0.24 0.04 55);
+  --page-bg-base: oklch(0.12 0.04 245);
+  --page-bg-vignette: oklch(0.07 0.035 245);
+  --page-bg-blob-primary: oklch(0.74 0.14 195 / 0.14);
+  --page-bg-blob-secondary: oklch(0.76 0.16 65 / 0.13);
+  --page-bg-blob-tertiary: oklch(0.54 0.12 250 / 0.12);
+  --page-bg-pattern: url("data:image/svg+xml,%3Csvg width='200' height='200' viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cg stroke='%2338bdf8' stroke-width='1' fill='none' stroke-opacity='0.16'%3E%3Cpath d='M 0 40 h 40 l 20 20 v 40 l 20 20 h 40'/%3E%3Cpath d='M 200 120 h -30 l -20 -20 v -30 l -10 -10'/%3E%3Cpath d='M 40 200 v -30 l 20 -20 h 30'/%3E%3Cpath d='M 160 0 v 30 l -20 20'/%3E%3C/g%3E%3Cg fill='%2338bdf8' fill-opacity='0.22'%3E%3Ccircle cx='120' cy='120' r='3'/%3E%3Ccircle cx='140' cy='60' r='2'/%3E%3Ccircle cx='90' cy='150' r='2.5'/%3E%3Ccircle cx='140' cy='50' r='2'/%3E%3C/g%3E%3Cg stroke='%23f59e0b' fill='none' opacity='0.18'%3E%3Ccircle cx='150' cy='150' r='18' stroke-width='4' stroke-dasharray='6 4'/%3E%3Ccircle cx='150' cy='150' r='12' stroke-width='1'/%3E%3Ccircle cx='150' cy='150' r='4' fill='%23f59e0b'/%3E%3Ccircle cx='115' cy='135' r='12' stroke-width='3' stroke-dasharray='4 3'/%3E%3Ccircle cx='115' cy='135' r='7' stroke-width='1'/%3E%3Ccircle cx='115' cy='135' r='2.5' fill='%23f59e0b'/%3E%3Ccircle cx='155' cy='115' r='8' stroke-width='2.5' stroke-dasharray='3 2'/%3E%3Ccircle cx='155' cy='115' r='2' fill='%23f59e0b'/%3E%3C/g%3E%3Cpath d='M 50 45 v 10 M 45 50 h 10' stroke='%2338bdf8' stroke-width='1' stroke-opacity='0.24'/%3E%3Cpath d='M 170 35 v 10 M 165 40 h 10' stroke='%2338bdf8' stroke-width='1' stroke-opacity='0.24'/%3E%3C/svg%3E"),
+    linear-gradient(to right, oklch(0.75 0.14 195 / 0.028) 1px, transparent 1px),
+    linear-gradient(to bottom, oklch(0.75 0.14 195 / 0.028) 1px, transparent 1px);
+  --page-bg-pattern-size: 200px 200px, 40px 40px, 40px 40px;
 }
 
-[data-world="cyber-rhythm"]:not(html),
-[data-world="minecraft"]:not(html),
-[data-world="mekhvarium"]:not(html) {
-  background: radial-gradient(
-      circle at 20% 20%,
-      color-mix(in oklch, var(--world-accent) 24%, transparent),
-      transparent 55%
+.bm-page-bg:has([data-world="cyber-rhythm"]) {
+  --page-bg-base: oklch(0.12 0.05 282);
+  --page-bg-vignette: oklch(0.07 0.045 282);
+  --page-bg-blob-primary: oklch(0.76 0.2 315 / 0.16);
+  --page-bg-blob-secondary: oklch(0.76 0.15 205 / 0.13);
+  --page-bg-blob-tertiary: oklch(0.58 0.2 275 / 0.12);
+  --page-bg-pattern: url("data:image/svg+xml,%3Csvg width='100' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 20 Q 25 0, 50 20 T 100 20' fill='none' stroke='%2338bdf8' stroke-width='1' stroke-opacity='0.14'/%3E%3Cpath d='M0 30 Q 25 10, 50 30 T 100 30' fill='none' stroke='%23a78bfa' stroke-width='1' stroke-opacity='0.1'/%3E%3C/svg%3E"),
+    linear-gradient(to right, oklch(0.78 0.15 210 / 0.032) 1px, transparent 1px);
+  --page-bg-pattern-size: 100px 40px, 40px 100%;
+}
+
+.bm-page-bg:has([data-world="minecraft"]) {
+  --page-bg-base: oklch(0.11 0.045 152);
+  --page-bg-vignette: oklch(0.07 0.04 152);
+  --page-bg-blob-primary: oklch(0.72 0.19 150 / 0.16);
+  --page-bg-blob-secondary: oklch(0.8 0.16 110 / 0.1);
+  --page-bg-blob-tertiary: oklch(0.72 0.15 195 / 0.1);
+  --page-bg-pattern: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='smallGrid' width='10' height='10' patternUnits='userSpaceOnUse'%3E%3Cpath d='M 10 0 L 0 0 0 10' fill='none' stroke='%2334d399' stroke-width='0.5' stroke-opacity='0.12'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100' height='100' fill='url(%23smallGrid)'/%3E%3Cpath d='M 100 0 L 0 0 0 100' fill='none' stroke='%2384cc16' stroke-width='1' stroke-opacity='0.22'/%3E%3Crect x='20' y='20' width='10' height='10' fill='%2334d399' fill-opacity='0.08'/%3E%3Crect x='70' y='50' width='10' height='10' fill='%2384cc16' fill-opacity='0.08'/%3E%3C/svg%3E");
+  --page-bg-pattern-size: 100px 100px;
+}
+
+.bm-page-bg:has([data-world="mekhvarium"]) {
+  --page-bg-base: oklch(0.12 0.04 245);
+  --page-bg-vignette: oklch(0.07 0.035 245);
+  --page-bg-blob-primary: oklch(0.74 0.14 195 / 0.14);
+  --page-bg-blob-secondary: oklch(0.76 0.16 65 / 0.13);
+  --page-bg-blob-tertiary: oklch(0.54 0.12 250 / 0.12);
+  --page-bg-pattern: url("data:image/svg+xml,%3Csvg width='200' height='200' viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cg stroke='%2338bdf8' stroke-width='1' fill='none' stroke-opacity='0.16'%3E%3Cpath d='M 0 40 h 40 l 20 20 v 40 l 20 20 h 40'/%3E%3Cpath d='M 200 120 h -30 l -20 -20 v -30 l -10 -10'/%3E%3Cpath d='M 40 200 v -30 l 20 -20 h 30'/%3E%3Cpath d='M 160 0 v 30 l -20 20'/%3E%3C/g%3E%3Cg fill='%2338bdf8' fill-opacity='0.22'%3E%3Ccircle cx='120' cy='120' r='3'/%3E%3Ccircle cx='140' cy='60' r='2'/%3E%3Ccircle cx='90' cy='150' r='2.5'/%3E%3Ccircle cx='140' cy='50' r='2'/%3E%3C/g%3E%3Cg stroke='%23f59e0b' fill='none' opacity='0.18'%3E%3Ccircle cx='150' cy='150' r='18' stroke-width='4' stroke-dasharray='6 4'/%3E%3Ccircle cx='150' cy='150' r='12' stroke-width='1'/%3E%3Ccircle cx='150' cy='150' r='4' fill='%23f59e0b'/%3E%3Ccircle cx='115' cy='135' r='12' stroke-width='3' stroke-dasharray='4 3'/%3E%3Ccircle cx='115' cy='135' r='7' stroke-width='1'/%3E%3Ccircle cx='115' cy='135' r='2.5' fill='%23f59e0b'/%3E%3Ccircle cx='155' cy='115' r='8' stroke-width='2.5' stroke-dasharray='3 2'/%3E%3Ccircle cx='155' cy='115' r='2' fill='%23f59e0b'/%3E%3C/g%3E%3Cpath d='M 50 45 v 10 M 45 50 h 10' stroke='%2338bdf8' stroke-width='1' stroke-opacity='0.24'/%3E%3Cpath d='M 170 35 v 10 M 165 40 h 10' stroke='%2338bdf8' stroke-width='1' stroke-opacity='0.24'/%3E%3C/svg%3E"),
+    linear-gradient(to right, oklch(0.75 0.14 195 / 0.028) 1px, transparent 1px),
+    linear-gradient(to bottom, oklch(0.75 0.14 195 / 0.028) 1px, transparent 1px);
+  --page-bg-pattern-size: 200px 200px, 40px 40px, 40px 40px;
+}
+
+[data-world]:not(html) {
+  background-image:
+    radial-gradient(
+      circle at 18% 12%,
+      color-mix(in oklch, var(--world-accent) 22%, transparent),
+      transparent 44%
     ),
-    var(--background);
+    var(--page-bg-pattern);
+  background-repeat: no-repeat, repeat, repeat, repeat;
+  background-size: auto, var(--page-bg-pattern-size);
 }
 
 .schedule-board [id^="schedule-offer-"] {
