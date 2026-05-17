@@ -27,6 +27,12 @@ type Props = {
   schoolName?: string;
   allAgendaHref?: string;
   sitesHref?: string;
+  title?: string;
+  description?: string;
+  showProgramFilter?: boolean;
+  initialSite?: string;
+  initialHighlightedOfferId?: string;
+  questHrefSchoolSlug?: string;
 };
 
 const ALL_STATUSES = "Все статусы";
@@ -85,16 +91,24 @@ export function ScheduleBoard({
   schoolName,
   allAgendaHref,
   sitesHref = "/sites",
+  title,
+  description,
+  showProgramFilter = true,
+  initialSite,
+  initialHighlightedOfferId,
+  questHrefSchoolSlug,
 }: Props) {
   const [viewMode, setViewMode] = React.useState<ScheduleViewMode>("compact");
   const [status, setStatus] = React.useState(ALL_STATUSES);
   const [program, setProgram] = React.useState(ALL_PROGRAM_FILTER_VALUE);
-  const [site, setSite] = React.useState(ALL_SITES);
+  const [site, setSite] = React.useState(initialSite ?? ALL_SITES);
   const [format, setFormat] = React.useState(ALL_FORMATS);
   const [age, setAge] = React.useState(ALL_AGES);
   const [showArchived, setShowArchived] = React.useState(false);
   const [expandedCardId, setExpandedCardId] = React.useState<string | null>(null);
-  const [highlightedOfferId, setHighlightedOfferId] = React.useState<string | null>(null);
+  const [highlightedOfferId, setHighlightedOfferId] = React.useState<string | null>(
+    initialHighlightedOfferId ?? null,
+  );
   const [showTopButton, setShowTopButton] = React.useState(false);
   const pendingMobileOpenTimeout = React.useRef<number | null>(null);
   const pendingMobileScrollFrame = React.useRef<number | null>(null);
@@ -108,9 +122,11 @@ export function ScheduleBoard({
   const boardItems = React.useMemo(
     () =>
       groups.flatMap((group) =>
-        group.items.map((item) => buildScheduleBoardItem(item, schoolSlug)),
+        group.items.map((item) =>
+          buildScheduleBoardItem(item, questHrefSchoolSlug ?? schoolSlug),
+        ),
       ),
-    [groups, schoolSlug],
+    [groups, questHrefSchoolSlug, schoolSlug],
   );
 
   const statuses = React.useMemo(() => {
@@ -136,6 +152,7 @@ export function ScheduleBoard({
     );
     return [ALL_SITES, ...unique];
   }, [boardItems]);
+  const activeSite = sites.includes(site) ? site : ALL_SITES;
 
   const formats = React.useMemo(() => {
     const unique = Array.from(new Set(boardItems.map((item) => item.formatType))).sort(
@@ -169,13 +186,15 @@ export function ScheduleBoard({
         return false;
       }
       if (status !== ALL_STATUSES && item.status.label !== status) return false;
-      if (selectedProgram.kind === "series" && item.quest.worldSlug !== selectedProgram.slug) {
-        return false;
+      if (showProgramFilter) {
+        if (selectedProgram.kind === "series" && item.quest.worldSlug !== selectedProgram.slug) {
+          return false;
+        }
+        if (selectedProgram.kind === "quest" && item.quest.slug !== selectedProgram.slug) {
+          return false;
+        }
       }
-      if (selectedProgram.kind === "quest" && item.quest.slug !== selectedProgram.slug) {
-        return false;
-      }
-      if (!schoolSlug && site !== ALL_SITES && item.venue.name !== site) return false;
+      if (!schoolSlug && activeSite !== ALL_SITES && item.venue.name !== activeSite) return false;
       if (format !== ALL_FORMATS && item.formatType !== format) return false;
       if (showAgeFilter && activeAge !== ALL_AGES) {
         const itemAges = [
@@ -188,13 +207,14 @@ export function ScheduleBoard({
     });
   }, [
     activeAge,
+    activeSite,
     boardItems,
     format,
     program,
     schoolSlug,
     showAgeFilter,
     showArchived,
-    site,
+    showProgramFilter,
     status,
   ]);
 
@@ -206,8 +226,8 @@ export function ScheduleBoard({
   const hasActiveFilters =
     showArchived ||
     status !== ALL_STATUSES ||
-    program !== ALL_PROGRAM_FILTER_VALUE ||
-    (!schoolSlug && site !== ALL_SITES) ||
+    (showProgramFilter && program !== ALL_PROGRAM_FILTER_VALUE) ||
+    (!schoolSlug && activeSite !== ALL_SITES) ||
     format !== ALL_FORMATS ||
     (showAgeFilter && activeAge !== ALL_AGES);
   const resetFilters = () => {
@@ -234,7 +254,9 @@ export function ScheduleBoard({
     const savedPath = sessionStorage.getItem("schedule:return:path");
     const savedOfferId = sessionStorage.getItem("schedule:return:offerId");
     const currentPath = `${window.location.pathname}${window.location.search}`;
-    if (savedPath === currentPath && savedOfferId) {
+    if (initialHighlightedOfferId) {
+      window.requestAnimationFrame(() => setHighlightedOfferId(initialHighlightedOfferId));
+    } else if (savedPath === currentPath && savedOfferId) {
       window.requestAnimationFrame(() => setHighlightedOfferId(savedOfferId));
     }
 
@@ -247,7 +269,7 @@ export function ScheduleBoard({
         window.cancelAnimationFrame(pendingMobileScrollFrame.current);
       }
     };
-  }, []);
+  }, [initialHighlightedOfferId]);
 
   const rememberNavigation = React.useCallback(
     (offerId: string) => {
@@ -330,10 +352,10 @@ export function ScheduleBoard({
       <div className="flex flex-col items-start justify-between gap-3 border-b border-white/10 pb-4 sm:flex-row sm:items-center">
         <div>
           <h2 className="font-heading text-2xl font-semibold tracking-tight">
-            {schoolName ? `Расписание: ${schoolName}` : "Расписание смен"}
+            {title ?? (schoolName ? `Расписание: ${schoolName}` : "Расписание смен")}
           </h2>
           <p className="mt-1 text-muted-foreground text-sm">
-            {schoolName ? "Площадка зафиксирована. " : null}
+            {description ? `${description} ` : schoolName ? "Площадка зафиксирована. " : null}
             Показано:{" "}
             <span className="font-medium text-foreground">
               {formatShiftCount(visibleItems.length)}
@@ -363,7 +385,8 @@ export function ScheduleBoard({
         program={program}
         programGroups={programGroups}
         onProgramChange={setProgram}
-        site={site}
+        showProgramFilter={showProgramFilter}
+        site={activeSite}
         sites={sites}
         onSiteChange={setSite}
         showSiteFilter={!schoolSlug}

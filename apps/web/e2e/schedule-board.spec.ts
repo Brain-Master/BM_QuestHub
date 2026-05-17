@@ -25,7 +25,9 @@ test.describe("Schedule Board UX", () => {
     await expect(firstCard).toBeVisible();
     await expect(firstCard.getByTestId("schedule-tariffs")).toBeVisible();
     if (testInfo.project.name === "mobile-chrome") {
-      await expect(firstCard.getByRole("button", { name: /Подробнее о смене/ })).toBeVisible();
+      await expect(
+        firstCard.getByRole("button", { name: /Показать форматы|Подробнее о смене/ }),
+      ).toBeVisible();
       await expect(page.getByTestId("schedule-card")).not.toHaveCount(0);
       return;
     }
@@ -68,7 +70,7 @@ test.describe("Schedule Board UX", () => {
     await firstCard.getByRole("link", { name: /Открыть/ }).first().click();
 
     await expect(page).toHaveURL(/offer=/);
-    await expect(page.locator('[id^="quest-offer-"]').first()).toBeVisible();
+    await expect(page.locator('[id^="schedule-offer-"]').first()).toBeVisible();
   });
 
   test("does not create horizontal overflow on mobile", async ({ page }) => {

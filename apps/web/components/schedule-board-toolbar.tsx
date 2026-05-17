@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ALL_PROGRAM_FILTER_VALUE, type ProgramFilterGroup } from "@/lib/program-filter-options";
+import { cn } from "@/lib/utils";
 
 type Props = {
   viewMode: ScheduleViewMode;
@@ -24,6 +25,7 @@ type Props = {
   program: string;
   programGroups: ProgramFilterGroup[];
   onProgramChange: (program: string) => void;
+  showProgramFilter?: boolean;
   site: string;
   sites: string[];
   onSiteChange: (site: string) => void;
@@ -50,6 +52,7 @@ export function ScheduleBoardToolbar({
   program,
   programGroups,
   onProgramChange,
+  showProgramFilter = true,
   site,
   sites,
   onSiteChange,
@@ -67,7 +70,7 @@ export function ScheduleBoardToolbar({
   onReset,
 }: Props) {
   const activeFiltersCount = [
-    program !== ALL_PROGRAM_FILTER_VALUE,
+    showProgramFilter && program !== ALL_PROGRAM_FILTER_VALUE,
     showSiteFilter && site !== sites[0],
     format !== formats[0],
     showAgeFilter && age !== ages[0],
@@ -82,8 +85,12 @@ export function ScheduleBoardToolbar({
       summary="Программа, площадка, формат, возраст, статус"
       panelId="schedule-filter-panel"
       activeCount={activeFiltersCount}
-      contentClassName="grid grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-5"
+      contentClassName={cn(
+        "grid grid-cols-1 items-end gap-3 sm:grid-cols-2",
+        showProgramFilter ? "xl:grid-cols-5" : "xl:grid-cols-4",
+      )}
     >
+      {showProgramFilter ? (
         <label className="grid gap-2 text-sm">
           <span className="flex items-center gap-2 text-muted-foreground">
             <Shapes className="size-4 opacity-80" aria-hidden />
@@ -98,6 +105,7 @@ export function ScheduleBoardToolbar({
             triggerTestId="schedule-program-filter"
           />
         </label>
+      ) : null}
 
         {showSiteFilter ? (
           <label className="grid gap-2 text-sm">
@@ -211,7 +219,12 @@ export function ScheduleBoardToolbar({
           </Select>
         </label>
 
-        <label className="inline-flex h-9 w-full cursor-pointer items-center gap-2 rounded-lg border border-white/10 bg-black/20 px-3 text-sm transition hover:bg-white/5 xl:col-start-4">
+        <label
+          className={cn(
+            "inline-flex h-9 w-full cursor-pointer items-center gap-2 rounded-lg border border-white/10 bg-black/20 px-3 text-sm transition hover:bg-white/5",
+            showProgramFilter && "xl:col-start-4",
+          )}
+        >
           <input
             data-testid="schedule-archive-toggle"
             type="checkbox"
@@ -224,7 +237,10 @@ export function ScheduleBoardToolbar({
 
         <div
           data-testid="schedule-view-toggle"
-          className="hidden w-fit rounded-lg border border-white/10 bg-black/20 p-1 lg:inline-flex xl:col-start-5"
+          className={cn(
+            "hidden w-fit rounded-lg border border-white/10 bg-black/20 p-1 lg:inline-flex",
+            showProgramFilter && "xl:col-start-5",
+          )}
         >
           <Button
             type="button"

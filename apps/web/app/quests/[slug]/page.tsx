@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
 
 import { ContentSection } from "@/components/content-section";
 import { QuestHeroBanner } from "@/components/quest-hero-banner";
 import { QuestHeroMeta } from "@/components/quest-hero-meta";
-import { OfferScheduleTable } from "@/components/offer-schedule-table";
+import { ScheduleBoard } from "@/components/schedule-board";
 import {
   loadQuestBySlug,
   loadQuests,
@@ -14,9 +13,19 @@ import {
   loadWorldBySlug,
   venueBySlugMap,
 } from "@/lib/content/load";
+import {
+  groupAgendaItems,
+  resolveSchoolScope,
+  type AgendaOfferItem,
+} from "@/lib/offers/agenda";
 
 type Props = {
   params: Promise<{ slug: string }>;
+  searchParams?: Promise<{
+    school?: string;
+    offer?: string;
+    variant?: string;
+  }>;
 };
 
 export async function generateStaticParams() {
@@ -50,8 +59,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function QuestPage({ params }: Props) {
+export default async function QuestPage({ params, searchParams }: Props) {
   const { slug } = await params;
+  const query = await searchParams;
 
   const quest = await loadQuestBySlug(slug);
   if (!quest) notFound();
@@ -62,17 +72,43 @@ export default async function QuestPage({ params }: Props) {
   ]);
 
   const vmap = venueBySlugMap(venues);
-  const rows = quest.offers
+  const selectedSchoolSlug = query?.school?.trim() || undefined;
+  const selectedSchool = selectedSchoolSlug
+    ? resolveSchoolScope(venues, selectedSchoolSlug)
+    : undefined;
+  const highlightedOfferId = query?.offer?.trim() || undefined;
+  const agendaItems: AgendaOfferItem[] = quest.offers
     .map((offer) => {
       const venue = vmap.get(offer.venueSlug);
       if (!venue) return null;
-      return { offer, venue };
+      return {
+        offer,
+        quest: {
+          slug: quest.slug,
+          title: quest.title,
+          worldSlug: quest.worldSlug,
+          format: quest.format,
+          ageLabel: quest.ageLabel,
+          catalogTagline: quest.catalogTagline,
+          tagline: quest.tagline,
+          heroImageUrl: quest.heroImageUrl,
+        },
+        venue,
+        world: world
+          ? {
+              slug: world.slug,
+              name: world.name,
+              themeKey: world.themeKey,
+            }
+          : null,
+      };
     })
     .filter((r): r is NonNullable<typeof r> => r !== null);
+  const groups = groupAgendaItems(agendaItems);
 
   return (
     <article
-      className="mx-auto w-full max-w-6xl flex-1 px-4 py-10"
+      className="mx-auto w-full max-w-6xl flex-1 px-3 py-8 sm:px-4 sm:py-10"
       data-world={world?.themeKey ?? "portal"}
     >
       <div className="mb-8 space-y-6">
@@ -123,28 +159,19 @@ export default async function QuestPage({ params }: Props) {
         <p className="whitespace-pre-line">{quest.approach}</p>
       </ContentSection>
 
-      <section className="space-y-4 rounded-2xl border border-white/10 bg-card/35 p-6 backdrop-blur-md md:p-8">
-        <h2 className="font-heading flex items-center gap-3 text-xl font-semibold tracking-tight">
-          <span
-            className="inline-block size-2 rounded-full bg-primary shadow-[0_0_14px_color-mix(in_oklch,var(--primary)_55%,transparent)]"
-            aria-hidden
-          />
-          Площадки и запись
-        </h2>
-        <p className="text-muted-foreground text-sm leading-relaxed">
-          Если для строки ещё нет карточки mos.ru, кнопка открывает форму заявки
-          в модальном окне — без потери контекста смены и площадки.
-        </p>
-        <Suspense
-          fallback={
-            <div className="h-32 animate-pulse rounded-2xl bg-white/5" />
-          }
-        >
-          <OfferScheduleTable
-            quest={{ slug: quest.slug, title: quest.title }}
-            rows={rows}
-          />
-        </Suspense>
+      <section
+        id="schedule-offers"
+        className="scroll-mt-28 rounded-2xl border border-white/10 bg-card/35 p-4 backdrop-blur-md sm:p-6 md:p-8"
+      >
+        <ScheduleBoard
+          groups={groups}
+          title="Площадки и запись"
+          description="Если для смены ещё нет карточки mos.ru, кнопка открывает форму заявки в модальном окне."
+          showProgramFilter={false}
+          initialSite={selectedSchool?.name}
+          initialHighlightedOfferId={highlightedOfferId}
+          questHrefSchoolSlug={selectedSchool?.slug ?? selectedSchoolSlug}
+        />
       </section>
     </article>
   );

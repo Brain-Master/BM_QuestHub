@@ -28,7 +28,7 @@ export function QuestHeroMeta({ quest }: Props) {
         </Suspense>
       </div>
 
-      <div className="grid gap-4 rounded-2xl border border-white/10 bg-card/45 p-5 text-sm shadow-inner backdrop-blur-md md:grid-cols-2 md:p-6">
+      <div className="grid gap-4 rounded-2xl border border-white/10 bg-card/45 p-4 text-sm shadow-inner backdrop-blur-md sm:p-5 md:grid-cols-2 md:p-6">
         <p className="text-muted-foreground">
           <span className="font-medium text-foreground">Возраст:</span>{" "}
           {quest.ageLabel}

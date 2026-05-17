@@ -251,6 +251,11 @@
   scroll-margin-top: 6rem;
 }
 
+.schedule-board,
+.schedule-board * {
+  overflow-anchor: none;
+}
+
 .schedule-board [data-testid="schedule-card"] {
   transform: translateZ(0);
 }

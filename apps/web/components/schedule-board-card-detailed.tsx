@@ -27,7 +27,7 @@ export function ScheduleBoardCardDetailed({
   onNavigate,
 }: Props) {
   const [expandedDescription, setExpandedDescription] = React.useState(false);
-  const isLongDescription = item.description.length > 220;
+  const isLongDescription = item.description.length > 360;
 
   return (
     <article
@@ -111,7 +111,7 @@ export function ScheduleBoardCardDetailed({
           <p
             className={cn(
               "max-w-4xl text-muted-foreground text-sm leading-relaxed sm:text-base",
-              !expandedDescription && "line-clamp-2",
+              !expandedDescription && isLongDescription && "line-clamp-5",
             )}
           >
             {item.description}

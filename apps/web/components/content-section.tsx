@@ -10,7 +10,7 @@ export function ContentSection({ title, children, id }: Props) {
   return (
     <section
       id={id}
-      className="mb-10 scroll-mt-28 rounded-2xl border border-white/5 bg-card/45 p-6 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)] backdrop-blur-md md:p-8"
+      className="mb-8 scroll-mt-28 rounded-2xl border border-white/5 bg-card/45 p-4 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)] backdrop-blur-md sm:p-6 md:mb-10 md:p-8"
     >
       <h2 className="font-heading mb-4 flex items-center gap-3 text-xl font-semibold tracking-tight">
         <span
@@ -19,7 +19,7 @@ export function ContentSection({ title, children, id }: Props) {
         />
         {title}
       </h2>
-      <div className="max-w-none text-base leading-relaxed text-zinc-200">
+      <div className="max-w-none text-sm leading-relaxed text-zinc-200 sm:text-base">
         {children}
       </div>
     </section>

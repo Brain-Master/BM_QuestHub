@@ -1,16 +1,18 @@
 import { ScheduleBoardCardCompact } from "@/components/schedule-board-card-compact";
 import { ScheduleBoardCardDetailed } from "@/components/schedule-board-card-detailed";
+import { ScheduleBoardCardMobile } from "@/components/schedule-board-card-mobile";
 import type { ScheduleBoardItem } from "@/lib/offers/schedule-board";
 
 export type ScheduleViewMode = "detailed" | "compact";
+export type ScheduleCardMode = ScheduleViewMode | "mobile";
 
 type Props = {
   item: ScheduleBoardItem;
-  mode: ScheduleViewMode;
+  mode: ScheduleCardMode;
   schoolSlug?: string;
   expanded?: boolean;
   highlighted?: boolean;
-  onExpandChange?: (expanded: boolean) => void;
+  onExpandChange?: (expanded: boolean, anchor: HTMLElement | null) => void;
   onNavigate?: () => void;
 };
 
@@ -23,6 +25,19 @@ export function ScheduleBoardCard({
   onExpandChange,
   onNavigate,
 }: Props) {
+  if (mode === "mobile") {
+    return (
+      <ScheduleBoardCardMobile
+        item={item}
+        schoolSlug={schoolSlug}
+        expanded={expanded}
+        highlighted={highlighted}
+        onExpandChange={onExpandChange}
+        onNavigate={onNavigate}
+      />
+    );
+  }
+
   if (mode === "compact") {
     return (
       <ScheduleBoardCardCompact

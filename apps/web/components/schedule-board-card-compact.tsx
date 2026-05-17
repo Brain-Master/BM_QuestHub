@@ -17,7 +17,7 @@ type Props = {
   schoolSlug?: string;
   expanded?: boolean;
   highlighted?: boolean;
-  onExpandChange?: (expanded: boolean) => void;
+  onExpandChange?: (expanded: boolean, anchor: HTMLElement | null) => void;
   onNavigate?: () => void;
 };
 
@@ -141,7 +141,7 @@ export function ScheduleBoardCardCompact({
                 <button
                   type="button"
                   className="mb-2 inline-flex w-fit items-center gap-1 text-primary text-sm transition hover:text-primary/80"
-                  onClick={() => onExpandChange?.(true)}
+                onClick={(event) => onExpandChange?.(true, event.currentTarget)}
                 >
                   Подробнее о смене
                   <ChevronDown className="size-4 transition-transform" aria-hidden />
@@ -168,7 +168,7 @@ export function ScheduleBoardCardCompact({
             <button
               type="button"
               className="mt-2 inline-flex w-fit items-center gap-1 bg-[color:var(--schedule-card-bg)] pt-1 text-primary text-sm transition hover:text-primary/80"
-              onClick={() => onExpandChange?.(false)}
+              onClick={(event) => onExpandChange?.(false, event.currentTarget)}
             >
               Скрыть описание и выбрать формат
               <ChevronDown className="size-4 rotate-180 transition-transform" aria-hidden />
