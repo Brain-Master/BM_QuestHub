@@ -162,7 +162,7 @@ export function ScheduleBoardCardCompact({
                 : "-z-10 translate-y-2 opacity-0 pointer-events-none",
             )}
           >
-            <div className="schedule-description-scroll min-h-0 flex-1 overflow-y-auto pr-3 text-muted-foreground text-sm leading-relaxed [scrollbar-width:thin]">
+            <div className="bm-scrollbar min-h-0 flex-1 overflow-y-auto pr-3 text-muted-foreground text-sm leading-relaxed [scrollbar-width:thin]">
               <p className="pb-2">{item.description}</p>
             </div>
             <button
