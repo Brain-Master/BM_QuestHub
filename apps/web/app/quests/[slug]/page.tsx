@@ -156,6 +156,7 @@ export default async function QuestPage({ params }: Props) {
           title="Площадки и запись"
           description="Если для смены ещё нет карточки mos.ru, кнопка открывает форму заявки в модальном окне."
           showProgramFilter={false}
+          displayMode="quest"
         />
       </section>
     </article>

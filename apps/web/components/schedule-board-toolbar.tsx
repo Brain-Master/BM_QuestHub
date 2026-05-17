@@ -39,6 +39,7 @@ type Props = {
   showAgeFilter: boolean;
   showArchived: boolean;
   onShowArchivedChange: (show: boolean) => void;
+  showViewToggle?: boolean;
   hasActiveFilters: boolean;
   onReset: () => void;
 };
@@ -66,6 +67,7 @@ export function ScheduleBoardToolbar({
   showAgeFilter,
   showArchived,
   onShowArchivedChange,
+  showViewToggle = true,
   hasActiveFilters,
   onReset,
 }: Props) {
@@ -77,17 +79,28 @@ export function ScheduleBoardToolbar({
     status !== statuses[0],
     showArchived,
   ].filter(Boolean).length;
+  const summary = [
+    showProgramFilter ? "программа" : null,
+    showSiteFilter ? "площадка" : null,
+    "формат",
+    showAgeFilter ? "возраст" : null,
+    "статус",
+  ]
+    .filter(Boolean)
+    .join(", ");
 
   return (
     <FilterDisclosure
       data-testid="schedule-toolbar"
       title="Фильтры расписания"
-      summary="Программа, площадка, формат, возраст, статус"
+      summary={summary}
       panelId="schedule-filter-panel"
       activeCount={activeFiltersCount}
       contentClassName={cn(
         "grid grid-cols-1 items-end gap-3 sm:grid-cols-2",
-        showProgramFilter ? "xl:grid-cols-5" : "xl:grid-cols-4",
+        showProgramFilter && showViewToggle
+          ? "xl:grid-cols-5"
+          : "xl:grid-cols-4",
       )}
     >
       {showProgramFilter ? (
@@ -222,7 +235,7 @@ export function ScheduleBoardToolbar({
         <label
           className={cn(
             "inline-flex h-9 w-full cursor-pointer items-center gap-2 rounded-lg border border-white/10 bg-black/20 px-3 text-sm transition hover:bg-white/5",
-            showProgramFilter && "xl:col-start-4",
+            showProgramFilter && showViewToggle && "xl:col-start-4",
           )}
         >
           <input
@@ -235,32 +248,34 @@ export function ScheduleBoardToolbar({
           Архив
         </label>
 
-        <div
-          data-testid="schedule-view-toggle"
-          className={cn(
-            "hidden w-fit rounded-lg border border-white/10 bg-black/20 p-1 lg:inline-flex",
-            showProgramFilter && "xl:col-start-5",
-          )}
-        >
-          <Button
-            type="button"
-            size="icon-sm"
-            variant={viewMode === "detailed" ? "secondary" : "ghost"}
-            aria-label="Подробный вид"
-            onClick={() => onViewModeChange("detailed")}
+        {showViewToggle ? (
+          <div
+            data-testid="schedule-view-toggle"
+            className={cn(
+              "hidden w-fit rounded-lg border border-white/10 bg-black/20 p-1 lg:inline-flex",
+              showProgramFilter && "xl:col-start-5",
+            )}
           >
-            <LayoutList className="size-4" aria-hidden />
-          </Button>
-          <Button
-            type="button"
-            size="icon-sm"
-            variant={viewMode === "compact" ? "secondary" : "ghost"}
-            aria-label="Компактный вид"
-            onClick={() => onViewModeChange("compact")}
-          >
-            <List className="size-4" aria-hidden />
-          </Button>
-        </div>
+            <Button
+              type="button"
+              size="icon-sm"
+              variant={viewMode === "detailed" ? "secondary" : "ghost"}
+              aria-label="Подробный вид"
+              onClick={() => onViewModeChange("detailed")}
+            >
+              <LayoutList className="size-4" aria-hidden />
+            </Button>
+            <Button
+              type="button"
+              size="icon-sm"
+              variant={viewMode === "compact" ? "secondary" : "ghost"}
+              aria-label="Компактный вид"
+              onClick={() => onViewModeChange("compact")}
+            >
+              <List className="size-4" aria-hidden />
+            </Button>
+          </div>
+        ) : null}
 
         <Button
           type="button"

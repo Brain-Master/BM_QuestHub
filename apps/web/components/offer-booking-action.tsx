@@ -55,12 +55,12 @@ export function OfferBookingAction({
     mode ??
     variant?.bookingMode ??
     (resolvedAction.kind === "mos"
-      ? { kind: "mos", label: "mos.ru", url: resolvedAction.url }
+      ? { kind: "mos", label: "Записаться (Mos.ru)", url: resolvedAction.url }
       : { kind: "form", label: buttonLabel });
   const isWaitlistAction = action.kind === "waitlist";
   const buttonClassName = cn(
     "relative max-w-full overflow-hidden border-white/10 font-semibold text-xs shadow-lg transition-all duration-200 before:absolute before:inset-0 before:bg-white/20 before:opacity-0 before:transition-opacity hover:-translate-y-0.5 hover:before:opacity-100",
-    compact ? "h-8 w-36 px-2" : "h-9 w-40 px-3",
+    compact ? "h-8 w-full px-3 sm:w-44" : "h-9 w-48 px-3",
     action.kind === "form" &&
       "bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 text-slate-950 shadow-emerald-950/25 hover:from-emerald-300 hover:to-cyan-300",
     action.kind === "waitlist" &&

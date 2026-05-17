@@ -40,7 +40,7 @@ export function ScheduleBoardCardCompact({
       id={`schedule-offer-${item.offer.id}`}
       data-testid="schedule-card"
       className={cn(
-        "group/schedule-card isolate overflow-hidden rounded-2xl border border-[color:var(--schedule-card-border)] bg-[color:var(--schedule-card-bg)] shadow-[var(--schedule-card-shadow)] backdrop-blur-md transition lg:flex lg:h-[23rem]",
+        "group/schedule-card isolate overflow-hidden rounded-2xl border border-[color:var(--schedule-card-border)] bg-[color:var(--schedule-card-bg)] shadow-[var(--schedule-card-shadow)] backdrop-blur-md transition lg:flex lg:h-[25rem]",
         item.status.isArchivedState
           ? "opacity-70 grayscale"
           : "hover:border-[color:var(--schedule-card-border-hover)]",
@@ -73,7 +73,7 @@ export function ScheduleBoardCardCompact({
         </div>
       </div>
 
-      <div className="relative z-20 flex min-w-0 flex-1 flex-col gap-2.5 overflow-hidden p-4">
+      <div className="relative z-20 flex min-w-0 flex-1 flex-col gap-2 overflow-hidden p-3.5">
         <div className="flex flex-nowrap items-start justify-between gap-3">
           <div className="flex flex-wrap gap-2">
             {item.tags.slice(0, 3).map((tag) => (
@@ -129,7 +129,7 @@ export function ScheduleBoardCardCompact({
             )}
           >
             {showDescriptionPreview || !isLongDescription ? (
-              <div className="mb-2 min-h-0 flex-1 overflow-hidden">
+              <div className="mb-1.5 min-h-0 flex-1 overflow-hidden">
                 <p className="line-clamp-[var(--schedule-description-lines)] text-muted-foreground text-sm leading-relaxed [--schedule-description-lines:3] min-[1180px]:[--schedule-description-lines:4]">
                   {item.description}
                 </p>
@@ -142,7 +142,7 @@ export function ScheduleBoardCardCompact({
               {isLongDescription ? (
                 <button
                   type="button"
-                  className="mb-2 inline-flex w-fit items-center gap-1 text-primary text-sm transition hover:text-primary/80"
+                  className="mb-1.5 inline-flex w-fit items-center gap-1 text-primary text-sm transition hover:text-primary/80"
                 onClick={(event) => onExpandChange?.(true, event.currentTarget)}
                 >
                   Подробнее о смене

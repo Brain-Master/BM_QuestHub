@@ -1,10 +1,11 @@
 import { ScheduleBoardCardCompact } from "@/components/schedule-board-card-compact";
 import { ScheduleBoardCardDetailed } from "@/components/schedule-board-card-detailed";
 import { ScheduleBoardCardMobile } from "@/components/schedule-board-card-mobile";
+import { ScheduleBoardCardQuest } from "@/components/schedule-board-card-quest";
 import type { ScheduleBoardItem } from "@/lib/offers/schedule-board";
 
 export type ScheduleViewMode = "detailed" | "compact";
-export type ScheduleCardMode = ScheduleViewMode | "mobile";
+export type ScheduleCardMode = ScheduleViewMode | "mobile" | "quest";
 
 type Props = {
   item: ScheduleBoardItem;
@@ -27,6 +28,16 @@ export function ScheduleBoardCard({
   onExpandChange,
   onNavigate,
 }: Props) {
+  if (mode === "quest") {
+    return (
+      <ScheduleBoardCardQuest
+        item={item}
+        schoolSlug={bookingSchoolSlug ?? schoolSlug}
+        highlighted={highlighted}
+      />
+    );
+  }
+
   if (mode === "mobile") {
     return (
       <ScheduleBoardCardMobile

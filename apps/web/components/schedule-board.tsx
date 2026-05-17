@@ -30,6 +30,7 @@ type Props = {
   title?: string;
   description?: string;
   showProgramFilter?: boolean;
+  displayMode?: "agenda" | "quest";
 };
 
 const ALL_STATUSES = "Все статусы";
@@ -96,6 +97,13 @@ function groupVisibleItems(
     .filter((group) => group.items.length > 0);
 }
 
+function itemFormatTypes(item: ScheduleBoardItem): string[] {
+  const formats = item.variants.length
+    ? item.variants.map((variant) => variant.type)
+    : [item.formatType];
+  return Array.from(new Set(formats.filter(Boolean)));
+}
+
 export function ScheduleBoard({
   groups,
   schoolSlug,
@@ -105,6 +113,7 @@ export function ScheduleBoard({
   title,
   description,
   showProgramFilter = true,
+  displayMode = "agenda",
 }: Props) {
   const [viewMode, setViewMode] = React.useState<ScheduleViewMode>("compact");
   const [status, setStatus] = React.useState(ALL_STATUSES);
@@ -133,7 +142,8 @@ export function ScheduleBoard({
   const querySchoolSlug = queryParams.get("school")?.trim() || undefined;
   const queryOfferId = queryParams.get("offer")?.trim() || undefined;
   const highlightedOfferId = queryOfferId ?? rememberedHighlightedOfferId;
-  const effectiveViewMode = isDesktopLayout ? viewMode : "mobile";
+  const isQuestDisplay = displayMode === "quest";
+  const effectiveViewMode = isQuestDisplay ? "quest" : isDesktopLayout ? viewMode : "mobile";
 
   const boardItems = React.useMemo(
     () =>
@@ -184,8 +194,8 @@ export function ScheduleBoard({
   const bookingSchoolSlug = schoolSlug ?? querySchoolSlug;
 
   const formats = React.useMemo(() => {
-    const unique = Array.from(new Set(boardItems.map((item) => item.formatType))).sort(
-      (a, b) => a.localeCompare(b, "ru"),
+    const unique = Array.from(new Set(boardItems.flatMap(itemFormatTypes))).sort((a, b) =>
+      a.localeCompare(b, "ru"),
     );
     return [ALL_FORMATS, ...unique];
   }, [boardItems]);
@@ -224,7 +234,7 @@ export function ScheduleBoard({
         }
       }
       if (!schoolSlug && activeSite !== ALL_SITES && item.venue.name !== activeSite) return false;
-      if (format !== ALL_FORMATS && item.formatType !== format) return false;
+      if (format !== ALL_FORMATS && !itemFormatTypes(item).includes(format)) return false;
       if (showAgeFilter && activeAge !== ALL_AGES) {
         const itemAges = [
           item.commonAgeLabel,
@@ -419,6 +429,7 @@ export function ScheduleBoard({
         showAgeFilter={showAgeFilter}
         showArchived={showArchived}
         onShowArchivedChange={setShowArchived}
+        showViewToggle={!isQuestDisplay}
         hasActiveFilters={hasActiveFilters}
         onReset={resetFilters}
       />
@@ -466,7 +477,7 @@ export function ScheduleBoard({
               <div
                 className={cn(
                   "grid",
-                  viewMode === "compact" ? "gap-5" : "gap-8",
+                  isQuestDisplay || viewMode === "compact" ? "gap-5" : "gap-8",
                 )}
               >
                 {group.items.map((item) => (

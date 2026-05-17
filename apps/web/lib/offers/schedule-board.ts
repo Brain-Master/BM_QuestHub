@@ -180,7 +180,7 @@ export function getScheduleBookingMode(
 
   const mosBookingUrl = variant?.mosBookingUrl ?? offer.mosBookingUrl;
   if (mosBookingUrl) {
-    return { kind: "mos", label: "На mos.ru", url: mosBookingUrl };
+    return { kind: "mos", label: "Записаться (Mos.ru)", url: mosBookingUrl };
   }
 
   if (status === "Скоро старт") {
