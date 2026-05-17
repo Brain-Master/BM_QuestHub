@@ -61,7 +61,7 @@ export default async function WorldHubPage({ params }: Props) {
       <div className="mb-6">
         <Link
           className="inline-flex items-center gap-2 text-muted-foreground text-sm transition hover:text-foreground"
-          href="/"
+          href="/catalog"
         >
           <span aria-hidden>←</span> Каталог
         </Link>
@@ -117,7 +117,7 @@ export default async function WorldHubPage({ params }: Props) {
       <section className="mt-14 flex flex-wrap gap-4 border-white/10 border-t pt-10">
         <Link
           className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-card/40 px-5 py-3 font-medium text-foreground text-sm transition hover:border-white/25 hover:bg-card/60"
-          href="/"
+          href="/catalog"
         >
           Весь каталог миссий
         </Link>

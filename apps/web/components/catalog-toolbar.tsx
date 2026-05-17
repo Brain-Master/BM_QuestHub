@@ -18,9 +18,13 @@ import { cn } from "@/lib/utils";
 
 type Props = {
   worlds: World[];
+  fixedSchool?: {
+    slug: string;
+    name: string;
+  };
 };
 
-export function CatalogToolbar({ worlds }: Props) {
+export function CatalogToolbar({ worlds, fixedSchool }: Props) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -90,44 +94,58 @@ export function CatalogToolbar({ worlds }: Props) {
         </Select>
       </label>
 
-      <label className="grid min-w-0 gap-2 text-sm md:min-w-[280px] md:flex-1">
-        <span className="flex items-center gap-2 text-muted-foreground">
-          <School className="size-4 opacity-80" aria-hidden />
-          Школьный скоуп{" "}
-          <span className="text-[11px] text-muted-foreground/70">(?school=)</span>
-        </span>
-        <input
-          key={school || "none"}
-          className="h-10 w-full rounded-lg border border-white/10 bg-black/25 px-3 text-sm text-foreground shadow-inner outline-none transition placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/35"
-          defaultValue={school}
-          placeholder="например school-1212"
-          name="school"
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              e.preventDefault();
-              const v = (e.target as HTMLInputElement).value.trim();
-              pushNext({ school: v });
-            }
-          }}
-        />
-      </label>
+      {fixedSchool ? (
+        <div className="grid min-w-0 gap-2 text-sm md:min-w-[280px] md:flex-1">
+          <span className="flex items-center gap-2 text-muted-foreground">
+            <School className="size-4 opacity-80" aria-hidden />
+            Площадка
+          </span>
+          <div className="flex h-10 items-center rounded-lg border border-white/10 bg-black/25 px-3 text-sm text-foreground shadow-inner">
+            {fixedSchool.name}
+          </div>
+        </div>
+      ) : (
+        <label className="grid min-w-0 gap-2 text-sm md:min-w-[280px] md:flex-1">
+          <span className="flex items-center gap-2 text-muted-foreground">
+            <School className="size-4 opacity-80" aria-hidden />
+            Школьный скоуп{" "}
+            <span className="text-[11px] text-muted-foreground/70">(?school=)</span>
+          </span>
+          <input
+            key={school || "none"}
+            className="h-10 w-full rounded-lg border border-white/10 bg-black/25 px-3 text-sm text-foreground shadow-inner outline-none transition placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/35"
+            defaultValue={school}
+            placeholder="например school-1212"
+            name="school"
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                const v = (e.target as HTMLInputElement).value.trim();
+                pushNext({ school: v });
+              }
+            }}
+          />
+        </label>
+      )}
 
       <div className="flex flex-wrap gap-2 md:justify-end">
-        <Button
-          type="button"
-          variant="secondary"
-          size="sm"
-          className="border border-white/5 bg-white/5 hover:bg-white/10"
-          onClick={() => {
-            const el = document.querySelector(
-              "input[name=school]",
-            ) as HTMLInputElement | null;
-            const v = el?.value.trim() ?? "";
-            pushNext({ school: v });
-          }}
-        >
-          Применить школу
-        </Button>
+        {fixedSchool ? null : (
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
+            className="border border-white/5 bg-white/5 hover:bg-white/10"
+            onClick={() => {
+              const el = document.querySelector(
+                "input[name=school]",
+              ) as HTMLInputElement | null;
+              const v = el?.value.trim() ?? "";
+              pushNext({ school: v });
+            }}
+          >
+            Применить школу
+          </Button>
+        )}
         <Button
           type="button"
           variant="outline"

@@ -3,21 +3,7 @@
 import * as React from "react";
 import { useSearchParams } from "next/navigation";
 
-import { BookingForm } from "@/components/booking-form";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { resolveBookingAction } from "@/lib/booking";
-import {
-  trackBookingExternal,
-  trackBookingFormOpen,
-} from "@/lib/client-analytics";
+import { OfferBookingAction } from "@/components/offer-booking-action";
 import type { Quest, Venue, VenueOffer } from "@/lib/schemas";
 import { venueVisibleForSchoolScope } from "@/lib/school-scope";
 
@@ -34,8 +20,6 @@ type Props = {
 export function OfferScheduleTable({ quest, rows }: Props) {
   const searchParams = useSearchParams();
   const schoolSlug = searchParams.get("school")?.trim() || undefined;
-  const [open, setOpen] = React.useState(false);
-  const [active, setActive] = React.useState<ScheduleRowModel | null>(null);
 
   const visibleRows = React.useMemo(() => {
     if (!schoolSlug) return rows;
@@ -43,17 +27,6 @@ export function OfferScheduleTable({ quest, rows }: Props) {
       venueVisibleForSchoolScope(r.venue, schoolSlug),
     );
   }, [rows, schoolSlug]);
-
-  function openForm(row: ScheduleRowModel) {
-    setActive(row);
-    setOpen(true);
-    trackBookingFormOpen({
-      questSlug: quest.slug,
-      venueSlug: row.venue.slug,
-      offerId: row.offer.id,
-      schoolSlug,
-    });
-  }
 
   return (
     <div className="overflow-hidden rounded-2xl border border-white/10 bg-black/20 shadow-inner">
@@ -81,9 +54,7 @@ export function OfferScheduleTable({ quest, rows }: Props) {
               </td>
             </tr>
           ) : (
-            visibleRows.map((row) => {
-              const action = resolveBookingAction(row.offer.mosBookingUrl);
-              return (
+            visibleRows.map((row) => (
                 <tr
                   key={row.offer.id}
                   className="border-b border-white/5 transition-colors last:border-0 hover:bg-white/[0.03]"
@@ -102,73 +73,20 @@ export function OfferScheduleTable({ quest, rows }: Props) {
                   </td>
                   <td className="px-4 py-4 align-top">{row.offer.priceLabel}</td>
                   <td className="px-4 py-4 align-top">
-                    {action.kind === "mos" ? (
-                      <a
-                        className={cn(
-                          buttonVariants({ variant: "outline", size: "sm" }),
-                          "border-white/15 bg-white/5 hover:bg-white/10",
-                        )}
-                        href={action.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={() =>
-                          trackBookingExternal({
-                            questSlug: quest.slug,
-                            venueSlug: row.venue.slug,
-                            offerId: row.offer.id,
-                            schoolSlug,
-                          })
-                        }
-                      >
-                        mos.ru
-                      </a>
-                    ) : (
-                      <Button
-                        size="sm"
-                        onClick={() => openForm(row)}
-                      >
-                        Записаться
-                      </Button>
-                    )}
-                    {row.offer.includedNote ? (
-                      <p className="mt-2 text-muted-foreground text-xs">
-                        {row.offer.includedNote}
-                      </p>
-                    ) : null}
+                    <OfferBookingAction
+                      quest={quest}
+                      offer={row.offer}
+                      venue={row.venue}
+                      schoolSlug={schoolSlug}
+                      showIncludedNote
+                    />
                   </td>
                 </tr>
-              );
-            })
+            ))
           )}
           </tbody>
         </table>
       </div>
-
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="border-white/10 bg-card sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Заявка на программу</DialogTitle>
-            <DialogDescription>
-              {active
-                ? `${quest.title} · ${active.venue.name} · ${active.offer.shiftLabel}`
-                : null}
-            </DialogDescription>
-          </DialogHeader>
-          {active ? (
-            <BookingForm
-              defaults={{
-                questSlug: quest.slug,
-                questTitle: quest.title,
-                offerId: active.offer.id,
-                venueSlug: active.venue.slug,
-                venueName: active.venue.name,
-                schoolSlug,
-              }}
-              onSuccess={() => setOpen(false)}
-            />
-          ) : null}
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

@@ -84,7 +84,7 @@ export default async function QuestPage({ params }: Props) {
         ) : null}
 
         <div className="flex flex-wrap gap-2 text-sm">
-          <Link className="text-muted-foreground hover:text-foreground" href="/">
+          <Link className="text-muted-foreground hover:text-foreground" href="/catalog">
             Каталог
           </Link>
           <span className="text-muted-foreground">/</span>

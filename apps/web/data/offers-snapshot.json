@@ -15,7 +15,11 @@
         "includedNote": "Формат полного дня. Питание (завтрак, обед, полдник).\n\nВозраст: 6–13 лет\n\nКод карточки mos.ru: 2440640",
         "sheetStatus": "Идёт набор",
         "enrolled": 0,
-        "maxCapacity": 20
+        "maxCapacity": 20,
+        "startDate": "2026-06-01",
+        "endDate": "2026-06-05",
+        "startTime": "8:30",
+        "endTime": "16:30"
       },
       {
         "id": "sheet:mekhvarium-laboratoriya-kineticheskih-monstrov:school-2103-yasenevo:2026-05-25:2026-05-29:9:00",
@@ -28,7 +32,11 @@
         "includedNote": "В приоритете 1 класс. Корпус ШО-4.\n\nВозраст: 6–13 лет\n\nКод карточки mos.ru: 2442453",
         "sheetStatus": "Идёт набор",
         "enrolled": 0,
-        "maxCapacity": 20
+        "maxCapacity": 20,
+        "startDate": "2026-05-25",
+        "endDate": "2026-05-29",
+        "startTime": "9:00",
+        "endTime": "12:30"
       },
       {
         "id": "sheet:mekhvarium-laboratoriya-kineticheskih-monstrov:school-2103-yasenevo:2026-06-01:2026-06-05:9:00",
@@ -41,7 +49,11 @@
         "includedNote": "Формат интенсива. Корпус ШО-3.\n\nВозраст: 6–13 лет\n\nКод карточки mos.ru: 2442453",
         "sheetStatus": "Идёт набор",
         "enrolled": 0,
-        "maxCapacity": 20
+        "maxCapacity": 20,
+        "startDate": "2026-06-01",
+        "endDate": "2026-06-05",
+        "startTime": "9:00",
+        "endTime": "12:30"
       },
       {
         "id": "sheet:mekhvarium-laboratoriya-kineticheskih-monstrov:school-937-orekhovo:2026-05-25:2026-05-29:9:00",
@@ -54,7 +66,11 @@
         "includedNote": "Формат интенсива.\n\nВозраст: 6–13 лет",
         "sheetStatus": "Согласование",
         "enrolled": 0,
-        "maxCapacity": 20
+        "maxCapacity": 20,
+        "startDate": "2026-05-25",
+        "endDate": "2026-05-29",
+        "startTime": "9:00",
+        "endTime": "12:30"
       },
       {
         "id": "sheet:mekhvarium-laboratoriya-kineticheskih-monstrov:school-937-orekhovo:2026-06-01:2026-06-05:9:00",
@@ -67,7 +83,11 @@
         "includedNote": "Формат интенсива.\n\nВозраст: 6–13 лет",
         "sheetStatus": "Согласование",
         "enrolled": 0,
-        "maxCapacity": 20
+        "maxCapacity": 20,
+        "startDate": "2026-06-01",
+        "endDate": "2026-06-05",
+        "startTime": "9:00",
+        "endTime": "12:30"
       },
       {
         "id": "sheet:mekhvarium-laboratoriya-kineticheskih-monstrov:school-1383-verkhnie-likhobory:2026-06-01:2026-06-05:9:00",
@@ -80,7 +100,11 @@
         "includedNote": "Формат интенсива. Контакт: Халаджан Г.А.\n\nВозраст: 6–13 лет",
         "sheetStatus": "Согласование",
         "enrolled": 0,
-        "maxCapacity": 20
+        "maxCapacity": 20,
+        "startDate": "2026-06-01",
+        "endDate": "2026-06-05",
+        "startTime": "9:00",
+        "endTime": "13:00"
       },
       {
         "id": "sheet:mekhvarium-laboratoriya-kineticheskih-monstrov:school-1517-narodnoe-opolchenie:2026-06-01:2026-06-05:9:00",
@@ -93,7 +117,11 @@
         "includedNote": "Формат интенсива. Контакт: Хмельков Д.А.\n\nВозраст: 6–13 лет",
         "sheetStatus": "Согласование",
         "enrolled": 0,
-        "maxCapacity": 20
+        "maxCapacity": 20,
+        "startDate": "2026-06-01",
+        "endDate": "2026-06-05",
+        "startTime": "9:00",
+        "endTime": "13:00"
       },
       {
         "id": "sheet:mekhvarium-laboratoriya-kineticheskih-monstrov:school-17-belyaevo:2026-06-01:2026-06-05:9:00",
@@ -106,7 +134,11 @@
         "includedNote": "Формат интенсива.\n\nВозраст: 6–13 лет",
         "sheetStatus": "Согласование",
         "enrolled": 0,
-        "maxCapacity": 20
+        "maxCapacity": 20,
+        "startDate": "2026-06-01",
+        "endDate": "2026-06-05",
+        "startTime": "9:00",
+        "endTime": "13:00"
       },
       {
         "id": "sheet:mekhvarium-laboratoriya-kineticheskih-monstrov:school-875-yugo-zapadnaya:2026-06-01:2026-06-05:9:00",
@@ -119,7 +151,11 @@
         "includedNote": "Формат интенсива.\n\nВозраст: 6–13 лет",
         "sheetStatus": "Согласование",
         "enrolled": 0,
-        "maxCapacity": 20
+        "maxCapacity": 20,
+        "startDate": "2026-06-01",
+        "endDate": "2026-06-05",
+        "startTime": "9:00",
+        "endTime": "13:00"
       }
     ],
     "mekhvarium-masterskaya-gidravlicheskih-monstrov": [
@@ -134,7 +170,11 @@
         "includedNote": "Укороченная смена (4 дня). Формат интенсива. Корпус ШО-3.\n\nВозраст: 6–13 лет\n\nКод карточки mos.ru: 2442453",
         "sheetStatus": "Идёт набор",
         "enrolled": 0,
-        "maxCapacity": 20
+        "maxCapacity": 20,
+        "startDate": "2026-06-08",
+        "endDate": "2026-06-11",
+        "startTime": "9:00",
+        "endTime": "12:30"
       },
       {
         "id": "sheet:mekhvarium-masterskaya-gidravlicheskih-monstrov:school-937-orekhovo:2026-06-08:2026-06-11:9:00",
@@ -147,7 +187,11 @@
         "includedNote": "Укороченная смена (4 дня). Формат интенсива.\n\nВозраст: 6–13 лет",
         "sheetStatus": "Согласование",
         "enrolled": 0,
-        "maxCapacity": 20
+        "maxCapacity": 20,
+        "startDate": "2026-06-08",
+        "endDate": "2026-06-11",
+        "startTime": "9:00",
+        "endTime": "12:30"
       },
       {
         "id": "sheet:mekhvarium-masterskaya-gidravlicheskih-monstrov:school-1383-verkhnie-likhobory:2026-06-08:2026-06-11:9:00",
@@ -160,7 +204,11 @@
         "includedNote": "Укороченная смена (4 дня). Формат интенсива. Контакт: Халаджан Г.А.\n\nВозраст: 6–13 лет",
         "sheetStatus": "Согласование",
         "enrolled": 0,
-        "maxCapacity": 20
+        "maxCapacity": 20,
+        "startDate": "2026-06-08",
+        "endDate": "2026-06-11",
+        "startTime": "9:00",
+        "endTime": "13:00"
       },
       {
         "id": "sheet:mekhvarium-masterskaya-gidravlicheskih-monstrov:school-1517-narodnoe-opolchenie:2026-06-08:2026-06-11:9:00",
@@ -173,7 +221,11 @@
         "includedNote": "Укороченная смена (4 дня). Формат интенсива. Контакт: Хмельков Д.А.\n\nВозраст: 6–13 лет",
         "sheetStatus": "Согласование",
         "enrolled": 0,
-        "maxCapacity": 20
+        "maxCapacity": 20,
+        "startDate": "2026-06-08",
+        "endDate": "2026-06-11",
+        "startTime": "9:00",
+        "endTime": "13:00"
       },
       {
         "id": "sheet:mekhvarium-masterskaya-gidravlicheskih-monstrov:school-17-belyaevo:2026-06-08:2026-06-11:9:00",
@@ -186,7 +238,11 @@
         "includedNote": "Формат интенсива.\n\nВозраст: 6–13 лет",
         "sheetStatus": "Согласование",
         "enrolled": 0,
-        "maxCapacity": 20
+        "maxCapacity": 20,
+        "startDate": "2026-06-08",
+        "endDate": "2026-06-11",
+        "startTime": "9:00",
+        "endTime": "13:00"
       }
     ],
     "minecraft-probuzhdenie-strazhey": [
@@ -201,7 +257,11 @@
         "includedNote": "Формат интенсива. Корпус ШО-3.\n\nВозраст: 6–13 лет\n\nКод карточки mos.ru: 2442453",
         "sheetStatus": "Идёт набор",
         "enrolled": 0,
-        "maxCapacity": 20
+        "maxCapacity": 20,
+        "startDate": "2026-06-15",
+        "endDate": "2026-06-19",
+        "startTime": "9:00",
+        "endTime": "12:30"
       },
       {
         "id": "sheet:minecraft-probuzhdenie-strazhey:school-937-orekhovo:2026-06-15:2026-06-19:9:00",
@@ -214,7 +274,11 @@
         "includedNote": "Формат интенсива.\n\nВозраст: 6–13 лет",
         "sheetStatus": "Согласование",
         "enrolled": 0,
-        "maxCapacity": 20
+        "maxCapacity": 20,
+        "startDate": "2026-06-15",
+        "endDate": "2026-06-19",
+        "startTime": "9:00",
+        "endTime": "12:30"
       },
       {
         "id": "sheet:minecraft-probuzhdenie-strazhey:school-1383-verkhnie-likhobory:2026-06-22:2026-06-26:9:00",
@@ -227,7 +291,11 @@
         "includedNote": "Формат интенсива. Контакт: Халаджан Г.А.\n\nВозраст: 6–13 лет",
         "sheetStatus": "Согласование",
         "enrolled": 0,
-        "maxCapacity": 20
+        "maxCapacity": 20,
+        "startDate": "2026-06-22",
+        "endDate": "2026-06-26",
+        "startTime": "9:00",
+        "endTime": "13:00"
       },
       {
         "id": "sheet:minecraft-probuzhdenie-strazhey:school-1517-narodnoe-opolchenie:2026-06-15:2026-06-19:9:00",
@@ -240,7 +308,11 @@
         "includedNote": "Формат интенсива. Контакт: Хмельков Д.А.\n\nВозраст: 6–13 лет",
         "sheetStatus": "Согласование",
         "enrolled": 0,
-        "maxCapacity": 20
+        "maxCapacity": 20,
+        "startDate": "2026-06-15",
+        "endDate": "2026-06-19",
+        "startTime": "9:00",
+        "endTime": "13:00"
       },
       {
         "id": "sheet:minecraft-probuzhdenie-strazhey:school-17-belyaevo:2026-06-15:2026-06-19:9:00",
@@ -253,7 +325,11 @@
         "includedNote": "Формат интенсива.\n\nВозраст: 6–13 лет",
         "sheetStatus": "Согласование",
         "enrolled": 0,
-        "maxCapacity": 20
+        "maxCapacity": 20,
+        "startDate": "2026-06-15",
+        "endDate": "2026-06-19",
+        "startTime": "9:00",
+        "endTime": "13:00"
       }
     ],
     "cyber-rhythm": [
@@ -268,7 +344,11 @@
         "includedNote": "Формат интенсива. Корпус ШО-3.\n\nВозраст: 6–13 лет\n\nКод карточки mos.ru: 2442453",
         "sheetStatus": "Идёт набор",
         "enrolled": 0,
-        "maxCapacity": 20
+        "maxCapacity": 20,
+        "startDate": "2026-06-22",
+        "endDate": "2026-06-26",
+        "startTime": "9:00",
+        "endTime": "12:30"
       },
       {
         "id": "sheet:cyber-rhythm:school-937-orekhovo:2026-06-22:2026-06-26:9:00",
@@ -281,7 +361,11 @@
         "includedNote": "Формат интенсива.\n\nВозраст: 6–13 лет",
         "sheetStatus": "Согласование",
         "enrolled": 0,
-        "maxCapacity": 20
+        "maxCapacity": 20,
+        "startDate": "2026-06-22",
+        "endDate": "2026-06-26",
+        "startTime": "9:00",
+        "endTime": "12:30"
       },
       {
         "id": "sheet:cyber-rhythm:school-1517-narodnoe-opolchenie:2026-06-22:2026-06-26:9:00",
@@ -294,7 +378,11 @@
         "includedNote": "Формат интенсива. Контакт: Хмельков Д.А.\n\nВозраст: 6–13 лет",
         "sheetStatus": "Согласование",
         "enrolled": 0,
-        "maxCapacity": 20
+        "maxCapacity": 20,
+        "startDate": "2026-06-22",
+        "endDate": "2026-06-26",
+        "startTime": "9:00",
+        "endTime": "13:00"
       },
       {
         "id": "sheet:cyber-rhythm:school-17-belyaevo:2026-06-22:2026-06-26:9:00",
@@ -307,7 +395,11 @@
         "includedNote": "Формат интенсива.\n\nВозраст: 6–13 лет",
         "sheetStatus": "Согласование",
         "enrolled": 0,
-        "maxCapacity": 20
+        "maxCapacity": 20,
+        "startDate": "2026-06-22",
+        "endDate": "2026-06-26",
+        "startTime": "9:00",
+        "endTime": "13:00"
       }
     ],
     "minecraft-taina-drevnih-inzhenerov": [
@@ -322,7 +414,11 @@
         "includedNote": "Формат интенсива. Контакт: Халаджан Г.А.\n\nВозраст: 6–13 лет",
         "sheetStatus": "Согласование",
         "enrolled": 0,
-        "maxCapacity": 20
+        "maxCapacity": 20,
+        "startDate": "2026-06-15",
+        "endDate": "2026-06-19",
+        "startTime": "9:00",
+        "endTime": "13:00"
       }
     ]
   }

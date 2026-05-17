@@ -24,6 +24,25 @@ If the Timeweb project root is `apps/web`:
 
 Do not enable SSR for the static deployment.
 
+## School Subdomain Aliases
+
+The app itself is path-first because static export cannot inspect request
+hostnames at runtime. School-scoped links should target generated pages such as:
+
+```text
+https://quest.b-master.pro/sites/school-1517/agenda/
+https://quest.b-master.pro/sites/school-1517/catalog/
+https://quest.b-master.pro/sites/1517/agenda/
+https://quest.b-master.pro/sites/1517/catalog/
+```
+
+Pretty school subdomains are a hosting/CDN concern. Configure aliases like
+`1517.quest.b-master.pro` to serve the same static bundle and rewrite the root
+path to the matching generated route, for example
+`/sites/1517/agenda/`. The app also generates canonical
+`/sites/school-1517/...` pages for internal links. Do not rely on Next.js
+middleware or API routes for this in the static deployment.
+
 ## Public Environment Variables
 
 The static bundle can only use public values:

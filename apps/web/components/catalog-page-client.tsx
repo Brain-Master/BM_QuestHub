@@ -12,13 +12,26 @@ type Props = {
   quests: Quest[];
   venues: Venue[];
   worlds: World[];
+  fixedSchool?: {
+    slug: string;
+    name: string;
+  };
+  title?: string;
+  emptyMessage?: string;
 };
 
-export function CatalogPageClient({ quests, venues, worlds }: Props) {
+export function CatalogPageClient({
+  quests,
+  venues,
+  worlds,
+  fixedSchool,
+  title = "Каталог миссий",
+  emptyMessage = "Ничего не найдено — ослабьте фильтры или сбросьте школьный скоуп.",
+}: Props) {
   const searchParams = useSearchParams();
   const format = searchParams.get("format") ?? undefined;
   const world = searchParams.get("world") ?? undefined;
-  const school = searchParams.get("school") ?? undefined;
+  const school = fixedSchool?.slug ?? searchParams.get("school") ?? undefined;
 
   const filtered = useMemo(
     () => filterCatalog(quests, venues, { format, world, school }),
@@ -32,14 +45,14 @@ export function CatalogPageClient({ quests, venues, worlds }: Props) {
   return (
     <>
       <div className="mb-10">
-        <CatalogToolbar worlds={worlds} />
+        <CatalogToolbar worlds={worlds} fixedSchool={fixedSchool} />
       </div>
 
       <section className="space-y-8">
         <div className="flex flex-wrap items-end justify-between gap-4 border-b border-white/10 pb-4">
           <div>
             <h2 className="font-heading text-2xl font-semibold tracking-tight">
-              Каталог миссий
+              {title}
             </h2>
             <p className="mt-1 text-muted-foreground text-sm">
               Показано квестов:{" "}
@@ -48,8 +61,10 @@ export function CatalogPageClient({ quests, venues, worlds }: Props) {
           </div>
           {school ? (
             <p className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-muted-foreground text-sm">
-              Школьный скоуп:{" "}
-              <span className="font-medium text-foreground">{school}</span>
+              {fixedSchool ? "Площадка" : "Школьный скоуп"}:{" "}
+              <span className="font-medium text-foreground">
+                {fixedSchool?.name ?? school}
+              </span>
             </p>
           ) : null}
         </div>
@@ -57,7 +72,7 @@ export function CatalogPageClient({ quests, venues, worlds }: Props) {
         {filtered.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-white/15 bg-card/30 px-6 py-16 text-center">
             <p className="text-lg text-muted-foreground">
-              Ничего не найдено — ослабьте фильтры или сбросьте школьный скоуп.
+              {emptyMessage}
             </p>
           </div>
         ) : (
