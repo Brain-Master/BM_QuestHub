@@ -43,6 +43,37 @@ async function stabilizeScheduleBoard(page: Page) {
   await page.evaluate(() => document.fonts.ready);
 }
 
+async function stabilizeCatalogPage(page: Page) {
+  await expect(page.getByRole("heading", { name: "Каталог миссий" })).toBeVisible();
+  await expect(page.getByRole("link", { name: /Открыть досье/ }).first()).toBeVisible();
+  await page.evaluate(() => document.fonts.ready);
+}
+
+async function expectScrollToTopButtonInViewport(page: Page) {
+  await page.evaluate(() => window.scrollTo(0, 900));
+  await page.waitForFunction(() => window.scrollY > 400);
+
+  const topButton = page.getByRole("button", { name: "Наверх" });
+  await expect
+    .poll(() => topButton.evaluate((button) => getComputedStyle(button).opacity))
+    .toBe("1");
+
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+      ),
+    )
+    .toBe(true);
+
+  const box = await topButton.boundingBox();
+  expect(box).not.toBeNull();
+
+  const viewportWidth = await page.evaluate(() => window.innerWidth);
+  expect(box!.x).toBeGreaterThanOrEqual(0);
+  expect(box!.x + box!.width).toBeLessThanOrEqual(viewportWidth);
+}
+
 test.describe("Schedule Board visual regression", () => {
   test("detailed card keeps the selling layout", async ({ page }, testInfo) => {
     await prepareVisualPage(page, testInfo);
@@ -88,32 +119,28 @@ test.describe("Schedule Board visual regression", () => {
     });
   });
 
-  test("mobile scroll-to-top button stays inside the viewport", async ({ page }) => {
-    await page.setViewportSize({ width: 375, height: 812 });
-    await page.goto("/agenda");
-    await stabilizeScheduleBoard(page);
+  const scrollToTopRoutes = [
+    {
+      name: "agenda",
+      path: "/agenda",
+      stabilize: stabilizeScheduleBoard,
+    },
+    {
+      name: "catalog",
+      path: "/catalog",
+      stabilize: stabilizeCatalogPage,
+    },
+  ];
 
-    await page.evaluate(() => window.scrollTo(0, 900));
-    await page.waitForFunction(() => window.scrollY > 400);
+  for (const route of scrollToTopRoutes) {
+    test(`mobile scroll-to-top button stays inside the viewport on ${route.name}`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width: 375, height: 812 });
+      await page.goto(route.path);
+      await route.stabilize(page);
 
-    const topButton = page.getByRole("button", { name: "Наверх" });
-    await expect
-      .poll(() => topButton.evaluate((button) => getComputedStyle(button).opacity))
-      .toBe("1");
-
-    await expect
-      .poll(() =>
-        page.evaluate(
-          () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,
-        ),
-      )
-      .toBe(true);
-
-    const box = await topButton.boundingBox();
-    expect(box).not.toBeNull();
-
-    const viewportWidth = await page.evaluate(() => window.innerWidth);
-    expect(box!.x).toBeGreaterThanOrEqual(0);
-    expect(box!.x + box!.width).toBeLessThanOrEqual(viewportWidth);
-  });
+      await expectScrollToTopButtonInViewport(page);
+    });
+  }
 });

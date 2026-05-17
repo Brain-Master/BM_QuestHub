@@ -3,6 +3,7 @@ import { Manrope, Onest } from "next/font/google";
 
 import "./globals.css";
 
+import { ScrollToTopButton } from "@/components/scroll-to-top-button";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { YandexMetrika } from "@/components/yandex-metrika";
@@ -49,6 +50,7 @@ export default async function RootLayout({
         <YandexMetrika />
         <SiteHeader worlds={worlds} />
         <div className="flex flex-1 flex-col">{children}</div>
+        <ScrollToTopButton />
         <SiteFooter />
       </body>
     </html>

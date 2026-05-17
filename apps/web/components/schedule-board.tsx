@@ -3,7 +3,6 @@
 import Link from "next/link";
 import * as React from "react";
 import { flushSync } from "react-dom";
-import { ChevronUp } from "lucide-react";
 
 import { ScheduleBoardCard, type ScheduleViewMode } from "@/components/schedule-board-card";
 import { ScheduleBoardToolbar } from "@/components/schedule-board-toolbar";
@@ -118,7 +117,6 @@ export function ScheduleBoard({
   const [rememberedHighlightedOfferId, setRememberedHighlightedOfferId] = React.useState<
     string | null
   >(null);
-  const [showTopButton, setShowTopButton] = React.useState(false);
   const pendingMobileOpenTimeout = React.useRef<number | null>(null);
   const pendingMobileScrollFrame = React.useRef<number | null>(null);
   const isDesktopLayout = React.useSyncExternalStore(
@@ -269,13 +267,6 @@ export function ScheduleBoard({
     setFormat(ALL_FORMATS);
     setAge(ALL_AGES);
   };
-
-  React.useEffect(() => {
-    const onScroll = () => setShowTopButton(window.scrollY > 400);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   React.useEffect(() => {
     const previousRestoration = window.history.scrollRestoration;
@@ -498,21 +489,6 @@ export function ScheduleBoard({
           ))}
         </ol>
       )}
-      <div className="pointer-events-none fixed inset-x-0 bottom-5 z-40">
-        <div className="mx-auto flex w-full max-w-6xl justify-end px-4">
-          <button
-            type="button"
-            className={cn(
-              "pointer-events-auto inline-flex size-11 items-center justify-center rounded-full border border-white/15 bg-card/90 text-foreground shadow-lg backdrop-blur transition duration-200 hover:-translate-y-0.5 hover:bg-card",
-              showTopButton ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-4 opacity-0",
-            )}
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            aria-label="Наверх"
-          >
-            <ChevronUp className="size-5" aria-hidden />
-          </button>
-        </div>
-      </div>
     </section>
   );
 }
