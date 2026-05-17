@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800" role="img" aria-labelledby="title desc">
+  <title id="title">Schedule card compact safe area</title>
+  <desc id="desc">Template showing compact frame, central safe area, right fade zone, and mobile top crop risk.</desc>
+  <rect width="1200" height="800" fill="#111827"/>
+  <rect x="0" y="0" width="1200" height="800" fill="none" stroke="#ffffff" stroke-width="8"/>
+  <rect x="240" y="160" width="720" height="480" fill="none" stroke="#22d3ee" stroke-width="6" stroke-dasharray="24 18"/>
+  <rect x="780" y="0" width="420" height="800" fill="#000000" opacity="0.35"/>
+  <rect x="0" y="0" width="1200" height="110" fill="#ef4444" opacity="0.22"/>
+  <line x1="600" y1="0" x2="600" y2="800" stroke="#ffffff" stroke-width="2" stroke-dasharray="12 12" opacity="0.55"/>
+  <line x1="0" y1="400" x2="1200" y2="400" stroke="#ffffff" stroke-width="2" stroke-dasharray="12 12" opacity="0.55"/>
+  <text x="44" y="72" fill="#ffffff" font-family="Arial, sans-serif" font-size="32" font-weight="700">Avoid critical object near top edge</text>
+  <text x="280" y="230" fill="#67e8f9" font-family="Arial, sans-serif" font-size="36" font-weight="700">Safe area</text>
+  <text x="820" y="730" fill="#ffffff" font-family="Arial, sans-serif" font-size="32" font-weight="700">Right fade to card</text>
+</svg>

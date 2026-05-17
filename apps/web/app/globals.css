@@ -80,6 +80,36 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  --schedule-card-bg: color-mix(in oklch, var(--card) 92%, transparent);
+  --schedule-card-border: color-mix(in oklch, var(--border) 86%, transparent);
+  --schedule-card-border-hover: color-mix(in oklch, var(--primary) 36%, var(--border));
+  --schedule-card-shadow: 0 22px 70px oklch(0 0 0 / 0.12);
+  --schedule-toolbar-bg: color-mix(in oklch, var(--card) 82%, transparent);
+  --schedule-info-bg: color-mix(in oklch, var(--muted) 42%, transparent);
+  --schedule-tariff-bg: color-mix(in oklch, var(--muted) 34%, transparent);
+  --schedule-timeline-line: color-mix(in oklch, var(--primary) 28%, var(--border));
+  --schedule-timeline-node: var(--primary);
+  --schedule-capacity-open: oklch(0.64 0.17 150);
+  --schedule-capacity-low: oklch(0.7 0.17 65);
+  --schedule-capacity-full: oklch(0.62 0.21 30);
+  --schedule-status-success-bg: oklch(0.95 0.04 150);
+  --schedule-status-success-fg: oklch(0.35 0.12 150);
+  --schedule-status-success-border: oklch(0.64 0.17 150 / 0.45);
+  --schedule-status-info-bg: oklch(0.94 0.04 220);
+  --schedule-status-info-fg: oklch(0.36 0.13 220);
+  --schedule-status-info-border: oklch(0.66 0.14 220 / 0.45);
+  --schedule-status-purple-bg: oklch(0.94 0.04 310);
+  --schedule-status-purple-fg: oklch(0.42 0.16 310);
+  --schedule-status-purple-border: oklch(0.68 0.17 310 / 0.45);
+  --schedule-status-warning-bg: oklch(0.95 0.05 65);
+  --schedule-status-warning-fg: oklch(0.43 0.14 65);
+  --schedule-status-warning-border: oklch(0.72 0.16 65 / 0.5);
+  --schedule-status-default-bg: color-mix(in oklch, var(--muted) 72%, transparent);
+  --schedule-status-default-fg: var(--muted-foreground);
+  --schedule-status-default-border: color-mix(in oklch, var(--border) 86%, transparent);
+  --schedule-status-destructive-bg: color-mix(in oklch, var(--destructive) 14%, transparent);
+  --schedule-status-destructive-fg: var(--destructive);
+  --schedule-status-destructive-border: color-mix(in oklch, var(--destructive) 45%, transparent);
 }
 
 .dark {
@@ -114,6 +144,36 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+  --schedule-card-bg: oklch(0.17 0.04 268 / 0.82);
+  --schedule-card-border: oklch(1 0 0 / 0.1);
+  --schedule-card-border-hover: oklch(1 0 0 / 0.18);
+  --schedule-card-shadow: 0 24px 90px oklch(0 0 0 / 0.32);
+  --schedule-toolbar-bg: oklch(0.17 0.04 268 / 0.62);
+  --schedule-info-bg: oklch(0.1 0.035 264 / 0.48);
+  --schedule-tariff-bg: oklch(0.12 0.035 264 / 0.5);
+  --schedule-timeline-line: color-mix(in oklch, var(--primary) 34%, transparent);
+  --schedule-timeline-node: var(--primary);
+  --schedule-capacity-open: oklch(0.76 0.18 155);
+  --schedule-capacity-low: oklch(0.78 0.17 70);
+  --schedule-capacity-full: oklch(0.72 0.2 30);
+  --schedule-status-success-bg: oklch(0.24 0.08 155 / 0.58);
+  --schedule-status-success-fg: oklch(0.78 0.18 155);
+  --schedule-status-success-border: oklch(0.78 0.18 155 / 0.35);
+  --schedule-status-info-bg: oklch(0.24 0.08 220 / 0.58);
+  --schedule-status-info-fg: oklch(0.78 0.15 220);
+  --schedule-status-info-border: oklch(0.78 0.15 220 / 0.35);
+  --schedule-status-purple-bg: oklch(0.26 0.09 310 / 0.58);
+  --schedule-status-purple-fg: oklch(0.8 0.18 310);
+  --schedule-status-purple-border: oklch(0.8 0.18 310 / 0.35);
+  --schedule-status-warning-bg: oklch(0.26 0.09 70 / 0.58);
+  --schedule-status-warning-fg: oklch(0.82 0.16 70);
+  --schedule-status-warning-border: oklch(0.82 0.16 70 / 0.36);
+  --schedule-status-default-bg: oklch(0.24 0.035 268 / 0.7);
+  --schedule-status-default-fg: var(--muted-foreground);
+  --schedule-status-default-border: oklch(1 0 0 / 0.12);
+  --schedule-status-destructive-bg: oklch(0.26 0.09 25 / 0.58);
+  --schedule-status-destructive-fg: oklch(0.78 0.2 25);
+  --schedule-status-destructive-border: oklch(0.78 0.2 25 / 0.35);
 }
 
 @layer base {

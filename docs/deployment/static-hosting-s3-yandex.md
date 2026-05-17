@@ -72,6 +72,7 @@ The browser sends JSON to Yandex:
 
 ```json
 {
+  "leadType": "booking",
   "parentName": "Имя",
   "contact": "+7...",
   "consent": true,
@@ -87,6 +88,8 @@ The browser sends JSON to Yandex:
 ```
 
 Yandex should validate the payload again server-side, add its own trusted `receivedAt`, send the Telegram notification, then forward the normalized event to n8n.
+`leadType` is `booking` for regular booking leads and `waitlist` for sold-out
+offers that allow a waitlist CTA.
 
 ## Offers Update Flow
 
@@ -97,3 +100,7 @@ First cut: bake `apps/web/data/offers-snapshot.json` into the static build. Upda
 3. Rebuild and redeploy the static site.
 
 Later, if schedule updates need to happen without redeploying, move the public snapshot to `data/offers-snapshot.json` in S3 and add client-side fetching with an explicit cache strategy.
+The JSON shape is documented in `docs/data/schedule-snapshot-contract.md`.
+For build-time reads from S3 before client-side refresh exists, set
+`OFFERS_SNAPSHOT_URL` to the public snapshot URL, or set
+`OFFERS_SNAPSHOT_SOURCE=s3` together with `NEXT_PUBLIC_S3_PUBLIC_BASE_URL`.

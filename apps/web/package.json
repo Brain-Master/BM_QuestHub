@@ -8,6 +8,7 @@
     "build": "next build",
     "start": "next start --hostname 0.0.0.0",
     "lint": "eslint",
+    "test:e2e": "playwright test",
     "check": "npm run lint && npm run build"
   },
   "dependencies": {
@@ -35,6 +36,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@playwright/test": "^1.60.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

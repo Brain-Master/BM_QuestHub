@@ -42,6 +42,27 @@ function optionalIntNonneg() {
   }, z.number().int().nonnegative().optional());
 }
 
+function optionalBool() {
+  return z.preprocess((v) => {
+    if (v === undefined || v === null) return undefined;
+    if (typeof v !== "string") return v;
+    const t = v.trim().toLowerCase();
+    if (!t) return undefined;
+    if (["1", "true", "yes", "y", "да", "истина"].includes(t)) return true;
+    if (["0", "false", "no", "n", "нет", "ложь"].includes(t)) return false;
+    return v;
+  }, z.boolean().optional());
+}
+
+function optionalPercent() {
+  return z.preprocess((v) => {
+    if (v === undefined || v === null) return undefined;
+    if (typeof v === "string" && v.trim() === "") return undefined;
+    const n = Number(v);
+    return Number.isFinite(n) ? n : v;
+  }, z.number().min(0).max(100).optional());
+}
+
 /** Одна строка листа после склейки с заголовками. */
 export const sheetRowSchema = z.object({
   venue_slug: z.string().min(1),
@@ -70,6 +91,20 @@ export const sheetRowSchema = z.object({
   enrolled: optionalIntNonneg(),
   status: z.string().min(1),
   notes: z.string().optional(),
+  display_title: z.string().optional(),
+  description: z.string().optional(),
+  tags: z.string().optional(),
+  format_type: z.string().optional(),
+  format_time: z.string().optional(),
+  format_note: z.string().optional(),
+  is_archived: optionalBool(),
+  allow_waitlist_when_sold_out: optionalBool(),
+  hero_image_url: z.string().optional(),
+  compact_image_url: z.string().optional(),
+  fallback_image_url: z.string().optional(),
+  image_alt: z.string().optional(),
+  image_focal_x: optionalPercent(),
+  image_focal_y: optionalPercent(),
 });
 
 export type SheetRow = z.infer<typeof sheetRowSchema>;

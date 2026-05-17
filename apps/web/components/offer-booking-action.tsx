@@ -16,6 +16,7 @@ import {
   trackBookingExternal,
   trackBookingFormOpen,
 } from "@/lib/client-analytics";
+import type { ScheduleBookingMode } from "@/lib/offers/schedule-board";
 import type { Quest, Venue, VenueOffer } from "@/lib/schemas";
 import { cn } from "@/lib/utils";
 
@@ -27,6 +28,7 @@ type Props = {
   className?: string;
   buttonLabel?: string;
   showIncludedNote?: boolean;
+  mode?: ScheduleBookingMode;
 };
 
 export function OfferBookingAction({
@@ -37,9 +39,16 @@ export function OfferBookingAction({
   className,
   buttonLabel = "Записаться",
   showIncludedNote = false,
+  mode,
 }: Props) {
   const [open, setOpen] = React.useState(false);
-  const action = resolveBookingAction(offer.mosBookingUrl);
+  const resolvedAction = resolveBookingAction(offer.mosBookingUrl);
+  const action: ScheduleBookingMode =
+    mode ??
+    (resolvedAction.kind === "mos"
+      ? { kind: "mos", label: "mos.ru", url: resolvedAction.url }
+      : { kind: "form", label: buttonLabel });
+  const isWaitlistAction = action.kind === "waitlist";
 
   function openForm() {
     setOpen(true);
@@ -71,11 +80,15 @@ export function OfferBookingAction({
             })
           }
         >
-          mos.ru
+          {action.label}
         </a>
+      ) : action.kind === "disabled" ? (
+        <Button size="sm" disabled>
+          {action.label}
+        </Button>
       ) : (
         <Button size="sm" onClick={openForm}>
-          {buttonLabel}
+          {action.label}
         </Button>
       )}
 
@@ -88,13 +101,17 @@ export function OfferBookingAction({
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="border-white/10 bg-card sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Заявка на программу</DialogTitle>
+            <DialogTitle>
+              {isWaitlistAction ? "Заявка в лист ожидания" : "Заявка на программу"}
+            </DialogTitle>
             <DialogDescription>
               {quest.title} · {venue.name} · {offer.shiftLabel}
+              {isWaitlistAction ? " · лист ожидания" : null}
             </DialogDescription>
           </DialogHeader>
           <BookingForm
             defaults={{
+              leadType: isWaitlistAction ? "waitlist" : "booking",
               questSlug: quest.slug,
               questTitle: quest.title,
               offerId: offer.id,
@@ -102,6 +119,9 @@ export function OfferBookingAction({
               venueName: venue.name,
               schoolSlug,
             }}
+            submitLabel={
+              isWaitlistAction ? "Отправить заявку в лист ожидания" : undefined
+            }
             onSuccess={() => setOpen(false)}
           />
         </DialogContent>

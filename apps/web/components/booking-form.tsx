@@ -8,20 +8,29 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { submitLeadToYandex } from "@/lib/lead-submit-client";
-import { leadSchema, type LeadPayload } from "@/lib/schemas";
+import { leadSchema, type LeadFormInput, type LeadPayload } from "@/lib/schemas";
 
 type Props = {
   defaults: Omit<
-    LeadPayload,
-    "parentName" | "contact" | "consent"
-  > & { consent?: boolean };
+    LeadFormInput,
+    "leadType" | "parentName" | "contact" | "consent"
+  > & {
+    consent?: boolean;
+    leadType?: LeadFormInput["leadType"];
+  };
+  submitLabel?: string;
   onSuccess?: () => void;
 };
 
-export function BookingForm({ defaults, onSuccess }: Props) {
-  const form = useForm<LeadPayload>({
+export function BookingForm({
+  defaults,
+  submitLabel = "Отправить заявку",
+  onSuccess,
+}: Props) {
+  const form = useForm<LeadFormInput, unknown, LeadPayload>({
     resolver: zodResolver(leadSchema),
     defaultValues: {
+      leadType: "booking",
       parentName: "",
       contact: "",
       consent: false,
@@ -37,6 +46,7 @@ export function BookingForm({ defaults, onSuccess }: Props) {
     }
     onSuccess?.();
     form.reset({
+      leadType: "booking",
       ...defaults,
       parentName: "",
       contact: "",
@@ -105,7 +115,7 @@ export function BookingForm({ defaults, onSuccess }: Props) {
       ) : null}
 
       <Button type="submit" disabled={form.formState.isSubmitting}>
-        {form.formState.isSubmitting ? "Отправка…" : "Отправить заявку"}
+        {form.formState.isSubmitting ? "Отправка…" : submitLabel}
       </Button>
     </form>
   );

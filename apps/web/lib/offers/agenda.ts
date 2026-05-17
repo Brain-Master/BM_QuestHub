@@ -5,7 +5,13 @@ export type AgendaOfferItem = {
   offer: VenueOffer;
   quest: Pick<
     Quest,
-    "slug" | "title" | "worldSlug" | "ageLabel" | "catalogTagline" | "tagline"
+    | "slug"
+    | "title"
+    | "worldSlug"
+    | "ageLabel"
+    | "catalogTagline"
+    | "tagline"
+    | "heroImageUrl"
   >;
   venue: Venue;
   world: Pick<World, "slug" | "name" | "themeKey"> | null;
@@ -64,6 +70,7 @@ export function buildAgendaItems(params: {
           ageLabel: quest.ageLabel,
           catalogTagline: quest.catalogTagline,
           tagline: quest.tagline,
+          heroImageUrl: quest.heroImageUrl,
         },
         venue,
         world: worldBySlug.get(quest.worldSlug) ?? null,

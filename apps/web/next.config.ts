@@ -4,6 +4,7 @@ const nextConfig: NextConfig = {
   output: "export",
   distDir: "out",
   trailingSlash: true,
+  allowedDevOrigins: ["127.0.0.1"],
   images: {
     unoptimized: true,
     remotePatterns: [

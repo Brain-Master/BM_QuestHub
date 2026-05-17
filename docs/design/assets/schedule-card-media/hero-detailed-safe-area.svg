@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Schedule card hero detailed safe area</title>
+  <desc id="desc">Template showing full hero frame, central safe area, badge zone, and bottom gradient zone.</desc>
+  <rect width="1600" height="900" fill="#111827"/>
+  <rect x="0" y="0" width="1600" height="900" fill="none" stroke="#ffffff" stroke-width="8"/>
+  <rect x="320" y="180" width="960" height="540" fill="none" stroke="#22d3ee" stroke-width="6" stroke-dasharray="24 18"/>
+  <rect x="0" y="0" width="520" height="150" fill="#ef4444" opacity="0.28"/>
+  <rect x="0" y="560" width="1600" height="340" fill="#000000" opacity="0.45"/>
+  <line x1="800" y1="0" x2="800" y2="900" stroke="#ffffff" stroke-width="2" stroke-dasharray="12 12" opacity="0.55"/>
+  <line x1="0" y1="450" x2="1600" y2="450" stroke="#ffffff" stroke-width="2" stroke-dasharray="12 12" opacity="0.55"/>
+  <text x="44" y="72" fill="#ffffff" font-family="Arial, sans-serif" font-size="36" font-weight="700">Badge zone</text>
+  <text x="360" y="240" fill="#67e8f9" font-family="Arial, sans-serif" font-size="42" font-weight="700">Safe area: main object</text>
+  <text x="44" y="835" fill="#ffffff" font-family="Arial, sans-serif" font-size="36" font-weight="700">Bottom gradient / text overlap zone</text>
+</svg>

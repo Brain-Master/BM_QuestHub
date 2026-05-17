@@ -36,6 +36,50 @@ export type World = z.infer<typeof worldSchema>;
 
 export const productFormatSchema = z.enum(["intensive", "year"]);
 
+const urlStringSchema = z.string().url();
+
+export const scheduleMediaImageSchema = z.object({
+  url: urlStringSchema,
+  alt: z.string().optional(),
+  /** Проценты 0..100 для CSS object-position. */
+  focalPoint: z
+    .object({
+      x: z.number().min(0).max(100),
+      y: z.number().min(0).max(100),
+    })
+    .optional(),
+});
+
+export const scheduleMediaSchema = z.object({
+  /** Основной кадр для detailed card и мобильного hero. */
+  hero: scheduleMediaImageSchema.optional(),
+  /** Отдельно подготовленный кадр для compact/list режимов. */
+  compact: scheduleMediaImageSchema.optional(),
+  /** Брендовый или world-level fallback, если у смены нет уникального кадра. */
+  fallback: scheduleMediaImageSchema.optional(),
+});
+
+export const scheduleCardSchema = z.object({
+  displayTitle: z.string().optional(),
+  description: z.string().optional(),
+  teacherName: z.string().optional(),
+  tags: z.array(z.string()).default([]),
+  formatType: z.string().optional(),
+  formatTime: z.string().optional(),
+  formatNote: z.string().optional(),
+  mosRuCode: z.string().optional(),
+  /** Сырой операционный статус источника данных для UI-маппера расписания. */
+  status: z.string().optional(),
+  isArchived: z.boolean().default(false),
+  /** Управляет CTA для sold-out: disabled или заявка в лист ожидания. */
+  allowWaitlistWhenSoldOut: z.boolean().default(false),
+  media: scheduleMediaSchema.optional(),
+});
+
+export type ScheduleMediaImage = z.infer<typeof scheduleMediaImageSchema>;
+export type ScheduleMedia = z.infer<typeof scheduleMediaSchema>;
+export type ScheduleCard = z.infer<typeof scheduleCardSchema>;
+
 export const venueOfferSchema = z.object({
   id: z.string(),
   venueSlug: z.string(),
@@ -54,6 +98,8 @@ export const venueOfferSchema = z.object({
   sheetStatus: z.string().optional(),
   enrolled: z.number().int().nonnegative().optional(),
   maxCapacity: z.number().int().positive().optional(),
+  /** UX/UI payload для новой витрины расписания. Backward-compatible: старые snapshots могут не иметь этого блока. */
+  scheduleCard: scheduleCardSchema.optional(),
 });
 
 export type VenueOffer = z.infer<typeof venueOfferSchema>;
@@ -92,6 +138,7 @@ export const questSchema = z.object({
 export type Quest = z.infer<typeof questSchema>;
 
 export const leadSchema = z.object({
+  leadType: z.enum(["booking", "waitlist"]).default("booking"),
   parentName: z.string().min(1, "Укажите имя"),
   contact: z.string().min(5, "Телефон или email"),
   consent: z
@@ -105,4 +152,5 @@ export const leadSchema = z.object({
   schoolSlug: z.string().optional(),
 });
 
+export type LeadFormInput = z.input<typeof leadSchema>;
 export type LeadPayload = z.infer<typeof leadSchema>;
