@@ -8,7 +8,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { submitLeadToYandex } from "@/lib/lead-submit-client";
-import { LEGAL_PERSONAL_DATA_PATH } from "@/lib/legal-routes";
+import {
+  LEGAL_PERSONAL_DATA_CONSENT_PATH,
+  LEGAL_PERSONAL_DATA_PATH,
+} from "@/lib/legal-routes";
 import type { RegistrationFlowContext } from "@/lib/registration-flow";
 import { leadSchema, type LeadFormInput, type LeadPayload } from "@/lib/schemas";
 import { cn } from "@/lib/utils";
@@ -247,14 +250,23 @@ export function BookingForm({
             htmlFor="consent"
             className="min-w-0 text-slate-400 text-xs leading-relaxed font-normal"
           >
-            Согласн(а) на{" "}
+            Даю{" "}
+            <Link
+              href={LEGAL_PERSONAL_DATA_CONSENT_PATH}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-cyan-300 underline underline-offset-3 hover:text-cyan-200"
+            >
+              согласие на обработку персональных данных
+            </Link>
+            {" "}и подтверждаю ознакомление с{" "}
             <Link
               href={LEGAL_PERSONAL_DATA_PATH}
               target="_blank"
               rel="noopener noreferrer"
               className="text-cyan-300 underline underline-offset-3 hover:text-cyan-200"
             >
-              обработку персональных данных
+              политикой обработки персональных данных
             </Link>
             .
           </Label>

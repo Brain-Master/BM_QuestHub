@@ -101,7 +101,7 @@ export function LegalDocumentLayout({
           </section>
 
           <nav
-            aria-label="Оглавление политики"
+            aria-label="Оглавление документа"
             className="rounded-2xl border border-white/10 bg-black/25 p-4 backdrop-blur-md"
           >
             <h2 className="mb-3 font-heading font-semibold text-lg">Оглавление</h2>

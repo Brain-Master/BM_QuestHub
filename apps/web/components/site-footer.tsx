@@ -1,6 +1,11 @@
 import Link from "next/link";
 
-import { LEGAL_INDEX_PATH, LEGAL_PERSONAL_DATA_PATH } from "@/lib/legal-routes";
+import {
+  LEGAL_COOKIES_ANALYTICS_PATH,
+  LEGAL_INDEX_PATH,
+  LEGAL_OPERATOR_DETAILS_PATH,
+  LEGAL_PERSONAL_DATA_PATH,
+} from "@/lib/legal-routes";
 
 export function SiteFooter() {
   return (
@@ -29,6 +34,18 @@ export function SiteFooter() {
             href={LEGAL_PERSONAL_DATA_PATH}
           >
             Политика обработки ПДн
+          </Link>
+          <Link
+            className="text-muted-foreground hover:text-foreground"
+            href={LEGAL_COOKIES_ANALYTICS_PATH}
+          >
+            Cookies и аналитика
+          </Link>
+          <Link
+            className="text-muted-foreground hover:text-foreground"
+            href={LEGAL_OPERATOR_DETAILS_PATH}
+          >
+            Реквизиты и контакты
           </Link>
           <span className="text-muted-foreground text-xs">
             © {new Date().getFullYear()} BrainMaster
