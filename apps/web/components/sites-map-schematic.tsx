@@ -46,6 +46,7 @@ type Props = {
 };
 
 type SetTransform = ReactZoomPanPinchRef["setTransform"];
+type ResetTransform = ReactZoomPanPinchRef["resetTransform"];
 
 type TransformState = {
   scale: number;
@@ -86,6 +87,25 @@ const IDENTITY_TRANSFORM: TransformState = {
 };
 
 const CLUSTER_DISTANCE = 36;
+const MAP_ZOOM_LEVELS = [1, 2, 4] as const;
+const WHEEL_ZOOM_COOLDOWN_MS = 260;
+
+function nearestZoomLevel(scale: number): (typeof MAP_ZOOM_LEVELS)[number] {
+  return MAP_ZOOM_LEVELS.reduce((nearest, level) =>
+    Math.abs(level - scale) < Math.abs(nearest - scale) ? level : nearest,
+  );
+}
+
+function nextZoomLevel(scale: number, direction: "in" | "out"): number {
+  const currentLevel = nearestZoomLevel(scale);
+  const currentIndex = MAP_ZOOM_LEVELS.indexOf(currentLevel);
+  const nextIndex =
+    direction === "in"
+      ? Math.min(MAP_ZOOM_LEVELS.length - 1, currentIndex + 1)
+      : Math.max(0, currentIndex - 1);
+
+  return MAP_ZOOM_LEVELS[nextIndex];
+}
 
 function primaryMetro(site: SiteScopeCard): string | undefined {
   return site.campuses.find((campus) => campus.metro && campus.metro !== "—")?.metro;
@@ -302,6 +322,8 @@ export function SiteMapCanvas({
   const [isLocating, setIsLocating] = useState(false);
   const mapFrameRef = useRef<HTMLDivElement>(null);
   const setTransformRef = useRef<SetTransform | null>(null);
+  const resetTransformRef = useRef<ResetTransform | null>(null);
+  const lastWheelZoomAtRef = useRef(0);
   const mappedSites = useMemo(() => sites.filter(siteHasMapLocation), [sites]);
   const visibleSiteSlugs = useMemo(
     () => new Set(visibleSites.filter(siteHasMapLocation).map((site) => site.slug)),
@@ -372,6 +394,71 @@ export function SiteMapCanvas({
     const positionY = height / 2 - (point.y / 100) * height * zoom;
     setTransform(positionX, positionY, zoom, 260, "easeOut");
   }
+
+  function applyZoomLevel(targetScale: number, duration = 220) {
+    const frame = mapFrameRef.current;
+    const setTransform = setTransformRef.current;
+    if (!frame || !setTransform || targetScale === transform.scale) return;
+
+    const { width, height } = frame.getBoundingClientRect();
+    const centerX = width / 2;
+    const centerY = height / 2;
+    const contentCenterX = (centerX - transform.positionX) / transform.scale;
+    const contentCenterY = (centerY - transform.positionY) / transform.scale;
+    const positionX = centerX - contentCenterX * targetScale;
+    const positionY = centerY - contentCenterY * targetScale;
+
+    setTransform(positionX, positionY, targetScale, duration, "easeOut");
+  }
+
+  function applyZoomStep(direction: "in" | "out") {
+    if (direction === "out" && nearestZoomLevel(transform.scale) === MAP_ZOOM_LEVELS[0]) {
+      resetTransformRef.current?.(220);
+      return;
+    }
+
+    applyZoomLevel(nextZoomLevel(transform.scale, direction));
+  }
+
+  useEffect(() => {
+    const frame = mapFrameRef.current;
+    if (!frame) return;
+    const wheelFrame = frame;
+
+    function handleMapWheel(event: WheelEvent) {
+      if (Math.abs(event.deltaY) < 4) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      const now = window.performance.now();
+      if (now - lastWheelZoomAtRef.current < WHEEL_ZOOM_COOLDOWN_MS) return;
+      lastWheelZoomAtRef.current = now;
+
+      const direction = event.deltaY < 0 ? "in" : "out";
+      if (direction === "out" && nearestZoomLevel(transform.scale) === MAP_ZOOM_LEVELS[0]) {
+        resetTransformRef.current?.(220);
+        return;
+      }
+
+      const targetScale = nextZoomLevel(transform.scale, direction);
+      const setTransform = setTransformRef.current;
+      if (!setTransform || targetScale === transform.scale) return;
+
+      const rect = wheelFrame.getBoundingClientRect();
+      const cursorX = event.clientX - rect.left;
+      const cursorY = event.clientY - rect.top;
+      const contentX = (cursorX - transform.positionX) / transform.scale;
+      const contentY = (cursorY - transform.positionY) / transform.scale;
+      const positionX = cursorX - contentX * targetScale;
+      const positionY = cursorY - contentY * targetScale;
+
+      setTransform(positionX, positionY, targetScale, 220, "easeOut");
+    }
+
+    wheelFrame.addEventListener("wheel", handleMapWheel, { passive: false });
+    return () => wheelFrame.removeEventListener("wheel", handleMapWheel);
+  }, [transform]);
 
   function selectPoint(point: DisplayMapPoint) {
     if (activePointId === point.id) {
@@ -445,6 +532,7 @@ export function SiteMapCanvas({
     <div
       className={cn(
         "relative grid overflow-hidden rounded-[1.75rem] border border-white/10 bg-card/45 shadow-[0_24px_90px_rgba(2,6,23,0.28)]",
+        !isFullscreen && showList && "lg:h-[min(78vh,42rem)] lg:min-h-0",
         showList && "lg:grid-cols-[minmax(0,1fr)_24rem]",
         isFullscreen &&
           cn(
@@ -454,12 +542,20 @@ export function SiteMapCanvas({
           ),
       )}
     >
-      <div className={cn("relative min-h-[min(70vh,32rem)] bg-card/30", isFullscreen && "min-h-0")}>
+      <div
+        className={cn(
+          "relative min-h-[min(70vh,32rem)] bg-card/30",
+          showList && "lg:min-h-0",
+          isFullscreen && "min-h-0",
+        )}
+      >
         <div
           ref={mapFrameRef}
           data-testid="sites-map-frame"
+          data-map-scale={nearestZoomLevel(transform.scale)}
           className={cn(
             "relative h-full min-h-[min(70vh,32rem)] overflow-hidden bg-card/20",
+            showList && "lg:min-h-0",
             isFullscreen && "min-h-0",
             isFullscreen ? "rounded-2xl" : "lg:rounded-l-[1.75rem]",
           )}
@@ -471,7 +567,7 @@ export function SiteMapCanvas({
             maxScale={4}
             centerOnInit
             limitToBounds={false}
-            wheel={{ step: 0.14 }}
+            wheel={{ disabled: true }}
             doubleClick={{ mode: "zoomIn" }}
             panning={{ velocityDisabled: true }}
             onInit={(ref) =>
@@ -483,8 +579,9 @@ export function SiteMapCanvas({
             }
             onTransform={(_, state) => setTransformState(state)}
           >
-            {({ zoomIn, zoomOut, resetTransform, setTransform }) => {
+            {({ resetTransform, setTransform }) => {
               setTransformRef.current = setTransform;
+              resetTransformRef.current = resetTransform;
 
               return (
                 <>
@@ -492,7 +589,7 @@ export function SiteMapCanvas({
                     wrapperClass="!h-full !w-full"
                     contentClass="!h-full !w-full"
                   >
-                    <div className="relative size-full">
+                    <div className="relative size-full" data-testid="sites-map-content">
                       <MapBackground />
                     </div>
                   </TransformComponent>
@@ -564,7 +661,7 @@ export function SiteMapCanvas({
                       type="button"
                       className="inline-flex size-8 cursor-pointer items-center justify-center rounded-full text-cyan-100 transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300"
                       aria-label="Приблизить карту"
-                      onClick={() => zoomIn(0.35)}
+                      onClick={() => applyZoomStep("in")}
                     >
                       <Plus className="size-4" aria-hidden />
                     </button>
@@ -572,7 +669,7 @@ export function SiteMapCanvas({
                       type="button"
                       className="inline-flex size-8 cursor-pointer items-center justify-center rounded-full text-cyan-100 transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300"
                       aria-label="Отдалить карту"
-                      onClick={() => zoomOut(0.35)}
+                      onClick={() => applyZoomStep("out")}
                     >
                       <Minus className="size-4" aria-hidden />
                     </button>
@@ -623,7 +720,7 @@ export function SiteMapCanvas({
       </div>
 
       {showList ? (
-      <aside className="flex min-h-0 flex-col gap-4 border-white/10 border-t bg-card/75 p-4 backdrop-blur-xl lg:border-t-0 lg:border-l">
+      <aside className="bm-scrollbar flex min-h-0 flex-col gap-4 border-white/10 border-t bg-card/75 p-4 backdrop-blur-xl lg:h-full lg:overflow-y-auto lg:border-t-0 lg:border-l">
         <div className="flex items-center justify-between gap-3">
           <div className="min-w-0">
             <h3 className="font-heading font-semibold text-lg text-foreground">
@@ -638,7 +735,7 @@ export function SiteMapCanvas({
           </span>
         </div>
 
-        {filterSlot ? <div>{filterSlot}</div> : null}
+        {filterSlot ? <div className="shrink-0">{filterSlot}</div> : null}
 
         <SiteList
           groups={listGroups}
@@ -720,7 +817,7 @@ function SiteList({
 
   return (
     <div
-      className="grid min-h-32 max-h-[min(34rem,calc(100vh-18rem))] gap-3 overflow-y-auto pr-1"
+      className="grid min-h-32 flex-1 gap-3 overflow-y-auto pr-1 lg:min-h-0"
       data-testid="sites-map-list-scroll"
     >
       {groups.map(({ site, points }) => {

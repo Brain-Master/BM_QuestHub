@@ -35,6 +35,8 @@ test.describe("Sites page", () => {
     await page.goto("/sites?view=map");
 
     await expect(page).toHaveURL(/view=map/);
+    await expect(page.locator("[data-sites-map-snap]")).toHaveAttribute("id", "sites-map-section");
+    await expect(page.locator("[data-sites-map-snap]")).toHaveCSS("scroll-snap-align", "start");
     await expect(
       page.getByRole("img", { name: "Кибер-карта Москвы с площадками BrainMaster" }),
     ).toBeVisible();
@@ -51,6 +53,77 @@ test.describe("Sites page", () => {
     await expect(
       page.getByText("Статичная WebP-подложка, интерактивные точки"),
     ).toHaveCount(0);
+  });
+
+  test("keeps map frame stable when panel filters are toggled", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto("/sites?view=map");
+
+    const frame = page.getByTestId("sites-map-frame");
+    const before = await frame.boundingBox();
+    expect(before).not.toBeNull();
+
+    await page.getByRole("button", { name: /Фильтры/ }).click();
+    await expect(page.getByLabel("Цвета площадок")).toBeVisible();
+    const opened = await frame.boundingBox();
+    expect(opened).not.toBeNull();
+    expect(Math.abs(opened!.y - before!.y)).toBeLessThanOrEqual(2);
+    expect(Math.abs(opened!.height - before!.height)).toBeLessThanOrEqual(2);
+
+    await page.getByRole("button", { name: /Фильтры/ }).click();
+    await expect(page.getByLabel("Цвета площадок")).toBeHidden();
+    const closed = await frame.boundingBox();
+    expect(closed).not.toBeNull();
+    expect(Math.abs(closed!.y - before!.y)).toBeLessThanOrEqual(2);
+    expect(Math.abs(closed!.height - before!.height)).toBeLessThanOrEqual(2);
+  });
+
+  test("zooms the map by discrete wheel and button levels", async ({ page }) => {
+    await page.goto("/sites?view=map");
+
+    const frame = page.getByTestId("sites-map-frame");
+    const mapContent = page.getByTestId("sites-map-content");
+    await expect(frame).toHaveAttribute("data-map-scale", "1");
+
+    const frameBox = await frame.boundingBox();
+    expect(frameBox).not.toBeNull();
+    const cursorX = frameBox!.width * 0.25;
+    const cursorY = frameBox!.height * 0.25;
+
+    await frame.hover({ position: { x: cursorX, y: cursorY } });
+    await page.mouse.wheel(0, -120);
+    await page.mouse.wheel(0, -120);
+    await expect(frame).toHaveAttribute("data-map-scale", "2");
+    await expect.poll(async () => {
+      const contentBox = await mapContent.boundingBox();
+      expect(contentBox).not.toBeNull();
+      return Math.round(contentBox!.x - frameBox!.x);
+    }).toBe(Math.round(-frameBox!.width * 0.25));
+
+    await page.waitForTimeout(300);
+    await page.mouse.wheel(0, -120);
+    await expect(frame).toHaveAttribute("data-map-scale", "4");
+
+    await page.getByRole("button", { name: "Отдалить карту" }).click();
+    await expect(frame).toHaveAttribute("data-map-scale", "2");
+    await page.getByRole("button", { name: "Отдалить карту" }).click();
+    await expect(frame).toHaveAttribute("data-map-scale", "1");
+    const offsetBeforeReset = await mapContent.boundingBox();
+    expect(offsetBeforeReset).not.toBeNull();
+    expect(Math.abs(offsetBeforeReset!.x - frameBox!.x)).toBeGreaterThan(5);
+
+    await page.getByRole("button", { name: "Отдалить карту" }).click();
+    await expect(frame).toHaveAttribute("data-map-scale", "1");
+    await expect.poll(async () => {
+      const contentBox = await mapContent.boundingBox();
+      expect(contentBox).not.toBeNull();
+      return Math.round(contentBox!.x - frameBox!.x);
+    }).toBe(0);
+
+    await frame.hover();
+    const scrollBefore = await page.evaluate(() => window.scrollY);
+    await page.mouse.wheel(0, 120);
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(scrollBefore);
   });
 
   test("keeps the map visible when map filters find no sites", async ({ page }) => {

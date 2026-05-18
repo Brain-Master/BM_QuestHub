@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { CalendarDays, Grid2X2, MapPin } from "lucide-react";
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 
 import { CitySelectionGrid } from "@/components/city-selection-grid";
@@ -37,6 +37,11 @@ const TYPE_LABELS: Record<SiteScopeCard["type"], string> = {
   school: "Школы-партнёры",
   bm_base: "Базы BrainMaster",
 };
+
+const MAP_SNAP_SCROLL_DEBOUNCE_MS = 140;
+const MAP_SNAP_TOP_TOLERANCE_PX = 8;
+const MAP_SNAP_TRIGGER_MAX_PX = 180;
+const MAP_SNAP_TRIGGER_MAX_VIEWPORT_RATIO = 0.28;
 
 function rememberSite(site: SiteScopeCard) {
   localStorage.setItem(
@@ -584,6 +589,7 @@ function SitesListSection({
   cityOptions: CityOption[];
 }) {
   const searchParams = useSearchParams();
+  const mapSnapRef = useRef<HTMLDivElement>(null);
   const sort = normalizeSort(searchParams.get("sort"));
   const view = normalizeView(searchParams.get("view"));
   const mapColorMode = normalizeMapColorMode(searchParams.get("mapColors"));
@@ -641,6 +647,65 @@ function SitesListSection({
     />
   );
 
+  useEffect(() => {
+    if (view !== "map") return;
+
+    const section = mapSnapRef.current;
+    if (!section) return;
+    const snapSection = section;
+
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let lastScrollY = window.scrollY;
+    let isEligibleForSnap = false;
+    let snapTimer: number | null = null;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isEligibleForSnap = Boolean(entry?.isIntersecting && entry.intersectionRatio >= 0.2);
+      },
+      { threshold: [0, 0.2, 0.5, 1] },
+    );
+
+    function clearSnapTimer() {
+      if (!snapTimer) return;
+      window.clearTimeout(snapTimer);
+      snapTimer = null;
+    }
+
+    function scheduleSnap() {
+      const currentScrollY = window.scrollY;
+      const isScrollingTowardMap = currentScrollY > lastScrollY;
+      lastScrollY = currentScrollY;
+
+      if (!isScrollingTowardMap || !isEligibleForSnap) return;
+      clearSnapTimer();
+      snapTimer = window.setTimeout(() => {
+        const { top } = snapSection.getBoundingClientRect();
+        const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+        const triggerMax = Math.min(
+          MAP_SNAP_TRIGGER_MAX_PX,
+          viewportHeight * MAP_SNAP_TRIGGER_MAX_VIEWPORT_RATIO,
+        );
+        const isCloseToSettledPosition = top > MAP_SNAP_TOP_TOLERANCE_PX && top <= triggerMax;
+        if (!isCloseToSettledPosition) return;
+
+        snapSection.scrollIntoView({
+          block: "start",
+          behavior: reduceMotion ? "auto" : "smooth",
+        });
+      }, MAP_SNAP_SCROLL_DEBOUNCE_MS);
+    }
+
+    observer.observe(snapSection);
+    window.addEventListener("scroll", scheduleSnap, { passive: true });
+
+    return () => {
+      clearSnapTimer();
+      observer.disconnect();
+      window.removeEventListener("scroll", scheduleSnap);
+    };
+  }, [view]);
+
   return (
     <section className="space-y-8">
       <div className="grid gap-4 border-b border-white/10 pb-5 lg:grid-cols-[1fr_auto] lg:items-end">
@@ -692,12 +757,14 @@ function SitesListSection({
           </p>
         </div>
       ) : view === "map" ? (
-        <SitesMapSchematic
-          sites={mapSites}
-          visibleSites={visibleSites}
-          filterSlot={toolbar}
-          mapColorMode={mapColorMode}
-        />
+        <div ref={mapSnapRef} id="sites-map-section" data-sites-map-snap>
+          <SitesMapSchematic
+            sites={mapSites}
+            visibleSites={visibleSites}
+            filterSlot={toolbar}
+            mapColorMode={mapColorMode}
+          />
+        </div>
       ) : (
         <div className="grid gap-4">
           {toolbar}

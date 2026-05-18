@@ -391,6 +391,17 @@
   scrollbar-width: thin;
 }
 
+[data-sites-map-snap] {
+  scroll-margin-top: 5rem;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  overflow-anchor: none;
+}
+
+[data-sites-map-snap] * {
+  overflow-anchor: none;
+}
+
 html::-webkit-scrollbar,
 body::-webkit-scrollbar,
 .bm-scrollbar::-webkit-scrollbar {
