@@ -362,14 +362,22 @@ function ClusterMarker({
       <button
         type="button"
         className={cn(
-          "pointer-events-auto -translate-x-1/2 -translate-y-1/2 relative flex size-5 cursor-pointer items-center justify-center rounded-full border-2 border-background font-heading font-bold text-[10px] text-white transition duration-200 shadow-[0_0_0_6px_rgba(255,255,255,0.08),0_0_18px_rgba(34,211,238,0.35)] hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+          "pointer-events-auto -translate-x-1/2 -translate-y-1/2 relative flex size-8 cursor-pointer items-center justify-center rounded-full border-2 bg-white font-heading font-bold text-sm transition duration-200 shadow-[0_0_0_6px_rgba(255,255,255,0.08),0_0_18px_rgba(34,211,238,0.35)] hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
           dimmed && "opacity-35 saturate-50",
         )}
         data-map-interactive="true"
         data-testid="sites-map-cluster"
-        style={{ backgroundColor: markerColor }}
+        style={{ borderColor: markerColor, color: markerColor }}
         aria-label={`Группа из ${cluster.points.length} точек${visibleCount !== cluster.points.length ? `, найдено ${visibleCount}` : ""}`}
-        onClick={onSelect}
+        onPointerDown={(event) => event.stopPropagation()}
+        onPointerUp={(event) => {
+          event.stopPropagation();
+          onSelect();
+        }}
+        onClick={(event) => {
+          event.stopPropagation();
+          if (event.detail === 0) onSelect();
+        }}
       >
         <span
           className="pointer-events-none absolute inset-0 rounded-full opacity-55 motion-safe:animate-ping"

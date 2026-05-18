@@ -109,6 +109,16 @@ test.describe("Sites page", () => {
     await page.mouse.wheel(0, -120);
     await expect(frame).toHaveAttribute("data-map-scale", "4");
 
+    await page.getByRole("button", { name: "Приблизить карту" }).click();
+    await expect(frame).toHaveAttribute("data-map-scale", "8");
+    await page.getByRole("button", { name: "Приблизить карту" }).click();
+    await expect(frame).toHaveAttribute("data-map-scale", "16");
+    await page.getByRole("button", { name: "Приблизить карту" }).click();
+    await expect(frame).toHaveAttribute("data-map-scale", "16");
+    await page.getByRole("button", { name: "Отдалить карту" }).click();
+    await expect(frame).toHaveAttribute("data-map-scale", "8");
+    await page.getByRole("button", { name: "Отдалить карту" }).click();
+    await expect(frame).toHaveAttribute("data-map-scale", "4");
     await page.getByRole("button", { name: "Отдалить карту" }).click();
     await expect(frame).toHaveAttribute("data-map-scale", "2");
     await page.getByRole("button", { name: "Отдалить карту" }).click();
@@ -129,6 +139,18 @@ test.describe("Sites page", () => {
     const scrollBefore = await page.evaluate(() => window.scrollY);
     await page.mouse.wheel(0, 120);
     await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(scrollBefore);
+  });
+
+  test("zooms clustered map points until they split or hit max zoom", async ({ page }) => {
+    await page.goto("/sites?view=map");
+
+    const frame = page.getByTestId("sites-map-frame");
+    await expect(frame).toHaveAttribute("data-map-scale", "1");
+    await expect(page.getByTestId("sites-map-cluster").first()).toBeVisible();
+
+    await page.getByTestId("sites-map-cluster").first().click();
+
+    await expect(frame).toHaveAttribute("data-map-scale", /^(2|4|8|16)$/);
   });
 
   test("keeps the map visible when map filters find no sites", async ({ page }) => {
