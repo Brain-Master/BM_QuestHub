@@ -4,6 +4,8 @@ type: school
 address: Новоясеневский проспект, 24к3
 metro: Ясенево
 city: moscow
+latitude: 55.6039
+longitude: 37.5287
 district: Ясенево
 logoUrl: /venues/logos/school-1212-placeholder.png
 schoolScopeSlug: school-1212

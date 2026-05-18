@@ -238,20 +238,29 @@ export function resolveCampusMapPoint(params: {
   site: SiteScopeCard;
   campus: SiteCampus;
   index: number;
+  sitePoints?: Record<string, MapPercentPoint>;
+  geoControlPoints?: readonly MapGeoControlPoint[];
 }): MapPercentPoint {
-  const { site, campus, index } = params;
+  const {
+    site,
+    campus,
+    index,
+    sitePoints = SITE_MAP_POINTS as Record<string, MapPercentPoint>,
+    geoControlPoints = MAP_GEO_CONTROL_POINTS,
+  } = params;
   const campusKey = getCampusMapPointKey(site, campus);
-  const calibratedPoint =
-    SITE_MAP_POINTS[campusKey as keyof typeof SITE_MAP_POINTS] ??
-    SITE_MAP_POINTS[site.slug as keyof typeof SITE_MAP_POINTS];
-  if (calibratedPoint) return calibratedPoint;
+  const calibratedCampusPoint = sitePoints[campusKey];
+  if (calibratedCampusPoint) return calibratedCampusPoint;
 
   if (
     typeof campus.latitude === "number" &&
     typeof campus.longitude === "number"
   ) {
-    return projectGeoToMapPercent(campus.latitude, campus.longitude);
+    return projectGeoToMapPercent(campus.latitude, campus.longitude, geoControlPoints);
   }
+
+  const calibratedSitePoint = sitePoints[site.slug];
+  if (calibratedSitePoint) return calibratedSitePoint;
 
   if (campus.metro && METRO_ANCHORS[campus.metro]) return METRO_ANCHORS[campus.metro];
 

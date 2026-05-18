@@ -1,12 +1,25 @@
 "use client";
 
 import Image from "next/image";
-import { Download, Grip, MapPin, Copy } from "lucide-react";
-import { useMemo, useRef, useState } from "react";
+import { Copy, Download, MapPin, Minus, Plus, RotateCcw, Trash2 } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  TransformComponent,
+  TransformWrapper,
+  type ReactZoomPanPinchRef,
+} from "react-zoom-pan-pinch";
 
 import { buttonVariants } from "@/components/ui/button";
 import {
-  MAP_GEO_CONTROL_POINTS,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+} from "@/components/ui/select";
+import { CITY_META } from "@/lib/sites/city-card";
+import {
+  SITE_MAP_CALIBRATIONS,
+  type SiteMapCalibrationConfig,
   type MapGeoControlPoint,
 } from "@/lib/sites/map-calibration";
 import { positionSitesOnMap, type PositionedSiteOnMapPoint } from "@/lib/sites/map-projection";
@@ -24,8 +37,53 @@ type CalibrationPoint = {
 
 type CalibratorMode = "sites" | "geo";
 
+type SetTransform = ReactZoomPanPinchRef["setTransform"];
+type ResetTransform = ReactZoomPanPinchRef["resetTransform"];
+
+type TransformState = {
+  scale: number;
+  positionX: number;
+  positionY: number;
+};
+
+type PointerStart = {
+  x: number;
+  y: number;
+};
+
+const IDENTITY_TRANSFORM: TransformState = {
+  scale: 1,
+  positionX: 0,
+  positionY: 0,
+};
+
+const CALIBRATOR_ZOOM_LEVELS = [1, 2, 4, 8, 16, 32] as const;
+const WHEEL_ZOOM_COOLDOWN_MS = 220;
+const MAP_CLICK_DRAG_THRESHOLD_PX = 6;
+const DEFAULT_MAP_CALIBRATION = SITE_MAP_CALIBRATIONS[0] satisfies SiteMapCalibrationConfig;
+const MAP_CALIBRATIONS_BY_CITY = new Map<string, SiteMapCalibrationConfig>(
+  SITE_MAP_CALIBRATIONS.map((calibration) => [calibration.city, calibration]),
+);
+
 function clampPoint(value: number): number {
   return Math.min(98, Math.max(2, Number(value.toFixed(2))));
+}
+
+function nearestZoomLevel(scale: number): (typeof CALIBRATOR_ZOOM_LEVELS)[number] {
+  return CALIBRATOR_ZOOM_LEVELS.reduce((nearest, level) =>
+    Math.abs(level - scale) < Math.abs(nearest - scale) ? level : nearest,
+  );
+}
+
+function nextZoomLevel(scale: number, direction: "in" | "out"): number {
+  const currentLevel = nearestZoomLevel(scale);
+  const currentIndex = CALIBRATOR_ZOOM_LEVELS.indexOf(currentLevel);
+  const nextIndex =
+    direction === "in"
+      ? Math.min(CALIBRATOR_ZOOM_LEVELS.length - 1, currentIndex + 1)
+      : Math.max(0, currentIndex - 1);
+
+  return CALIBRATOR_ZOOM_LEVELS[nextIndex];
 }
 
 function formatCalibration(points: Record<string, CalibrationPoint>): string {
@@ -48,17 +106,42 @@ function formatGeoControlPoints(points: MapGeoControlPoint[]): string {
   return `export const MAP_GEO_CONTROL_POINTS = [\n${body}\n] as const satisfies readonly MapGeoControlPoint[];`;
 }
 
+function buildInitialPoints(positionedPoints: PositionedSiteOnMapPoint[]): Record<string, CalibrationPoint> {
+  return Object.fromEntries(
+    positionedPoints.map((positioned) => [
+      positioned.calibrationKey,
+      { x: positioned.x, y: positioned.y },
+    ]),
+  ) as Record<string, CalibrationPoint>;
+}
+
 export function SiteMapCalibrator({ sites }: Props) {
   const mapRef = useRef<HTMLDivElement>(null);
-  const positionedPoints = useMemo(() => positionSitesOnMap(sites), [sites]);
-  const initialPoints = useMemo(
+  const setTransformRef = useRef<SetTransform | null>(null);
+  const resetTransformRef = useRef<ResetTransform | null>(null);
+  const lastWheelZoomAtRef = useRef(0);
+  const mapPointerStartRef = useRef<PointerStart | null>(null);
+  const suppressNextMapClickRef = useRef(false);
+  const mapOptions = useMemo(
     () =>
-      Object.fromEntries(
-        positionedPoints.map((positioned) => [
-          positioned.calibrationKey,
-          { x: positioned.x, y: positioned.y },
-        ]),
-      ) as Record<string, CalibrationPoint>,
+      Object.values(CITY_META)
+        .sort((a, b) => (a.sortOrder ?? 99) - (b.sortOrder ?? 99) || a.label.localeCompare(b.label, "ru"))
+        .map((city) => ({
+          city: city.slug,
+          label: city.label,
+          calibration: MAP_CALIBRATIONS_BY_CITY.get(city.slug),
+        })),
+    [],
+  );
+  const [selectedCity, setSelectedCity] = useState<string>(DEFAULT_MAP_CALIBRATION.city);
+  const selectedMap = MAP_CALIBRATIONS_BY_CITY.get(selectedCity) ?? DEFAULT_MAP_CALIBRATION;
+  const selectedSites = useMemo(
+    () => sites.filter((site) => site.city === selectedMap.city),
+    [selectedMap.city, sites],
+  );
+  const positionedPoints = useMemo(() => positionSitesOnMap(selectedSites), [selectedSites]);
+  const initialPoints = useMemo(
+    () => buildInitialPoints(positionedPoints),
     [positionedPoints],
   );
   const [points, setPoints] = useState(initialPoints);
@@ -66,23 +149,95 @@ export function SiteMapCalibrator({ sites }: Props) {
   const [draggingKey, setDraggingKey] = useState<string | null>(null);
   const [mode, setMode] = useState<CalibratorMode>("sites");
   const [geoControlPoints, setGeoControlPoints] = useState<MapGeoControlPoint[]>([
-    ...MAP_GEO_CONTROL_POINTS,
+    ...selectedMap.geoControlPoints,
   ]);
   const [activeGeoIndex, setActiveGeoIndex] = useState(0);
   const [draggingGeoIndex, setDraggingGeoIndex] = useState<number | null>(null);
   const [draftGeoPoint, setDraftGeoPoint] = useState({ latitude: 55.75, longitude: 37.62 });
+  const [transform, setTransformState] = useState<TransformState>(IDENTITY_TRANSFORM);
+  const [frameSize, setFrameSize] = useState({ width: 0, height: 0 });
   const exportText = formatCalibration(points);
   const geoExportText = formatGeoControlPoints(geoControlPoints);
   const exportBundleText = `${exportText}\n\n${geoExportText}`;
 
-  function updatePointFromPointer(key: string, clientX: number, clientY: number) {
+  useEffect(() => {
     const frame = mapRef.current;
     if (!frame) return;
 
-    const rect = frame.getBoundingClientRect();
-    const x = clampPoint(((clientX - rect.left) / rect.width) * 100);
-    const y = clampPoint(((clientY - rect.top) / rect.height) * 100);
-    setPoints((current) => ({ ...current, [key]: { x, y } }));
+    const updateSize = () => {
+      const { width, height } = frame.getBoundingClientRect();
+      setFrameSize({ width, height });
+    };
+    updateSize();
+
+    const observer = new ResizeObserver(updateSize);
+    observer.observe(frame);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const frame = mapRef.current;
+    if (!frame) return;
+    const wheelFrame = frame;
+
+    function handleMapWheel(event: WheelEvent) {
+      if (Math.abs(event.deltaY) < 4) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      const now = window.performance.now();
+      if (now - lastWheelZoomAtRef.current < WHEEL_ZOOM_COOLDOWN_MS) return;
+      lastWheelZoomAtRef.current = now;
+
+      const direction = event.deltaY < 0 ? "in" : "out";
+      if (direction === "out" && nearestZoomLevel(transform.scale) === CALIBRATOR_ZOOM_LEVELS[0]) {
+        resetTransformRef.current?.(220);
+        return;
+      }
+
+      const targetScale = nextZoomLevel(transform.scale, direction);
+      const setTransform = setTransformRef.current;
+      if (!setTransform || targetScale === transform.scale) return;
+
+      const rect = wheelFrame.getBoundingClientRect();
+      const cursorX = event.clientX - rect.left;
+      const cursorY = event.clientY - rect.top;
+      const contentX = (cursorX - transform.positionX) / transform.scale;
+      const contentY = (cursorY - transform.positionY) / transform.scale;
+      const positionX = cursorX - contentX * targetScale;
+      const positionY = cursorY - contentY * targetScale;
+
+      setTransform(positionX, positionY, targetScale, 220, "easeOut");
+    }
+
+    wheelFrame.addEventListener("wheel", handleMapWheel, { passive: false });
+    return () => wheelFrame.removeEventListener("wheel", handleMapWheel);
+  }, [transform]);
+
+  function updatePointFromPointer(key: string, clientX: number, clientY: number) {
+    const point = getPointFromPointer(clientX, clientY);
+    if (!point) return;
+
+    setPoints((current) => ({ ...current, [key]: point }));
+  }
+
+  function trackMapPointerDown(clientX: number, clientY: number) {
+    mapPointerStartRef.current = { x: clientX, y: clientY };
+    suppressNextMapClickRef.current = false;
+  }
+
+  function trackMapPointerMove(clientX: number, clientY: number) {
+    const start = mapPointerStartRef.current;
+    if (!start) return;
+
+    if (Math.hypot(clientX - start.x, clientY - start.y) > MAP_CLICK_DRAG_THRESHOLD_PX) {
+      suppressNextMapClickRef.current = true;
+    }
+  }
+
+  function resetMapPointerTracking() {
+    mapPointerStartRef.current = null;
   }
 
   function getPointFromPointer(clientX: number, clientY: number): CalibrationPoint | null {
@@ -90,10 +245,71 @@ export function SiteMapCalibrator({ sites }: Props) {
     if (!frame) return null;
 
     const rect = frame.getBoundingClientRect();
+    const contentX = (clientX - rect.left - transform.positionX) / transform.scale;
+    const contentY = (clientY - rect.top - transform.positionY) / transform.scale;
+
     return {
-      x: clampPoint(((clientX - rect.left) / rect.width) * 100),
-      y: clampPoint(((clientY - rect.top) / rect.height) * 100),
+      x: clampPoint((contentX / rect.width) * 100),
+      y: clampPoint((contentY / rect.height) * 100),
     };
+  }
+
+  function getScreenPoint(point: CalibrationPoint): CalibrationPoint {
+    return {
+      x: transform.positionX + (point.x / 100) * frameSize.width * transform.scale,
+      y: transform.positionY + (point.y / 100) * frameSize.height * transform.scale,
+    };
+  }
+
+  function applyZoomLevel(targetScale: number, duration = 220) {
+    const frame = mapRef.current;
+    const setTransform = setTransformRef.current;
+    if (!frame || !setTransform || targetScale === transform.scale) return;
+
+    const { width, height } = frame.getBoundingClientRect();
+    const centerX = width / 2;
+    const centerY = height / 2;
+    const contentCenterX = (centerX - transform.positionX) / transform.scale;
+    const contentCenterY = (centerY - transform.positionY) / transform.scale;
+    const positionX = centerX - contentCenterX * targetScale;
+    const positionY = centerY - contentCenterY * targetScale;
+
+    setTransform(positionX, positionY, targetScale, duration, "easeOut");
+  }
+
+  function applyZoomStep(direction: "in" | "out") {
+    if (direction === "out" && nearestZoomLevel(transform.scale) === CALIBRATOR_ZOOM_LEVELS[0]) {
+      resetTransformRef.current?.(220);
+      return;
+    }
+
+    applyZoomLevel(nextZoomLevel(transform.scale, direction));
+  }
+
+  function changeSelectedCity(city: string | null) {
+    if (!city) return;
+    const nextMap = MAP_CALIBRATIONS_BY_CITY.get(city);
+    if (!nextMap) return;
+    const nextPositionedPoints = positionSitesOnMap(sites.filter((site) => site.city === nextMap.city));
+
+    setSelectedCity(city);
+    setPoints(buildInitialPoints(nextPositionedPoints));
+    setActiveKey(nextPositionedPoints[0]?.calibrationKey ?? null);
+    setGeoControlPoints([...nextMap.geoControlPoints]);
+    setActiveGeoIndex(0);
+    setDraggingKey(null);
+    setDraggingGeoIndex(null);
+    resetTransformRef.current?.(0);
+  }
+
+  function deleteGeoControlPoint(index: number) {
+    setGeoControlPoints((current) => current.filter((_, itemIndex) => itemIndex !== index));
+    setActiveGeoIndex((current) => {
+      const lastNextIndex = Math.max(0, geoControlPoints.length - 2);
+      if (current > index) return current - 1;
+      return Math.min(current, lastNextIndex);
+    });
+    setDraggingGeoIndex(null);
   }
 
   function addGeoControlPoint(clientX: number, clientY: number) {
@@ -150,8 +366,14 @@ export function SiteMapCalibrator({ sites }: Props) {
       <section className="rounded-[1.75rem] border border-white/10 bg-card/45 p-4 shadow-[0_24px_90px_rgba(2,6,23,0.28)] sm:p-6">
         <div
           ref={mapRef}
+          data-testid="calibrator-map-frame"
+          data-map-scale={nearestZoomLevel(transform.scale)}
           className="relative aspect-square min-h-80 overflow-hidden rounded-2xl bg-card/20 touch-none"
+          onPointerDown={(event) => {
+            trackMapPointerDown(event.clientX, event.clientY);
+          }}
           onPointerMove={(event) => {
+            trackMapPointerMove(event.clientX, event.clientY);
             if (mode === "sites" && draggingKey) {
               updatePointFromPointer(draggingKey, event.clientX, event.clientY);
             }
@@ -162,31 +384,103 @@ export function SiteMapCalibrator({ sites }: Props) {
           onPointerUp={() => {
             setDraggingKey(null);
             setDraggingGeoIndex(null);
+            resetMapPointerTracking();
           }}
           onPointerCancel={() => {
             setDraggingKey(null);
             setDraggingGeoIndex(null);
+            suppressNextMapClickRef.current = true;
+            resetMapPointerTracking();
           }}
           onClick={(event) => {
             if (mode !== "geo") return;
+            const target = event.target;
+            if (target instanceof Element && target.closest("button,a,input,select,textarea")) return;
+            if (suppressNextMapClickRef.current) {
+              suppressNextMapClickRef.current = false;
+              return;
+            }
             addGeoControlPoint(event.clientX, event.clientY);
           }}
         >
-          <Image
-            src="/sites/moscow-cyber-map.webp"
-            alt=""
-            fill
-            className="object-contain object-center opacity-70 mix-blend-screen"
-            sizes="(min-width: 1024px) 800px, calc(100vw - 2rem)"
-            priority
-          />
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,transparent_45%,rgba(15,23,42,0.38)_100%)]"
-          />
+          <TransformWrapper
+            initialScale={1}
+            minScale={1}
+            maxScale={32}
+            centerOnInit
+            limitToBounds={false}
+            wheel={{ disabled: true }}
+            doubleClick={{ disabled: true }}
+            panning={{ velocityDisabled: true }}
+            onInit={(ref) =>
+              setTransformState({
+                scale: ref.state.scale,
+                positionX: ref.state.positionX,
+                positionY: ref.state.positionY,
+              })
+            }
+            onTransform={(_, state) => setTransformState(state)}
+          >
+            {({ resetTransform, setTransform }) => {
+              setTransformRef.current = setTransform;
+              resetTransformRef.current = resetTransform;
+
+              return (
+                <>
+                  <TransformComponent
+                    wrapperClass="!h-full !w-full"
+                    contentClass="!h-full !w-full"
+                  >
+                    <div className="relative size-full" data-testid="calibrator-map-content">
+                      <Image
+                        src={selectedMap.imageSrc}
+                        alt=""
+                        fill
+                        className="object-contain object-center opacity-70 mix-blend-screen"
+                        sizes="(min-width: 1024px) 800px, calc(100vw - 2rem)"
+                        priority
+                      />
+                      <div
+                        aria-hidden
+                        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,transparent_45%,rgba(15,23,42,0.38)_100%)]"
+                      />
+                    </div>
+                  </TransformComponent>
+
+                  <div className="absolute top-3 right-3 z-40 flex items-center gap-1.5 rounded-full border border-white/10 bg-card/90 p-1 shadow-xl backdrop-blur">
+                    <button
+                      type="button"
+                      className="inline-flex size-8 cursor-pointer items-center justify-center rounded-full text-cyan-100 transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300"
+                      aria-label="Приблизить карту"
+                      onClick={() => applyZoomStep("in")}
+                    >
+                      <Plus className="size-4" aria-hidden />
+                    </button>
+                    <button
+                      type="button"
+                      className="inline-flex size-8 cursor-pointer items-center justify-center rounded-full text-cyan-100 transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300"
+                      aria-label="Отдалить карту"
+                      onClick={() => applyZoomStep("out")}
+                    >
+                      <Minus className="size-4" aria-hidden />
+                    </button>
+                    <button
+                      type="button"
+                      className="inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-full px-2.5 text-cyan-100 text-xs transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300"
+                      onClick={() => resetTransform(220)}
+                    >
+                      <RotateCcw className="size-3.5" aria-hidden />
+                      Сброс
+                    </button>
+                  </div>
+                </>
+              );
+            }}
+          </TransformWrapper>
 
           {mode === "sites" ? positionedPoints.map((positioned) => {
             const point = points[positioned.calibrationKey] ?? { x: positioned.x, y: positioned.y };
+            const screenPoint = getScreenPoint(point);
             const active = activeKey === positioned.calibrationKey;
 
             return (
@@ -194,12 +488,14 @@ export function SiteMapCalibrator({ sites }: Props) {
                 key={positioned.id}
                 type="button"
                 className={cn(
-                  "absolute z-20 flex -translate-x-1/2 -translate-y-1/2 cursor-grab items-center gap-2 rounded-full border bg-slate-950/90 px-2.5 py-1.5 text-xs shadow-xl backdrop-blur active:cursor-grabbing",
+                  "absolute z-20 size-12 -translate-x-1/2 -translate-y-1/2 cursor-crosshair rounded-full border bg-slate-950/60 text-xs shadow-xl backdrop-blur transition hover:bg-slate-950/80 active:cursor-grabbing",
                   active
-                    ? "border-orange-300 text-orange-100"
-                    : "border-white/15 text-cyan-100 hover:border-cyan-200/40",
+                    ? "border-orange-300 text-orange-100 shadow-[0_0_0_6px_rgba(251,146,60,0.14),0_0_32px_rgba(251,146,60,0.5)]"
+                    : "border-orange-200/35 text-orange-100/85 hover:border-orange-200/70",
                 )}
-                style={{ left: `${point.x}%`, top: `${point.y}%` }}
+                style={{ left: screenPoint.x, top: screenPoint.y }}
+                aria-label={`Точка площадки ${formatPointLabel(positioned)}`}
+                data-testid="calibrator-site-crosshair"
                 onPointerDown={(event) => {
                   event.stopPropagation();
                   event.currentTarget.setPointerCapture(event.pointerId);
@@ -209,12 +505,30 @@ export function SiteMapCalibrator({ sites }: Props) {
                 }}
                 onClick={(event) => event.stopPropagation()}
               >
-                <Grip className="size-3.5" aria-hidden />
-                {formatPointLabel(positioned)}
+                <span
+                  className="pointer-events-none absolute top-1/2 left-0 h-px w-full -translate-y-1/2 bg-orange-100/85"
+                  aria-hidden
+                />
+                <span
+                  className="pointer-events-none absolute top-0 left-1/2 h-full w-px -translate-x-1/2 bg-orange-100/85"
+                  aria-hidden
+                />
+                <span
+                  className="pointer-events-none absolute inset-2 rounded-full border border-orange-100/70"
+                  aria-hidden
+                />
+                <span
+                  className="pointer-events-none absolute top-1/2 left-1/2 size-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-orange-50 shadow-[0_0_12px_rgba(255,247,237,0.9)]"
+                  aria-hidden
+                />
+                <span className="pointer-events-none absolute top-full left-1/2 mt-1 max-w-48 -translate-x-1/2 truncate rounded-full border border-orange-200/30 bg-slate-950/85 px-1.5 py-0.5 text-[10px] text-orange-50">
+                  {formatPointLabel(positioned)}
+                </span>
               </button>
             );
           }) : null}
           {mode === "geo" ? geoControlPoints.map((point, index) => {
+            const screenPoint = getScreenPoint(point);
             const active = activeGeoIndex === index;
 
             return (
@@ -222,12 +536,14 @@ export function SiteMapCalibrator({ sites }: Props) {
                 key={`${point.latitude}:${point.longitude}:${index}`}
                 type="button"
                 className={cn(
-                  "absolute z-20 flex -translate-x-1/2 -translate-y-1/2 cursor-grab items-center gap-2 rounded-full border bg-slate-950/90 px-2.5 py-1.5 text-xs shadow-xl backdrop-blur active:cursor-grabbing",
+                  "absolute z-20 size-12 -translate-x-1/2 -translate-y-1/2 cursor-crosshair rounded-full border bg-slate-950/55 text-xs shadow-xl backdrop-blur transition hover:bg-slate-950/75 active:cursor-grabbing",
                   active
-                    ? "border-cyan-200 text-cyan-100"
-                    : "border-white/15 text-muted-foreground hover:border-cyan-200/40",
+                    ? "border-cyan-200 text-cyan-100 shadow-[0_0_0_6px_rgba(34,211,238,0.14),0_0_32px_rgba(34,211,238,0.5)]"
+                    : "border-cyan-200/35 text-cyan-100/80 hover:border-cyan-200/70",
                 )}
-                style={{ left: `${point.x}%`, top: `${point.y}%` }}
+                style={{ left: screenPoint.x, top: screenPoint.y }}
+                aria-label={`Geo ${index + 1}: контрольная точка карты`}
+                data-testid="calibrator-geo-crosshair"
                 onPointerDown={(event) => {
                   event.stopPropagation();
                   event.currentTarget.setPointerCapture(event.pointerId);
@@ -237,8 +553,25 @@ export function SiteMapCalibrator({ sites }: Props) {
                 }}
                 onClick={(event) => event.stopPropagation()}
               >
-                <Grip className="size-3.5" aria-hidden />
-                Geo {index + 1}
+                <span
+                  className="pointer-events-none absolute top-1/2 left-0 h-px w-full -translate-y-1/2 bg-cyan-100/85"
+                  aria-hidden
+                />
+                <span
+                  className="pointer-events-none absolute top-0 left-1/2 h-full w-px -translate-x-1/2 bg-cyan-100/85"
+                  aria-hidden
+                />
+                <span
+                  className="pointer-events-none absolute inset-2 rounded-full border border-cyan-100/70"
+                  aria-hidden
+                />
+                <span
+                  className="pointer-events-none absolute top-1/2 left-1/2 size-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-50 shadow-[0_0_12px_rgba(236,254,255,0.9)]"
+                  aria-hidden
+                />
+                <span className="pointer-events-none absolute top-full left-1/2 mt-1 -translate-x-1/2 whitespace-nowrap rounded-full border border-cyan-200/30 bg-slate-950/85 px-1.5 py-0.5 text-[10px] text-cyan-50">
+                  Geo {index + 1}
+                </span>
               </button>
             );
           }) : null}
@@ -253,6 +586,34 @@ export function SiteMapCalibrator({ sites }: Props) {
             калибровки.
           </p>
         </div>
+
+        <label className="grid gap-2 text-sm">
+          <span className="text-muted-foreground">Карта / город</span>
+          <Select value={selectedMap.city} onValueChange={changeSelectedCity}>
+            <SelectTrigger
+              data-testid="calibrator-map-selector"
+              className="w-full border-white/10 bg-black/20"
+              aria-label="Карта / город"
+            >
+              <span>{selectedMap.label}</span>
+            </SelectTrigger>
+            <SelectContent>
+              {mapOptions.map((option) => (
+                <SelectItem
+                  key={option.city}
+                  value={option.city}
+                  disabled={!option.calibration}
+                >
+                  {option.label}
+                  {!option.calibration ? " · карта ещё не добавлена" : ""}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <span className="text-muted-foreground text-xs">
+            Сейчас калибруется {selectedMap.label}. Города без подложки недоступны для выбора.
+          </span>
+        </label>
 
         <div className="grid grid-cols-2 gap-2 rounded-2xl border border-white/10 bg-black/15 p-1">
           <button
@@ -314,7 +675,8 @@ export function SiteMapCalibrator({ sites }: Props) {
             <div className="grid gap-2 rounded-2xl border border-white/10 bg-black/15 p-3">
               <p className="text-muted-foreground text-xs leading-relaxed">
                 Впишите известные координаты, затем кликните по соответствующей точке на
-                изображении. Три и более точки включат affine-привязку.
+                изображении. Прицел ставится по центру, зум доступен до 32x. Три и более
+                точки включат affine-привязку.
               </p>
               <label className="grid gap-1 text-xs">
                 <span className="text-muted-foreground">Latitude</span>
@@ -367,9 +729,30 @@ export function SiteMapCalibrator({ sites }: Props) {
                     onClick={() => setActiveGeoIndex(index)}
                   >
                     <div className="flex items-center justify-between gap-2">
-                      <span className="font-medium text-foreground">Geo {index + 1}</span>
+                      <button
+                        type="button"
+                        className="inline-flex min-w-0 cursor-pointer items-center gap-1 rounded-lg text-left font-medium text-foreground transition hover:text-cyan-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        onClick={() => setActiveGeoIndex(index)}
+                      >
+                        Geo {index + 1}
+                      </button>
                       <span className="text-xs">x: {point.x}, y: {point.y}</span>
                     </div>
+                    <button
+                      type="button"
+                      className={cn(
+                        buttonVariants({ variant: "outline", size: "sm" }),
+                        "h-8 cursor-pointer gap-2 border-red-300/20 bg-transparent text-red-100 hover:bg-red-500/10",
+                      )}
+                      aria-label={`Удалить Geo ${index + 1}`}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        deleteGeoControlPoint(index);
+                      }}
+                    >
+                      <Trash2 className="size-3.5" aria-hidden />
+                      Удалить
+                    </button>
                     <div className="grid grid-cols-2 gap-2">
                       <label className="grid gap-1 text-xs">
                         <span>Lat</span>

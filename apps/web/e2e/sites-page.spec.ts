@@ -202,14 +202,68 @@ test.describe("Sites page", () => {
   test("opens dev map calibrator outside production", async ({ page }) => {
     await page.goto("/dev/calibrator");
 
+    const frame = page.getByTestId("calibrator-map-frame");
+    const mapContent = page.getByTestId("calibrator-map-content");
+
     await expect(
       page.getByRole("heading", { name: "Калибратор точек карты" }),
     ).toBeVisible();
+    await expect(page.getByLabel("Карта / город")).toContainText("Москва");
+    await expect(page.getByTestId("calibrator-site-crosshair").first()).toBeVisible();
+    await page.getByLabel("Карта / город").click();
+    await expect(page.getByRole("option", { name: /Краснодар .*карта ещё не добавлена/ })).toBeDisabled();
+    await page.keyboard.press("Escape");
+    await expect(frame).toHaveAttribute("data-map-scale", "1");
+    await page.getByRole("button", { name: "Приблизить карту" }).click();
+    await expect(frame).toHaveAttribute("data-map-scale", "2");
+    await page.waitForTimeout(240);
+    await page.getByRole("button", { name: "Приблизить карту" }).click();
+    await expect(frame).toHaveAttribute("data-map-scale", "4");
+    await page.waitForTimeout(240);
+    await page.getByRole("button", { name: "Приблизить карту" }).click();
+    await expect(frame).toHaveAttribute("data-map-scale", "8");
+    await page.waitForTimeout(240);
+    await page.getByRole("button", { name: "Приблизить карту" }).click();
+    await expect(frame).toHaveAttribute("data-map-scale", "16");
+    await page.waitForTimeout(240);
+    await page.getByRole("button", { name: "Приблизить карту" }).click();
+    await expect(frame).toHaveAttribute("data-map-scale", "32");
+    await page.waitForTimeout(240);
+    await page.getByRole("button", { name: "Приблизить карту" }).click();
+    await expect(frame).toHaveAttribute("data-map-scale", "32");
+    await page.waitForTimeout(240);
+    await page.getByRole("button", { name: "Отдалить карту" }).click();
+    await expect(frame).toHaveAttribute("data-map-scale", "16");
+    await page.waitForTimeout(240);
+    await page.getByRole("button", { name: "Отдалить карту" }).click();
+    await expect(frame).toHaveAttribute("data-map-scale", "8");
+    await page.getByRole("button", { name: "Сброс" }).click();
+    await page.waitForTimeout(240);
+    await expect(frame).toHaveAttribute("data-map-scale", "1");
+    await expect.poll(async () => {
+      const frameBox = await frame.boundingBox();
+      const contentBox = await mapContent.boundingBox();
+      expect(frameBox).not.toBeNull();
+      expect(contentBox).not.toBeNull();
+      return Math.round(contentBox!.x - frameBox!.x);
+    }).toBe(0);
     await expect(page.getByLabel("Экспорт координат карты")).toHaveValue(
       /SITE_MAP_POINTS/,
     );
     await expect(page.getByLabel("Экспорт координат карты")).toHaveValue(/:/);
     await page.getByRole("button", { name: "Geo-точки" }).click();
+    await expect(page.getByTestId("calibrator-geo-crosshair")).toHaveCount(5);
+    await frame.click({ position: { x: 120, y: 120 } });
+    await expect(page.getByTestId("calibrator-geo-crosshair")).toHaveCount(6);
+    const frameBox = await frame.boundingBox();
+    expect(frameBox).not.toBeNull();
+    await page.mouse.move(frameBox!.x + 220, frameBox!.y + 220);
+    await page.mouse.down();
+    await page.mouse.move(frameBox!.x + 260, frameBox!.y + 250);
+    await page.mouse.up();
+    await expect(page.getByTestId("calibrator-geo-crosshair")).toHaveCount(6);
+    await page.getByRole("button", { name: "Удалить Geo 6" }).click();
+    await expect(page.getByTestId("calibrator-geo-crosshair")).toHaveCount(5);
     await expect(page.getByLabel("Экспорт geo-точек карты")).toHaveValue(
       /MAP_GEO_CONTROL_POINTS/,
     );

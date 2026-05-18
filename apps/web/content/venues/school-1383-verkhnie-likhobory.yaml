@@ -4,6 +4,8 @@ type: school
 address: ул. Дубнинская, 7
 metro: Верхние Лихоборы
 city: moscow
+latitude: 55.85788
+longitude: 37.56627
 district: Бескудниковский
 logoUrl: /venues/logos/school-1383-placeholder.png
 schoolScopeSlug: school-1383

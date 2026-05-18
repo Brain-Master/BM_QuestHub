@@ -4,6 +4,8 @@ type: school
 address: ул. М. Тухачевского, 58к2
 metro: Народное Ополчение
 city: moscow
+latitude: 55.7856
+longitude: 37.4576
 district: Хорошёво-Мнёвники
 logoUrl: /venues/logos/school-1517-placeholder.png
 schoolScopeSlug: school-1517

@@ -4,6 +4,8 @@ type: school
 address: Голубинская ул., 13к2
 metro: Ясенево
 city: moscow
+latitude: 55.603
+longitude: 37.5175
 district: Ясенево
 logoUrl: /venues/logos/school-2103-placeholder.png
 schoolScopeSlug: school-2103

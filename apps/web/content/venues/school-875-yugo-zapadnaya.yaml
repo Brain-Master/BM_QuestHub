@@ -4,6 +4,8 @@ type: school
 address: пр-кт Вернадского, 101, корп. 6
 metro: Юго-Западная
 city: moscow
+latitude: 55.6632
+longitude: 37.4904
 district: Проспект Вернадского
 logoUrl: /venues/logos/school-875-placeholder.png
 schoolScopeSlug: school-875

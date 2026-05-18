@@ -4,6 +4,8 @@ type: school
 address: ул. Маршала Захарова, 25
 metro: Орехово
 city: moscow
+latitude: 55.619
+longitude: 37.6996
 district: Орехово-Борисово
 logoUrl: /venues/logos/school-937-placeholder.png
 schoolScopeSlug: school-937
