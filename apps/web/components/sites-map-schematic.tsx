@@ -29,6 +29,7 @@ import {
   MOSCOW_MAP_BOUNDS,
   positionSitesOnMap,
   projectUserLocationOnMap,
+  type MapPercentPoint,
   type ProjectedUserLocation,
   siteHasMapLocation,
   type PositionedSiteOnMapPoint,
@@ -92,8 +93,9 @@ const IDENTITY_TRANSFORM: TransformState = {
   positionY: 0,
 };
 
+const DEFAULT_MAP_MARKER_COLOR = "#f97316";
 const CLUSTER_DISTANCE = 36;
-const MAP_ZOOM_LEVELS = [1, 2, 4] as const;
+const MAP_ZOOM_LEVELS = [1, 2, 4, 8, 16] as const;
 const WHEEL_ZOOM_COOLDOWN_MS = 260;
 
 function nearestZoomLevel(scale: number): (typeof MAP_ZOOM_LEVELS)[number] {
@@ -182,6 +184,67 @@ function buildClusters(points: DisplayMapPoint[]): DisplayCluster[] {
   }
 
   return clusters;
+}
+
+function getClusterMarkerColor(
+  cluster: Extract<DisplayCluster, { type: "cluster" }>,
+  mapColorMode: "default" | "site",
+  siteColorBySlug: Map<string, string>,
+): string {
+  if (mapColorMode === "default") return DEFAULT_MAP_MARKER_COLOR;
+
+  const firstSiteSlug = cluster.points[0]?.site.slug;
+  if (!firstSiteSlug || cluster.points.some((point) => point.site.slug !== firstSiteSlug)) {
+    return DEFAULT_MAP_MARKER_COLOR;
+  }
+
+  const firstPoint = cluster.points[0];
+  return siteColorBySlug.get(firstSiteSlug) ?? (firstPoint ? getSiteMapColor(firstPoint.site) : DEFAULT_MAP_MARKER_COLOR);
+}
+
+function getMinimumClusterMapDistance(points: DisplayMapPoint[], mapRect: MapRenderRect): number {
+  let minimumDistance = Number.POSITIVE_INFINITY;
+
+  for (let index = 0; index < points.length; index += 1) {
+    for (let nextIndex = index + 1; nextIndex < points.length; nextIndex += 1) {
+      const point = points[index];
+      const nextPoint = points[nextIndex];
+      if (!point || !nextPoint) continue;
+      const distance = Math.hypot(
+        ((point.x - nextPoint.x) / 100) * mapRect.width,
+        ((point.y - nextPoint.y) / 100) * mapRect.height,
+      );
+      minimumDistance = Math.min(minimumDistance, distance);
+    }
+  }
+
+  return Number.isFinite(minimumDistance) ? minimumDistance : 0;
+}
+
+function getClusterSplitZoom(
+  cluster: Extract<DisplayCluster, { type: "cluster" }>,
+  mapRect: MapRenderRect,
+  currentScale: number,
+): number {
+  const nextScale = nextZoomLevel(currentScale, "in");
+  const minimumDistance = getMinimumClusterMapDistance(cluster.points, mapRect);
+  const candidateLevels = MAP_ZOOM_LEVELS.filter((level) => level >= nextScale);
+
+  return (
+    candidateLevels.find((level) => minimumDistance * level > CLUSTER_DISTANCE) ??
+    MAP_ZOOM_LEVELS[MAP_ZOOM_LEVELS.length - 1]
+  );
+}
+
+function getClusterMapCenter(
+  cluster: Extract<DisplayCluster, { type: "cluster" }>,
+  mapRect: MapRenderRect,
+): MapPercentPoint {
+  const count = cluster.points.length || 1;
+  return {
+    x: mapRect.x + (cluster.points.reduce((sum, point) => sum + point.x, 0) / count / 100) * mapRect.width,
+    y: mapRect.y + (cluster.points.reduce((sum, point) => sum + point.y, 0) / count / 100) * mapRect.height,
+  };
 }
 
 function visiblePointsForList(points: DisplayMapPoint[]): DisplayMapPoint[] {
@@ -281,10 +344,12 @@ function MapPinMarker({
 function ClusterMarker({
   cluster,
   dimmed,
+  markerColor,
   onSelect,
 }: {
   cluster: Extract<DisplayCluster, { type: "cluster" }>;
   dimmed: boolean;
+  markerColor: string;
   onSelect: () => void;
 }) {
   const visibleCount = cluster.points.filter((point) => point.visible).length;
@@ -297,14 +362,23 @@ function ClusterMarker({
       <button
         type="button"
         className={cn(
-          "pointer-events-auto -translate-x-1/2 -translate-y-1/2 inline-flex size-9 cursor-pointer items-center justify-center rounded-full border border-white/40 bg-card/90 font-heading font-semibold text-cyan-100 text-sm shadow-[0_0_28px_rgba(34,211,238,0.28)] backdrop-blur-md transition hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300",
+          "pointer-events-auto -translate-x-1/2 -translate-y-1/2 relative flex size-5 cursor-pointer items-center justify-center rounded-full border-2 border-background font-heading font-bold text-[10px] text-white transition duration-200 shadow-[0_0_0_6px_rgba(255,255,255,0.08),0_0_18px_rgba(34,211,238,0.35)] hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
           dimmed && "opacity-35 saturate-50",
         )}
         data-map-interactive="true"
+        data-testid="sites-map-cluster"
+        style={{ backgroundColor: markerColor }}
         aria-label={`Группа из ${cluster.points.length} точек${visibleCount !== cluster.points.length ? `, найдено ${visibleCount}` : ""}`}
         onClick={onSelect}
       >
-        {cluster.points.length}
+        <span
+          className="pointer-events-none absolute inset-0 rounded-full opacity-55 motion-safe:animate-ping"
+          style={{ backgroundColor: markerColor }}
+          aria-hidden
+        />
+        <span className="pointer-events-none relative leading-none drop-shadow-sm">
+          {cluster.points.length}
+        </span>
       </button>
     </div>
   );
@@ -405,6 +479,28 @@ export function SiteMapCanvas({
     const positionX = width / 2 - (currentMapRect.x + (point.x / 100) * currentMapRect.width) * zoom;
     const positionY = height / 2 - (currentMapRect.y + (point.y / 100) * currentMapRect.height) * zoom;
     setTransform(positionX, positionY, zoom, 260, "easeOut");
+  }
+
+  function focusCluster(cluster: Extract<DisplayCluster, { type: "cluster" }>, setTransform: SetTransform) {
+    const frame = mapFrameRef.current;
+    if (!frame) return;
+
+    const { width, height } = frame.getBoundingClientRect();
+    const currentMapRect = getContainedMapRect({ width, height });
+    const zoom = getClusterSplitZoom(cluster, currentMapRect, transform.scale);
+    const splitsAtZoom = getMinimumClusterMapDistance(cluster.points, currentMapRect) * zoom > CLUSTER_DISTANCE;
+    const center = getClusterMapCenter(cluster, currentMapRect);
+    const positionX = width / 2 - center.x * zoom;
+    const positionY = height / 2 - center.y * zoom;
+
+    setTransform(positionX, positionY, zoom, 260, "easeOut");
+
+    if (!splitsAtZoom) {
+      const firstVisible = cluster.points.find((point) => point.visible) ?? cluster.points[0];
+      setActivePointId(firstVisible?.id ?? null);
+    } else {
+      setActivePointId(null);
+    }
   }
 
   function applyZoomLevel(targetScale: number, duration = 220) {
@@ -576,7 +672,7 @@ export function SiteMapCanvas({
           <TransformWrapper
             initialScale={1}
             minScale={1}
-            maxScale={4}
+            maxScale={16}
             centerOnInit
             limitToBounds={false}
             wheel={{ disabled: true }}
@@ -609,18 +705,18 @@ export function SiteMapCanvas({
                   <div className="pointer-events-none absolute inset-0 z-30">
                     {displayClusters.map((cluster) => {
                       if (cluster.type === "cluster") {
-                        const dimmed = cluster.points.every((point) => !point.visible);
+                        const hasActiveOrPreviewPoint = cluster.points.some(
+                          (point) => point.id === activePointId || point.id === previewPointId,
+                        );
+                        const dimmed = Boolean(activePointId && !hasActiveOrPreviewPoint);
+                        const markerColor = getClusterMarkerColor(cluster, mapColorMode, siteColorBySlug);
                         return (
                           <ClusterMarker
                             key={cluster.id}
                             cluster={cluster}
                             dimmed={dimmed}
-                            onSelect={() => {
-                              const firstVisible = cluster.points.find((point) => point.visible) ?? cluster.points[0];
-                              if (!firstVisible) return;
-                              setActivePointId(firstVisible.id);
-                              focusPoint(firstVisible, setTransform, Math.min(4, transform.scale + 0.75));
-                            }}
+                            markerColor={markerColor}
+                            onSelect={() => focusCluster(cluster, setTransform)}
                           />
                         );
                       }
