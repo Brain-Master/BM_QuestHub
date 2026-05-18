@@ -135,50 +135,54 @@ export function OfferBookingAction({
       <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogContent
           className={cn(
-            "gap-0 border-slate-800 bg-[#0F172A] p-0 text-slate-100 shadow-2xl shadow-black/50 sm:max-w-[410px]",
+            "grid h-[min(92dvh,760px)] grid-rows-[auto,minmax(0,1fr)] gap-0 overflow-hidden border-slate-800 bg-[#0F172A] p-0 text-slate-100 shadow-2xl shadow-black/50 sm:max-w-[410px]",
             "[&_[data-slot=dialog-close]]:top-3 [&_[data-slot=dialog-close]]:right-3",
             "[&_[data-slot=dialog-close]]:text-slate-400 [&_[data-slot=dialog-close]]:hover:bg-white/10 [&_[data-slot=dialog-close]]:hover:text-white",
           )}
         >
-          <DialogHeader className="border-slate-800 border-b px-5 py-4 pr-12">
+          <DialogHeader className="relative z-10 border-slate-700/80 border-b bg-[#0F172A] px-5 py-4 pr-12 shadow-[0_10px_24px_rgba(2,6,23,0.35)]">
             <DialogTitle className="font-heading text-lg text-white">
               {view === "mos_success" ? "Спасибо за заявку" : flowContext.title}
             </DialogTitle>
           </DialogHeader>
           {view === "mos_success" && action.kind === "mos" ? (
-            <MosBookingSuccess mosUrl={action.url} onOpenMos={trackMosOpen} />
+            <div className="bm-scrollbar min-h-0 overflow-y-auto overscroll-contain [scrollbar-gutter:stable] [scrollbar-width:thin]">
+              <MosBookingSuccess mosUrl={action.url} onOpenMos={trackMosOpen} />
+            </div>
           ) : (
-          <div className="px-5 py-4">
-            <BookingForm
-              summary={{
-                venueName: venue.name,
-                questTitle: quest.title,
-                dates: offer.dateRange,
-                format: formatLabel,
-                priceLabel,
-              }}
-              defaults={{
-                leadType: flowContext.leadType,
-                registrationChannel: flowContext.registrationChannel,
-                questSlug: quest.slug,
-                questTitle: quest.title,
-                offerId: offer.id,
-                variantId: variant?.id,
-                variantTitle: variant ? `${variant.type} · ${variant.time}` : undefined,
-                venueSlug: venue.slug,
-                venueName: venue.name,
-                schoolSlug,
-              }}
-              flowContext={flowContext}
-              onSuccess={() => {
-                if (action.kind === "mos") {
-                  setView("mos_success");
-                  return;
-                }
-                setOpen(false);
-              }}
-            />
-          </div>
+            <div className="bm-scrollbar min-h-0 overflow-y-auto overscroll-contain px-5 py-4 [scrollbar-gutter:stable] [scrollbar-width:thin]">
+              <BookingForm
+                summary={{
+                  venueName: venue.name,
+                  questTitle: quest.title,
+                  dates: offer.dateRange,
+                  format: formatLabel,
+                  priceLabel,
+                }}
+                defaults={{
+                  leadType: flowContext.leadType,
+                  registrationChannel: flowContext.registrationChannel,
+                  questSlug: quest.slug,
+                  questTitle: quest.title,
+                  offerId: offer.id,
+                  variantId: variant?.id,
+                  variantTitle: variant
+                    ? `${variant.type} · ${variant.time}`
+                    : undefined,
+                  venueSlug: venue.slug,
+                  venueName: venue.name,
+                  schoolSlug,
+                }}
+                flowContext={flowContext}
+                onSuccess={() => {
+                  if (action.kind === "mos") {
+                    setView("mos_success");
+                    return;
+                  }
+                  setOpen(false);
+                }}
+              />
+            </div>
           )}
         </DialogContent>
       </Dialog>

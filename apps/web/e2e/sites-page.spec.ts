@@ -8,31 +8,41 @@ test.describe("Sites page", () => {
       page.getByRole("heading", { name: /Выберите (площадку|город)|Площадки ·/ }).first(),
     ).toBeVisible();
     await expect(page.getByLabel("Город")).toHaveCount(0);
-    await expect(page.getByLabel("Сортировка")).toBeVisible();
+    await expect(page.getByLabel("Поиск")).toBeVisible();
+    await expect(page.getByRole("button", { name: /По названию/ })).toBeVisible();
     await expect(page.getByRole("button", { name: "Список" })).toBeVisible();
 
     await page.getByRole("button", { name: "Список" }).click();
     await expect(page).toHaveURL(/view=list/);
+    await page.getByLabel("Поиск").fill("Ясенево");
+    await expect(page).toHaveURL(/q=%D0%AF%D1%81%D0%B5%D0%BD%D0%B5%D0%B2%D0%BE/);
+    await expect(page.getByText("Школа №2103").first()).toBeVisible();
+    await page.getByRole("button", { name: /По названию/ }).click();
+    await expect(page).toHaveURL(/sort=name-asc/);
+    await page.getByRole("button", { name: /По названию/ }).click();
+    await expect(page).toHaveURL(/sort=name-desc/);
     await expect(page.getByRole("link", { name: /^Расписание$/ }).first()).toBeVisible();
     await expect(page.getByRole("link", { name: /Доступные курсы/ }).first()).toBeVisible();
     await expect(page.getByText("проводится").first()).toBeVisible();
     await expect(page.getByText("открыто").first()).toBeVisible();
   });
 
-  test("switches to the vector map view", async ({ page }) => {
+  test("switches to the cyber map view", async ({ page }) => {
     await page.goto("/sites");
 
     await page.getByRole("button", { name: "Карта" }).click();
 
     await expect(page).toHaveURL(/view=map/);
     await expect(
-      page.getByRole("img", { name: "Векторная карта Москвы с площадками BrainMaster" }),
+      page.getByRole("img", { name: "Кибер-карта Москвы с площадками BrainMaster" }),
     ).toBeVisible();
     await expect(
       page.getByRole("heading", { name: "География BrainMaster" }),
     ).toBeVisible();
     await expect(page.getByRole("link", { name: /Подробнее|Открыть площадку/ }).first()).toBeVisible();
-    await expect(page.getByText("Map data © OpenStreetMap contributors")).toBeVisible();
+    await expect(
+      page.getByText("Статичная WebP-подложка, интерактивные точки"),
+    ).toBeVisible();
   });
 
   test("falls back when city query is invalid", async ({ page }) => {
@@ -41,7 +51,7 @@ test.describe("Sites page", () => {
     await expect(
       page.getByRole("heading", { name: /Выберите (площадку|город)|Площадки ·/ }).first(),
     ).toBeVisible();
-    await expect(page.getByLabel("Сортировка")).toBeVisible();
+    await expect(page.getByRole("button", { name: /По активности/ })).toBeVisible();
     await expect(page.getByRole("link", { name: /^Расписание$/ }).first()).toBeVisible();
   });
 

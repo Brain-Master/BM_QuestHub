@@ -111,19 +111,19 @@ test.describe("Quest schedule", () => {
       const dialog = page.getByRole("dialog");
       await expect(dialog).toBeVisible();
       await expect(dialog).toContainText(
-        /Перед записью на mos\.ru|Оформление заявки|Предварительная заявка/,
+        /Запись через mos\.ru|Оформление заявки|Заявка в лист ожидания/,
       );
       await expect(dialog.getByTestId("booking-summary")).toBeVisible();
       await expect(dialog.getByTestId("booking-flow-notice")).toBeVisible();
       await expect(dialog.getByLabel("Имя родителя")).toBeVisible();
       await expect(
         dialog.getByRole("link", {
-          name: "политикой обработки персональных данных",
+          name: "обработку персональных данных",
         }),
       ).toHaveAttribute("href", "/legal/personal-data/");
       await expect(
         dialog.getByRole("button", {
-          name: /Продолжить к записи на mos\.ru|Забронировать место|Оставить заявку на уведомление/,
+          name: /Перейти к записи на mos\.ru|Забронировать место|Оставить заявку на уведомление/,
         }),
       ).toBeVisible();
       return;

@@ -2,11 +2,11 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, MapPin, Navigation } from "lucide-react";
+import { ArrowRight, Navigation } from "lucide-react";
+import { useState } from "react";
 
 import { buttonVariants } from "@/components/ui/button";
 import {
-  MOSCOW_MAP_ATTRIBUTION,
   positionSitesOnMap,
   siteHasMapLocation,
   type PositionedSiteOnMap,
@@ -22,70 +22,75 @@ function primaryMetro(site: SiteScopeCard): string | undefined {
   return site.campuses.find((campus) => campus.metro && campus.metro !== "—")?.metro;
 }
 
-function PinPopover({ site }: { site: SiteScopeCard }) {
+function PinPopover({ site, active }: { site: SiteScopeCard; active: boolean }) {
   const metro = primaryMetro(site);
 
   return (
-    <PinPopoverFrame>
+    <div
+      className={cn(
+        "pointer-events-none absolute top-6 left-1/2 z-20 w-max max-w-64 -translate-x-1/2 rounded-xl border border-orange-500/50 bg-slate-950/95 px-3 py-2 text-left shadow-[0_18px_70px_rgba(234,88,12,0.2)] backdrop-blur-xl transition duration-200",
+        active ? "translate-y-0 opacity-100" : "translate-y-1 opacity-0",
+      )}
+    >
       <div className="relative">
-        <p className="text-[10px] text-cyan-200/80 uppercase tracking-[0.2em]">
-          Площадка BrainMaster
-        </p>
-        <p className="mt-1 font-heading font-semibold text-base text-white">{site.name}</p>
-        <p className="mt-2 text-cyan-50/75 text-xs leading-relaxed">
+        <p className="font-semibold text-sm text-white">{site.name}</p>
+        <p className="mt-0.5 text-orange-300 text-xs leading-relaxed">
           {metro ? `м. ${metro}` : site.locationSummary}
         </p>
-        <div className="mt-3 grid grid-cols-2 gap-2 text-center text-xs">
-          <span className="rounded-xl border border-white/10 bg-white/[0.06] px-2 py-2">
-            <strong className="block font-heading text-lg text-white">{site.courseCount}</strong>
-            курсов
-          </span>
-          <span className="rounded-xl border border-white/10 bg-white/[0.06] px-2 py-2">
-            <strong className="block font-heading text-lg text-white">{site.shiftCount}</strong>
-            групп
-          </span>
-        </div>
       </div>
-    </PinPopoverFrame>
-  );
-}
-
-function PinPopoverFrame({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="pointer-events-none absolute bottom-full left-1/2 z-20 mb-3 w-64 -translate-x-1/2 translate-y-1 rounded-2xl border border-cyan-200/20 bg-slate-950/95 p-4 text-left opacity-0 shadow-[0_18px_70px_rgba(34,211,238,0.18)] ring-1 ring-white/10 backdrop-blur-xl transition duration-200 group-hover/pin:translate-y-0 group-hover/pin:opacity-100 group-focus-within/pin:translate-y-0 group-focus-within/pin:opacity-100">
-      <div
-        aria-hidden
-        className="absolute inset-0 rounded-2xl bg-[radial-gradient(circle_at_20%_0%,rgba(34,211,238,0.18),transparent_42%),radial-gradient(circle_at_90%_20%,rgba(139,92,246,0.2),transparent_38%)]"
-      />
-      {children}
     </div>
   );
 }
 
-function MapPinMarker({ positioned }: { positioned: PositionedSiteOnMap }) {
+function MapPinMarker({
+  positioned,
+  active,
+  onActivate,
+  onDeactivate,
+}: {
+  positioned: PositionedSiteOnMap;
+  active: boolean;
+  onActivate: () => void;
+  onDeactivate: () => void;
+}) {
   const { site, x, y } = positioned;
   const metro = primaryMetro(site);
 
   return (
-    <div className="group/pin absolute z-10" style={{ left: `${x}%`, top: `${y}%` }}>
-      <PinPopover site={site} />
+    <div
+      className="absolute z-10"
+      style={{ left: `${x}%`, top: `${y}%` }}
+      onMouseEnter={onActivate}
+      onMouseLeave={onDeactivate}
+    >
+      <PinPopover site={site} active={active} />
       <Link
-        href={`/sites/${site.slug}`}
-        className="-translate-x-1/2 -translate-y-1/2 flex size-12 items-center justify-center rounded-full border border-cyan-100/40 bg-cyan-200/15 text-cyan-50 shadow-[0_0_0_6px_rgba(34,211,238,0.08),0_0_36px_rgba(34,211,238,0.45)] backdrop-blur-md transition duration-200 hover:scale-105 hover:bg-cyan-200/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a]"
+        href={`/sites/${site.slug}/agenda`}
+        className={cn(
+          "-translate-x-1/2 -translate-y-1/2 relative flex size-5 items-center justify-center rounded-full border-2 border-black bg-orange-500 transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-300 focus-visible:ring-offset-2 focus-visible:ring-offset-black",
+          active
+            ? "scale-125 shadow-[0_0_0_8px_rgba(234,88,12,0.18),0_0_34px_rgba(234,88,12,0.88)]"
+            : "shadow-[0_0_0_6px_rgba(234,88,12,0.1),0_0_18px_rgba(234,88,12,0.55)] hover:scale-110",
+        )}
         aria-label={`Открыть площадку ${site.name}${metro ? `, метро ${metro}` : ""}`}
+        onFocus={onActivate}
+        onBlur={onDeactivate}
       >
-        <MapPin className="size-5" aria-hidden />
+        <span
+          className={cn(
+            "absolute inset-0 rounded-full bg-orange-500 opacity-70 motion-safe:animate-ping",
+            active ? "scale-125" : "",
+          )}
+          aria-hidden
+        />
+        <span className="relative size-2 rounded-full bg-orange-100" aria-hidden />
       </Link>
-      {metro ? (
-        <span className="pointer-events-none absolute left-1/2 top-8 hidden -translate-x-1/2 whitespace-nowrap rounded-full border border-white/10 bg-black/40 px-2 py-1 text-[10px] text-cyan-50/80 backdrop-blur sm:block">
-          {metro}
-        </span>
-      ) : null}
     </div>
   );
 }
 
 export function SitesMapSchematic({ sites }: Props) {
+  const [activeSiteSlug, setActiveSiteSlug] = useState<string | null>(null);
   const mappedSites = sites.filter(siteHasMapLocation);
   const positionedSites = positionSitesOnMap(mappedSites);
 
@@ -119,23 +124,21 @@ export function SitesMapSchematic({ sites }: Props) {
           </div>
         </div>
 
-        <div className="relative mt-6 aspect-[0.82] min-h-80">
+        <div className="relative mt-6 aspect-square min-h-80">
           <MapBackground />
           {positionedSites.map((positioned) => (
-            <MapPinMarker key={positioned.site.slug} positioned={positioned} />
+            <MapPinMarker
+              key={positioned.site.slug}
+              positioned={positioned}
+              active={activeSiteSlug === positioned.site.slug}
+              onActivate={() => setActiveSiteSlug(positioned.site.slug)}
+              onDeactivate={() => setActiveSiteSlug(null)}
+            />
           ))}
         </div>
 
         <p className="relative mt-4 text-[10px] text-muted-foreground/80 leading-relaxed">
-          <a
-            href={MOSCOW_MAP_ATTRIBUTION.href}
-            target="_blank"
-            rel="noreferrer"
-            className="underline-offset-2 transition hover:text-muted-foreground hover:underline"
-          >
-            {MOSCOW_MAP_ATTRIBUTION.label}
-          </a>
-          . {MOSCOW_MAP_ATTRIBUTION.note}
+          Статичная WebP-подложка, интерактивные точки отрисованы отдельным лёгким слоем.
         </p>
       </div>
 
@@ -155,7 +158,12 @@ export function SitesMapSchematic({ sites }: Props) {
           </div>
         </div>
 
-        <SiteList mappedSites={mappedSites} />
+        <SiteList
+          mappedSites={mappedSites}
+          activeSiteSlug={activeSiteSlug}
+          onActivate={setActiveSiteSlug}
+          onDeactivate={() => setActiveSiteSlug(null)}
+        />
       </aside>
     </div>
   );
@@ -164,15 +172,16 @@ export function SitesMapSchematic({ sites }: Props) {
 function MapBackground() {
   return (
     <div
-      className="absolute inset-0 overflow-hidden rounded-2xl bg-[#0a0a0a]"
+      className="absolute inset-0 overflow-hidden rounded-2xl bg-black"
       role="img"
-      aria-label="Векторная карта Москвы с площадками BrainMaster"
+      aria-label="Кибер-карта Москвы с площадками BrainMaster"
     >
       <Image
-        src="/sites/moscow-map.svg"
+        src="/sites/moscow-cyber-map.webp"
         alt=""
         fill
-        className="object-contain object-center opacity-95"
+        className="object-cover object-center opacity-45 mix-blend-screen"
+        sizes="(min-width: 1024px) 704px, calc(100vw - 2rem)"
       />
       <MapVignette />
     </div>
@@ -188,17 +197,35 @@ function MapVignette() {
   );
 }
 
-function SiteList({ mappedSites }: { mappedSites: SiteScopeCard[] }) {
+function SiteList({
+  mappedSites,
+  activeSiteSlug,
+  onActivate,
+  onDeactivate,
+}: {
+  mappedSites: SiteScopeCard[];
+  activeSiteSlug: string | null;
+  onActivate: (slug: string) => void;
+  onDeactivate: () => void;
+}) {
   return (
     <div className="mt-5 grid gap-3">
       {mappedSites.map((site) => {
         const metro = primaryMetro(site);
+        const active = activeSiteSlug === site.slug;
 
         return (
           <Link
             key={site.slug}
             href={`/sites/${site.slug}`}
-            className="group rounded-2xl border border-white/10 bg-black/15 p-3 transition hover:border-cyan-200/25 hover:bg-white/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className={cn(
+              "group rounded-2xl border bg-black/15 p-3 transition hover:bg-white/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+              active ? "border-orange-400/60 shadow-[0_0_28px_rgba(234,88,12,0.18)]" : "border-white/10 hover:border-orange-300/30",
+            )}
+            onMouseEnter={() => onActivate(site.slug)}
+            onMouseLeave={onDeactivate}
+            onFocus={() => onActivate(site.slug)}
+            onBlur={onDeactivate}
           >
             <p className="font-medium text-foreground">{site.name}</p>
             <p className="mt-1 text-muted-foreground text-xs leading-relaxed">

@@ -1,0 +1,1011 @@
+import React, { useState, useEffect } from 'react';
+import { 
+  MapPin, 
+  Clock, 
+  User, 
+  Train, 
+  Info, 
+  CheckCircle2, 
+  ChevronRight,
+  ExternalLink,
+  Filter,
+  LayoutList,
+  List,
+  ChevronDown,
+  X,
+  Sparkles,
+  ChevronUp,
+  RotateCcw
+} from 'lucide-react';
+
+// === Полноценные описания программ ===
+const descKinetic = '«Мехвариум: Лаборатория Кинетических Монстров» — создай своего шагающего монстра! Добро пожаловать в секретную лабораторию! За 5 дней ты станешь настоящим инженером-изобретателем. Мы будем собирать эпичных киборгов: соберем скелет с настоящими шестеренками, слепим мощные мышцы и наплавим непробиваемую 3D-броню! Ты сам оживишь своего киборга и заберешь его домой. Готов запустить реактор? Включайся!';
+const descHydraulic = '«КиберЛагерь Мехвариум: Мастерская Гидравлических Монстров» — укрощаем силу воды! За время интенсива ребята станут агентами секретного бюро и создадут свою Монстро-Станцию! Электричество отменяется — механизмы работают исключительно на силе гидравлики. Из шприцев, силиконовых трубок и дерева дети соберут кран-лифт, мощный пресс, клешню-манипулятор и балансировочный 3D-лабиринт. Включаем инженерию на максимум!';
+const descMinecraftAwakening = '«Minecraft 2.0: Пробуждение Стража» — продолжение Легендарного Квеста! Игра снова выходит за пределы монитора, и ставки растут! За время интенсива ребята скрафтят не просто игрушку, а настоящего умного робота-моба. Мы по-взрослому спаяем печатную плату, установим ИК-датчик движения, мощный аккумулятор и аудиомодуль. Твой личный Страж-Крипер буквально оживет!';
+const descCyberRhythm = '«КиберРитм» — музыку и гаджеты создаем сами! За 5 дней интенсива ваш ребенок пройдет полный путь инженера: от первых опытов со звуком до 3D-моделирования и сборки собственной Bluetooth-колонки! Мы освоим магию акустики, электронику и безопасную пайку. Превращаем любовь к гаджетам в реальные навыки!';
+const descMinecraftAncients = '«КиберЛагерь Minecraft: Тайна Древних Инженеров» — переносим игру в реальность! За 5 дней интенсива дети скрафтят свой алмазный меч, спроектируют 3D-базу и освоят магию электроники! Ребята изучат TinkerCAD, научатся безопасно паять и соберут главный артефакт — переливающуюся Redstone-жилу. Активируйте портал в полезное лето!';
+const descCombo1 = 'Двойная смена! Формат 2 недель. Сначала ребята станут инженерами-изобретателями в лаборатории кинетических монстров, а затем освоят силу гидравлики, собрав свою собственную Монстро-Станцию без электричества!';
+const descCombo2 = 'Двойная смена! Формат 2 недель. Сначала мы пройдем полный путь инженера и соберем свою Bluetooth-колонку в "КиберРитме", а на второй неделе оживим умного Стража из Minecraft с датчиками движения!';
+
+// === Изображения для программ ===
+const imgKinetic = 'https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&q=80&w=800';
+const imgHydraulic = 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=800';
+const imgMinecraft = 'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?auto=format&fit=crop&q=80&w=800';
+const imgCyberRhythm = 'https://images.unsplash.com/photo-1516280440502-1249b380db28?auto=format&fit=crop&q=80&w=800';
+
+// === Mock Schedule Data (С ПРИМЕНЕНИЕМ НОВОГО ГАЙДЛАЙНА ТАРИФОВ) ===
+const mockSchedule = [
+  {
+    id: 'test-auto-archive', school: '[ТЕСТ] Авто-архив', metro: 'Тестовая', address: 'ул. Прошлого, 1', corpus: 'Корпус Времени',
+    title: '[ТЕСТ] Автоматическая архивация', description: 'Эта смена завершилась 10 мая. Система сравнила дату и убрала её в архив.', teacher: 'Система Автоматическая Валерьевна',
+    timelineDate: '05 — 10 МАЯ', shortDate: '5 — 10 мая', endDate: '2026-05-10T23:59:59', shiftNumber: 'ТЕСТОВАЯ', age: '6–13 лет', tags: ['Тест'],
+    mosRuCode: null, mosRuLink: null, status: 'Идёт набор', isArchived: false, capacity: { total: 24, booked: 5 }, image: imgCyberRhythm,
+    variants: [{ id: 'test-1-v1', type: 'Интенсив (полдня)', time: 'Пн-Пт, 9:00 – 12:30', price: 8500, note: 'Кнопки недоступны' }]
+  },
+  {
+    id: 'test-cancelled', school: '[ТЕСТ] Отмена', metro: 'Тестовая', address: 'ул. Отмененная, 404', corpus: 'Корпус Времени',
+    title: '[ТЕСТ] Принудительная отмена', description: 'Смена отменена. Она визуально переходит в состояние архива, но с красным бейджем.', teacher: 'Менеджер Отмены Тестович',
+    timelineDate: '15 — 19 ИЮНЯ', shortDate: '15 — 19 июня', endDate: '2026-06-19T23:59:59', shiftNumber: 'ТЕСТОВАЯ', age: '6–13 лет', tags: ['Тест'],
+    mosRuCode: null, mosRuLink: null, status: 'Отменено', isArchived: true, capacity: { total: 24, booked: 0 }, image: imgMinecraft,
+    variants: [{ id: 'test-2-v1', type: 'Интенсив (полдня)', time: 'Пн-Пт, 9:00 – 12:30', price: 8500, note: 'Смена не состоится' }]
+  },
+  {
+    id: 'test-sold-out', school: '[ТЕСТ] Sold Out', metro: 'Тестовая', address: 'ул. Популярная, 100', corpus: 'Корпус Успеха',
+    title: '[ТЕСТ] Все места заняты (Аншлаг)', description: 'Индикатор мест краснеет, кнопка меняет действие на "В лист ожидания".', teacher: 'Аншлаг Популярный Петрович',
+    timelineDate: '15 — 19 ИЮНЯ', shortDate: '15 — 19 июня', endDate: '2026-06-19T23:59:59', shiftNumber: 'ТЕСТОВАЯ', age: '6–13 лет', tags: ['Тест'],
+    mosRuCode: null, mosRuLink: null, status: 'Идёт набор', isArchived: false, capacity: { total: 24, booked: 24 }, image: imgKinetic,
+    variants: [{ id: 'test-3-v1', type: 'Интенсив (полдня)', time: 'Пн-Пт, 9:00 – 12:30', price: 8500, note: 'Только в лист ожидания' }]
+  },
+  {
+    id: 'test-join-now', school: '[ТЕСТ] Можно присоединиться', metro: 'Тестовая', address: 'ул. Открытая, 2', corpus: 'Корпус Времени',
+    title: '[ТЕСТ] Активный статус для идущих смен', description: 'Пример адаптивного статуса "Можно присоединиться". Используется для смен или годовых программ, которые уже стартовали, но донабор еще открыт.', teacher: 'Открытый Олег Олегович',
+    timelineDate: '15 — 30 ИЮНЯ', shortDate: '15 — 30 июня', endDate: '2026-06-30T23:59:59', shiftNumber: 'ТЕСТОВАЯ', age: '6–13 лет', tags: ['Тест'],
+    mosRuCode: null, mosRuLink: null, status: 'Можно присоединиться', isArchived: false, capacity: { total: 24, booked: 12 }, image: imgHydraulic,
+    variants: [{ id: 'test-4-v1', type: 'Абонемент (за месяц)', time: 'Вт, Чт, 16:00 – 18:00', price: 6500, note: 'Доступно с любого дня' }]
+  },
+  {
+    id: 'school-2103-may', school: 'Школа №2103', metro: 'Ясенево', address: 'Голубинская ул., 13к2', corpus: 'Корпус ШО-4',
+    title: 'Мехвариум: Лаборатория Кинетических Монстров', description: descKinetic, teacher: 'Толмачова Василиса Владимировна',
+    timelineDate: '25 — 29 МАЯ', shortDate: '25 — 29 мая', endDate: '2026-05-29T23:59:59', shiftNumber: 'ПРЕД-СМЕНА', age: '6–13 лет', tags: ['Офлайн', 'Инженерия'],
+    mosRuCode: null, mosRuLink: null, status: 'Согласование', isArchived: false, capacity: { total: 24, booked: 0 }, image: imgKinetic,
+    variants: [
+      { id: '2103-may-v1', type: 'Интенсив (полдня)', time: 'Пн-Пт, 9:00 – 12:30', price: 8500, note: 'В приоритете 1 класс' },
+      { id: '2103-may-v2', type: 'Полный день', time: 'Пн-Пт, 8:00 – 18:00', price: 14000, note: 'В приоритете 1 класс' }
+    ]
+  },
+  {
+    id: 'school-937-may', school: 'Школа №937', metro: 'Орехово', address: 'ул. Маршала Захарова, 25', corpus: 'Основное здание',
+    title: 'Мехвариум: Лаборатория Кинетических Монстров', description: descKinetic, teacher: 'Кузьменков Владимир Евгеньевич',
+    timelineDate: '25 — 29 МАЯ', shortDate: '25 — 29 мая', endDate: '2026-05-29T23:59:59', shiftNumber: 'ПРЕД-СМЕНА', age: '6–13 лет', tags: ['Офлайн', 'Инженерия'],
+    mosRuCode: null, mosRuLink: null, status: 'Согласование', isArchived: false, capacity: { total: 24, booked: 0 }, image: imgKinetic,
+    variants: [{ id: '937-may-v1', type: 'Интенсив (полдня)', time: 'Пн-Пт, 9:00 – 12:30', price: 8500, note: '' }]
+  },
+  {
+    id: 'school-1517-june-1-combo', school: 'Школа №1517', metro: 'Народное Ополчение', address: 'ул. Живописная, 11к1', corpus: 'Главный корпус',
+    title: 'Мехвариум: Кинетические + Гидравлические Монстры', description: descCombo1, teacher: 'Хмельков Даниил Антонович',
+    timelineDate: '01 — 11 ИЮНЯ', shortDate: '1 — 11 июня (2 недели)', endDate: '2026-06-11T23:59:59', shiftNumber: '1-2 СМЕНА', age: '6–13 лет', tags: ['Офлайн', 'Марафон (2 недели)'],
+    mosRuCode: '2445152', mosRuLink: 'https://www.mos.ru/pgu2/activity/card/842914', status: 'Идёт набор', capacity: { total: 15, booked: 0 }, image: imgHydraulic,
+    variants: [{ id: '1517-combo1', type: 'Марафон (2 недели)', time: 'Пн-Пт, 9:00 – 12:45', price: 31500, note: 'Две программы подряд (5 + 4 дня)' }]
+  },
+  {
+    id: 'school-1212-june-1', school: 'Школа №1212', metro: 'Ясенево', address: 'Новоясеневский пр-т, 24к3', corpus: 'Основной',
+    title: 'Мехвариум: Лаборатория Кинетических Монстров', description: descKinetic, teacher: 'Ткаченко Артём Алексеевич',
+    timelineDate: '01 — 05 ИЮНЯ', shortDate: '1 — 5 июня', endDate: '2026-06-05T23:59:59', shiftNumber: '1 СМЕНА', age: '6–13 лет', tags: ['Офлайн', 'Полный день'],
+    mosRuCode: '2440640', mosRuLink: 'https://www.mos.ru/pgu2/activity/card/840243', status: 'Идёт набор', capacity: { total: 40, booked: 3 }, image: imgKinetic,
+    variants: [{ id: '1212-j1-v1', type: 'Полный день', time: 'Пн-Пт, 8:30 – 16:30', price: 15300, note: 'Питание: завтрак, обед, полдник' }]
+  },
+  {
+    id: 'school-1383-june-1', school: 'Школа №1383', metro: 'Верхние Лихоборы', address: 'ул. Дубнинская, 7', corpus: 'Главное здание',
+    title: 'Мехвариум: Лаборатория Инженерных Монстров', description: descKinetic, teacher: 'Халаджан Геворк Арменович',
+    timelineDate: '01 — 05 ИЮНЯ', shortDate: '1 — 5 июня', endDate: '2026-06-05T23:59:59', shiftNumber: '1 СМЕНА', age: '6–13 лет', tags: ['Офлайн', 'Инженерия'],
+    mosRuCode: null, mosRuLink: null, status: 'Идёт набор', capacity: { total: 24, booked: 0 }, image: imgKinetic,
+    variants: [
+      { id: '1383-j1-v1', type: 'Интенсив (полдня)', time: 'Пн-Пт, 9:00 – 12:30', price: 10000, note: '' },
+      { id: '1383-j1-v2', type: 'Полный день', time: 'Пн-Пт, 9:00 – 18:00', price: 16500, note: 'Питание: Обед + Полдник' }
+    ]
+  },
+  {
+    id: 'school-17-june-1', school: 'Школа №17', metro: 'Беляево', address: 'ул. Введенского, 28', corpus: 'Главный корпус',
+    title: 'Мехвариум: Лаборатория Кинетических Монстров', description: descKinetic, teacher: 'Сидоренко Анастасия Михайловна',
+    timelineDate: '01 — 05 ИЮНЯ', shortDate: '1 — 5 июня', endDate: '2026-06-05T23:59:59', shiftNumber: '1 СМЕНА', age: '6–13 лет', tags: ['Офлайн', 'Инженерия'],
+    mosRuCode: null, mosRuLink: null, status: 'Согласование', capacity: { total: 24, booked: 0 }, image: imgKinetic,
+    variants: [{ id: '17-j1-v1', type: 'Интенсив (полдня)', time: 'Пн-Пт, 9:00 – 13:00', price: 17500, note: '' }]
+  },
+  {
+    id: 'school-2103-june-1', school: 'Школа №2103', metro: 'Ясенево', address: 'Голубинская ул., 5к4', corpus: 'Корпус ШО-3',
+    title: 'Мехвариум: Лаборатория Кинетических Монстров', description: descKinetic, teacher: 'Толмачова Василиса Владимировна',
+    timelineDate: '01 — 05 ИЮНЯ', shortDate: '1 — 5 июня', endDate: '2026-06-05T23:59:59', shiftNumber: '1 СМЕНА', age: '6–13 лет', tags: ['Офлайн', 'Инженерия'],
+    mosRuCode: '2444383', mosRuLink: 'https://www.mos.ru/pgu2/activity/card/841885', status: 'Идёт набор', capacity: { total: 24, booked: 0 }, image: imgKinetic,
+    variants: [
+      { id: '2103-j1-v1', type: 'Интенсив (полдня)', time: 'Пн-Пт, 9:00 – 12:30', price: 8500, note: '' },
+      { id: '2103-j1-v2', type: 'Полный день', time: 'Пн-Пт, 8:00 – 18:00', price: 14000, note: '' }
+    ]
+  },
+  {
+    id: 'school-875-june-1', school: 'Школа №875', metro: 'Юго-Западная', address: 'пр-кт Вернадского, 101к6', corpus: 'Основной',
+    title: 'Мехвариум: Лаборатория Кинетических Монстров', description: descKinetic, teacher: 'Любченко Ирина Сергеевна; Любченко Марина Викторовна',
+    timelineDate: '01 — 05 ИЮНЯ', shortDate: '1 — 5 июня', endDate: '2026-06-05T23:59:59', shiftNumber: '1 СМЕНА', age: '6–13 лет', tags: ['Офлайн', 'Короткий интенсив'],
+    mosRuCode: null, mosRuLink: null, status: 'Идёт набор', capacity: { total: 100, booked: 40 }, image: imgKinetic,
+    variants: [{ id: '875-j1-v1', type: 'Интенсив (полдня)', time: 'Пн-Пт, 11:30 – 15:30', price: 1600, note: 'Короткий формат (4 ак.ч. в день)' }]
+  },
+  {
+    id: 'school-937-june-1', school: 'Школа №937', metro: 'Орехово', address: 'ул. Маршала Захарова, 25', corpus: 'Основное здание',
+    title: 'Мехвариум: Лаборатория Кинетических Монстров', description: descKinetic, teacher: 'Саитова Софья Юрьевна',
+    timelineDate: '01 — 05 ИЮНЯ', shortDate: '1 — 5 июня', endDate: '2026-06-05T23:59:59', shiftNumber: '1 СМЕНА', age: '6–13 лет', tags: ['Офлайн', 'Инженерия'],
+    mosRuCode: null, mosRuLink: null, status: 'Согласование', capacity: { total: 24, booked: 0 }, image: imgKinetic,
+    variants: [{ id: '937-j1-v1', type: 'Интенсив (полдня)', time: 'Пн-Пт, 9:00 – 12:30', price: 8500, note: '' }]
+  },
+  {
+    id: 'school-1383-june-2', school: 'Школа №1383', metro: 'Верхние Лихоборы', address: 'ул. Дубнинская, 7', corpus: 'Главное здание',
+    title: 'Мехвариум: Мастерская Гидравлических Монстров', description: descHydraulic, teacher: 'Халаджан Геворк Арменович',
+    timelineDate: '08 — 11 ИЮНЯ', shortDate: '8 — 11 июня', endDate: '2026-06-11T23:59:59', shiftNumber: '2 СМЕНА', age: '6–13 лет', tags: ['Офлайн', 'Гидравлика'],
+    mosRuCode: null, mosRuLink: null, status: 'Идёт набор', capacity: { total: 24, booked: 0 }, image: imgHydraulic,
+    variants: [
+      { id: '1383-j2-v1', type: 'Интенсив (4 дня)', time: 'Пн-Чт, 9:00 – 12:30', price: 8000, note: '' },
+      { id: '1383-j2-v2', type: 'Полный день (4 дня)', time: 'Пн-Чт, 9:00 – 18:00', price: 13200, note: 'Питание: Обед + Полдник' }
+    ]
+  },
+  {
+    id: 'school-17-june-2', school: 'Школа №17', metro: 'Беляево', address: 'ул. Введенского, 28', corpus: 'Главный корпус',
+    title: 'Мехвариум: Мастерская Гидравлических Монстров', description: descHydraulic, teacher: 'Сидоренко Анастасия Михайловна',
+    timelineDate: '08 — 11 ИЮНЯ', shortDate: '8 — 11 июня', endDate: '2026-06-11T23:59:59', shiftNumber: '2 СМЕНА', age: '6–13 лет', tags: ['Офлайн', 'Гидравлика'],
+    mosRuCode: null, mosRuLink: null, status: 'Согласование', capacity: { total: 24, booked: 0 }, image: imgHydraulic,
+    variants: [{ id: '17-j2-v1', type: 'Интенсив (4 дня)', time: 'Пн-Чт, 9:00 – 13:00', price: 14000, note: '' }]
+  },
+  {
+    id: 'school-2103-june-2', school: 'Школа №2103', metro: 'Ясенево', address: 'Голубинская ул., 5к4', corpus: 'Корпус ШО-3',
+    title: 'Мехвариум: Мастерская Гидравлических Монстров', description: descHydraulic, teacher: 'Толмачова Василиса Владимировна',
+    timelineDate: '08 — 11 ИЮНЯ', shortDate: '8 — 11 июня', endDate: '2026-06-11T23:59:59', shiftNumber: '2 СМЕНА', age: '6–13 лет', tags: ['Офлайн', 'Гидравлика'],
+    mosRuCode: '2444393', mosRuLink: 'https://www.mos.ru/pgu2/activity/card/841892', status: 'Идёт набор', capacity: { total: 24, booked: 0 }, image: imgHydraulic,
+    variants: [
+      { id: '2103-j2-v1', type: 'Интенсив (4 дня)', time: 'Пн-Чт, 9:00 – 12:30', price: 6800, note: '' },
+      { id: '2103-j2-v2', type: 'Полный день (4 дня)', time: 'Пн-Чт, 8:00 – 18:00', price: 11200, note: '' }
+    ]
+  },
+  {
+    id: 'school-937-june-2', school: 'Школа №937', metro: 'Орехово', address: 'ул. Маршала Захарова, 25', corpus: 'Основное здание',
+    title: 'Мехвариум: Мастерская Гидравлических Монстров', description: descHydraulic, teacher: 'Юдицкий Илья Игоревич',
+    timelineDate: '08 — 11 ИЮНЯ', shortDate: '8 — 11 июня', endDate: '2026-06-11T23:59:59', shiftNumber: '2 СМЕНА', age: '6–13 лет', tags: ['Офлайн', 'Гидравлика'],
+    mosRuCode: null, mosRuLink: null, status: 'Согласование', capacity: { total: 24, booked: 0 }, image: imgHydraulic,
+    variants: [{ id: '937-j2-v1', type: 'Интенсив (4 дня)', time: 'Пн-Чт, 11:30 – 15:30', price: 1600, note: 'Укороченный формат (4 ак.ч. в день)' }]
+  },
+  // --- 3 СМЕНА (15 - 19 ИЮНЯ) ---
+  {
+    id: 'school-1517-june-3-combo', school: 'Школа №1517', metro: 'Народное Ополчение', address: 'ул. Живописная, 11к1', corpus: 'Главный корпус',
+    title: 'КиберРитм + Minecraft: Пробуждение Стража', description: descCombo2, teacher: 'Хмельков Даниил Антонович',
+    timelineDate: '15 — 26 ИЮНЯ', shortDate: '15 — 26 июня (2 недели)', endDate: '2026-06-26T23:59:59', shiftNumber: '3-4 СМЕНА', age: '6–13 лет', tags: ['Офлайн', 'Марафон (2 недели)'],
+    mosRuCode: '2445194', mosRuLink: 'https://www.mos.ru/pgu2/activity/card/842871', status: 'Идёт набор', capacity: { total: 15, booked: 0 }, image: imgCyberRhythm,
+    variants: [{ id: '1517-combo2', type: 'Марафон (2 недели)', time: 'Пн-Пт, 9:00 – 12:45', price: 35000, note: 'Две программы подряд (5 + 5 дней)' }]
+  },
+  {
+    id: 'school-1383-june-3', school: 'Школа №1383', metro: 'Верхние Лихоборы', address: 'ул. Дубнинская, 7', corpus: 'Главное здание',
+    title: 'Minecraft: Тайна Древних Инженеров', description: descMinecraftAncients, teacher: 'Халаджан Геворк Арменович',
+    timelineDate: '15 — 19 ИЮНЯ', shortDate: '15 — 19 июня', endDate: '2026-06-19T23:59:59', shiftNumber: '3 СМЕНА', age: '6–13 лет', tags: ['Офлайн', 'IT и Электроника'],
+    mosRuCode: null, mosRuLink: null, status: 'Идёт набор', capacity: { total: 24, booked: 0 }, image: imgMinecraft,
+    variants: [
+      { id: '1383-j3-v1', type: 'Интенсив (полдня)', time: 'Пн-Пт, 9:00 – 12:30', price: 10000, note: '' },
+      { id: '1383-j3-v2', type: 'Полный день', time: 'Пн-Пт, 9:00 – 18:00', price: 16500, note: 'Питание: Обед + Полдник' }
+    ]
+  },
+  {
+    id: 'school-17-june-3', school: 'Школа №17', metro: 'Беляево', address: 'ул. Введенского, 28', corpus: 'IT Полигон',
+    title: 'Minecraft: Пробуждение Стража', description: descMinecraftAwakening, teacher: 'Сидоренко Анастасия Михайловна',
+    timelineDate: '15 — 19 ИЮНЯ', shortDate: '15 — 19 июня', endDate: '2026-06-19T23:59:59', shiftNumber: '3 СМЕНА', age: '6–13 лет', tags: ['Офлайн', 'IT и Электроника'],
+    mosRuCode: null, mosRuLink: null, status: 'Согласование', capacity: { total: 24, booked: 0 }, image: imgMinecraft,
+    variants: [{ id: '17-j3-v1', type: 'Интенсив (полдня)', time: 'Пн-Пт, 9:00 – 13:00', price: 17500, note: '' }]
+  },
+  {
+    id: 'school-2103-june-3', school: 'Школа №2103', metro: 'Ясенево', address: 'Голубинская ул., 5к4', corpus: 'Корпус ШО-3',
+    title: 'Minecraft: Пробуждение Стража', description: descMinecraftAwakening, teacher: 'Любченко Виталий Владимирович',
+    timelineDate: '15 — 19 ИЮНЯ', shortDate: '15 — 19 июня', endDate: '2026-06-19T23:59:59', shiftNumber: '3 СМЕНА', age: '6–13 лет', tags: ['Офлайн', 'IT и Электроника'],
+    mosRuCode: '2444397', mosRuLink: 'https://www.mos.ru/pgu2/activity/card/841894', status: 'Идёт набор', capacity: { total: 24, booked: 19 }, image: imgMinecraft,
+    variants: [
+      { id: '2103-j3-v1', type: 'Интенсив (полдня)', time: 'Пн-Пт, 9:00 – 12:30', price: 8500, note: '' },
+      { id: '2103-j3-v2', type: 'Полный день', time: 'Пн-Пт, 8:00 – 18:00', price: 14000, note: '' }
+    ]
+  },
+  {
+    id: 'school-937-june-3', school: 'Школа №937', metro: 'Орехово', address: 'ул. Маршала Захарова, 25', corpus: 'Основное здание',
+    title: 'Minecraft: Пробуждение Стража', description: descMinecraftAwakening, teacher: 'Юдицкий Илья Игоревич',
+    timelineDate: '15 — 19 ИЮНЯ', shortDate: '15 — 19 июня', endDate: '2026-06-19T23:59:59', shiftNumber: '3 СМЕНА', age: '6–13 лет', tags: ['Офлайн', 'IT и Электроника'],
+    mosRuCode: null, mosRuLink: null, status: 'Согласование', capacity: { total: 24, booked: 0 }, image: imgMinecraft,
+    variants: [{ id: '937-j3-v1', type: 'Интенсив (полдня)', time: 'Пн-Пт, 9:00 – 12:30', price: 8500, note: '' }]
+  },
+  // --- 4 СМЕНА (22 - 26 ИЮНЯ) ---
+  {
+    id: 'school-1383-june-4', school: 'Школа №1383', metro: 'Верхние Лихоборы', address: 'ул. Дубнинская, 7', corpus: 'Главное здание',
+    title: 'Minecraft: Пробуждение Стража', description: descMinecraftAwakening, teacher: 'Халаджан Геворк Арменович',
+    timelineDate: '22 — 26 ИЮНЯ', shortDate: '22 — 26 июня', endDate: '2026-06-26T23:59:59', shiftNumber: '4 СМЕНА', age: '6–13 лет', tags: ['Офлайн', 'IT и Электроника'],
+    mosRuCode: null, mosRuLink: null, status: 'Идёт набор', capacity: { total: 24, booked: 0 }, image: imgMinecraft,
+    variants: [
+      { id: '1383-j4-v1', type: 'Интенсив (полдня)', time: 'Пн-Пт, 9:00 – 12:30', price: 10000, note: '' },
+      { id: '1383-j4-v2', type: 'Полный день', time: 'Пн-Пт, 9:00 – 18:00', price: 16500, note: 'Питание: Обед + Полдник' }
+    ]
+  },
+  {
+    id: 'school-17-june-4', school: 'Школа №17', metro: 'Беляево', address: 'ул. Введенского, 28', corpus: 'IT Полигон',
+    title: 'КиберЛагерь КиберРитм: Инженерия Звука', description: descCyberRhythm, teacher: 'Сидоренко Анастасия Михайловна',
+    timelineDate: '22 — 26 ИЮНЯ', shortDate: '22 — 26 июня', endDate: '2026-06-26T23:59:59', shiftNumber: '4 СМЕНА', age: '6–13 лет', tags: ['Офлайн', 'Инженерия Звука'],
+    mosRuCode: null, mosRuLink: null, status: 'Согласование', capacity: { total: 24, booked: 0 }, image: imgCyberRhythm,
+    variants: [{ id: '17-j4-v1', type: 'Интенсив (полдня)', time: 'Пн-Пт, 9:00 – 13:00', price: 17500, note: '' }]
+  },
+  {
+    id: 'school-2103-june-4', school: 'Школа №2103', metro: 'Ясенево', address: 'Голубинская ул., 5к4', corpus: 'Корпус ШО-3',
+    title: 'КиберЛагерь КиберРитм: Инженерия Звука', description: descCyberRhythm, teacher: 'Любченко Виталий Владимирович',
+    timelineDate: '22 — 26 ИЮНЯ', shortDate: '22 — 26 июня', endDate: '2026-06-26T23:59:59', shiftNumber: '4 СМЕНА', age: '6–13 лет', tags: ['Офлайн', 'Инженерия Звука'],
+    mosRuCode: '2442453', mosRuLink: 'https://www.mos.ru/pgu2/activity/card/839055', status: 'Идёт набор', capacity: { total: 24, booked: 0 }, image: imgCyberRhythm,
+    variants: [
+      { id: '2103-j4-v1', type: 'Интенсив (полдня)', time: 'Пн-Пт, 9:00 – 12:30', price: 8500, note: '' },
+      { id: '2103-j4-v2', type: 'Полный день', time: 'Пн-Пт, 8:00 – 18:00', price: 14000, note: '' }
+    ]
+  },
+  {
+    id: 'school-937-june-4', school: 'Школа №937', metro: 'Орехово', address: 'ул. Маршала Захарова, 25', corpus: 'Основное здание',
+    title: 'КиберЛагерь КиберРитм: Инженерия Звука', description: descCyberRhythm, teacher: 'Юдицкий Илья Игоревич',
+    timelineDate: '22 — 26 ИЮНЯ', shortDate: '22 — 26 июня', endDate: '2026-06-26T23:59:59', shiftNumber: '4 СМЕНА', age: '6–13 лет', tags: ['Офлайн', 'Инженерия Звука'],
+    mosRuCode: null, mosRuLink: null, status: 'Согласование', capacity: { total: 24, booked: 0 }, image: imgCyberRhythm,
+    variants: [{ id: '937-j4-v1', type: 'Интенсив (полдня)', time: 'Пн-Пт, 9:00 – 12:30', price: 8500, note: '' }]
+  }
+];
+
+// === Helper Functions ===
+
+const getDisplayStatus = (item) => {
+  const isAutoArchived = checkIsAutoArchived(item.endDate);
+  const isCancelled = item.status === 'Отменено';
+  const isArchivedState = item.isArchived || isAutoArchived || isCancelled;
+  const isSoldOut = item.capacity.booked >= item.capacity.total || item.status === 'Мест нет';
+  const isPlanning = ['Планируется', 'Согласование'].includes(item.status);
+  const isJoinable = item.status === 'Можно присоединиться';
+
+  if (isCancelled) return 'Отменено';
+  if (isArchivedState) return 'Завершено';
+  if (isJoinable) return 'Можно присоединиться';
+  if (isPlanning) return 'Скоро старт';
+  if (isSoldOut) return 'Мест нет';
+  return 'Идёт набор';
+};
+
+const getStatusVariant = (item) => {
+  const status = getDisplayStatus(item);
+  if (status === 'Отменено') return 'destructive';
+  if (status === 'Завершено') return 'default';
+  if (status === 'Можно присоединиться') return 'purple';
+  if (status === 'Скоро старт') return 'info';
+  if (status === 'Мест нет') return 'warning';
+  return 'success';
+};
+
+const formatTeacherName = (fullName) => {
+  if (!fullName) return '';
+  return fullName.split(';').map(t => {
+    const parts = t.trim().split(/\s+/);
+    if (parts.length >= 3) {
+      return `${parts[0]} ${parts[1][0]}.${parts[2][0]}.`;
+    }
+    return t.trim();
+  }).join('; ');
+};
+
+const getInitials = (name) => {
+  return name.replace(/[^а-яА-Яa-zA-Z\s]/g, '')
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map(n => n[0])
+    .join('')
+    .toUpperCase();
+};
+
+const checkIsAutoArchived = (endDateStr) => {
+  if (!endDateStr) return false;
+  return new Date() > new Date(endDateStr);
+};
+
+const parseStartDate = (timelineStr) => {
+  if (!timelineStr) return 0;
+  const parts = timelineStr.split(' ');
+  const day = parseInt(parts[0], 10);
+  const monthStr = parts[parts.length - 1].toUpperCase();
+  
+  let month = 0;
+  if (monthStr === 'МАЯ') month = 4;
+  else if (monthStr === 'ИЮНЯ') month = 5;
+  else if (monthStr === 'ИЮЛЯ') month = 6;
+  else if (monthStr === 'АВГУСТА') month = 7;
+  
+  return new Date(2026, month, day).getTime();
+};
+
+// === Subcomponents ===
+const Badge = ({ children, variant = 'default', solid = false }) => {
+  const styles = {
+    default: solid ? 'bg-slate-900 text-slate-200 border-slate-600 shadow-md' : 'bg-slate-700/50 border-slate-600 text-slate-300',
+    success: solid ? 'bg-slate-900 text-emerald-400 border-emerald-500/50 shadow-md shadow-emerald-900/40' : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400',
+    warning: solid ? 'bg-slate-900 text-orange-400 border-orange-500/50 shadow-md shadow-orange-900/40' : 'bg-orange-500/10 border-orange-500/20 text-orange-400',
+    info: solid ? 'bg-slate-900 text-cyan-400 border-cyan-500/50 shadow-md shadow-cyan-900/40' : 'bg-blue-500/10 border-blue-500/20 text-blue-400',
+    purple: solid ? 'bg-slate-900 text-fuchsia-400 border-fuchsia-500/50 shadow-md shadow-fuchsia-900/40' : 'bg-fuchsia-500/10 border-fuchsia-500/20 text-fuchsia-400',
+    destructive: solid ? 'bg-slate-900 text-red-400 border-red-500/50 shadow-md shadow-red-900/40' : 'bg-red-500/10 border-red-500/20 text-red-400',
+  };
+  return (
+    <span className={`px-3 py-1.5 rounded-full text-xs font-semibold border backdrop-blur-md ${styles[variant]}`}>
+      {children}
+    </span>
+  );
+};
+
+const CapacityIndicator = ({ total, booked, isArchivedState, isCompact }) => {
+  if (isArchivedState) return null;
+  
+  const left = total - booked;
+  const percent = (booked / total) * 100;
+  const isLow = left <= 5 && left > 0;
+  const isSoldOut = left <= 0;
+
+  return (
+    <div className={`flex items-center ${isCompact ? 'gap-2' : 'gap-3'}`}>
+      <div className={`hidden sm:block flex-1 bg-slate-800 border border-slate-700 rounded-full overflow-hidden ${isCompact ? 'w-20' : 'w-32'} h-2.5`}>
+        <div 
+          className={`h-full rounded-full transition-all duration-500 shadow-[0_0_8px_rgba(0,0,0,0.5)] ${isSoldOut ? 'bg-red-500' : isLow ? 'bg-orange-500' : 'bg-emerald-400'}`} 
+          style={{ width: `${percent}%` }}
+        />
+      </div>
+      <span className={`font-semibold whitespace-nowrap tracking-wide ${isCompact ? 'text-[11px]' : 'text-xs'} ${isSoldOut ? 'text-red-400' : isLow ? 'text-orange-400' : 'text-emerald-400'}`}>
+        {isSoldOut ? 'МЕСТ НЕТ' : `ОСТАЛОСЬ ${left} ${left === 1 ? 'МЕСТО' : left > 1 && left < 5 ? 'МЕСТА' : 'МЕСТ'}`}
+      </span>
+    </div>
+  );
+};
+
+// === Модальное окно формы записи (Booking Modal) ===
+const BookingModal = ({ isOpen, onClose, bookingData, onSuccess }) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  if (!isOpen || !bookingData) return null;
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    setTimeout(() => {
+      setIsSubmitting(false);
+      setIsSuccess(true);
+      
+      setTimeout(() => {
+        setIsSuccess(false);
+        onSuccess(bookingData.variant.id);
+      }, 2000);
+    }, 1500);
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0B1120]/80 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="bg-[#151E32] w-full max-w-lg rounded-2xl shadow-2xl border border-slate-700 overflow-hidden flex flex-col max-h-[90vh]">
+        
+        <div className="flex items-center justify-between p-5 border-b border-slate-800 bg-[#1A243A]">
+          <h3 className="text-lg font-bold text-white">Оформление заявки</h3>
+          <button onClick={onClose} className="p-1 text-slate-400 hover:text-white transition-colors rounded-lg hover:bg-slate-700/50">
+            <X size={20} />
+          </button>
+        </div>
+
+        <div className="p-6 overflow-y-auto">
+          {isSuccess ? (
+            <div className="flex flex-col items-center justify-center py-10 text-center animate-in zoom-in duration-300">
+              <div className="w-16 h-16 bg-emerald-500/20 rounded-full flex items-center justify-center mb-4 border border-emerald-500/30 shadow-[0_0_20px_rgba(16,185,129,0.2)]">
+                <CheckCircle2 size={32} className="text-emerald-400" />
+              </div>
+              <h4 className="text-xl font-bold text-white mb-2">Заявка успешно отправлена!</h4>
+              <p className="text-slate-400">Наш менеджер свяжется с вами в ближайшее время для подтверждения деталей.</p>
+            </div>
+          ) : (
+            <>
+              <div className="bg-[#0B1120] p-4 rounded-xl border border-slate-800 mb-6">
+                <div className="text-cyan-400 text-sm font-medium mb-1">{bookingData.cardData.school}</div>
+                <div className="font-bold text-white leading-tight mb-3">{bookingData.cardData.title}</div>
+                <div className="flex flex-col gap-1.5 text-sm text-slate-300">
+                  <div className="flex justify-between items-center">
+                    <span className="text-slate-500">Даты:</span>
+                    <span>{bookingData.cardData.shortDate}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-slate-500">Формат:</span>
+                    <span className="font-medium">{bookingData.variant.type} ({bookingData.variant.time})</span>
+                  </div>
+                  <div className="flex justify-between items-center border-t border-slate-800 pt-1.5 mt-0.5">
+                    <span className="text-slate-500">К оплате:</span>
+                    <span className="font-bold text-white">{bookingData.variant.price.toLocaleString('ru-RU')} ₽</span>
+                  </div>
+                </div>
+              </div>
+
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-400 mb-1.5">Имя родителя *</label>
+                    <input required type="text" placeholder="Иван Иванов" className="w-full bg-[#0B1120] border border-slate-700 text-white rounded-lg px-4 py-2.5 outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-shadow placeholder:text-slate-600" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-400 mb-1.5">Телефон *</label>
+                    <input required type="tel" placeholder="+7 (999) 000-00-00" className="w-full bg-[#0B1120] border border-slate-700 text-white rounded-lg px-4 py-2.5 outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-shadow placeholder:text-slate-600" />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-slate-800 pt-4 mt-2">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-400 mb-1.5">Имя и фамилия ребенка *</label>
+                    <input required type="text" placeholder="Петя Иванов" className="w-full bg-[#0B1120] border border-slate-700 text-white rounded-lg px-4 py-2.5 outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-shadow placeholder:text-slate-600" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-400 mb-1.5">Возраст полных лет *</label>
+                    <input required type="number" min="5" max="17" placeholder="Например: 9" className="w-full bg-[#0B1120] border border-slate-700 text-white rounded-lg px-4 py-2.5 outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-shadow placeholder:text-slate-600" />
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-slate-400 mb-1.5">Комментарий (необязательно)</label>
+                  <textarea rows="2" placeholder="Особенности питания, аллергии или пожелания..." className="w-full bg-[#0B1120] border border-slate-700 text-white rounded-lg px-4 py-2.5 outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-shadow placeholder:text-slate-600 resize-none"></textarea>
+                </div>
+
+                <button 
+                  type="submit" 
+                  disabled={isSubmitting}
+                  className="w-full relative overflow-hidden bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold rounded-lg py-3.5 mt-2 transition-all shadow-[0_0_20px_rgba(8,145,178,0.3)] hover:shadow-[0_0_25px_rgba(8,145,178,0.5)] disabled:opacity-70 disabled:cursor-not-allowed"
+                >
+                  {isSubmitting ? (
+                    <span className="animate-pulse flex items-center justify-center gap-2">
+                      <Sparkles size={18} className="animate-spin" /> Отправка...
+                    </span>
+                  ) : (
+                    'Забронировать место'
+                  )}
+                </button>
+                <p className="text-[11px] text-slate-500 text-center mt-3">Нажимая кнопку, вы даете согласие на обработку персональных данных.</p>
+              </form>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// === Individual Course Card Component ===
+const CourseCard = ({ data, globalBookingState, onAction, onNavigateToCamp, viewMode, isExpanded, onToggleExpand }) => {
+  const teachers = data.teacher.split(';').map(t => t.trim());
+  const isCompact = viewMode === 'compact';
+  
+  const placeVariantsInFooter = isCompact && data.variants.length > 2;
+  const variantsCount = data.variants.length;
+  
+  const displayStatus = getDisplayStatus(data);
+  const statusVariant = getStatusVariant(data);
+  const isArchivedState = displayStatus === 'Завершено' || displayStatus === 'Отменено';
+  const isSoldOut = displayStatus === 'Мест нет';
+  const isCancelled = displayStatus === 'Отменено';
+  const isPlanning = displayStatus === 'Скоро старт';
+
+  // Общий рендер тарифов
+  const variantsContent = (
+    <div className="w-full">
+      {!isCompact && (
+        <div className="flex flex-wrap items-end justify-between gap-4 mb-3 px-1">
+          <h4 className="text-sm font-semibold text-slate-300 uppercase tracking-wider">
+            Форматы участия
+          </h4>
+          <CapacityIndicator total={data.capacity.total} booked={data.capacity.booked} isArchivedState={isArchivedState} isCompact={false} />
+        </div>
+      )}
+
+      <div className="space-y-2 w-full">
+        {data.variants.map((variant) => {
+          const isSuccess = globalBookingState[variant.id] === 'success';
+
+          let btnText = 'Записаться';
+          let btnStyle = 'bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white shadow-emerald-900/20';
+          let btnIcon = <ChevronRight size={isCompact ? 14 : 16} className="group-hover:translate-x-1 transition-transform" />;
+          let actionType = 'internal';
+
+          if (isCancelled || isArchivedState) {
+            btnText = isCancelled ? 'Отменено' : 'Завершено';
+            btnStyle = 'bg-slate-800 text-slate-500 border-slate-700';
+            btnIcon = null;
+          } else if (isSoldOut) {
+            btnText = 'В лист ожидания';
+            btnStyle = 'bg-orange-600 hover:bg-orange-500 text-white shadow-orange-900/20';
+          } else if (isPlanning) {
+            btnText = 'Оставить заявку';
+            btnStyle = 'bg-blue-600 hover:bg-blue-500 text-white shadow-blue-900/20';
+          } else if (data.mosRuLink) {
+            btnText = 'На mos.ru';
+            btnIcon = <ExternalLink size={isCompact ? 14 : 16} />;
+            actionType = 'external';
+          }
+
+          return (
+            <div key={variant.id} className={`flex flex-col lg:flex-row lg:items-center rounded-xl border transition-colors group ${isArchivedState ? 'bg-[#1A243A]/50 border-slate-800' : 'bg-[#1A243A] border-slate-700/50 hover:border-cyan-900'} ${isCompact ? 'p-3 gap-y-3' : 'p-4 md:p-5 gap-y-4'}`}>
+              
+              {/* ЛЕВАЯ ЧАСТЬ: Название, Примечание и (в мобильной версии) Расписание */}
+              <div className={`flex flex-col sm:flex-row lg:items-center flex-1 min-w-0 ${isCompact ? '' : 'lg:pr-4 lg:gap-6'}`}>
+                
+                {/* Блок Названия и Примечания */}
+                <div className="flex-1 min-w-0">
+                  {/* Для мобилок оставляем расписание рядом с названием, для десктопа отрываем его */}
+                  <div className={`flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 ${isCompact ? 'mb-1' : 'mb-0'}`}>
+                    <span className={`font-medium break-words leading-snug ${isArchivedState ? 'text-slate-400' : 'text-white'} ${isCompact ? 'text-sm' : ''}`}>
+                      {variant.type}
+                    </span>
+                    
+                    {/* Показывать расписание сразу под/рядом с названием ТОЛЬКО на малых экранах ИЛИ в компактном виде */}
+                    <div className={`flex ${!isCompact ? 'lg:hidden' : ''}`}>
+                      <span className={`text-slate-300 flex items-center gap-1.5 whitespace-nowrap bg-slate-800/80 px-2 py-0.5 rounded-md border border-slate-700/50 ${isCompact ? 'text-[11px]' : 'text-xs'}`}>
+                        <Clock size={12} className="text-slate-400" /> {variant.time}
+                      </span>
+                    </div>
+                  </div>
+                  
+                  {variant.note && !isCompact && (
+                    <div className="text-xs text-slate-400 flex items-start gap-1.5 mt-2 lg:mt-1.5">
+                      <Info size={14} className={`shrink-0 mt-0.5 ${isArchivedState ? 'text-slate-500' : 'text-cyan-500'}`} />
+                      <span className="line-clamp-2">{variant.note}</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* ЦЕНТРАЛЬНАЯ ЧАСТЬ: Расписание ТОЛЬКО для десктопа в детальном виде (Выравнивание по центру) */}
+                {!isCompact && (
+                  <div className="hidden lg:flex shrink-0 w-[200px] justify-center border-l border-slate-700/50 pl-4">
+                     <span className="text-slate-300 flex items-center gap-1.5 whitespace-nowrap bg-slate-800/80 px-2.5 py-1.5 rounded-md border border-slate-700/50 text-xs">
+                        <Clock size={14} className="text-cyan-500" /> {variant.time}
+                     </span>
+                  </div>
+                )}
+
+              </div>
+              
+              {/* ПРАВАЯ ЧАСТЬ: Цена и кнопка */}
+              <div className={`flex flex-wrap items-center justify-between lg:justify-end gap-3 sm:gap-4 w-full lg:w-auto border-t border-slate-700/50 lg:border-0 shrink-0 ${isCompact ? 'pt-3 lg:pt-0' : 'pt-4 lg:pt-0 lg:pl-6 lg:border-l'}`}>
+                <div className={`font-bold whitespace-nowrap ${isArchivedState ? 'text-slate-500' : 'text-white'} ${isCompact ? 'text-lg' : 'text-xl'}`}>
+                  {variant.price.toLocaleString('ru-RU')} ₽
+                </div>
+                <button
+                  onClick={() => onAction(variant, data, actionType, data.mosRuLink)}
+                  disabled={isSuccess || isArchivedState}
+                  className={`relative overflow-hidden rounded-lg font-medium transition-all duration-300 border border-transparent shrink-0
+                    ${isCompact ? 'px-3 py-2 text-xs min-w-[130px]' : 'px-5 py-2.5 text-sm min-w-[155px]'}
+                    ${isSuccess && !isArchivedState ? '!bg-slate-700 !text-emerald-400 !border-emerald-500/30 shadow-none' : btnStyle}
+                  `}
+                >
+                  <span className="flex items-center justify-center gap-2 relative z-10">
+                    {isSuccess && !isArchivedState ? <><CheckCircle2 size={isCompact ? 14 : 16} /> Принято</> 
+                      : <>{btnText} {btnIcon}</>}
+                  </span>
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+
+  return (
+    <div className={`flex flex-col md:flex-row gap-4 md:gap-8 relative group ${isCompact ? 'mb-4' : ''}`}>
+      
+      {/* МОБИЛЬНЫЙ ЗАГОЛОВОК ДАТЫ */}
+      <div className="md:hidden flex items-baseline gap-3 pl-2 mt-2">
+         <h2 className={`text-xl font-light tracking-wide ${isArchivedState ? 'text-slate-500' : 'text-cyan-400'}`}>
+            {data.timelineDate}
+         </h2>
+         <span className="text-[10px] text-slate-500 uppercase tracking-widest font-medium">{data.shiftNumber}</span>
+      </div>
+
+      {/* Левая колонка: Таймлайн узел */}
+      <div className={`hidden md:flex flex-col items-end w-48 relative shrink-0 z-10 ${isCompact ? 'pt-4' : 'pt-6'}`}>
+        <div className="relative pr-8 text-right w-full">
+          <div className={`absolute -right-[5px] w-2.5 h-2.5 rounded-full shadow-[0_0_12px_rgba(6,182,212,0.6)] transition-transform duration-300 bg-[#0B1120] border-2 
+            ${isCompact ? 'top-1.5' : 'top-2'} 
+            ${isArchivedState ? 'border-slate-600 shadow-none' : 'border-cyan-500 group-hover:scale-150 group-hover:bg-cyan-500'}`} 
+          />
+          {!isArchivedState && !isPlanning && !isSoldOut && <div className={`absolute -right-[8px] w-4 h-4 rounded-full border border-cyan-500/30 animate-ping ${isCompact ? 'top-[3px]' : 'top-[5px]'}`} />}
+          
+          <h2 className={`${isCompact ? 'text-lg' : 'text-xl'} font-light tracking-wide ${isArchivedState ? 'text-slate-500' : 'text-cyan-400'}`}>
+            {data.timelineDate}
+          </h2>
+          <p className="text-[10px] sm:text-xs text-slate-500 mt-1 uppercase tracking-widest font-medium">{data.shiftNumber}</p>
+        </div>
+      </div>
+
+      {/* Правая колонка: Сама Карточка и Футер */}
+      <div className="flex-1 min-w-0">
+        <div className={`
+          bg-[#151E32] rounded-2xl border border-slate-700/50 overflow-hidden shadow-2xl transition-all duration-300 flex flex-col
+          ${isArchivedState ? 'grayscale opacity-60 hover:grayscale-[50%] hover:opacity-100 border-slate-800' : 'hover:border-slate-600 hover:shadow-cyan-900/20'}
+        `}>
+          
+          <div className={`flex flex-col h-full ${isCompact ? 'sm:flex-row sm:items-stretch' : ''}`}>
+            
+            {/* Изображение: Навигация */}
+            <div 
+              onClick={() => onNavigateToCamp(data.title)}
+              className={`relative shrink-0 flex-none overflow-hidden cursor-pointer group/image ${
+              isCompact 
+                ? 'w-full h-[220px] sm:h-auto sm:w-[240px] md:w-[300px]'
+                : 'w-full h-64 sm:h-80 md:h-[360px]'
+            }`}>
+              <div className={`absolute inset-0 z-10 pointer-events-none transition-colors duration-500
+                ${isCompact ? 'bg-gradient-to-t sm:bg-gradient-to-r sm:from-transparent sm:via-[#151E32]/10 sm:to-[#151E32] group-hover/image:bg-cyan-900/10' : 'bg-gradient-to-t from-[#151E32] via-[#151E32]/80 to-transparent group-hover/image:bg-cyan-900/20'}`} 
+              />
+              <img src={data.image} alt={data.title} className="absolute inset-0 w-full h-full object-cover transform group-hover/image:scale-[1.03] transition-transform duration-700" />
+              <div className="absolute top-4 left-4 sm:top-5 sm:left-5 z-20 flex flex-wrap gap-2 pointer-events-none">
+                <Badge variant={statusVariant} solid={true}>
+                  <span className="flex items-center gap-1.5">
+                    {!isArchivedState && !isSoldOut && !isPlanning && <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)]" />}
+                    {displayStatus}
+                  </span>
+                </Badge>
+              </div>
+            </div>
+
+            {/* Основной Контент */}
+            <div className={`flex-1 flex flex-col relative z-20 min-w-0 h-full ${isCompact ? `p-4 md:p-5 -mt-6 sm:mt-0 ${placeVariantsInFooter ? 'pb-2 md:pb-2' : ''}` : 'p-5 sm:p-8 -mt-16 sm:-mt-24'}`}>
+              
+              <div className={`flex flex-wrap items-end justify-between gap-4 ${isCompact ? 'mb-2' : 'mb-4'}`}>
+                <div className="flex flex-wrap items-center gap-2">
+                  {data.tags.map(tag => <Badge key={tag}>{tag}</Badge>)}
+                  {data.mosRuCode && !isCompact && <span className="text-xs text-slate-300 font-medium ml-2 hidden sm:inline bg-slate-800/80 px-2.5 py-1 rounded-md backdrop-blur-sm border border-slate-700/50">Код: {data.mosRuCode}</span>}
+                </div>
+                
+                {isCompact && (
+                  <div className="ml-auto w-full sm:w-auto mt-2 sm:mt-0">
+                    <CapacityIndicator total={data.capacity.total} booked={data.capacity.booked} isArchivedState={isArchivedState} isCompact={true} />
+                  </div>
+                )}
+              </div>
+
+              {/* ЗАГОЛОВОК КАК ССЫЛКА НА СТРАНИЦУ */}
+              <h3 
+                onClick={() => onNavigateToCamp(data.title)}
+                className={`font-bold leading-tight drop-shadow-md break-words cursor-pointer transition-colors group/link flex items-start gap-2
+                ${isCompact ? 'text-lg md:text-xl mb-2' : 'text-2xl sm:text-3xl lg:text-4xl mb-4'}
+                ${isArchivedState ? 'text-slate-300 hover:text-cyan-300' : 'text-white hover:text-cyan-400'}`}
+              >
+                <span>{data.title}</span>
+                <ExternalLink size={isCompact ? 18 : 24} className="opacity-0 group-hover/link:opacity-100 transition-opacity text-cyan-500 mt-1 shrink-0" />
+              </h3>
+
+              {isCompact ? (
+                <>
+                  {/* Инфо блок (Поднят вверх для контекста) */}
+                  <div className={`flex flex-wrap gap-x-5 gap-y-2 text-sm mt-1 mb-3`}>
+                    <div className="flex items-center gap-2 text-cyan-400 font-medium w-full sm:w-auto">
+                      <Train size={15} className="shrink-0" />
+                      <span className="truncate">{data.school} • м. {data.metro}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-slate-400">
+                      <Clock size={15} className="shrink-0" />
+                      <span>{data.shortDate}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-slate-400">
+                      <User size={15} className="shrink-0" />
+                      <span className="truncate max-w-[160px]" title={data.teacher}>{formatTeacherName(data.teacher)}</span>
+                    </div>
+                  </div>
+
+                  <div className="mt-auto flex flex-col w-full flex-1">
+                    {/* Зона Свопа (Main Body) */}
+                    {!placeVariantsInFooter && (
+                      <div className="relative w-full flex-1 flex flex-col min-h-[140px]">
+                        {/* Базовый слой: Описание-превью + Кнопка + Тарифы */}
+                        <div className={`w-full h-full flex flex-col transition-opacity duration-300 ${isExpanded ? 'opacity-0 pointer-events-none invisible' : 'opacity-100 visible'}`}>
+                          
+                          {/* Частичное описание для заполнения пустоты (работает как пружина) */}
+                          {variantsCount === 1 && (
+                            <div className="flex-1 min-h-0 overflow-hidden mb-2">
+                              <p className="text-sm text-slate-400/80 leading-relaxed line-clamp-1 sm:line-clamp-2 md:line-clamp-3">
+                                {data.description}
+                              </p>
+                            </div>
+                          )}
+
+                          {/* Контейнер для кнопки и тарифов, прижатый к низу */}
+                          <div className="mt-auto w-full">
+                            {/* Кнопка Аккордеона ПЕРЕД тарифами */}
+                            <button onClick={onToggleExpand} className="text-cyan-500 hover:text-cyan-400 text-xs font-medium flex items-center gap-1 mb-3 transition-colors shrink-0 w-max">
+                              Подробнее о смене
+                              <ChevronDown size={14} />
+                            </button>
+                            {variantsContent}
+                          </div>
+                        </div>
+                        
+                        {/* Оверлей: Описание (Скроллируемый) + Кнопка (Закрывающая) */}
+                        <div className={`absolute inset-0 flex flex-col transition-all duration-300 ${isExpanded ? 'opacity-100 z-10 translate-y-0' : 'opacity-0 -z-10 pointer-events-none translate-y-2'}`}>
+                          <div className="flex-1 overflow-y-auto pr-3 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-slate-800/30 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-600 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-cyan-700">
+                            <p className="text-sm text-slate-400 leading-relaxed pb-2">
+                              {data.description}
+                            </p>
+                          </div>
+                          <button onClick={onToggleExpand} className="text-cyan-500 hover:text-cyan-400 text-xs font-medium flex items-center gap-1 mt-2 mb-1 transition-colors shrink-0 w-max bg-[#151E32] pt-1">
+                            Скрыть описание и выбрать формат
+                            <ChevronDown size={14} className="transform rotate-180" />
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Excerpt if variants are in footer */}
+                    {placeVariantsInFooter && (
+                      <div className="flex-1 min-h-0 overflow-hidden mt-1 mb-2">
+                        <p className="text-sm text-slate-400/80 leading-relaxed line-clamp-2 sm:line-clamp-3">
+                          {data.description}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="mb-6">
+                    <p className={`text-sm sm:text-base text-slate-400 leading-relaxed transition-all duration-300 ${isExpanded ? '' : 'line-clamp-2'}`}>
+                      {data.description}
+                    </p>
+                    <button onClick={onToggleExpand} className="text-cyan-500 hover:text-cyan-400 text-sm font-medium flex items-center gap-1 mt-2 transition-colors">
+                      {isExpanded ? 'Скрыть' : 'Читать полностью'}
+                      <ChevronDown size={16} className={`transform transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                    </button>
+                  </div>
+
+                  {/* ОБНОВЛЕНО: Инфо-блок теперь состоит из 3-х ровных колонок, заполняющих все пространство */}
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-y-4 gap-x-6 mb-8 bg-[#0B1120]/60 backdrop-blur-sm p-4 sm:p-5 md:p-6 rounded-xl border border-slate-700/50 mt-auto min-w-0 items-center">
+                    
+                    {/* Метро и Адрес */}
+                    <div className="col-span-1 md:col-span-6 lg:col-span-5 min-w-0">
+                      <div className="flex items-center gap-2 text-cyan-400 font-medium sm:text-lg mb-1.5">
+                        <Train size={18} className="shrink-0" />
+                        <span className="truncate">{data.school} • м. {data.metro}</span>
+                      </div>
+                      <div className="flex items-start gap-2 text-slate-400 text-sm ml-0.5">
+                        <MapPin size={16} className="shrink-0 mt-0.5" />
+                        <span className="line-clamp-2">{data.address} <span className="text-slate-500 whitespace-nowrap">({data.corpus})</span></span>
+                      </div>
+                    </div>
+
+                    {/* Даты */}
+                    <div className="col-span-1 md:col-span-3 lg:col-span-3 flex items-center gap-3 min-w-0 md:border-l md:border-slate-700/50 md:pl-6 pt-2 md:pt-0 border-t border-slate-800 md:border-t-0">
+                      <div className="w-10 h-10 rounded-lg bg-[#151E32] flex items-center justify-center text-cyan-400 shrink-0 border border-slate-700/50">
+                        <Clock size={18} />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="text-xs text-slate-500 mb-0.5">Даты смены</div>
+                        <div className="text-sm font-medium whitespace-nowrap">{data.shortDate}</div>
+                      </div>
+                    </div>
+
+                    {/* Наставник */}
+                    <div className="col-span-1 md:col-span-3 lg:col-span-4 flex items-center gap-3 min-w-0 md:border-l md:border-slate-700/50 md:pl-6 pt-2 md:pt-0 border-t border-slate-800 md:border-t-0">
+                      <div className="flex -space-x-2 shrink-0">
+                        {teachers.map((t, idx) => (
+                          <div key={idx} title={t} className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-900 to-blue-900 flex items-center justify-center border-2 border-[#151E32] shadow-sm relative z-10 hover:z-20 hover:-translate-y-1 transition-all">
+                            <span className="text-xs font-bold text-cyan-300">{getInitials(t)}</span>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="min-w-0">
+                        <div className="text-xs text-slate-500 mb-0.5">Наставник</div>
+                        <div className="text-sm font-medium truncate" title={data.teacher}>{formatTeacherName(data.teacher)}</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="w-full mt-2 sm:mt-0">
+                    {variantsContent}
+                  </div>
+                </>
+              )}
+
+            </div>
+          </div>
+
+          {/* ФУТЕР: Зона Свопа для карточек с 3+ тарифами */}
+          {isCompact && placeVariantsInFooter && (
+            <div className="px-4 pb-4 md:px-5 md:pb-5 sm:border-t sm:border-slate-700/50 sm:pt-4 w-full bg-[#151E32]">
+              <div className="relative w-full flex flex-col min-h-[140px]">
+                {/* Базовый слой */}
+                <div className={`w-full flex flex-col transition-opacity duration-300 ${isExpanded ? 'opacity-0 pointer-events-none invisible' : 'opacity-100 visible'}`}>
+                  <button onClick={onToggleExpand} className="text-cyan-500 hover:text-cyan-400 text-xs font-medium flex items-center gap-1 mb-3 transition-colors shrink-0 w-max">
+                    Подробнее о смене
+                    <ChevronDown size={14} />
+                  </button>
+                  {variantsContent}
+                </div>
+                
+                {/* Оверлей */}
+                <div className={`absolute inset-0 flex flex-col transition-all duration-300 ${isExpanded ? 'opacity-100 z-10 translate-y-0' : 'opacity-0 -z-10 pointer-events-none translate-y-2'}`}>
+                  <div className="flex-1 overflow-y-auto pr-3 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-slate-800/30 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-600 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-cyan-700">
+                    <p className="text-sm text-slate-400 leading-relaxed pb-2">
+                      {data.description}
+                    </p>
+                  </div>
+                  <button onClick={onToggleExpand} className="text-cyan-500 hover:text-cyan-400 text-xs font-medium flex items-center gap-1 mt-2 mb-1 transition-colors shrink-0 w-max bg-[#151E32] pt-1">
+                    Скрыть описание и выбрать формат
+                    <ChevronDown size={14} className="transform rotate-180" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// === Main Application Component ===
+export default function App() {
+  const [bookingState, setBookingState] = useState({});
+  const [viewMode, setViewMode] = useState('detailed');
+  
+  // Состояния для фильтров
+  const [showCompleted, setShowCompleted] = useState(false);
+  const [selectedSchool, setSelectedSchool] = useState('Все площадки');
+  const [selectedProgram, setSelectedProgram] = useState('Все программы');
+  const [selectedStatus, setSelectedStatus] = useState('Все статусы');
+
+  // Состояние для управления модальным окном
+  const [activeBooking, setActiveBooking] = useState(null);
+  
+  // Состояние аккордеона (id раскрытой карточки)
+  const [expandedCardId, setExpandedCardId] = useState(null);
+
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setShowScrollTop(window.scrollY > 400);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  const hasActiveFilters = showCompleted || selectedSchool !== 'Все площадки' || selectedProgram !== 'Все программы' || selectedStatus !== 'Все статусы';
+
+  const resetFilters = () => {
+    setShowCompleted(false);
+    setSelectedSchool('Все площадки');
+    setSelectedProgram('Все программы');
+    setSelectedStatus('Все статусы');
+  };
+
+  const handleActionClick = (variant, cardData, actionType, link = null) => {
+    if (actionType === 'external' && link) {
+      window.open(link, '_blank');
+      return;
+    }
+    setActiveBooking({ variant, cardData });
+  };
+
+  const handleBookingSuccess = (variantId) => {
+    setBookingState(prev => ({ ...prev, [variantId]: 'success' }));
+    setActiveBooking(null);
+  };
+
+  const handleNavigateToCamp = (campTitle) => {
+    alert(`Переход на подробную страницу программы:\n\n"${campTitle}"\n\nТам родители увидят галерею, расписание по дням и отзывы.`);
+  };
+
+  const realSchedule = mockSchedule.filter(item => !item.title.includes('[ТЕСТ]'));
+  const schools = ['Все площадки', ...new Set(realSchedule.map(item => item.school))].sort();
+  const programs = ['Все программы', ...new Set(realSchedule.map(item => item.title))].sort();
+  
+  const allAvailableStatuses = Array.from(new Set(mockSchedule.map(getDisplayStatus)));
+  const statusFilterOptions = ['Все статусы', 'Идёт набор', 'Скоро старт', 'Можно присоединиться', 'Мест нет'].filter(s => s === 'Все статусы' || allAvailableStatuses.includes(s));
+
+  const filteredSchedule = mockSchedule.filter(item => {
+    const isAutoArchived = checkIsAutoArchived(item.endDate);
+    const isArchivedState = item.isArchived || isAutoArchived || item.status === 'Отменено';
+    const displayStatus = getDisplayStatus(item);
+
+    if (!showCompleted && isArchivedState) return false;
+    if (selectedSchool !== 'Все площадки' && item.school !== selectedSchool && !item.school.includes('[ТЕСТ]')) return false;
+    if (selectedProgram !== 'Все программы' && item.title !== selectedProgram && !item.title.includes('[ТЕСТ]')) return false;
+    if (selectedStatus !== 'Все статусы' && displayStatus !== selectedStatus) return false;
+    
+    return true;
+  }).sort((a, b) => {
+    const dateA = parseStartDate(a.timelineDate);
+    const dateB = parseStartDate(b.timelineDate);
+    if (dateA !== dateB) return dateA - dateB;
+    return a.school.localeCompare(b.school);
+  });
+
+  return (
+    <div className="min-h-screen bg-[#0B1120] text-slate-200 p-4 md:py-12 md:px-8 font-sans selection:bg-cyan-500/30 overflow-x-hidden">
+      
+      <div className="max-w-6xl mx-auto mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+          <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">Расписание смен</h1>
+          <p className="text-slate-400">Выберите площадку, удобные даты и формат участия</p>
+        </div>
+      </div>
+
+      <div className="max-w-6xl mx-auto mb-12">
+        <div className="bg-[#151E32] border border-slate-700/50 rounded-xl p-4 flex flex-col xl:flex-row gap-4 items-start xl:items-center justify-between shadow-lg">
+          
+          <div className="flex items-center gap-4 shrink-0 w-full xl:w-auto justify-between xl:justify-start">
+            <div className="flex items-center gap-2 text-cyan-400 font-medium px-2">
+              <Filter size={18} />
+              <span className="inline">Фильтры</span>
+            </div>
+            
+            {hasActiveFilters && (
+              <button onClick={resetFilters} className="flex items-center gap-1.5 text-xs sm:text-sm text-slate-400 hover:text-cyan-400 transition-colors px-2 py-1 rounded-md hover:bg-slate-800/50" title="Сбросить все фильтры">
+                <RotateCcw size={14} className="sm:w-4 sm:h-4 shrink-0" />
+                <span>Сбросить</span>
+              </button>
+            )}
+          </div>
+
+          <div className="flex flex-col sm:flex-row flex-wrap gap-4 w-full xl:w-auto flex-1 justify-end">
+            <select className="bg-[#0B1120] border border-slate-700 text-slate-300 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block w-full sm:w-auto sm:max-w-[180px] p-2.5 pr-8 truncate outline-none cursor-pointer" value={selectedStatus} onChange={(e) => setSelectedStatus(e.target.value)}>
+              {statusFilterOptions.map(s => <option key={s} value={s}>{s}</option>)}
+            </select>
+            <select className="bg-[#0B1120] border border-slate-700 text-slate-300 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block w-full sm:flex-1 md:flex-none md:w-[240px] p-2.5 pr-8 truncate outline-none cursor-pointer" value={selectedProgram} onChange={(e) => setSelectedProgram(e.target.value)}>
+              {programs.map(p => <option key={p} value={p}>{p}</option>)}
+            </select>
+            <select className="bg-[#0B1120] border border-slate-700 text-slate-300 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block w-full sm:w-auto sm:max-w-[200px] p-2.5 pr-8 truncate outline-none cursor-pointer" value={selectedSchool} onChange={(e) => setSelectedSchool(e.target.value)}>
+              {schools.map(s => <option key={s} value={s}>{s}</option>)}
+            </select>
+
+            <label className="flex items-center justify-center sm:justify-start gap-2 cursor-pointer bg-[#0B1120] border border-slate-700 rounded-lg p-2.5 px-4 select-none hover:border-slate-600 transition-colors w-full sm:w-auto shrink-0">
+              <input type="checkbox" className="w-4 h-4 text-cyan-500 bg-slate-800 border-slate-600 rounded focus:ring-cyan-600 focus:ring-2 cursor-pointer" checked={showCompleted} onChange={(e) => { setShowCompleted(e.target.checked); if(!e.target.checked && selectedStatus === 'Завершено') setSelectedStatus('Все статусы'); }} />
+              <span className="text-sm text-slate-300 whitespace-nowrap">Архив</span>
+            </label>
+
+            <div className="hidden sm:flex items-center bg-[#0B1120] border border-slate-700 rounded-lg p-1 shrink-0">
+              <button title="Подробный вид" onClick={() => setViewMode('detailed')} className={`p-1.5 rounded-md transition-colors ${viewMode === 'detailed' ? 'bg-cyan-900/50 text-cyan-400' : 'text-slate-500 hover:text-slate-300'}`}><LayoutList size={20} /></button>
+              <button title="Компактный вид" onClick={() => setViewMode('compact')} className={`p-1.5 rounded-md transition-colors ${viewMode === 'compact' ? 'bg-cyan-900/50 text-cyan-400' : 'text-slate-500 hover:text-slate-300'}`}><List size={20} /></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Таймлайн контейнер */}
+      <div className="max-w-6xl mx-auto relative">
+        {filteredSchedule.length > 0 && (
+          <div className="hidden md:block absolute left-[191px] top-8 bottom-12 w-px bg-gradient-to-b from-slate-800 via-cyan-900/30 to-slate-800 z-0" />
+        )}
+        
+        <div className={`flex flex-col relative z-10 ${viewMode === 'compact' ? 'gap-6 sm:gap-8' : 'gap-12 sm:gap-16'}`}>
+          {filteredSchedule.length === 0 ? (
+            <div className="text-center py-16 bg-[#151E32] rounded-2xl border border-slate-700/50">
+              <p className="text-slate-400 text-lg mb-4">По выбранным параметрам смен не найдено.</p>
+              <button onClick={resetFilters} className="text-cyan-500 hover:text-cyan-400 font-medium hover:underline">Сбросить фильтры</button>
+            </div>
+          ) : (
+            filteredSchedule.map((item) => (
+              <CourseCard 
+                key={item.id} 
+                data={item} 
+                globalBookingState={bookingState}
+                onAction={handleActionClick}
+                onNavigateToCamp={handleNavigateToCamp}
+                viewMode={viewMode}
+                isExpanded={expandedCardId === item.id}
+                onToggleExpand={() => setExpandedCardId(expandedCardId === item.id ? null : item.id)}
+              />
+            ))
+          )}
+        </div>
+      </div>
+
+      <BookingModal isOpen={!!activeBooking} bookingData={activeBooking} onClose={() => setActiveBooking(null)} onSuccess={handleBookingSuccess} />
+
+      <button onClick={scrollToTop} aria-label="Наверх" className={`fixed bottom-6 right-6 md:bottom-10 md:right-10 p-3 bg-slate-800 border border-slate-700 text-cyan-400 rounded-full shadow-[0_0_20px_rgba(8,145,178,0.2)] hover:bg-cyan-900/50 hover:text-cyan-300 hover:border-cyan-700 transition-all duration-300 z-40 ${showScrollTop ? 'translate-y-0 opacity-100' : 'translate-y-16 opacity-0 pointer-events-none'}`}>
+        <ChevronUp size={24} />
+      </button>
+    </div>
+  );
+}

@@ -52,6 +52,15 @@ function FieldError({ message }: { message?: string }) {
   return <p className="text-destructive text-xs">{message}</p>;
 }
 
+function FormAlert({ message }: { message?: string }) {
+  if (!message) return null;
+  return (
+    <p className="rounded-lg border border-red-400/25 bg-red-400/10 px-3 py-2 text-red-200 text-xs leading-relaxed">
+      {message}
+    </p>
+  );
+}
+
 function BookingSummaryCard({ summary }: { summary: BookingFormSummary }) {
   return (
     <div
@@ -123,7 +132,7 @@ export function BookingForm({
   const isSubmitting = form.formState.isSubmitting;
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
+    <form onSubmit={form.handleSubmit(onSubmit)} className="@container grid gap-4">
       {summary ? <BookingSummaryCard summary={summary} /> : null}
 
       {flowContext ? (
@@ -138,7 +147,7 @@ export function BookingForm({
         </div>
       ) : null}
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-3 @md:grid-cols-2 @md:gap-4">
         <div className="grid gap-1.5">
           <Label htmlFor="parentName" className={fieldLabelClass}>
             Имя родителя <span className="text-white">*</span>
@@ -172,7 +181,7 @@ export function BookingForm({
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 border-slate-800 border-t pt-2">
+      <div className="grid grid-cols-1 gap-3 border-slate-800 border-t pt-3 @md:grid-cols-2 @md:gap-4">
         <div className="grid gap-1.5">
           <Label htmlFor="childName" className={fieldLabelClass}>
             Имя и фамилия ребёнка <span className="text-white">*</span>
@@ -220,40 +229,39 @@ export function BookingForm({
         />
       </div>
 
-      <div className="flex items-start gap-2.5">
-        <Controller
-          control={form.control}
-          name="consent"
-          render={({ field }) => (
-            <Checkbox
-              id="consent"
-              checked={field.value}
-              onCheckedChange={(v) => field.onChange(v === true)}
-              className="mt-0.5 border-slate-600 data-checked:border-cyan-500 data-checked:bg-cyan-600"
-            />
-          )}
-        />
-        <Label
-          htmlFor="consent"
-          className="text-slate-400 text-xs leading-snug font-normal"
-        >
-          Согласен(на) на обработку персональных данных в соответствии с{" "}
-          <Link
-            href={LEGAL_PERSONAL_DATA_PATH}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-cyan-300 underline underline-offset-3 hover:text-cyan-200"
+      <div className="grid gap-2.5 border-slate-800 border-t pt-3">
+        <div className="flex items-start gap-2.5">
+          <Controller
+            control={form.control}
+            name="consent"
+            render={({ field }) => (
+              <Checkbox
+                id="consent"
+                checked={field.value}
+                onCheckedChange={(v) => field.onChange(v === true)}
+                className="mt-0.5 shrink-0 border-slate-600 data-checked:border-cyan-500 data-checked:bg-cyan-600"
+              />
+            )}
+          />
+          <Label
+            htmlFor="consent"
+            className="min-w-0 text-slate-400 text-xs leading-relaxed font-normal"
           >
-            политикой обработки персональных данных
-          </Link>{" "}
-          и целью заявки на программу.
-        </Label>
-      </div>
-      <FieldError message={form.formState.errors.consent?.message} />
+            Согласн(а) на{" "}
+            <Link
+              href={LEGAL_PERSONAL_DATA_PATH}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-cyan-300 underline underline-offset-3 hover:text-cyan-200"
+            >
+              обработку персональных данных
+            </Link>
+            .
+          </Label>
+        </div>
+        <FieldError message={form.formState.errors.consent?.message} />
+        <FormAlert message={form.formState.errors.root?.message} />
 
-      <FieldError message={form.formState.errors.root?.message} />
-
-      <div className="grid gap-3">
         <button
           type="submit"
           disabled={isSubmitting}
@@ -265,9 +273,6 @@ export function BookingForm({
         >
           {isSubmitting ? "Отправка…" : resolvedSubmitLabel}
         </button>
-        <p className="text-center text-[11px] text-slate-500 leading-snug">
-          Нажимая кнопку, вы даёте согласие на обработку персональных данных.
-        </p>
       </div>
     </form>
   );

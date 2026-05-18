@@ -114,10 +114,10 @@ test.describe("Schedule Board data rules", () => {
     expect(flow).toMatchObject({
       kind: "mos_assist",
       leadType: "mos_assist",
-      title: "Перед записью на mos.ru",
-      submitLabel: "Продолжить к записи на mos.ru",
+      title: "Запись через mos.ru",
+      submitLabel: "Перейти к записи на mos.ru",
     });
-    expect(flow.noticeText).toContain("Это не бронь");
+    expect(flow.noticeText).toContain("mos.ru");
   });
 
   test("waitlist flow explains that preliminary registration is not a booking", () => {
@@ -129,9 +129,9 @@ test.describe("Schedule Board data rules", () => {
     expect(flow).toMatchObject({
       kind: "waitlist",
       leadType: "waitlist",
-      title: "Предварительная заявка",
+      title: "Заявка в лист ожидания",
     });
-    expect(flow.noticeText).toContain("не бронь");
+    expect(flow.noticeText).toContain("откроется запись");
     expect(flow.noticeText).toContain("портал mos.ru");
   });
 

@@ -13,14 +13,14 @@ export type MapPercentPoint = {
   y: number;
 };
 
-/** Metro anchors calibrated to apps/web/public/sites/moscow-map.svg. */
+/** Metro anchors calibrated to apps/web/public/sites/moscow-cyber-map.webp. */
 const METRO_ANCHORS: Record<string, MapPercentPoint> = {
-  "Верхние Лихоборы": { x: 52, y: 22 },
-  "Народное Ополчение": { x: 28, y: 34 },
-  "Юго-Западная": { x: 32, y: 68 },
-  Беляево: { x: 46, y: 74 },
-  Ясенево: { x: 54, y: 82 },
-  Орехово: { x: 68, y: 76 },
+  "Верхние Лихоборы": { x: 48, y: 25 },
+  "Народное Ополчение": { x: 35, y: 45 },
+  "Юго-Западная": { x: 35, y: 72 },
+  Беляево: { x: 42, y: 78 },
+  Ясенево: { x: 46, y: 85 },
+  Орехово: { x: 65, y: 82 },
 };
 
 const FALLBACK_ANCHORS: MapPercentPoint[] = [
@@ -118,7 +118,7 @@ export function siteHasMapLocation(site: SiteScopeCard): boolean {
 }
 
 export const MOSCOW_MAP_ATTRIBUTION = {
-  label: "Map data © OpenStreetMap contributors",
-  href: "https://www.openstreetmap.org/copyright",
-  note: "Stylized vector map derived from OpenStreetMap geography. Replace apps/web/public/sites/moscow-map.svg anytime.",
+  label: "Static cyber map backdrop",
+  href: "/sites/moscow-cyber-map.webp",
+  note: "Replace apps/web/public/sites/moscow-cyber-map.webp with the licensed production export anytime.",
 } as const;
