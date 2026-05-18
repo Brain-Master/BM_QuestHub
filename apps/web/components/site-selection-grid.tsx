@@ -11,8 +11,10 @@ import { buttonVariants } from "@/components/ui/button";
 import {
   SitesPageToolbar,
   type CityOption,
+  type SitesTypeFilterValue,
   type SitesSortValue,
   type SitesViewMode,
+  type SiteTypeOption,
 } from "@/components/sites-page-toolbar";
 import { SitesMapSchematic } from "@/components/sites-map-schematic";
 import { siteHasMapLocation } from "@/lib/sites/map-projection";
@@ -29,6 +31,10 @@ type Props = {
 
 const DEFAULT_SORT: SitesSortValue = "activity-desc";
 const DEFAULT_VIEW: SitesViewMode = "grid";
+const TYPE_LABELS: Record<SiteScopeCard["type"], string> = {
+  school: "Школы-партнёры",
+  bm_base: "Базы BrainMaster",
+};
 
 const METRO_LINES_BY_STATION: Record<
   string,
@@ -91,6 +97,17 @@ function normalizeSort(value: string | null): SitesSortValue {
 
 function normalizeView(value: string | null): SitesViewMode {
   return value === "list" || value === "map" ? value : DEFAULT_VIEW;
+}
+
+function normalizeType(
+  value: string | null,
+  options: SiteTypeOption[],
+): SitesTypeFilterValue {
+  if (value === "school" || value === "bm_base") {
+    return options.some((option) => option.value === value) ? value : "all";
+  }
+
+  return "all";
 }
 
 function normalizeSearch(value: string | null): string {
@@ -626,16 +643,44 @@ function SitesListSection({
   const selectedCityLabel = cityCards.find((item) => item.slug === city)?.label;
   const showAllCitiesLink = cityCards.length > 1;
 
+  const citySitesWithOpenGroups = useMemo(
+    () => sites.filter((site) => site.city === city && site.shiftCount > 0),
+    [city, sites],
+  );
+  const typeOptions = useMemo<SiteTypeOption[]>(() => {
+    const values = Array.from(
+      new Set(citySitesWithOpenGroups.map((site) => site.type)),
+    ).sort((a, b) => TYPE_LABELS[a].localeCompare(TYPE_LABELS[b], "ru"));
+
+    return values.map((value) => ({
+      value,
+      label: TYPE_LABELS[value],
+    }));
+  }, [citySitesWithOpenGroups]);
+  const type = normalizeType(searchParams.get("type"), typeOptions);
   const visibleSites = useMemo(
     () =>
-      sites
-        .filter((site) => site.city === city)
+      citySitesWithOpenGroups
+        .filter((site) => type === "all" || site.type === type)
         .filter((site) => siteMatchesQuery(site, normalizedQuery))
         .sort((a, b) => compareSites(a, b, sort)),
-    [city, normalizedQuery, sites, sort],
+    [citySitesWithOpenGroups, normalizedQuery, sort, type],
   );
   const mapEnabled = visibleSites.some(siteHasMapLocation);
   const showCityInHeader = cityCards.length > 1;
+  const toolbar = (
+    <SitesPageToolbar
+      cityOptions={cityOptions}
+      city={city}
+      query={query}
+      sort={sort}
+      view={view}
+      mapEnabled={mapEnabled}
+      type={type}
+      typeOptions={typeOptions}
+      variant={view === "map" ? "mapPanel" : "default"}
+    />
+  );
 
   return (
     <section className="space-y-8">
@@ -680,36 +725,33 @@ function SitesListSection({
         </div>
       </div>
 
-      <SitesPageToolbar
-        cityOptions={cityOptions}
-        city={city}
-        query={query}
-        sort={sort}
-        view={view}
-        mapEnabled={mapEnabled}
-      />
-
       {visibleSites.length === 0 ? (
-        <p className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 text-center text-muted-foreground text-sm">
-          В этом городе пока нет активных площадок.
-        </p>
+        <div className="grid gap-4">
+          {toolbar}
+          <p className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 text-center text-muted-foreground text-sm">
+            Сейчас нет площадок с открытыми группами по выбранным фильтрам.
+          </p>
+        </div>
       ) : view === "map" ? (
-        <SitesMapSchematic sites={visibleSites} />
+        <SitesMapSchematic sites={visibleSites} filterSlot={toolbar} />
       ) : (
-        <div
-          className={cn(
-            "grid",
-            view === "grid" ? "gap-6 sm:grid-cols-2 lg:grid-cols-3" : "grid-cols-1 gap-3",
-          )}
-        >
-          {visibleSites.map((site) => (
-            <SiteCard
-              key={site.slug}
-              site={site}
-              view={view}
-              showCityInHeader={showCityInHeader}
-            />
-          ))}
+        <div className="grid gap-4">
+          {toolbar}
+          <div
+            className={cn(
+              "grid",
+              view === "grid" ? "gap-6 sm:grid-cols-2 lg:grid-cols-3" : "grid-cols-1 gap-3",
+            )}
+          >
+            {visibleSites.map((site) => (
+              <SiteCard
+                key={site.slug}
+                site={site}
+                view={view}
+                showCityInHeader={showCityInHeader}
+              />
+            ))}
+          </div>
         </div>
       )}
     </section>

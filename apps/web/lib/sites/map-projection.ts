@@ -1,3 +1,4 @@
+import { SITE_MAP_POINTS } from "@/lib/sites/map-calibration";
 import type { SiteCampus, SiteScopeCard } from "@/lib/sites/scope-card";
 
 /** Bounding box for Moscow city proper (approx.), used for lat/lon → map percent. */
@@ -71,6 +72,9 @@ function primaryMetro(site: SiteScopeCard): string | undefined {
 }
 
 export function resolveSiteMapPoint(site: SiteScopeCard, index: number): MapPercentPoint {
+  const calibratedPoint = SITE_MAP_POINTS[site.slug as keyof typeof SITE_MAP_POINTS];
+  if (calibratedPoint) return calibratedPoint;
+
   const campus = primaryCampus(site);
   if (
     campus &&
