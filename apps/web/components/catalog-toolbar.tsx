@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
@@ -23,6 +24,7 @@ import {
 import { getSchoolScopes } from "@/lib/offers/agenda";
 import { filterQuestsForSchool } from "@/lib/school-scope";
 import type { Quest, Venue, World } from "@/lib/schemas";
+import { buildSiteHref } from "@/lib/sites/site-route";
 
 type Props = {
   quests: Quest[];
@@ -128,7 +130,12 @@ export function CatalogToolbar({ quests, venues, worlds, fixedSchool }: Props) {
             Площадка
           </span>
           <div className="flex h-10 items-center rounded-lg border border-white/10 bg-black/25 px-3 text-sm text-foreground shadow-inner">
+            <Link
+              href={buildSiteHref(fixedSchool.slug)}
+              className="truncate rounded-sm transition hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
             {fixedSchool.name}
+            </Link>
           </div>
         </div>
       ) : (

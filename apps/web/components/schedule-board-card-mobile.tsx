@@ -10,6 +10,7 @@ import type {
   ScheduleBoardItem,
   ScheduleBoardVariant,
 } from "@/lib/offers/schedule-board";
+import { buildVenueSiteHref } from "@/lib/sites/site-route";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -93,13 +94,13 @@ export function ScheduleBoardCardMobile({
         highlighted && "ring-2 ring-primary/70 ring-offset-2 ring-offset-background",
       )}
     >
-      <Link
-        href={item.questHref}
-        aria-label={`Открыть ${item.displayTitle}`}
-        className="grid grid-cols-[7.25rem_minmax(0,1fr)] gap-3 p-2.5 transition hover:bg-white/[0.03]"
-        onClick={onNavigate}
-      >
-        <div className="relative min-h-32 overflow-hidden rounded-xl bg-gradient-to-br from-primary/25 via-card to-background">
+      <div className="grid grid-cols-[7.25rem_minmax(0,1fr)] gap-3 p-2.5 transition hover:bg-white/[0.03]">
+        <Link
+          href={item.questHref}
+          aria-label={`Открыть ${item.displayTitle}`}
+          className="relative min-h-32 overflow-hidden rounded-xl bg-gradient-to-br from-primary/25 via-card to-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          onClick={onNavigate}
+        >
           {image ? (
             <div
               className="absolute inset-0 bg-cover bg-center"
@@ -119,7 +120,7 @@ export function ScheduleBoardCardMobile({
               className="h-6 px-2 text-[10px]"
             />
           </div>
-        </div>
+        </Link>
 
         <div className="min-w-0 py-1 pr-1">
           <div className="mb-1.5 flex flex-wrap gap-1.5">
@@ -128,7 +129,13 @@ export function ScheduleBoardCardMobile({
             </Badge>
           </div>
           <h3 className="font-heading text-base font-semibold leading-tight text-foreground">
-            {titleParts.title}
+            <Link
+              href={item.questHref}
+              className="rounded-sm transition hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              onClick={onNavigate}
+            >
+              {titleParts.title}
+            </Link>
           </h3>
           <div className="mt-2 grid gap-1.5 text-muted-foreground text-xs">
             <span className="inline-flex min-w-0 items-center gap-1.5">
@@ -138,7 +145,12 @@ export function ScheduleBoardCardMobile({
             {showSchool ? (
               <span className="inline-flex min-w-0 items-center gap-1.5">
                 <Building2 className="size-3.5 shrink-0 text-primary" aria-hidden />
-                <span className="truncate">{item.venue.name}</span>
+                <Link
+                  href={buildVenueSiteHref(item.venue)}
+                  className="truncate rounded-sm transition hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  {item.venue.name}
+                </Link>
               </span>
             ) : null}
             {item.commonAgeLabel ? (
@@ -159,7 +171,7 @@ export function ScheduleBoardCardMobile({
             ) : null}
           </div>
         </div>
-      </Link>
+      </div>
 
       <div className="border-white/10 border-t px-2.5 py-2">
         <button

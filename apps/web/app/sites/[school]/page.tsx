@@ -1,7 +1,18 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CalendarDays, ExternalLink, Grid2X2, MapPin, Navigation } from "lucide-react";
+import {
+  CalendarDays,
+  Camera,
+  CheckCircle2,
+  DoorOpen,
+  ExternalLink,
+  Grid2X2,
+  MapPin,
+  MessageCircle,
+  Navigation,
+} from "lucide-react";
 
 import { PortalHero } from "@/components/portal-hero";
 import { RememberSchoolOnVisit } from "@/components/remember-school-on-visit";
@@ -9,6 +20,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { loadQuests, loadVenues, loadWorlds } from "@/lib/content/load";
 import { getSchoolScopes, resolveSchoolScope } from "@/lib/offers/agenda";
 import { buildSiteScopeCards, type SiteCampus } from "@/lib/sites/scope-card";
+import { filterQuestsForSchool } from "@/lib/school-scope";
 import {
   buildYandexMapsHref,
   buildYandexMapWidgetSrc,
@@ -30,6 +42,38 @@ function campusTransitLabel(campus: SiteCampus): string | undefined {
   ].filter(Boolean);
 
   return parts.length > 0 ? parts.join(" · ") : undefined;
+}
+
+function campusAccessSteps(campus: SiteCampus): string[] {
+  if (campus.directions.length > 0) return campus.directions;
+
+  return [
+    "Откройте маршрут до адреса площадки в Яндекс.Картах.",
+    "Перед стартом смены мы подтвердим вход, место встречи и кабинет.",
+  ];
+}
+
+function campusVisitNote(campus: SiteCampus): string {
+  return (
+    campus.entranceNote ??
+    "Если у школы есть пропускной режим, скажите на входе, что вы на занятия BrainMaster."
+  );
+}
+
+function uniqueSitePhotos(site: { campuses: SiteCampus[] }) {
+  const seen = new Set<string>();
+  return site.campuses
+    .flatMap((campus) =>
+      campus.photos.map((photo) => ({
+        ...photo,
+        campusName: campus.name,
+      })),
+    )
+    .filter((photo) => {
+      if (seen.has(photo.url)) return false;
+      seen.add(photo.url);
+      return true;
+    });
 }
 
 export async function generateStaticParams() {
@@ -81,6 +125,8 @@ export default async function SchoolPage({ params }: Props) {
     siteName: site.name,
     campus: primaryCampus,
   });
+  const siteQuests = filterQuestsForSchool(quests, venues, school.slug);
+  const sitePhotos = uniqueSitePhotos(site);
 
   return (
     <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:py-10">
@@ -146,8 +192,9 @@ export default async function SchoolPage({ params }: Props) {
                 Адрес и корпуса
               </h2>
               <p className="mt-2 max-w-2xl text-muted-foreground text-sm leading-relaxed">
-                Основная карта открывается по координатам, если они заполнены в
-                данных. Иначе Яндекс построит поиск по адресу площадки.
+                Проверьте адрес, ближайшее метро и схему прохода. Если у корпуса
+                есть пропускной режим, актуальные детали встречи подтвердим перед
+                стартом смены.
               </p>
             </div>
           </div>
@@ -187,6 +234,32 @@ export default async function SchoolPage({ params }: Props) {
                       <ExternalLink className="size-3.5" aria-hidden />
                     </Link>
                   </div>
+                  <div className="mt-4 grid gap-3 border-white/10 border-t pt-4">
+                    <div className="flex items-start gap-2 rounded-xl bg-white/[0.04] p-3 text-sm">
+                      <DoorOpen className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden />
+                      <p className="text-muted-foreground leading-relaxed">
+                        {campusVisitNote(campus)}
+                      </p>
+                    </div>
+                    <ol className="grid gap-2">
+                      {campusAccessSteps(campus).map((step, index) => (
+                        <li
+                          key={`${campus.slug}-step-${index}`}
+                          className="flex gap-2 text-muted-foreground text-sm leading-relaxed"
+                        >
+                          <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/15 font-medium text-[11px] text-primary">
+                            {index + 1}
+                          </span>
+                          <span>{step}</span>
+                        </li>
+                      ))}
+                    </ol>
+                    {campus.contactNote ? (
+                      <p className="rounded-xl border border-white/10 bg-black/10 p-3 text-muted-foreground text-xs leading-relaxed">
+                        {campus.contactNote}
+                      </p>
+                    ) : null}
+                  </div>
                 </article>
               );
             })}
@@ -203,7 +276,8 @@ export default async function SchoolPage({ params }: Props) {
                 Карта проезда
               </h2>
               <p className="mt-1 text-muted-foreground text-sm leading-relaxed">
-                Яндекс.Карты открываются через легкий iframe-виджет без API-ключа.
+                Виджет ведет к основному корпусу. Для остальных корпусов используйте
+                кнопку «Маршрут» в карточке адреса.
               </p>
             </div>
           </div>
@@ -231,6 +305,154 @@ export default async function SchoolPage({ params }: Props) {
             </Link>
           </div>
         </aside>
+      </section>
+
+      <section className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(22rem,26rem)]">
+        <div className="rounded-[1.5rem] border border-white/10 bg-card/50 p-5 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)] backdrop-blur-md sm:p-6">
+          <div className="flex items-start gap-3">
+            <span className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-primary/15 text-primary">
+              <CheckCircle2 className="size-5" aria-hidden />
+            </span>
+            <div>
+              <h2 className="font-heading text-2xl font-semibold tracking-tight">
+                Что проходит на площадке
+              </h2>
+              <p className="mt-2 max-w-2xl text-muted-foreground text-sm leading-relaxed">
+                Здесь собраны активные курсы и открытые смены для этой локации,
+                чтобы можно было выбрать площадку и сразу перейти к записи.
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-6 grid gap-3 sm:grid-cols-2">
+            <div className="rounded-2xl border border-white/10 bg-black/15 p-4">
+              <p className="text-muted-foreground text-xs uppercase tracking-[0.16em]">
+                Курсы
+              </p>
+              <p className="mt-2 font-heading text-3xl font-semibold text-foreground">
+                {site.courseCount}
+              </p>
+              <p className="mt-1 text-muted-foreground text-sm">
+                {siteQuests.slice(0, 3).map((quest) => quest.title).join(", ") ||
+                  "Список обновляется"}
+              </p>
+            </div>
+            <div className="rounded-2xl border border-white/10 bg-black/15 p-4">
+              <p className="text-muted-foreground text-xs uppercase tracking-[0.16em]">
+                Открытые группы
+              </p>
+              <p className="mt-2 font-heading text-3xl font-semibold text-foreground">
+                {site.shiftCount}
+              </p>
+              <p className="mt-1 text-muted-foreground text-sm">
+                Расписание показывает корпус, адрес, даты, время и доступность мест.
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-5 flex flex-wrap gap-2">
+            <Link
+              href={`/sites/${site.slug}/agenda`}
+              className={cn(buttonVariants({ variant: "default", size: "sm" }), "gap-2")}
+            >
+              <CalendarDays className="size-4" aria-hidden />
+              Смотреть расписание
+            </Link>
+            <Link
+              href={`/sites/${site.slug}/catalog`}
+              className={cn(
+                buttonVariants({ variant: "outline", size: "sm" }),
+                "gap-2 border-white/10 bg-transparent hover:bg-white/5",
+              )}
+            >
+              <Grid2X2 className="size-4" aria-hidden />
+              Курсы площадки
+            </Link>
+          </div>
+        </div>
+
+        <aside className="rounded-[1.5rem] border border-white/10 bg-card/50 p-5 shadow-[0_24px_90px_rgba(2,6,23,0.28)] backdrop-blur-md sm:p-6">
+          <div className="flex items-start gap-3">
+            <span className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-cyan-200/10 text-cyan-100">
+              <Camera className="size-5" aria-hidden />
+            </span>
+            <div>
+              <h2 className="font-heading text-xl font-semibold tracking-tight">
+                Фото площадки
+              </h2>
+              <p className="mt-2 text-muted-foreground text-sm leading-relaxed">
+                Фото помогают заранее узнать вход, холл и учебный кабинет. Показываем
+                только согласованные материалы.
+              </p>
+            </div>
+          </div>
+
+          {sitePhotos.length > 0 ? (
+            <div className="mt-5 grid gap-3">
+              {sitePhotos.slice(0, 4).map((photo) => (
+                <figure
+                  key={photo.url}
+                  className="overflow-hidden rounded-2xl border border-white/10 bg-black/20"
+                >
+                  {photo.url.startsWith("/") ? (
+                    <div className="relative aspect-[16/10]">
+                      <Image
+                        src={photo.url}
+                        alt={photo.alt ?? `Фото площадки ${site.name}`}
+                        fill
+                        sizes="(min-width: 1024px) 24rem, 100vw"
+                        className="object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <div className="flex aspect-[16/10] items-center justify-center bg-white/[0.04] p-6 text-center text-muted-foreground text-sm">
+                      Фото доступно по внешней ссылке после настройки домена изображений.
+                    </div>
+                  )}
+                  <figcaption className="px-3 py-2 text-muted-foreground text-xs">
+                    {photo.alt ?? photo.campusName}
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+          ) : (
+            <div className="mt-5 rounded-2xl border border-dashed border-white/15 bg-black/15 p-4 text-muted-foreground text-sm leading-relaxed">
+              Фотографии добавим после согласования с площадкой. До визита
+              ориентируйтесь на адрес, карту и схему прохода выше.
+            </div>
+          )}
+        </aside>
+      </section>
+
+      <section className="mt-6 rounded-[1.5rem] border border-white/10 bg-white/[0.04] p-5 sm:p-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div className="flex gap-3">
+            <span className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-white/10 text-cyan-100">
+              <MessageCircle className="size-5" aria-hidden />
+            </span>
+            <div>
+              <h2 className="font-heading text-xl font-semibold tracking-tight">
+                Отзывы
+              </h2>
+              <p className="mt-2 max-w-3xl text-muted-foreground text-sm leading-relaxed">
+                Отзывы не добавляем в базовый MVP страницы площадки: нужен проверенный
+                источник, согласие на публикацию и модерация. Сейчас фокус на адресах,
+                маршрутах, фотографиях и расписании, которые помогают записаться без
+                лишних шагов.
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/legal"
+            className={cn(
+              buttonVariants({ variant: "outline", size: "sm" }),
+              "shrink-0 gap-2 border-white/10 bg-transparent hover:bg-white/5",
+            )}
+          >
+            Правовые документы
+            <ExternalLink className="size-3.5" aria-hidden />
+          </Link>
+        </div>
       </section>
     </main>
   );

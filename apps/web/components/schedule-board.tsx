@@ -19,6 +19,7 @@ import {
 } from "@/lib/program-filter-options";
 import { PREFERRED_SCHOOL_STORAGE_KEY } from "@/lib/preferred-school";
 import { venueVisibleForSchoolScope } from "@/lib/school-scope";
+import { buildSiteHref } from "@/lib/sites/site-route";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -429,7 +430,21 @@ export function ScheduleBoard({
       <div className="flex flex-col items-start justify-between gap-3 border-b border-white/10 pb-4 sm:flex-row sm:items-center">
         <div>
           <h2 className="font-heading text-2xl font-semibold tracking-tight">
-            {title ?? (schoolName ? `Расписание: ${schoolName}` : "Расписание смен")}
+            {title ?? (
+              schoolName && schoolSlug ? (
+                <>
+                  Расписание:{" "}
+                  <Link
+                    href={buildSiteHref(schoolSlug)}
+                    className="rounded-sm transition hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    {schoolName}
+                  </Link>
+                </>
+              ) : (
+                "Расписание смен"
+              )
+            )}
           </h2>
           <p className="mt-1 text-muted-foreground text-sm">
             {description ? `${description} ` : schoolName ? "Площадка зафиксирована. " : null}

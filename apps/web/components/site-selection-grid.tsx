@@ -24,6 +24,7 @@ import { PREFERRED_SCHOOL_STORAGE_KEY } from "@/lib/preferred-school";
 import type { CityCard } from "@/lib/sites/city-card";
 import { toCityOptions } from "@/lib/sites/city-card";
 import type { SiteScopeCard } from "@/lib/sites/scope-card";
+import { buildSiteHref } from "@/lib/sites/site-route";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -144,6 +145,9 @@ function siteMatchesQuery(site: SiteScopeCard, query: string): boolean {
       campus.address,
       campus.metro,
       campus.district,
+      campus.entranceNote,
+      campus.contactNote,
+      ...campus.directions,
     ]),
   ];
 
@@ -489,7 +493,13 @@ function SiteListCard({
             <div className="min-w-0">
               <SiteListHeaderMeta site={site} showCityInHeader={showCityInHeader} />
               <h3 className="font-heading text-lg font-semibold text-foreground leading-tight">
-                {site.name}
+                <Link
+                  href={buildSiteHref(site.slug)}
+                  className="rounded-sm transition hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  onClick={() => rememberSite(site)}
+                >
+                  {site.name}
+                </Link>
               </h3>
             </div>
             <SiteListLocation site={site} />
@@ -530,7 +540,13 @@ function SiteCard({
           <div className="min-w-0">
             <SiteHeaderMeta site={site} showCityInHeader={showCityInHeader} />
             <h3 className="mt-1 font-heading text-lg font-semibold text-white leading-tight sm:text-xl">
-              {site.name}
+              <Link
+                href={buildSiteHref(site.slug)}
+                className="rounded-sm transition hover:text-cyan-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+                onClick={() => rememberSite(site)}
+              >
+                {site.name}
+              </Link>
             </h3>
           </div>
         </div>
@@ -724,9 +740,20 @@ function SitesListSection({
               : "Сначала выберите площадку"}
           </h2>
           <p className="mt-2 max-w-2xl text-muted-foreground text-sm leading-relaxed">
-            Так мы покажем ближайшие запуски и курсы без лишних площадок. Полный
-            список BrainMaster остаётся доступен, если хотите сравнить все варианты.
+            Так мы покажем ближайшие запуски, курсы и маршруты без лишних площадок.
+            Выберите удобную локацию, а подробности про вход, корпус и запись
+            откроются на странице площадки.
           </p>
+          <div className="mt-4 flex flex-wrap gap-2 text-xs">
+            {["Адреса и метро", "Карта площадок", "Расписание по корпусам"].map((label) => (
+              <span
+                key={label}
+                className="rounded-full border border-white/10 bg-white/[0.05] px-3 py-1 text-cyan-50/80"
+              >
+                {label}
+              </span>
+            ))}
+          </div>
         </div>
         <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)]">
           <p className="mb-2 text-muted-foreground text-xs">

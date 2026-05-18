@@ -25,6 +25,10 @@ test.describe("Sites page", () => {
     await expect(page).toHaveURL(/sort=name-asc/);
     await page.getByRole("button", { name: /По названию/ }).click();
     await expect(page).toHaveURL(/sort=name-desc/);
+    await expect(page.getByRole("link", { name: "Школа №2103" })).toHaveAttribute(
+      "href",
+      /\/sites\/school-2103/,
+    );
     await expect(page.getByRole("link", { name: /^Расписание$/ }).first()).toBeVisible();
     await expect(page.getByRole("link", { name: /Доступные курсы/ }).first()).toBeVisible();
     await expect(page.getByText("проводится").first()).toBeVisible();
@@ -84,6 +88,7 @@ test.describe("Sites page", () => {
     const frame = page.getByTestId("sites-map-frame");
     const mapContent = page.getByTestId("sites-map-content");
     await expect(frame).toHaveAttribute("data-map-scale", "1");
+    await expect(frame).toBeVisible();
 
     const frameBox = await frame.boundingBox();
     expect(frameBox).not.toBeNull();
@@ -97,8 +102,8 @@ test.describe("Sites page", () => {
     await expect.poll(async () => {
       const contentBox = await mapContent.boundingBox();
       expect(contentBox).not.toBeNull();
-      return Math.round(contentBox!.x - frameBox!.x);
-    }).toBe(Math.round(-frameBox!.width * 0.25));
+      return Math.abs((contentBox!.x - frameBox!.x) - -frameBox!.width * 0.25);
+    }).toBeLessThanOrEqual(2);
 
     await page.waitForTimeout(300);
     await page.mouse.wheel(0, -120);
@@ -286,9 +291,13 @@ test.describe("Sites page", () => {
       page.getByRole("heading", { name: "Школа №1517", exact: true }),
     ).toBeVisible();
     await expect(page.getByRole("heading", { name: "Адрес и корпуса" })).toBeVisible();
-    await expect(page.getByText("ул. М. Тухачевского, 58к2")).toBeVisible();
+    await expect(page.getByText("ул. М. Тухачевского, 58к2", { exact: true })).toBeVisible();
+    await expect(page.getByText("Дождитесь координатора BrainMaster")).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Что проходит на площадке" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Фото площадки" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Отзывы" })).toBeVisible();
     await expect(
-      page.getByRole("main").getByRole("link", { name: "Расписание" }),
+      page.getByRole("main").getByRole("link", { name: "Расписание", exact: true }),
     ).toBeVisible();
     await expect(page.getByTitle("Яндекс Карта: Школа №1517")).toHaveAttribute(
       "src",

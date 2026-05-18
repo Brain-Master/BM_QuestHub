@@ -33,8 +33,14 @@ import {
   siteHasMapLocation,
   type PositionedSiteOnMapPoint,
 } from "@/lib/sites/map-projection";
+import {
+  getContainedMapRect,
+  mapPercentPointToScreenPoint,
+  type MapRenderRect,
+} from "@/lib/sites/map-render";
 import { PREFERRED_SCHOOL_STORAGE_KEY } from "@/lib/preferred-school";
 import type { SiteScopeCard } from "@/lib/sites/scope-card";
+import { buildSiteHref } from "@/lib/sites/site-route";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -125,16 +131,20 @@ function rememberSite(site: SiteScopeCard) {
 function buildDisplayPoints(params: {
   positionedPoints: PositionedSiteOnMapPoint[];
   visibleSiteSlugs: Set<string>;
-  frameSize: { width: number; height: number };
+  mapRect: MapRenderRect;
   transform: TransformState;
 }): DisplayMapPoint[] {
-  const { positionedPoints, visibleSiteSlugs, frameSize, transform } = params;
-  return positionedPoints.map((point) => ({
-    ...point,
-    screenX: transform.positionX + (point.x / 100) * frameSize.width * transform.scale,
-    screenY: transform.positionY + (point.y / 100) * frameSize.height * transform.scale,
-    visible: visibleSiteSlugs.has(point.site.slug),
-  }));
+  const { positionedPoints, visibleSiteSlugs, mapRect, transform } = params;
+  return positionedPoints.map((point) => {
+    const screenPoint = mapPercentPointToScreenPoint(point, mapRect, transform);
+
+    return {
+      ...point,
+      screenX: screenPoint.x,
+      screenY: screenPoint.y,
+      visible: visibleSiteSlugs.has(point.site.slug),
+    };
+  });
 }
 
 function buildClusters(points: DisplayMapPoint[]): DisplayCluster[] {
@@ -331,15 +341,16 @@ export function SiteMapCanvas({
   );
   const positionedPoints = useMemo(() => positionSitesOnMap(mappedSites), [mappedSites]);
   const siteColorBySlug = useMemo(() => buildSiteMapColorMap(mappedSites), [mappedSites]);
+  const mapRect = useMemo(() => getContainedMapRect(frameSize), [frameSize]);
   const displayPoints = useMemo(
     () =>
       buildDisplayPoints({
         positionedPoints,
         visibleSiteSlugs,
-        frameSize,
+        mapRect,
         transform,
       }),
-    [frameSize, positionedPoints, transform, visibleSiteSlugs],
+    [mapRect, positionedPoints, transform, visibleSiteSlugs],
   );
   const visibleDisplayPoints = useMemo(() => visiblePointsForList(displayPoints), [displayPoints]);
   const listGroups = useMemo(
@@ -390,8 +401,9 @@ export function SiteMapCanvas({
 
     const { width, height } = frame.getBoundingClientRect();
     const zoom = zoomOverride ?? (width < 640 ? 1.2 : 1.75);
-    const positionX = width / 2 - (point.x / 100) * width * zoom;
-    const positionY = height / 2 - (point.y / 100) * height * zoom;
+    const currentMapRect = getContainedMapRect({ width, height });
+    const positionX = width / 2 - (currentMapRect.x + (point.x / 100) * currentMapRect.width) * zoom;
+    const positionY = height / 2 - (currentMapRect.y + (point.y / 100) * currentMapRect.height) * zoom;
     setTransform(positionX, positionY, zoom, 260, "easeOut");
   }
 
@@ -643,14 +655,14 @@ export function SiteMapCanvas({
                     {userLocation?.status === "inside" ? (
                       <UserLocationMarker
                         location={userLocation}
-                        frameSize={frameSize}
+                        mapRect={mapRect}
                         transform={transform}
                       />
                     ) : null}
                     {userLocation?.status === "outside" ? (
                       <OutsideUserLocationMarker
                         location={userLocation}
-                        frameSize={frameSize}
+                        mapRect={mapRect}
                         transform={transform}
                       />
                     ) : null}
@@ -841,17 +853,20 @@ function SiteList({
               <div className="flex size-11 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white p-1.5 ring-1 ring-white/40">
                 <SiteLogo site={site} />
               </div>
-              <button
-                type="button"
-                className="min-w-0 flex-1 cursor-pointer text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                aria-expanded={active}
+              <div
+                className="min-w-0 flex-1 text-left"
                 onMouseEnter={() => onPreview(primaryPoint.id)}
                 onMouseLeave={() => onPreview(null)}
                 onFocus={() => onPreview(primaryPoint.id)}
                 onBlur={() => onPreview(null)}
-                onClick={() => (active ? onClear() : onSelect(primaryPoint))}
               >
-                <span className="block truncate font-medium text-foreground">{site.name}</span>
+                <Link
+                  href={buildSiteHref(site.slug)}
+                  className="block truncate rounded-sm font-medium text-foreground transition hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  onClick={() => rememberSite(site)}
+                >
+                  {site.name}
+                </Link>
                 <p className="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-muted-foreground text-xs leading-relaxed">
                   {metro ? <MetroLabel metro={metro} /> : <span>{site.locationSummary}</span>}
                   {points.length > 1 ? (
@@ -861,7 +876,7 @@ function SiteList({
                     </>
                   ) : null}
                 </p>
-              </button>
+              </div>
               <button
                 type="button"
                 className="inline-flex h-8 shrink-0 cursor-pointer items-center gap-1 rounded-lg border border-white/10 px-2.5 text-primary text-xs transition hover:bg-white/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
@@ -949,7 +964,13 @@ function MapTooltip({
         };
   const content = (
     <>
-      <p className="font-semibold text-sm text-white">{point.site.name}</p>
+      <Link
+        href={buildSiteHref(point.site.slug)}
+        className="block rounded-sm font-semibold text-sm text-white transition hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        onClick={() => rememberSite(point.site)}
+      >
+        {point.site.name}
+      </Link>
       <p className="mt-0.5 text-orange-300 text-xs leading-relaxed">{point.campus.name}</p>
       <p className="mt-0.5 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-cyan-100/90 text-xs leading-relaxed">
         {metro ? <MetroLabel metro={metro} /> : <span>{point.site.locationSummary}</span>}
@@ -965,15 +986,20 @@ function MapTooltip({
 
   if (selected) {
     return (
-      <button
-        type="button"
+      <div
         className={className}
         style={style}
-        aria-label={`Открыть расписание выбранной площадки ${point.site.name}`}
-        onClick={onOpenAgenda}
       >
         {content}
-      </button>
+        <button
+          type="button"
+          className="mt-2 inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-white/10 bg-white/[0.06] px-2.5 py-1.5 font-medium text-cyan-50 text-xs transition hover:bg-white/[0.1] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          aria-label={`Открыть расписание выбранной площадки ${point.site.name}`}
+          onClick={onOpenAgenda}
+        >
+          Открыть расписание
+        </button>
+      </div>
     );
   }
 
@@ -986,15 +1012,14 @@ function MapTooltip({
 
 function UserLocationMarker({
   location,
-  frameSize,
+  mapRect,
   transform,
 }: {
   location: Extract<UserLocation, { status: "inside" }>;
-  frameSize: { width: number; height: number };
+  mapRect: MapRenderRect;
   transform: TransformState;
 }) {
-  const screenX = transform.positionX + (location.point.x / 100) * frameSize.width * transform.scale;
-  const screenY = transform.positionY + (location.point.y / 100) * frameSize.height * transform.scale;
+  const { x: screenX, y: screenY } = mapPercentPointToScreenPoint(location.point, mapRect, transform);
   const radius = Math.min(80, Math.max(18, location.accuracy / 45)) * transform.scale;
 
   return (
@@ -1019,15 +1044,14 @@ function UserLocationMarker({
 
 function OutsideUserLocationMarker({
   location,
-  frameSize,
+  mapRect,
   transform,
 }: {
   location: Extract<UserLocation, { status: "outside" }>;
-  frameSize: { width: number; height: number };
+  mapRect: MapRenderRect;
   transform: TransformState;
 }) {
-  const screenX = transform.positionX + (location.point.x / 100) * frameSize.width * transform.scale;
-  const screenY = transform.positionY + (location.point.y / 100) * frameSize.height * transform.scale;
+  const { x: screenX, y: screenY } = mapPercentPointToScreenPoint(location.point, mapRect, transform);
 
   return (
     <div

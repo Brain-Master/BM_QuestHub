@@ -14,6 +14,10 @@ export type SiteCampus = {
   district?: string;
   latitude?: number;
   longitude?: number;
+  directions: string[];
+  entranceNote?: string;
+  contactNote?: string;
+  photos: NonNullable<Venue["photos"]>;
 };
 
 export type SiteScopeCard = {
@@ -89,6 +93,10 @@ export function buildSiteScopeCards(params: {
         district: venue.district,
         latitude: venue.latitude,
         longitude: venue.longitude,
+        directions: venue.directions,
+        entranceNote: venue.entranceNote,
+        contactNote: venue.contactNote,
+        photos: venue.photos,
       }));
       const campusCount = campuses.length;
       const courseSlugs = scopedQuests.map((quest) => quest.slug);

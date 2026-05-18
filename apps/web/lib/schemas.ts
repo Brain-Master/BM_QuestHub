@@ -2,6 +2,11 @@ import { z } from "zod";
 
 export const venueTypeSchema = z.enum(["school", "bm_base"]);
 
+export const venuePhotoSchema = z.object({
+  url: z.string().min(1),
+  alt: z.string().optional(),
+});
+
 export const venueSchema = z.object({
   slug: z.string(),
   name: z.string(),
@@ -15,6 +20,14 @@ export const venueSchema = z.object({
   mapColor: z.string().regex(/^#[0-9a-fA-F]{6}$/).optional(),
   latitude: z.number().optional(),
   longitude: z.number().optional(),
+  /** Короткая схема прохода: ориентиры, вход, охрана, этаж/кабинет. */
+  directions: z.array(z.string().min(1)).default([]),
+  /** Важная заметка перед визитом: где встречаем детей, что сказать на входе и т.п. */
+  entranceNote: z.string().optional(),
+  /** Дополнительная организационная заметка без персональных контактов. */
+  contactNote: z.string().optional(),
+  /** Фото площадки или входной группы. Поддерживает локальные public-path и внешние URL. */
+  photos: z.array(venuePhotoSchema).default([]),
   /** Показывать площадку на странице /sites. По умолчанию true. */
   listedOnSites: z.boolean().optional().default(true),
   /** Если задано, площадка относится к школьному скоупу с этим slug (см. ?school=). Базы BM обычно без привязки. */

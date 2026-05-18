@@ -1,6 +1,8 @@
+import Link from "next/link";
 import { CalendarDays, MapPin, Train, User } from "lucide-react";
 
 import type { ScheduleBoardItem } from "@/lib/offers/schedule-board";
+import { buildVenueSiteHref } from "@/lib/sites/site-route";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -82,7 +84,12 @@ export function ScheduleInfoStrip({
       <div className="min-w-0">
         <div className="mb-1.5 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-0.5 font-medium text-primary">
           <Train className={cn("shrink-0", compact ? "size-3.5" : "size-4")} aria-hidden />
-          <span>{item.venue.name}</span>
+          <Link
+            href={buildVenueSiteHref(item.venue)}
+            className="rounded-sm transition hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            {item.venue.name}
+          </Link>
           {item.venue.metro ? (
             <span
               className={cn(
@@ -166,7 +173,12 @@ export function ScheduleInfoStrip({
         <div className="grid gap-1.5">
           <span className="inline-flex items-start gap-1.5 font-medium text-primary">
             <Train className="size-3.5 shrink-0" aria-hidden />
-            <span className="leading-snug">{item.venue.name}</span>
+            <Link
+              href={buildVenueSiteHref(item.venue)}
+              className="rounded-sm leading-snug transition hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              {item.venue.name}
+            </Link>
           </span>
           <span className="inline-flex items-center gap-1.5 text-foreground">
             <CalendarDays className="size-3.5 text-primary" aria-hidden />

@@ -53,7 +53,7 @@ export default async function SchoolCatalogPage({ params }: Props) {
           venues={venues}
           worlds={worlds}
           fixedSchool={{ slug: school.slug, name: school.name }}
-          title="Курсы этой школы"
+          title="Курсы площадки"
           emptyMessage="Для этой площадки пока нет активных миссий."
         />
       </Suspense>

@@ -5,6 +5,10 @@ import {
   projectUserLocationOnMap,
   resolveCampusMapPoint,
 } from "../lib/sites/map-projection";
+import {
+  getContainedMapRect,
+  mapPercentPointToScreenPoint,
+} from "../lib/sites/map-render";
 import type { MapGeoControlPoint } from "../lib/sites/map-calibration";
 import type { SiteCampus, SiteScopeCard } from "../lib/sites/scope-card";
 
@@ -117,5 +121,31 @@ test.describe("Map projection helpers", () => {
     });
 
     expect(point).toEqual({ x: 12, y: 34 });
+  });
+
+  test("positions map points inside the contained image rect", () => {
+    const mapRect = getContainedMapRect({ width: 1200, height: 600 });
+
+    expect(mapRect).toEqual({ x: 300, y: 0, width: 600, height: 600 });
+    expect(
+      mapPercentPointToScreenPoint(
+        { x: 50, y: 50 },
+        mapRect,
+        { scale: 1, positionX: 0, positionY: 0 },
+      ),
+    ).toEqual({ x: 600, y: 300 });
+  });
+
+  test("keeps contained map point alignment under pan and zoom", () => {
+    const mapRect = getContainedMapRect({ width: 600, height: 900 });
+
+    expect(mapRect).toEqual({ x: 0, y: 150, width: 600, height: 600 });
+    expect(
+      mapPercentPointToScreenPoint(
+        { x: 25, y: 75 },
+        mapRect,
+        { scale: 2, positionX: -100, positionY: 40 },
+      ),
+    ).toEqual({ x: 200, y: 1240 });
   });
 });
