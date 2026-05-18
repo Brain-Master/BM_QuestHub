@@ -6,6 +6,7 @@ import { CalendarDays, Grid2X2, MapPin } from "lucide-react";
 import { useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 
+import { CitySelectionGrid } from "@/components/city-selection-grid";
 import { buttonVariants } from "@/components/ui/button";
 import {
   SitesPageToolbar,
@@ -13,13 +14,17 @@ import {
   type SitesSortValue,
   type SitesViewMode,
 } from "@/components/sites-page-toolbar";
+import { SitesMapSchematic } from "@/components/sites-map-schematic";
+import { siteHasMapLocation } from "@/lib/sites/map-projection";
 import { PREFERRED_SCHOOL_STORAGE_KEY } from "@/lib/preferred-school";
+import type { CityCard } from "@/lib/sites/city-card";
+import { toCityOptions } from "@/lib/sites/city-card";
 import type { SiteScopeCard } from "@/lib/sites/scope-card";
 import { cn } from "@/lib/utils";
 
 type Props = {
   sites: SiteScopeCard[];
-  cityOptions: CityOption[];
+  cityCards: CityCard[];
 };
 
 const DEFAULT_SORT: SitesSortValue = "activity-desc";
@@ -337,45 +342,50 @@ function SiteCard({
   );
 }
 
-function SitesMapPlaceholder({ sites }: { sites: SiteScopeCard[] }) {
-  const mapped = sites.filter((site) => site.hasMapCoordinates);
-
-  if (mapped.length === 0) {
-    return (
-      <div className="rounded-2xl border border-dashed border-white/15 bg-card/35 px-6 py-16 text-center">
-        <p className="font-heading text-xl font-semibold text-foreground">
-          Карта появится после добавления координат
-        </p>
-        <p className="mx-auto mt-2 max-w-xl text-muted-foreground text-sm leading-relaxed">
-          Для режима карты нужно заполнить latitude и longitude у корпусов
-          площадок. Пока используйте сетку или список.
-        </p>
-      </div>
-    );
-  }
-
+function SitesEmptyState() {
   return (
-    <div className="rounded-2xl border border-white/10 bg-card/35 p-5">
-      <p className="font-heading text-xl font-semibold text-foreground">
-        Площадки на карте
+    <section className="rounded-2xl border border-white/10 bg-card/45 p-8 text-center">
+      <h2 className="font-heading text-xl font-semibold text-foreground">
+        Пока нет активных площадок
+      </h2>
+      <p className="mx-auto mt-2 max-w-md text-muted-foreground text-sm leading-relaxed">
+        Когда появятся курсы и открытые группы в вашем городе, мы покажем их здесь.
+        А пока можно посмотреть полный каталог BrainMaster.
       </p>
-      <div className="mt-4 grid gap-3">
-        {mapped.map((site) => (
-          <div key={site.slug} className="rounded-xl border border-white/10 bg-black/15 p-4">
-            <p className="font-medium text-foreground">{site.name}</p>
-            <p className="mt-1 text-muted-foreground text-sm">{site.locationSummary}</p>
-          </div>
-        ))}
+      <div className="mt-5 flex flex-wrap justify-center gap-2">
+        <Link href="/catalog" className={buttonVariants({ variant: "default", size: "sm" })}>
+          Все курсы
+        </Link>
+        <Link
+          href="/agenda"
+          className={cn(
+            buttonVariants({ variant: "outline", size: "sm" }),
+            "border-white/10 bg-transparent hover:bg-white/5",
+          )}
+        >
+          Все расписание
+        </Link>
       </div>
-    </div>
+    </section>
   );
 }
 
-export function SiteSelectionGrid({ sites, cityOptions }: Props) {
+function SitesListSection({
+  sites,
+  cityCards,
+  city,
+  cityOptions,
+}: {
+  sites: SiteScopeCard[];
+  cityCards: CityCard[];
+  city: string;
+  cityOptions: CityOption[];
+}) {
   const searchParams = useSearchParams();
-  const city = searchParams.get("city") ?? cityOptions[0]?.value ?? "moscow";
   const sort = normalizeSort(searchParams.get("sort"));
   const view = normalizeView(searchParams.get("view"));
+  const selectedCityLabel = cityCards.find((item) => item.slug === city)?.label;
+  const showAllCitiesLink = cityCards.length > 1;
 
   const visibleSites = useMemo(
     () =>
@@ -384,15 +394,25 @@ export function SiteSelectionGrid({ sites, cityOptions }: Props) {
         .sort((a, b) => compareSites(a, b, sort)),
     [city, sites, sort],
   );
-  const mapEnabled = sites.some((site) => site.hasMapCoordinates);
-  const showCityInHeader = cityOptions.length > 1;
+  const mapEnabled = visibleSites.some(siteHasMapLocation);
+  const showCityInHeader = cityCards.length > 1;
 
   return (
     <section className="space-y-8">
       <div className="grid gap-4 border-b border-white/10 pb-5 lg:grid-cols-[1fr_auto] lg:items-end">
         <div>
+          {showAllCitiesLink ? (
+            <Link
+              href="/sites"
+              className="mb-3 inline-flex text-muted-foreground text-xs transition hover:text-foreground"
+            >
+              ← Все города
+            </Link>
+          ) : null}
           <h2 className="font-heading text-2xl font-semibold tracking-tight">
-            Сначала выберите площадку
+            {selectedCityLabel
+              ? `Площадки · ${selectedCityLabel}`
+              : "Сначала выберите площадку"}
           </h2>
           <p className="mt-2 max-w-2xl text-muted-foreground text-sm leading-relaxed">
             Так мы покажем ближайшие запуски и курсы без лишних площадок. Полный
@@ -428,8 +448,12 @@ export function SiteSelectionGrid({ sites, cityOptions }: Props) {
         mapEnabled={mapEnabled}
       />
 
-      {view === "map" ? (
-        <SitesMapPlaceholder sites={visibleSites} />
+      {visibleSites.length === 0 ? (
+        <p className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 text-center text-muted-foreground text-sm">
+          В этом городе пока нет активных площадок.
+        </p>
+      ) : view === "map" ? (
+        <SitesMapSchematic sites={visibleSites} />
       ) : (
         <div
           className={cn(
@@ -448,5 +472,33 @@ export function SiteSelectionGrid({ sites, cityOptions }: Props) {
         </div>
       )}
     </section>
+  );
+}
+
+export function SiteSelectionGrid({ sites, cityCards }: Props) {
+  const searchParams = useSearchParams();
+  const requestedCity = searchParams.get("city")?.trim() || null;
+  const hasCityShowcase = cityCards.length > 1;
+
+  if (cityCards.length === 0) {
+    return <SitesEmptyState />;
+  }
+
+  if (hasCityShowcase && !requestedCity) {
+    return <CitySelectionGrid cities={cityCards} />;
+  }
+
+  const effectiveCity = cityCards.some((item) => item.slug === requestedCity)
+    ? requestedCity!
+    : cityCards[0]!.slug;
+  const cityOptions = toCityOptions(cityCards);
+
+  return (
+    <SitesListSection
+      sites={sites}
+      cityCards={cityCards}
+      city={effectiveCity}
+      cityOptions={cityOptions}
+    />
   );
 }

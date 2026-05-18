@@ -2,6 +2,9 @@ import type { SchoolScope } from "@/lib/offers/agenda";
 import type { Quest, Venue, World } from "@/lib/schemas";
 import { buildAgendaItems } from "@/lib/offers/agenda";
 import { filterQuestsForSchool } from "@/lib/school-scope";
+import { DEFAULT_CITY, getCityLabel } from "@/lib/sites/city-card";
+
+export { DEFAULT_CITY };
 
 export type SiteCampus = {
   slug: string;
@@ -27,23 +30,16 @@ export type SiteScopeCard = {
   campusCount: number;
   campuses: SiteCampus[];
   courseCount: number;
+  courseSlugs: string[];
   shiftCount: number;
+  studentCount: number;
   activityScore: number;
   listedOnSites: boolean;
   hasMapCoordinates: boolean;
 };
 
-const DEFAULT_CITY = "moscow";
-const CITY_LABELS: Record<string, string> = {
-  moscow: "Москва",
-};
-
 function uniqueLabels(values: Array<string | undefined>): string[] {
   return Array.from(new Set(values.filter((value): value is string => Boolean(value))));
-}
-
-function cityLabel(city: string): string {
-  return CITY_LABELS[city] ?? city;
 }
 
 function resolveLocationLabel(venues: Venue[]): string {
@@ -94,8 +90,13 @@ export function buildSiteScopeCards(params: {
         longitude: venue.longitude,
       }));
       const campusCount = campuses.length;
-      const courseCount = scopedQuests.length;
+      const courseSlugs = scopedQuests.map((quest) => quest.slug);
+      const courseCount = courseSlugs.length;
       const shiftCount = scopedAgendaItems.length;
+      const studentCount = scopedAgendaItems.reduce(
+        (sum, item) => sum + (item.offer.enrolled ?? 0),
+        0,
+      );
       const listedOnSites = primaryVenue?.listedOnSites ?? true;
 
       return {
@@ -104,7 +105,7 @@ export function buildSiteScopeCards(params: {
         routeSlugs: scope.routeSlugs,
         type: primaryVenue?.type ?? "school",
         city,
-        cityLabel: cityLabel(city),
+        cityLabel: getCityLabel(city),
         logoUrl: primaryVenue?.logoUrl,
         district: primaryVenue?.district,
         locationLabel: resolveLocationLabel(scope.venues),
@@ -112,7 +113,9 @@ export function buildSiteScopeCards(params: {
         campusCount,
         campuses,
         courseCount,
+        courseSlugs,
         shiftCount,
+        studentCount,
         activityScore: courseCount + shiftCount,
         listedOnSites,
         hasMapCoordinates: campuses.some(
@@ -126,8 +129,3 @@ export function buildSiteScopeCards(params: {
     );
 }
 
-export function buildCityOptions(cards: SiteScopeCard[]) {
-  return Array.from(new Map(cards.map((card) => [card.city, card.cityLabel])).entries())
-    .map(([value, label]) => ({ value, label }))
-    .sort((a, b) => a.label.localeCompare(b.label, "ru"));
-}

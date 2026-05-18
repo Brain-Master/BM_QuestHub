@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1100" role="img" aria-label="Stylized map of Moscow">
+  <title>Moscow stylized map</title>
+  <desc>Simplified vector map inspired by OpenStreetMap geography: Moscow River, MKAD ring, and major arterials.</desc>
+  <rect width="900" height="1100" fill="#0a0a0a"/>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <!-- MKAD ring -->
+    <ellipse cx="450" cy="560" rx="360" ry="430" stroke="#1f1f1f" stroke-width="10"/>
+    <!-- Third transport ring hint -->
+    <ellipse cx="450" cy="555" rx="250" ry="300" stroke="#151515" stroke-width="4"/>
+    <!-- Moscow River -->
+    <path d="M120 260 C220 300, 260 360, 300 430 C340 500, 360 560, 420 620 C480 680, 560 720, 680 820" stroke="#2a2a2a" stroke-width="28"/>
+    <path d="M150 250 C250 290, 290 350, 330 420 C370 490, 390 550, 450 610 C510 670, 590 710, 710 810" stroke="#333333" stroke-width="10" opacity="0.55"/>
+    <!-- Major arterials -->
+    <path d="M450 120 L450 980" stroke="rgba(240,126,36,0.32)" stroke-width="7"/>
+    <path d="M120 560 L780 560" stroke="rgba(240,126,36,0.28)" stroke-width="6"/>
+    <path d="M180 300 L720 820" stroke="rgba(240,126,36,0.22)" stroke-width="5"/>
+    <path d="M720 300 L180 820" stroke="rgba(240,126,36,0.22)" stroke-width="5"/>
+    <path d="M250 180 L650 180" stroke="rgba(240,126,36,0.18)" stroke-width="4"/>
+    <path d="M220 900 L680 900" stroke="rgba(240,126,36,0.18)" stroke-width="4"/>
+    <path d="M120 430 C300 470, 520 500, 780 540" stroke="rgba(240,126,36,0.2)" stroke-width="4"/>
+    <path d="M780 430 C600 470, 380 500, 120 540" stroke="rgba(240,126,36,0.2)" stroke-width="4"/>
+    <!-- Radial connectors -->
+    <path d="M450 560 L220 360" stroke="rgba(240,126,36,0.14)" stroke-width="3"/>
+    <path d="M450 560 L680 360" stroke="rgba(240,126,36,0.14)" stroke-width="3"/>
+    <path d="M450 560 L700 700" stroke="rgba(240,126,36,0.14)" stroke-width="3"/>
+    <path d="M450 560 L200 700" stroke="rgba(240,126,36,0.14)" stroke-width="3"/>
+  </g>
+</svg>
