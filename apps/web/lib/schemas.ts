@@ -5,9 +5,17 @@ export const venueTypeSchema = z.enum(["school", "bm_base"]);
 export const venueSchema = z.object({
   slug: z.string(),
   name: z.string(),
+  displayName: z.string().optional(),
   type: venueTypeSchema,
   address: z.string(),
   metro: z.string().optional(),
+  city: z.string().optional(),
+  district: z.string().optional(),
+  logoUrl: z.string().optional(),
+  latitude: z.number().optional(),
+  longitude: z.number().optional(),
+  /** Показывать площадку на странице /sites. По умолчанию true. */
+  listedOnSites: z.boolean().optional().default(true),
   /** Если задано, площадка относится к школьному скоупу с этим slug (см. ?school=). Базы BM обычно без привязки. */
   schoolScopeSlug: z.string().nullable().optional(),
 });
@@ -135,7 +143,7 @@ export const questSchema = z.object({
   title: z.string(),
   /** Подзаголовок Hero на странице квеста */
   tagline: z.string(),
-  /** Короткая строка для каталога; если нет — показываем tagline */
+  /** Короткая строка для карточки курса; если нет — показываем tagline */
   catalogTagline: z.string().optional(),
   ageLabel: z.string(),
   format: productFormatSchema,

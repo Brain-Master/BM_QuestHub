@@ -6,7 +6,7 @@ import { PreferredSchoolBanner } from "@/components/preferred-school-banner";
 import { loadQuests, loadVenues, loadWorlds } from "@/lib/content/load";
 
 export const metadata: Metadata = {
-  title: "Каталог квестов",
+  title: "Курсы BrainMaster",
 };
 
 export default async function CatalogPage() {

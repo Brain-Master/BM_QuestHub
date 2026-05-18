@@ -6,7 +6,7 @@ import { PortalHero } from "@/components/portal-hero";
 import { loadQuests, loadVenues, loadWorlds } from "@/lib/content/load";
 
 export const metadata: Metadata = {
-  title: "Каталог квестов",
+  title: "Курсы BrainMaster",
 };
 
 export default async function HomePage() {

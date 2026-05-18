@@ -6,9 +6,16 @@ type Props = {
   description: string;
   /** Дополнительный контент справа или снизу на широких экранах */
   aside?: ReactNode;
+  showBadges?: boolean;
 };
 
-export function PortalHero({ eyebrow, title, description, aside }: Props) {
+export function PortalHero({
+  eyebrow,
+  title,
+  description,
+  aside,
+  showBadges = true,
+}: Props) {
   return (
     <section className="relative mb-8 overflow-hidden rounded-[1.5rem] border border-white/10 bg-gradient-to-br from-violet-950/90 via-background to-cyan-950/50 p-5 shadow-[0_0_80px_-24px_rgba(139,92,246,0.35)] sm:mb-10 sm:rounded-3xl sm:p-8 md:mb-12 md:p-12">
       <div
@@ -43,14 +50,16 @@ export function PortalHero({ eyebrow, title, description, aside }: Props) {
           <p className="max-w-2xl text-sm leading-7 text-zinc-300 sm:text-base md:text-lg">
             {description}
           </p>
-          <div className="flex flex-wrap gap-2 pt-1 text-[10px] text-zinc-500 uppercase tracking-[0.08em] sm:gap-3 sm:pt-2 sm:text-[11px] sm:tracking-wider">
-            <span className="rounded-full border border-white/10 bg-black/20 px-3 py-1 text-zinc-400">
-              Инженерные квесты
-            </span>
-            <span className="rounded-full border border-white/10 bg-black/20 px-3 py-1 text-zinc-400">
-              Запись · mos.ru или заявка
-            </span>
-          </div>
+          {showBadges ? (
+            <div className="flex flex-wrap gap-2 pt-1 text-[10px] text-zinc-500 uppercase tracking-[0.08em] sm:gap-3 sm:pt-2 sm:text-[11px] sm:tracking-wider">
+              <span className="rounded-full border border-white/10 bg-black/20 px-3 py-1 text-zinc-400">
+                Инженерные квесты
+              </span>
+              <span className="rounded-full border border-white/10 bg-black/20 px-3 py-1 text-zinc-400">
+                Запись · mos.ru или заявка
+              </span>
+            </div>
+          ) : null}
         </div>
         {aside ? (
           <div className="relative lg:justify-self-end">{aside}</div>

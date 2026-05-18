@@ -24,8 +24,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const school = resolveSchoolScope(venues, schoolSlug);
   if (!school) return { title: "Площадка не найдена" };
   return {
-    title: `Каталог · ${school.name}`,
-    description: `Каталог квестов BrainMaster для площадки ${school.name}.`,
+    title: `Курсы · ${school.name}`,
+    description: `Курсы BrainMaster для площадки ${school.name}.`,
   };
 }
 
@@ -53,7 +53,7 @@ export default async function SchoolCatalogPage({ params }: Props) {
           venues={venues}
           worlds={worlds}
           fixedSchool={{ slug: school.slug, name: school.name }}
-          title="Каталог этой площадки"
+          title="Курсы этой школы"
           emptyMessage="Для этой площадки пока нет активных миссий."
         />
       </Suspense>

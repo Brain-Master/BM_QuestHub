@@ -102,7 +102,7 @@ export function CatalogToolbar({ quests, venues, worlds, fixedSchool }: Props) {
 
   return (
     <FilterDisclosure
-      title="Фильтры каталога"
+      title="Фильтры курсов"
       summary="Программа, площадка, формат, возраст, статус"
       panelId="catalog-filter-panel"
       activeCount={activeFiltersCount}

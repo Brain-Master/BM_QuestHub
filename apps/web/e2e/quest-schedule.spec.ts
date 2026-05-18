@@ -97,8 +97,18 @@ test.describe("Quest schedule", () => {
     });
     if ((await formButtons.count()) > 0) {
       await formButtons.first().click();
-      await expect(page.getByRole("dialog")).toBeVisible();
-      await expect(page.getByRole("dialog")).toContainText(/Minecraft|лист ожидания|Заявка/);
+      const dialog = page.getByRole("dialog");
+      await expect(dialog).toBeVisible();
+      await expect(dialog).toContainText(
+        /Оформление заявки|Заявка в лист ожидания/,
+      );
+      await expect(dialog.getByTestId("booking-summary")).toBeVisible();
+      await expect(dialog.getByLabel("Имя родителя")).toBeVisible();
+      await expect(
+        dialog.getByRole("button", {
+          name: /Забронировать место|Отправить заявку в лист ожидания/,
+        }),
+      ).toBeVisible();
       return;
     }
 

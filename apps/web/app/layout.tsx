@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     template: "%s · BrainMaster Quest Hub",
   },
   description:
-    "Каталог инженерных квестов BrainMaster: миры, смены и запись на программы.",
+    "Курсы инженерных квестов BrainMaster: миры, смены и запись на программы.",
 };
 
 export default async function RootLayout({

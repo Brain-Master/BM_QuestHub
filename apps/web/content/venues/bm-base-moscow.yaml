@@ -3,4 +3,7 @@ name: База BrainMaster (Москва)
 type: bm_base
 address: Москва, адрес уточняется при записи
 metro: —
+city: moscow
+district: Москва
+logoUrl: /brand/brainmaster-mark.png
 schoolScopeSlug: null

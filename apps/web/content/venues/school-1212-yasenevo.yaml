@@ -3,4 +3,7 @@ name: ГБОУ Школа №1212
 type: school
 address: Новоясеневский проспект, 24к3
 metro: Ясенево
+city: moscow
+district: Ясенево
+logoUrl: /venues/logos/school-1212-placeholder.png
 schoolScopeSlug: school-1212

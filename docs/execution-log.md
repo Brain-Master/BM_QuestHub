@@ -35,6 +35,35 @@ Use this template for each entry:
 
 ## Entries
 
+### 2026-05-17 18:30 UTC+3 - Premium Booking Form Modal
+
+**Goal:** Bring the booking application modal in line with the schedule-board reference: dark summary card, compact field grid, and a prominent gradient CTA while keeping the existing lead submission flow.
+
+**Completed:**
+- Restyled the booking dialog shell and title (`Оформление заявки` / waitlist variant).
+- Added a summary card (venue, program, dates, format, price) above the form fields.
+- Reworked field layout, dark inputs, consent block, gradient submit button, and consent disclaimer.
+- Extended E2E smoke checks and added a mobile visual snapshot for the open modal.
+
+**Changed Files:**
+- `apps/web/components/offer-booking-action.tsx`: dialog styling, summary props, variant `priceLabel`.
+- `apps/web/components/booking-form.tsx`: summary UI, grid, themed inputs/CTA.
+- `apps/web/e2e/quest-schedule.spec.ts`: assertions for new modal structure.
+- `apps/web/e2e/schedule-board.visual.spec.ts`: booking modal visual regression.
+- `apps/web/e2e/schedule-board.visual.spec.ts-snapshots/booking-form-modal-mobile-chromium-win32.png`: baseline screenshot.
+
+**Decisions:**
+- Use a 2-column field grid at modal width (no `sm:` breakpoint) so the layout matches the reference on mobile.
+- Keep `leadSchema` and payload unchanged; summary is display-only.
+
+**Validation:**
+- `npm run lint` (apps/web)
+- `npm run build` (apps/web)
+- `npx playwright test e2e/quest-schedule.spec.ts e2e/schedule-board.visual.spec.ts -g "mobile booking modal" --project=chromium` — booking-related tests passed; other schedule-board visual baselines still differ from stored snapshots (pre-existing drift).
+
+**Open Items:**
+- None.
+
 ### 2026-05-17 17:06 UTC+3 - Stable Dev Server Restart
 
 **Goal:** Prevent parallel Next dev servers from corrupting the shared dev output and provide a reliable restart command for port 3000.

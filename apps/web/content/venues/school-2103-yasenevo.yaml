@@ -3,4 +3,7 @@ name: Школа №2103
 type: school
 address: Голубинская ул., 13к2
 metro: Ясенево
+city: moscow
+district: Ясенево
+logoUrl: /venues/logos/school-2103-placeholder.png
 schoolScopeSlug: school-2103

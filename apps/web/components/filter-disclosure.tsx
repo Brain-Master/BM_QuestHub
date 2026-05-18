@@ -28,14 +28,6 @@ export function FilterDisclosure({
 }: Props) {
   const [open, setOpen] = React.useState(false);
 
-  React.useEffect(() => {
-    const media = window.matchMedia("(min-width: 1024px)");
-    const syncOpenState = () => setOpen(media.matches);
-    syncOpenState();
-    media.addEventListener("change", syncOpenState);
-    return () => media.removeEventListener("change", syncOpenState);
-  }, []);
-
   return (
     <div
       data-testid={testId}

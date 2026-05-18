@@ -8,7 +8,6 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -34,7 +33,10 @@ type Props = {
   showIncludedNote?: boolean;
   compact?: boolean;
   mode?: ScheduleBookingMode;
-  variant?: Pick<ScheduleBoardVariant, "id" | "type" | "time" | "bookingMode">;
+  variant?: Pick<
+    ScheduleBoardVariant,
+    "id" | "type" | "time" | "priceLabel" | "bookingMode"
+  >;
 };
 
 export function OfferBookingAction({
@@ -70,6 +72,12 @@ export function OfferBookingAction({
     action.kind === "disabled" &&
       "border-slate-700 bg-slate-800 text-slate-300 shadow-none hover:translate-y-0",
   );
+
+  const formatLabel = variant
+    ? `${variant.type} (${variant.time})`
+    : offer.daySchedule;
+
+  const priceLabel = variant?.priceLabel ?? offer.priceLabel;
 
   function openForm() {
     setOpen(true);
@@ -123,34 +131,44 @@ export function OfferBookingAction({
       ) : null}
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="border-white/10 bg-card sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>
-              {isWaitlistAction ? "Заявка в лист ожидания" : "Заявка на программу"}
+        <DialogContent
+          className={cn(
+            "gap-0 border-slate-800 bg-[#0F172A] p-0 text-slate-100 shadow-2xl shadow-black/50 sm:max-w-[410px]",
+            "[&_[data-slot=dialog-close]]:top-3 [&_[data-slot=dialog-close]]:right-3",
+            "[&_[data-slot=dialog-close]]:text-slate-400 [&_[data-slot=dialog-close]]:hover:bg-white/10 [&_[data-slot=dialog-close]]:hover:text-white",
+          )}
+        >
+          <DialogHeader className="border-slate-800 border-b px-5 py-4 pr-12">
+            <DialogTitle className="font-heading text-lg text-white">
+              {isWaitlistAction ? "Заявка в лист ожидания" : "Оформление заявки"}
             </DialogTitle>
-            <DialogDescription>
-              {quest.title} · {venue.name} · {offer.shiftLabel}
-              {variant ? ` · ${variant.type}` : null}
-              {isWaitlistAction ? " · лист ожидания" : null}
-            </DialogDescription>
           </DialogHeader>
-          <BookingForm
-            defaults={{
-              leadType: isWaitlistAction ? "waitlist" : "booking",
-              questSlug: quest.slug,
-              questTitle: quest.title,
-              offerId: offer.id,
-              variantId: variant?.id,
-              variantTitle: variant ? `${variant.type} · ${variant.time}` : undefined,
-              venueSlug: venue.slug,
-              venueName: venue.name,
-              schoolSlug,
-            }}
-            submitLabel={
-              isWaitlistAction ? "Отправить заявку в лист ожидания" : undefined
-            }
-            onSuccess={() => setOpen(false)}
-          />
+          <div className="px-5 py-4">
+            <BookingForm
+              summary={{
+                venueName: venue.name,
+                questTitle: quest.title,
+                dates: offer.dateRange,
+                format: formatLabel,
+                priceLabel,
+              }}
+              defaults={{
+                leadType: isWaitlistAction ? "waitlist" : "booking",
+                questSlug: quest.slug,
+                questTitle: quest.title,
+                offerId: offer.id,
+                variantId: variant?.id,
+                variantTitle: variant ? `${variant.type} · ${variant.time}` : undefined,
+                venueSlug: venue.slug,
+                venueName: venue.name,
+                schoolSlug,
+              }}
+              submitLabel={
+                isWaitlistAction ? "Отправить заявку в лист ожидания" : undefined
+              }
+              onSuccess={() => setOpen(false)}
+            />
+          </div>
         </DialogContent>
       </Dialog>
     </div>

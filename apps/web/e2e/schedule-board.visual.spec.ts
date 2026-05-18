@@ -45,7 +45,7 @@ async function stabilizeScheduleBoard(page: Page) {
 }
 
 async function stabilizeCatalogPage(page: Page) {
-  await expect(page.getByRole("heading", { name: "Каталог миссий" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Курсы BrainMaster" })).toBeVisible();
   await expect(page.getByRole("link", { name: /Открыть досье/ }).first()).toBeVisible();
   await page.evaluate(() => document.fonts.ready);
 }
@@ -80,6 +80,7 @@ test.describe("Schedule Board visual regression", () => {
     await prepareVisualPage(page, testInfo);
     await page.setViewportSize({ width: 1440, height: 1100 });
     await page.goto("/agenda");
+    await page.getByRole("button", { name: /Фильтры расписания/ }).click();
     await page.getByRole("button", { name: "Подробный вид" }).click();
     await stabilizeScheduleBoard(page);
 
@@ -129,6 +130,32 @@ test.describe("Schedule Board visual regression", () => {
     const firstCard = page.getByTestId("schedule-card").first();
     await expect(firstCard.getByTestId("schedule-tariffs")).toBeVisible();
     await expect(firstCard).toHaveScreenshot("schedule-board-quest-mobile-card.png", {
+      animations: "disabled",
+      maxDiffPixelRatio: 0.02,
+    });
+  });
+
+  test("mobile booking modal matches the premium form layout", async ({
+    page,
+  }, testInfo) => {
+    await prepareVisualPage(page, testInfo);
+    await page.setViewportSize({ width: 375, height: 900 });
+    await page.goto(QUEST_PATH);
+    await stabilizeScheduleBoard(page);
+
+    const formButton = page.getByRole("button", {
+      name: /Записаться|В лист ожидания|Узнать о старте|Предварительная заявка/,
+    });
+    if ((await formButton.count()) === 0) {
+      test.skip(true, "No form booking CTA on the quest schedule page.");
+    }
+
+    await formButton.first().click();
+    const dialog = page.getByRole("dialog");
+    await expect(dialog).toBeVisible();
+    await expect(dialog.getByTestId("booking-summary")).toBeVisible();
+
+    await expect(dialog).toHaveScreenshot("booking-form-modal-mobile.png", {
       animations: "disabled",
       maxDiffPixelRatio: 0.02,
     });

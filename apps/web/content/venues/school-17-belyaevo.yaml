@@ -3,4 +3,7 @@ name: Школа №17
 type: school
 address: ул. Введенского, 28
 metro: Беляево
+city: moscow
+district: Коньково
+logoUrl: /venues/logos/school-17-placeholder.png
 schoolScopeSlug: school-17

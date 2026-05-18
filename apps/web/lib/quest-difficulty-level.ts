@@ -1,5 +1,5 @@
 /**
- * Преобразует текстовую метку сложности из контента в шкалу 1–5 для индикатора «ключей» в каталоге.
+ * Преобразует текстовую метку сложности из контента в шкалу 1–5 для индикатора «ключей» в карточке курса.
  */
 export function difficultyToLevel(difficulty: string | undefined): number {
   const raw = difficulty?.trim().toLowerCase();

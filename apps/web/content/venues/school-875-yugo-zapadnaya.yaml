@@ -3,4 +3,7 @@ name: Школа №875
 type: school
 address: пр-кт Вернадского, 101, корп. 6
 metro: Юго-Западная
+city: moscow
+district: Проспект Вернадского
+logoUrl: /venues/logos/school-875-placeholder.png
 schoolScopeSlug: school-875

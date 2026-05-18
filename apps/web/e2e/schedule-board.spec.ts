@@ -55,6 +55,7 @@ test.describe("Schedule Board UX", () => {
 
     await page.goto("/agenda");
 
+    await page.getByRole("button", { name: /Фильтры расписания/ }).click();
     await expect(page.getByTestId("schedule-program-filter")).toBeVisible();
     await expect(page.getByTestId("schedule-site-filter")).toBeVisible();
     const resetButton = page.getByTestId("schedule-reset-filter");

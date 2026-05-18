@@ -8,7 +8,7 @@ export default function QuestNotFound() {
         Возможно, карточка снята с кампании или slug изменился.
       </p>
       <Link className="mt-6 inline-block text-primary underline" href="/">
-        Вернуться в каталог
+        Вернуться к курсам
       </Link>
     </main>
   );

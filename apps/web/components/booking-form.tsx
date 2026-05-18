@@ -3,12 +3,20 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 
-import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { submitLeadToYandex } from "@/lib/lead-submit-client";
 import { leadSchema, type LeadFormInput, type LeadPayload } from "@/lib/schemas";
+import { cn } from "@/lib/utils";
+
+export type BookingFormSummary = {
+  venueName: string;
+  questTitle: string;
+  dates: string;
+  format: string;
+  priceLabel: string;
+};
 
 type Props = {
   defaults: Omit<
@@ -24,13 +32,52 @@ type Props = {
     consent?: boolean;
     leadType?: LeadFormInput["leadType"];
   };
+  summary?: BookingFormSummary;
   submitLabel?: string;
   onSuccess?: () => void;
 };
 
+const fieldLabelClass =
+  "text-slate-400 text-sm font-medium [&>span]:text-white/90";
+
+const fieldInputClass =
+  "h-auto rounded-lg border-slate-700 bg-[#0B1120] px-4 py-2.5 text-sm text-white shadow-none placeholder:text-slate-600 focus-visible:border-cyan-500 focus-visible:ring-1 focus-visible:ring-cyan-500 dark:bg-[#0B1120] dark:disabled:bg-[#0B1120]/60";
+
+function FieldError({ message }: { message?: string }) {
+  if (!message) return null;
+  return <p className="text-destructive text-xs">{message}</p>;
+}
+
+function BookingSummaryCard({ summary }: { summary: BookingFormSummary }) {
+  return (
+    <div
+      data-testid="booking-summary"
+      className="mb-1 rounded-xl border border-slate-800 bg-[#0B1120] p-4"
+    >
+      <p className="mb-1 font-medium text-cyan-400 text-sm">{summary.venueName}</p>
+      <p className="mb-3 font-bold text-white leading-tight">{summary.questTitle}</p>
+      <dl className="flex flex-col gap-1.5 text-slate-300 text-sm">
+        <div className="flex items-center justify-between gap-3">
+          <dt className="text-slate-500">Даты:</dt>
+          <dd className="text-right">{summary.dates}</dd>
+        </div>
+        <div className="flex items-center justify-between gap-3">
+          <dt className="text-slate-500">Формат:</dt>
+          <dd className="text-right font-medium">{summary.format}</dd>
+        </div>
+        <div className="mt-0.5 flex items-center justify-between gap-3 border-slate-800 border-t pt-1.5">
+          <dt className="text-slate-500">К оплате:</dt>
+          <dd className="font-bold text-white">{summary.priceLabel}</dd>
+        </div>
+      </dl>
+    </div>
+  );
+}
+
 export function BookingForm({
   defaults,
-  submitLabel = "Отправить заявку",
+  summary,
+  submitLabel = "Забронировать место",
   onSuccess,
 }: Props) {
   const form = useForm<LeadFormInput, unknown, LeadPayload>({
@@ -66,79 +113,95 @@ export function BookingForm({
     });
   }
 
+  const isSubmitting = form.formState.isSubmitting;
+
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
-      <div className="grid gap-2">
-        <Label htmlFor="parentName">Имя родителя</Label>
-        <Input
-          id="parentName"
-          autoComplete="name"
-          {...form.register("parentName")}
-        />
-        {form.formState.errors.parentName?.message ? (
-          <p className="text-xs text-destructive">
-            {form.formState.errors.parentName.message}
-          </p>
-        ) : null}
+      {summary ? <BookingSummaryCard summary={summary} /> : null}
+
+      <div className="grid grid-cols-2 gap-4">
+        <div className="grid gap-1.5">
+          <Label htmlFor="parentName" className={fieldLabelClass}>
+            Имя родителя <span className="text-white">*</span>
+          </Label>
+          <Input
+            id="parentName"
+            autoComplete="name"
+            placeholder="Иван Иванов"
+            className={fieldInputClass}
+            aria-invalid={Boolean(form.formState.errors.parentName)}
+            {...form.register("parentName")}
+          />
+          <FieldError message={form.formState.errors.parentName?.message} />
+        </div>
+
+        <div className="grid gap-1.5">
+          <Label htmlFor="contact" className={fieldLabelClass}>
+            Телефон <span className="text-white">*</span>
+          </Label>
+          <Input
+            id="contact"
+            type="tel"
+            autoComplete="tel"
+            inputMode="tel"
+            placeholder="+7 (999) 000-00-00"
+            className={fieldInputClass}
+            aria-invalid={Boolean(form.formState.errors.contact)}
+            {...form.register("contact")}
+          />
+          <FieldError message={form.formState.errors.contact?.message} />
+        </div>
       </div>
 
-      <div className="grid gap-2">
-        <Label htmlFor="contact">Телефон или email</Label>
-        <Input
-          id="contact"
-          autoComplete="tel email"
-          inputMode="tel"
-          {...form.register("contact")}
-        />
-        {form.formState.errors.contact?.message ? (
-          <p className="text-xs text-destructive">
-            {form.formState.errors.contact.message}
-          </p>
-        ) : null}
-      </div>
-
-      <div className="grid gap-2 sm:grid-cols-2">
-        <div className="grid gap-2">
-          <Label htmlFor="childName">Имя ребёнка</Label>
+      <div className="grid grid-cols-2 gap-4 border-slate-800 border-t pt-2">
+        <div className="grid gap-1.5">
+          <Label htmlFor="childName" className={fieldLabelClass}>
+            Имя и фамилия ребёнка <span className="text-white">*</span>
+          </Label>
           <Input
             id="childName"
             autoComplete="given-name"
+            placeholder="Петя Иванов"
+            className={fieldInputClass}
+            aria-invalid={Boolean(form.formState.errors.childName)}
             {...form.register("childName")}
           />
-          {form.formState.errors.childName?.message ? (
-            <p className="text-xs text-destructive">
-              {form.formState.errors.childName.message}
-            </p>
-          ) : null}
+          <FieldError message={form.formState.errors.childName?.message} />
         </div>
 
-        <div className="grid gap-2">
-          <Label htmlFor="childAge">Возраст или класс</Label>
+        <div className="grid gap-1.5">
+          <Label htmlFor="childAge" className={fieldLabelClass}>
+            Возраст полных лет <span className="text-white">*</span>
+          </Label>
           <Input
             id="childAge"
-            placeholder="Например, 8 лет или 2 класс"
+            placeholder="Например: 9"
+            className={fieldInputClass}
+            aria-invalid={Boolean(form.formState.errors.childAge)}
             {...form.register("childAge")}
           />
-          {form.formState.errors.childAge?.message ? (
-            <p className="text-xs text-destructive">
-              {form.formState.errors.childAge.message}
-            </p>
-          ) : null}
+          <FieldError message={form.formState.errors.childAge?.message} />
         </div>
       </div>
 
-      <div className="grid gap-2">
-        <Label htmlFor="comment">Комментарий</Label>
+      <div className="grid gap-1.5">
+        <Label htmlFor="comment" className={fieldLabelClass}>
+          Комментарий{" "}
+          <span className="font-normal text-slate-500">(необязательно)</span>
+        </Label>
         <textarea
           id="comment"
-          rows={3}
-          placeholder="Аллергии, особенности, вопросы по расписанию"
-          className="min-h-20 rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm outline-none transition-colors placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+          rows={2}
+          placeholder="Особенности питания, аллергии или пожелания..."
+          className={cn(
+            fieldInputClass,
+            "min-h-[4.5rem] resize-none focus-visible:outline-none",
+          )}
           {...form.register("comment")}
         />
       </div>
 
-      <div className="flex items-start gap-2">
+      <div className="flex items-start gap-2.5">
         <Controller
           control={form.control}
           name="consent"
@@ -147,29 +210,38 @@ export function BookingForm({
               id="consent"
               checked={field.value}
               onCheckedChange={(v) => field.onChange(v === true)}
+              className="mt-0.5 border-slate-600 data-checked:border-cyan-500 data-checked:bg-cyan-600"
             />
           )}
         />
-        <Label htmlFor="consent" className="text-xs leading-snug font-normal">
+        <Label
+          htmlFor="consent"
+          className="text-slate-400 text-xs leading-snug font-normal"
+        >
           Согласен(на) на обработку персональных данных в соответствии с
           политикой BrainMaster и целью заявки на программу.
         </Label>
       </div>
-      {form.formState.errors.consent?.message ? (
-        <p className="text-xs text-destructive">
-          {form.formState.errors.consent.message}
-        </p>
-      ) : null}
+      <FieldError message={form.formState.errors.consent?.message} />
 
-      {form.formState.errors.root?.message ? (
-        <p className="text-xs text-destructive">
-          {form.formState.errors.root.message}
-        </p>
-      ) : null}
+      <FieldError message={form.formState.errors.root?.message} />
 
-      <Button type="submit" disabled={form.formState.isSubmitting}>
-        {form.formState.isSubmitting ? "Отправка…" : submitLabel}
-      </Button>
+      <div className="grid gap-3">
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className={cn(
+            "w-full rounded-lg bg-gradient-to-r from-cyan-600 to-blue-600 py-3.5 font-bold text-white shadow-[0_0_20px_rgba(8,145,178,0.3)] transition-all",
+            "hover:from-cyan-500 hover:to-blue-500 hover:shadow-[0_0_25px_rgba(8,145,178,0.5)]",
+            "disabled:cursor-not-allowed disabled:opacity-70",
+          )}
+        >
+          {isSubmitting ? "Отправка…" : submitLabel}
+        </button>
+        <p className="text-center text-[11px] text-slate-500 leading-snug">
+          Нажимая кнопку, вы даёте согласие на обработку персональных данных.
+        </p>
+      </div>
     </form>
   );
 }

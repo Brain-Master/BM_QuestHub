@@ -153,16 +153,16 @@ export function getSchoolScopes(venues: Venue[]): SchoolScope[] {
   const byScope = new Map<string, SchoolScope>();
 
   for (const venue of venues) {
-    if (venue.type !== "school" || !venue.schoolScopeSlug) continue;
-    const current = byScope.get(venue.schoolScopeSlug);
+    const scopeSlug = venue.schoolScopeSlug ?? venue.slug;
+    const current = byScope.get(scopeSlug);
     if (current) {
       current.venues.push(venue);
       continue;
     }
-    byScope.set(venue.schoolScopeSlug, {
-      slug: venue.schoolScopeSlug,
-      name: venue.name,
-      routeSlugs: routeSlugsForSchoolScope(venue.schoolScopeSlug),
+    byScope.set(scopeSlug, {
+      slug: scopeSlug,
+      name: venue.displayName ?? venue.name,
+      routeSlugs: routeSlugsForSchoolScope(scopeSlug),
       venues: [venue],
     });
   }

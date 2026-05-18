@@ -25,8 +25,8 @@ export function CatalogPageClient({
   venues,
   worlds,
   fixedSchool,
-  title = "Каталог миссий",
-  emptyMessage = "Ничего не найдено — ослабьте фильтры или сбросьте школьный скоуп.",
+  title = "Курсы BrainMaster",
+  emptyMessage = "Ничего не найдено — ослабьте фильтры или сбросьте выбор школы.",
 }: Props) {
   const searchParams = useSearchParams();
   const format = searchParams.get("format") ?? undefined;
@@ -63,13 +63,13 @@ export function CatalogPageClient({
               {title}
             </h2>
             <p className="mt-1 text-muted-foreground text-sm">
-              Показано квестов:{" "}
+              Показано курсов:{" "}
               <span className="font-medium text-foreground">{filtered.length}</span>
             </p>
           </div>
           {school ? (
             <p className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-muted-foreground text-sm">
-              {fixedSchool ? "Площадка" : "Школьный скоуп"}:{" "}
+              {fixedSchool ? "Площадка" : "Выбрана школа"}:{" "}
               <span className="font-medium text-foreground">
                 {fixedSchool?.name ?? school}
               </span>
