@@ -31,6 +31,9 @@ test.describe("Quest schedule", () => {
     await openQuestFilters(page);
 
     const resetButton = page.getByTestId("schedule-reset-filter");
+    await expect(page.getByTestId("schedule-results-count")).toContainText(/найдено/);
+    await expect(page.getByTestId("schedule-view-toggle")).toHaveCount(0);
+    await expect(page.getByTestId("schedule-search-filter")).toBeVisible();
     await expect(page.getByTestId("schedule-site-filter")).toBeVisible();
     await expect(page.getByTestId("schedule-format-filter")).toBeVisible();
     await expect(page.getByTestId("schedule-status-filter")).toBeVisible();
@@ -120,7 +123,7 @@ test.describe("Quest schedule", () => {
         dialog.getByRole("link", {
           name: "обработку персональных данных",
         }),
-      ).toHaveAttribute("href", "/legal/personal-data/");
+      ).toHaveAttribute("href", "/legal/personal-data-consent/");
       await expect(
         dialog.getByRole("button", {
           name: /Перейти к записи на mos\.ru|Забронировать место|Оставить заявку на уведомление/,

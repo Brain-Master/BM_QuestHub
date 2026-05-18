@@ -1,8 +1,20 @@
 "use client";
 
-import { Activity, CalendarDays, LayoutList, List, MapPin, RotateCcw, Shapes, Users } from "lucide-react";
+import * as React from "react";
+import {
+  Activity,
+  CalendarDays,
+  ChevronDown,
+  LayoutList,
+  List,
+  MapPin,
+  RotateCcw,
+  Search,
+  Shapes,
+  SlidersHorizontal,
+  Users,
+} from "lucide-react";
 
-import { FilterDisclosure } from "@/components/filter-disclosure";
 import { ProgramFilterSelect } from "@/components/program-filter-select";
 import type { ScheduleViewMode } from "@/components/schedule-board-card";
 import { Button } from "@/components/ui/button";
@@ -19,6 +31,8 @@ import { cn } from "@/lib/utils";
 type Props = {
   viewMode: ScheduleViewMode;
   onViewModeChange: (mode: ScheduleViewMode) => void;
+  query: string;
+  onQueryChange: (query: string) => void;
   status: string;
   statuses: string[];
   onStatusChange: (status: string) => void;
@@ -40,6 +54,8 @@ type Props = {
   showArchived: boolean;
   onShowArchivedChange: (show: boolean) => void;
   showViewToggle?: boolean;
+  totalCount: number;
+  visibleCount: number;
   hasActiveFilters: boolean;
   onReset: () => void;
 };
@@ -47,6 +63,8 @@ type Props = {
 export function ScheduleBoardToolbar({
   viewMode,
   onViewModeChange,
+  query,
+  onQueryChange,
   status,
   statuses,
   onStatusChange,
@@ -68,10 +86,14 @@ export function ScheduleBoardToolbar({
   showArchived,
   onShowArchivedChange,
   showViewToggle = true,
+  totalCount,
+  visibleCount,
   hasActiveFilters,
   onReset,
 }: Props) {
+  const [filtersOpen, setFiltersOpen] = React.useState(false);
   const activeFiltersCount = [
+    query.trim(),
     showProgramFilter && program !== ALL_PROGRAM_FILTER_VALUE,
     showSiteFilter && site !== sites[0],
     format !== formats[0],
@@ -88,37 +110,146 @@ export function ScheduleBoardToolbar({
   ]
     .filter(Boolean)
     .join(", ");
+  const panelId = "schedule-filter-panel";
+  const filterSummary =
+    activeFiltersCount > 0 ? `Активно: ${activeFiltersCount}` : `Поиск, ${summary}`;
+  const viewSwitcher = showViewToggle ? (
+    <div
+      data-testid="schedule-view-toggle"
+      className="inline-flex w-full min-w-0 rounded-xl border border-white/10 bg-black/20 p-1 sm:w-auto"
+    >
+      <Button
+        type="button"
+        size="sm"
+        variant={viewMode === "detailed" ? "secondary" : "ghost"}
+        className="min-w-0 flex-1 gap-1.5 px-2 sm:min-w-28"
+        aria-pressed={viewMode === "detailed"}
+        aria-label="Подробный вид"
+        onClick={() => onViewModeChange("detailed")}
+      >
+        <LayoutList className="size-4 shrink-0" aria-hidden />
+        <span className="truncate">Подробно</span>
+      </Button>
+      <Button
+        type="button"
+        size="sm"
+        variant={viewMode === "compact" ? "secondary" : "ghost"}
+        className="min-w-0 flex-1 gap-1.5 px-2 sm:min-w-28"
+        aria-pressed={viewMode === "compact"}
+        aria-label="Компактный вид"
+        onClick={() => onViewModeChange("compact")}
+      >
+        <List className="size-4 shrink-0" aria-hidden />
+        <span className="truncate">Компактно</span>
+      </Button>
+    </div>
+  ) : null;
 
   return (
-    <FilterDisclosure
+    <section
       data-testid="schedule-toolbar"
-      title="Фильтры расписания"
-      summary={summary}
-      panelId="schedule-filter-panel"
-      activeCount={activeFiltersCount}
-      contentClassName={cn(
-        "grid grid-cols-1 items-end gap-3 sm:grid-cols-2",
-        showProgramFilter && showViewToggle
-          ? "xl:grid-cols-5"
-          : "xl:grid-cols-4",
-      )}
+      className="rounded-2xl border border-[color:var(--schedule-card-border)] bg-[color:var(--schedule-toolbar-bg)] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)] backdrop-blur-md"
+      aria-label="Фильтры расписания"
     >
-      {showProgramFilter ? (
-        <label className="grid gap-2 text-sm">
+      <div className="grid gap-3 px-4 py-3">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <button
+            type="button"
+            className="group/filter flex min-w-0 flex-1 items-center gap-3 rounded-xl text-left outline-none transition focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            aria-label="Фильтры расписания"
+            aria-expanded={filtersOpen}
+            aria-controls={panelId}
+            onClick={() => setFiltersOpen((value) => !value)}
+          >
+            <SlidersHorizontal className="size-4 shrink-0 text-primary" aria-hidden />
+            <span className="min-w-0">
+              <span className="block font-heading font-semibold text-lg">Фильтры</span>
+              <span className="block text-muted-foreground text-sm">{filterSummary}</span>
+            </span>
+            <ChevronDown
+              className={cn(
+                "ml-auto size-5 shrink-0 text-muted-foreground transition-transform duration-200 group-hover/filter:text-foreground",
+                filtersOpen && "rotate-180",
+              )}
+              aria-hidden
+            />
+          </button>
+
+          <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
+            <Button
+              type="button"
+              data-testid="schedule-reset-filter"
+              variant="outline"
+              size="sm"
+              onClick={onReset}
+              disabled={!hasActiveFilters}
+              className={cn(
+                "min-w-24 border-white/10 bg-transparent hover:bg-white/5",
+                !hasActiveFilters && "pointer-events-none invisible",
+              )}
+              aria-hidden={!hasActiveFilters}
+              tabIndex={hasActiveFilters ? 0 : -1}
+            >
+              <RotateCcw className="size-3.5" aria-hidden />
+              Сбросить
+            </Button>
+            <div
+              data-testid="schedule-results-count"
+              className="rounded-full border border-white/10 bg-black/20 px-3 py-1 text-muted-foreground text-xs"
+            >
+              {visibleCount} / {totalCount} найдено
+            </div>
+          </div>
+        </div>
+
+        {viewSwitcher ? <div className="grid gap-3 sm:items-center">{viewSwitcher}</div> : null}
+      </div>
+
+      <div
+        id={panelId}
+        className={cn(
+          "grid grid-cols-1 items-end gap-3 border-white/10 border-t px-4 py-4 sm:grid-cols-2",
+          showProgramFilter ? "xl:grid-cols-4" : "xl:grid-cols-3",
+          !filtersOpen && "hidden",
+        )}
+        aria-hidden={!filtersOpen}
+      >
+        <label className="grid gap-2 text-sm sm:col-span-2 xl:col-span-full">
           <span className="flex items-center gap-2 text-muted-foreground">
-            <Shapes className="size-4 opacity-80" aria-hidden />
-            Программа
+            <Search className="size-4 opacity-80" aria-hidden />
+            Поиск
           </span>
-          <ProgramFilterSelect
-            value={program}
-            groups={programGroups}
-            onValueChange={(value) => {
-              if (value) onProgramChange(value);
-            }}
-            triggerTestId="schedule-program-filter"
-          />
+          <span className="relative">
+            <Search
+              className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+              aria-hidden
+            />
+            <input
+              data-testid="schedule-search-filter"
+              value={query}
+              onChange={(event) => onQueryChange(event.target.value)}
+              placeholder="Квест, площадка, дата или статус"
+              className="h-9 w-full min-w-0 rounded-lg border border-white/10 bg-black/20 pr-3 pl-9 text-foreground text-sm outline-none transition placeholder:text-muted-foreground/70 focus-visible:ring-2 focus-visible:ring-ring"
+            />
+          </span>
         </label>
-      ) : null}
+
+        {showProgramFilter ? (
+          <label className="grid gap-2 text-sm">
+            <span className="flex items-center gap-2 text-muted-foreground">
+              <Shapes className="size-4 opacity-80" aria-hidden />
+              Программа
+            </span>
+            <ProgramFilterSelect
+              value={program}
+              groups={programGroups}
+              onValueChange={(value) => {
+                if (value) onProgramChange(value);
+              }}
+              triggerTestId="schedule-program-filter"
+            />
+          </label>
+        ) : null}
 
         {showSiteFilter ? (
           <label className="grid gap-2 text-sm">
@@ -232,12 +363,7 @@ export function ScheduleBoardToolbar({
           </Select>
         </label>
 
-        <label
-          className={cn(
-            "inline-flex h-9 w-full cursor-pointer items-center gap-2 rounded-lg border border-white/10 bg-black/20 px-3 text-sm transition hover:bg-white/5",
-            showProgramFilter && showViewToggle && "xl:col-start-4",
-          )}
-        >
+        <label className="inline-flex h-9 w-full cursor-pointer items-center gap-2 rounded-lg border border-white/10 bg-black/20 px-3 text-sm transition hover:bg-white/5">
           <input
             data-testid="schedule-archive-toggle"
             type="checkbox"
@@ -247,50 +373,7 @@ export function ScheduleBoardToolbar({
           />
           Архив
         </label>
-
-        {showViewToggle ? (
-          <div
-            data-testid="schedule-view-toggle"
-            className={cn(
-              "hidden w-fit rounded-lg border border-white/10 bg-black/20 p-1 lg:inline-flex",
-              showProgramFilter && "xl:col-start-5",
-            )}
-          >
-            <Button
-              type="button"
-              size="icon-sm"
-              variant={viewMode === "detailed" ? "secondary" : "ghost"}
-              aria-label="Подробный вид"
-              onClick={() => onViewModeChange("detailed")}
-            >
-              <LayoutList className="size-4" aria-hidden />
-            </Button>
-            <Button
-              type="button"
-              size="icon-sm"
-              variant={viewMode === "compact" ? "secondary" : "ghost"}
-              aria-label="Компактный вид"
-              onClick={() => onViewModeChange("compact")}
-            >
-              <List className="size-4" aria-hidden />
-            </Button>
-          </div>
-        ) : null}
-
-        <Button
-          type="button"
-          data-testid="schedule-reset-filter"
-          variant="outline"
-          size="sm"
-          onClick={onReset}
-          disabled={!hasActiveFilters}
-          className={!hasActiveFilters ? "hidden" : undefined}
-          aria-hidden={!hasActiveFilters}
-          tabIndex={hasActiveFilters ? 0 : -1}
-        >
-          <RotateCcw className="size-3.5" aria-hidden />
-          Сбросить
-        </Button>
-    </FilterDisclosure>
+      </div>
+    </section>
   );
 }

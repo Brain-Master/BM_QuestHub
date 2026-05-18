@@ -55,10 +55,20 @@ test.describe("Schedule Board UX", () => {
 
     await page.goto("/agenda");
 
+    await expect(page.getByTestId("schedule-results-count")).toContainText(/найдено/);
+    await expect(page.getByTestId("schedule-view-toggle")).toBeVisible();
+    await expect(page.getByTestId("schedule-reset-filter")).toBeHidden();
     await page.getByRole("button", { name: /Фильтры расписания/ }).click();
+    await expect(page.getByTestId("schedule-search-filter")).toBeVisible();
     await expect(page.getByTestId("schedule-program-filter")).toBeVisible();
     await expect(page.getByTestId("schedule-site-filter")).toBeVisible();
     const resetButton = page.getByTestId("schedule-reset-filter");
+
+    await page.getByTestId("schedule-search-filter").fill("Школа №2103");
+    await expect(resetButton).toBeVisible();
+    await expect(page.getByTestId("schedule-card").first()).toContainText("Школа №2103");
+    await resetButton.click();
+    await expect(resetButton).toBeHidden();
 
     await page.getByTestId("schedule-program-filter").click();
     await page.getByRole("option", { name: /Minecraft|Мехвариум|Кибер/ }).first().click();

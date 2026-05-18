@@ -104,6 +104,48 @@ function itemFormatTypes(item: ScheduleBoardItem): string[] {
   return Array.from(new Set(formats.filter(Boolean)));
 }
 
+function normalizeSearchText(value: string): string {
+  return value.trim().toLocaleLowerCase("ru");
+}
+
+function scheduleItemMatchesQuery(item: ScheduleBoardItem, query: string): boolean {
+  const normalizedQuery = normalizeSearchText(query);
+  if (!normalizedQuery) return true;
+
+  const haystack = [
+    item.displayTitle,
+    item.programFilterLabel,
+    item.quest.title,
+    item.world?.name,
+    item.venue.name,
+    item.venue.displayName,
+    item.formatType,
+    item.formatNote,
+    item.commonAgeLabel,
+    item.status.label,
+    item.shiftNumber,
+    item.timelineDateLabel,
+    item.shortDateLabel,
+    item.dateLabel,
+    item.timeLabel,
+    item.offer.startDate,
+    item.offer.endDate,
+    ...item.variants.flatMap((variant) => [
+      variant.type,
+      variant.time,
+      variant.ageLabel,
+      variant.note,
+    ]),
+  ]
+    .filter((value): value is string => Boolean(value))
+    .map(normalizeSearchText)
+    .join(" ");
+
+  return normalizedQuery
+    .split(/\s+/)
+    .every((term) => haystack.includes(term));
+}
+
 export function ScheduleBoard({
   groups,
   schoolSlug,
@@ -116,6 +158,7 @@ export function ScheduleBoard({
   displayMode = "agenda",
 }: Props) {
   const [viewMode, setViewMode] = React.useState<ScheduleViewMode>("compact");
+  const [query, setQuery] = React.useState("");
   const [status, setStatus] = React.useState(ALL_STATUSES);
   const [program, setProgram] = React.useState(ALL_PROGRAM_FILTER_VALUE);
   const [site, setSite] = React.useState(QUERY_SITE);
@@ -225,6 +268,7 @@ export function ScheduleBoard({
         return false;
       }
       if (status !== ALL_STATUSES && item.status.label !== status) return false;
+      if (!scheduleItemMatchesQuery(item, query)) return false;
       if (showProgramFilter) {
         if (selectedProgram.kind === "series" && item.quest.worldSlug !== selectedProgram.slug) {
           return false;
@@ -250,6 +294,7 @@ export function ScheduleBoard({
     boardItems,
     format,
     program,
+    query,
     schoolSlug,
     showAgeFilter,
     showArchived,
@@ -263,6 +308,7 @@ export function ScheduleBoard({
   );
 
   const hasActiveFilters =
+    Boolean(query.trim()) ||
     showArchived ||
     status !== ALL_STATUSES ||
     (showProgramFilter && program !== ALL_PROGRAM_FILTER_VALUE) ||
@@ -270,6 +316,7 @@ export function ScheduleBoard({
     format !== ALL_FORMATS ||
     (showAgeFilter && activeAge !== ALL_AGES);
   const resetFilters = () => {
+    setQuery("");
     setShowArchived(false);
     setStatus(ALL_STATUSES);
     setProgram(ALL_PROGRAM_FILTER_VALUE);
@@ -409,6 +456,8 @@ export function ScheduleBoard({
       <ScheduleBoardToolbar
         viewMode={viewMode}
         onViewModeChange={setViewMode}
+        query={query}
+        onQueryChange={setQuery}
         status={status}
         statuses={statuses}
         onStatusChange={setStatus}
@@ -430,6 +479,8 @@ export function ScheduleBoard({
         showArchived={showArchived}
         onShowArchivedChange={setShowArchived}
         showViewToggle={!isQuestDisplay}
+        totalCount={boardItems.length}
+        visibleCount={visibleItems.length}
         hasActiveFilters={hasActiveFilters}
         onReset={resetFilters}
       />
