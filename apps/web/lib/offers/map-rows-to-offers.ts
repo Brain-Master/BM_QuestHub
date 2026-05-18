@@ -1,4 +1,5 @@
 import {
+  type RegistrationChannel,
   venueOfferSchema,
   type ScheduleCard,
   type ScheduleMediaImage,
@@ -68,6 +69,26 @@ function inferLocationNote(row: SheetRow): string | undefined {
   return note || undefined;
 }
 
+function inferRegistrationChannel(
+  row: SheetRow,
+  mosBookingUrl: string | null,
+): RegistrationChannel {
+  return row.registration_channel ?? (mosBookingUrl ? "mos_ru" : "brainmaster");
+}
+
+function inferAllowPreliminaryRegistration(row: SheetRow): boolean {
+  if (typeof row.allow_preliminary_registration === "boolean") {
+    return row.allow_preliminary_registration;
+  }
+
+  const status = row.status.trim().toLowerCase();
+  return (
+    status === "планируется" ||
+    status === "согласование" ||
+    (status === "мест нет" && row.allow_waitlist_when_sold_out === true)
+  );
+}
+
 function buildImage(
   url: string | undefined,
   alt: string | undefined,
@@ -108,6 +129,8 @@ function buildScheduleCard(row: SheetRow): ScheduleCard {
   const formatNote = row.format_note?.trim() || row.notes?.trim() || undefined;
   const priceLabel = formatPriceLabel(row.price);
   const mosBookingUrl = parseMosUrl(row.mos_ru_link);
+  const registrationChannel = inferRegistrationChannel(row, mosBookingUrl);
+  const allowPreliminaryRegistration = inferAllowPreliminaryRegistration(row);
 
   return {
     displayTitle: row.display_title?.trim() || row.program_name,
@@ -127,6 +150,8 @@ function buildScheduleCard(row: SheetRow): ScheduleCard {
     status: row.status,
     isArchived: row.is_archived ?? false,
     allowWaitlistWhenSoldOut: row.allow_waitlist_when_sold_out ?? false,
+    registrationChannel,
+    allowPreliminaryRegistration,
     variants: [
       {
         id: `${row.venue_slug}:${row.start_date}:${row.start_time}`,

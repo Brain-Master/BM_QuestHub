@@ -43,6 +43,7 @@ export const worldSchema = z.object({
 export type World = z.infer<typeof worldSchema>;
 
 export const productFormatSchema = z.enum(["intensive", "year"]);
+export const registrationChannelSchema = z.enum(["mos_ru", "brainmaster"]);
 
 const urlStringSchema = z.string().url();
 
@@ -104,6 +105,10 @@ export const scheduleCardSchema = z.object({
   isArchived: z.boolean().default(false),
   /** Управляет CTA для sold-out: disabled или заявка в лист ожидания. */
   allowWaitlistWhenSoldOut: z.boolean().default(false),
+  /** Где будет проходить финальное оформление записи и договора. */
+  registrationChannel: registrationChannelSchema.optional(),
+  /** Можно ли оставить предварительную заявку до открытия финальной записи. */
+  allowPreliminaryRegistration: z.boolean().default(false),
   variants: z.array(scheduleVariantSchema).default([]),
   media: scheduleMediaSchema.optional(),
 });
@@ -112,6 +117,7 @@ export type ScheduleMediaImage = z.infer<typeof scheduleMediaImageSchema>;
 export type ScheduleMedia = z.infer<typeof scheduleMediaSchema>;
 export type ScheduleVariant = z.infer<typeof scheduleVariantSchema>;
 export type ScheduleCard = z.infer<typeof scheduleCardSchema>;
+export type RegistrationChannel = z.infer<typeof registrationChannelSchema>;
 
 export const venueOfferSchema = z.object({
   id: z.string(),
@@ -171,7 +177,8 @@ export const questSchema = z.object({
 export type Quest = z.infer<typeof questSchema>;
 
 export const leadSchema = z.object({
-  leadType: z.enum(["booking", "waitlist"]).default("booking"),
+  leadType: z.enum(["booking", "waitlist", "mos_assist"]).default("booking"),
+  registrationChannel: registrationChannelSchema.optional(),
   parentName: z.string().min(1, "Укажите имя"),
   contact: z.string().min(5, "Телефон или email"),
   childName: z.string().min(1, "Укажите имя ребёнка"),

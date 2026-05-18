@@ -35,6 +35,43 @@ Use this template for each entry:
 
 ## Entries
 
+### 2026-05-18 07:02 UTC+3 - Legal Policy And Registration Flows
+
+**Goal:** Publish the personal data policy, link it from booking surfaces, and split booking UX into mos.ru assistance, preliminary registration, and direct BrainMaster flows.
+
+**Completed:**
+- Added `/legal/` and `/legal/personal-data/` with a formatted personal data policy, operator contact card, and table of contents.
+- Linked the policy from the booking consent text and footer documents area.
+- Added registration channel metadata (`mos_ru` / `brainmaster`) and preliminary-registration flags to schedule data and sheet mapping.
+- Replaced direct mos.ru CTA navigation with a lead form, support copy, and a thank-you screen with phone support, a mos.ru button, and a 3-second auto-open countdown.
+- Updated preliminary registration copy to clearly say it is not a seat booking and explain where final registration will happen.
+
+**Changed Files:**
+- `apps/web/app/legal/page.tsx`: legal document hub.
+- `apps/web/app/legal/personal-data/page.tsx`: personal data policy route.
+- `apps/web/components/legal-document-layout.tsx`: shared legal document UI.
+- `apps/web/content/legal/personal-data-policy.ts`: structured policy content adapted for Quest Hub forms.
+- `apps/web/components/booking-form.tsx`: policy link and flow notice block.
+- `apps/web/components/offer-booking-action.tsx`: mos.ru two-step form/success flow.
+- `apps/web/components/mos-booking-success.tsx`: thank-you screen with countdown and support phone.
+- `apps/web/components/site-footer.tsx`: document links.
+- `apps/web/lib/legal-routes.ts`, `apps/web/lib/site-contact.ts`, `apps/web/lib/registration-flow.ts`: shared routes, contacts, and flow copy.
+- `apps/web/lib/schemas.ts`, `apps/web/lib/offers/sheet-contract.ts`, `apps/web/lib/offers/map-rows-to-offers.ts`, `apps/web/lib/offers/schedule-board.ts`: registration channel/preliminary data support.
+- `apps/web/e2e/quest-schedule.spec.ts`, `apps/web/e2e/schedule-board-data.spec.ts`: legal and flow coverage.
+
+**Decisions:**
+- Keep legal text as structured TypeScript content for maintainable formatting instead of rendering one long text blob.
+- Treat current mos.ru registration as `mos_assist`: collect contact details first, then guide the parent to the external portal.
+- Keep future direct BrainMaster registration as the `brainmaster` channel without implementing payment or contract signing yet.
+
+**Validation:**
+- `npm run lint` (apps/web)
+- `npm run build` (apps/web; `/legal` and `/legal/personal-data` are included in static output)
+- `npx playwright test e2e/schedule-board-data.spec.ts e2e/quest-schedule.spec.ts --project=chromium`
+
+**Open Items:**
+- None.
+
 ### 2026-05-17 18:30 UTC+3 - Premium Booking Form Modal
 
 **Goal:** Bring the booking application modal in line with the schedule-board reference: dark summary card, compact field grid, and a prominent gradient CTA while keeping the existing lead submission flow.

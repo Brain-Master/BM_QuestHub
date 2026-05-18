@@ -7,6 +7,7 @@ import {
   getScheduleCapacity,
   getScheduleDisplayStatus,
 } from "../lib/offers/schedule-board";
+import { resolveRegistrationFlow } from "../lib/registration-flow";
 import { leadSchema, type VenueOffer } from "../lib/schemas";
 
 function offer(overrides: Partial<VenueOffer> = {}): VenueOffer {
@@ -100,6 +101,40 @@ test.describe("Schedule Board data rules", () => {
     });
   });
 
+  test("mos offers collect an assist lead before external registration", () => {
+    const flow = resolveRegistrationFlow({
+      bookingMode: {
+        kind: "mos",
+        label: "Записаться (Mos.ru)",
+        url: "https://www.mos.ru/",
+      },
+      registrationChannel: "mos_ru",
+    });
+
+    expect(flow).toMatchObject({
+      kind: "mos_assist",
+      leadType: "mos_assist",
+      title: "Перед записью на mos.ru",
+      submitLabel: "Продолжить к записи на mos.ru",
+    });
+    expect(flow.noticeText).toContain("Это не бронь");
+  });
+
+  test("waitlist flow explains that preliminary registration is not a booking", () => {
+    const flow = resolveRegistrationFlow({
+      bookingMode: { kind: "waitlist", label: "Предварительная заявка" },
+      registrationChannel: "mos_ru",
+    });
+
+    expect(flow).toMatchObject({
+      kind: "waitlist",
+      leadType: "waitlist",
+      title: "Предварительная заявка",
+    });
+    expect(flow.noticeText).toContain("не бронь");
+    expect(flow.noticeText).toContain("портал mos.ru");
+  });
+
   test("date range is displayed as a human Russian range", () => {
     expect(formatScheduleDateRange("2026-05-01", "2026-05-05")).toBe(
       "1–5 мая",
@@ -176,5 +211,25 @@ test.describe("Schedule Board data rules", () => {
     });
 
     expect(parsed.leadType).toBe("waitlist");
+  });
+
+  test("mos assist lead payload keeps registration channel", () => {
+    const parsed = leadSchema.parse({
+      leadType: "mos_assist",
+      registrationChannel: "mos_ru",
+      parentName: "Тест",
+      contact: "+7 999 000-00-00",
+      childName: "Петя",
+      childAge: "8 лет",
+      consent: true,
+      questSlug: "minecraft",
+      questTitle: "Minecraft",
+      offerId: "test-offer",
+      venueSlug: "test-venue",
+      venueName: "Тестовая площадка",
+    });
+
+    expect(parsed.leadType).toBe("mos_assist");
+    expect(parsed.registrationChannel).toBe("mos_ru");
   });
 });

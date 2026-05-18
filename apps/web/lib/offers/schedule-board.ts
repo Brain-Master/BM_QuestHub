@@ -1,5 +1,10 @@
 import type { AgendaOfferItem } from "@/lib/offers/agenda";
-import type { ScheduleMediaImage, ScheduleVariant, VenueOffer } from "@/lib/schemas";
+import type {
+  RegistrationChannel,
+  ScheduleMediaImage,
+  ScheduleVariant,
+  VenueOffer,
+} from "@/lib/schemas";
 
 export type ScheduleDisplayStatus =
   | "Идёт набор"
@@ -31,6 +36,8 @@ export type ScheduleBoardVariant = {
   note: string | null;
   ageLabel: string | null;
   mosRuCode: string | null;
+  registrationChannel: RegistrationChannel;
+  allowPreliminaryRegistration: boolean;
   bookingMode: ScheduleBookingMode;
 };
 
@@ -60,6 +67,8 @@ export type ScheduleBoardItem = AgendaOfferItem & {
   formatType: string;
   formatNote: string | null;
   mosRuCode: string | null;
+  registrationChannel: RegistrationChannel;
+  allowPreliminaryRegistration: boolean;
   variants: ScheduleBoardVariant[];
   media: {
     hero: ScheduleMediaImage | null;
@@ -184,7 +193,7 @@ export function getScheduleBookingMode(
   }
 
   if (status === "Скоро старт") {
-    return { kind: "waitlist", label: "Узнать о старте" };
+    return { kind: "waitlist", label: "Предварительная заявка" };
   }
   return { kind: "form", label: "Записаться" };
 }
@@ -221,10 +230,31 @@ function buildQuestHref(questSlug: string, offerId: string, schoolSlug?: string)
   return `/quests/${questSlug}${query ? `?${query}` : ""}#schedule-offers`;
 }
 
+function getRegistrationChannel(offer: VenueOffer): RegistrationChannel {
+  return offer.scheduleCard?.registrationChannel ?? (offer.mosBookingUrl ? "mos_ru" : "brainmaster");
+}
+
+function getAllowPreliminaryRegistration(
+  offer: VenueOffer,
+  status: ScheduleDisplayStatus,
+): boolean {
+  return (
+    offer.scheduleCard?.allowPreliminaryRegistration === true ||
+    status === "Скоро старт" ||
+    (status === "Мест нет" &&
+      offer.scheduleCard?.allowWaitlistWhenSoldOut === true)
+  );
+}
+
 function normalizeVariants(
   offer: VenueOffer,
   status: ScheduleDisplayStatus,
 ): ScheduleBoardVariant[] {
+  const registrationChannel = getRegistrationChannel(offer);
+  const allowPreliminaryRegistration = getAllowPreliminaryRegistration(
+    offer,
+    status,
+  );
   const source =
     offer.scheduleCard?.variants && offer.scheduleCard.variants.length > 0
       ? offer.scheduleCard.variants
@@ -254,6 +284,8 @@ function normalizeVariants(
     note: variant.note?.trim() ? variant.note : null,
     ageLabel: variant.ageLabel?.trim() ? variant.ageLabel : null,
     mosRuCode: variant.mosRuCode?.trim() ? variant.mosRuCode : null,
+    registrationChannel,
+    allowPreliminaryRegistration,
     bookingMode: getScheduleBookingMode(offer, status, variant),
   }));
 }
@@ -307,6 +339,11 @@ export function buildScheduleBoardItem(
     formatType: primaryVariant?.type ?? offer.shiftLabel,
     formatNote: primaryVariant?.note ?? null,
     mosRuCode: card?.mosRuCode ?? primaryVariant?.mosRuCode ?? null,
+    registrationChannel:
+      primaryVariant?.registrationChannel ?? getRegistrationChannel(offer),
+    allowPreliminaryRegistration:
+      primaryVariant?.allowPreliminaryRegistration ??
+      getAllowPreliminaryRegistration(offer, statusLabel),
     variants,
     media: {
       hero:

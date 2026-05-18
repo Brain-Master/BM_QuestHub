@@ -15,6 +15,17 @@ async function openQuestFilters(page: Page) {
 }
 
 test.describe("Quest schedule", () => {
+  test("publishes the personal data policy page", async ({ page }) => {
+    await page.goto("/legal/personal-data/");
+
+    await expect(
+      page.getByRole("heading", {
+        name: /Политика обработки персональных данных/,
+      }),
+    ).toBeVisible();
+    await expect(page.getByRole("heading", { name: "1. Общие положения" })).toBeVisible();
+  });
+
   test("uses the shared schedule filters on quest pages", async ({ page }) => {
     await page.goto(QUEST_PATH);
     await openQuestFilters(page);
@@ -100,20 +111,26 @@ test.describe("Quest schedule", () => {
       const dialog = page.getByRole("dialog");
       await expect(dialog).toBeVisible();
       await expect(dialog).toContainText(
-        /Оформление заявки|Заявка в лист ожидания/,
+        /Перед записью на mos\.ru|Оформление заявки|Предварительная заявка/,
       );
       await expect(dialog.getByTestId("booking-summary")).toBeVisible();
+      await expect(dialog.getByTestId("booking-flow-notice")).toBeVisible();
       await expect(dialog.getByLabel("Имя родителя")).toBeVisible();
       await expect(
+        dialog.getByRole("link", {
+          name: "политикой обработки персональных данных",
+        }),
+      ).toHaveAttribute("href", "/legal/personal-data/");
+      await expect(
         dialog.getByRole("button", {
-          name: /Забронировать место|Отправить заявку в лист ожидания/,
+          name: /Продолжить к записи на mos\.ru|Забронировать место|Оставить заявку на уведомление/,
         }),
       ).toBeVisible();
       return;
     }
 
     await expect(
-      firstCard.getByRole("link", { name: /Записаться|mos\.ru/i }).first(),
+      firstCard.getByRole("button", { name: /Записаться|mos\.ru/i }).first(),
     ).toBeVisible();
   });
 });

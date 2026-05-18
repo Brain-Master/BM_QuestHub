@@ -1,12 +1,15 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
 import { Controller, useForm } from "react-hook-form";
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { submitLeadToYandex } from "@/lib/lead-submit-client";
+import { LEGAL_PERSONAL_DATA_PATH } from "@/lib/legal-routes";
+import type { RegistrationFlowContext } from "@/lib/registration-flow";
 import { leadSchema, type LeadFormInput, type LeadPayload } from "@/lib/schemas";
 import { cn } from "@/lib/utils";
 
@@ -33,8 +36,9 @@ type Props = {
     leadType?: LeadFormInput["leadType"];
   };
   summary?: BookingFormSummary;
+  flowContext?: RegistrationFlowContext;
   submitLabel?: string;
-  onSuccess?: () => void;
+  onSuccess?: (values: LeadPayload) => void;
 };
 
 const fieldLabelClass =
@@ -77,9 +81,12 @@ function BookingSummaryCard({ summary }: { summary: BookingFormSummary }) {
 export function BookingForm({
   defaults,
   summary,
-  submitLabel = "Забронировать место",
+  flowContext,
+  submitLabel,
   onSuccess,
 }: Props) {
+  const resolvedSubmitLabel =
+    submitLabel ?? flowContext?.submitLabel ?? "Забронировать место";
   const form = useForm<LeadFormInput, unknown, LeadPayload>({
     resolver: zodResolver(leadSchema),
     defaultValues: {
@@ -100,7 +107,7 @@ export function BookingForm({
       form.setError("root", { message: res.error });
       return;
     }
-    onSuccess?.();
+    onSuccess?.(values);
     form.reset({
       leadType: "booking",
       ...defaults,
@@ -118,6 +125,18 @@ export function BookingForm({
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
       {summary ? <BookingSummaryCard summary={summary} /> : null}
+
+      {flowContext ? (
+        <div
+          data-testid="booking-flow-notice"
+          className="rounded-xl border border-cyan-400/20 bg-cyan-400/10 p-3 text-sm leading-relaxed"
+        >
+          <p className="mb-1 font-semibold text-cyan-100">
+            {flowContext.noticeTitle}
+          </p>
+          <p className="text-cyan-50/80">{flowContext.noticeText}</p>
+        </div>
+      ) : null}
 
       <div className="grid grid-cols-2 gap-4">
         <div className="grid gap-1.5">
@@ -218,8 +237,16 @@ export function BookingForm({
           htmlFor="consent"
           className="text-slate-400 text-xs leading-snug font-normal"
         >
-          Согласен(на) на обработку персональных данных в соответствии с
-          политикой BrainMaster и целью заявки на программу.
+          Согласен(на) на обработку персональных данных в соответствии с{" "}
+          <Link
+            href={LEGAL_PERSONAL_DATA_PATH}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-cyan-300 underline underline-offset-3 hover:text-cyan-200"
+          >
+            политикой обработки персональных данных
+          </Link>{" "}
+          и целью заявки на программу.
         </Label>
       </div>
       <FieldError message={form.formState.errors.consent?.message} />
@@ -236,7 +263,7 @@ export function BookingForm({
             "disabled:cursor-not-allowed disabled:opacity-70",
           )}
         >
-          {isSubmitting ? "Отправка…" : submitLabel}
+          {isSubmitting ? "Отправка…" : resolvedSubmitLabel}
         </button>
         <p className="text-center text-[11px] text-slate-500 leading-snug">
           Нажимая кнопку, вы даёте согласие на обработку персональных данных.

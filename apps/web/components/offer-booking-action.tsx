@@ -1,17 +1,16 @@
 "use client";
 
 import * as React from "react";
-import { ExternalLink } from "lucide-react";
 
 import { BookingForm } from "@/components/booking-form";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { MosBookingSuccess } from "@/components/mos-booking-success";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { resolveBookingAction } from "@/lib/booking";
 import {
   trackBookingExternal,
   trackBookingFormOpen,
@@ -20,6 +19,7 @@ import type {
   ScheduleBoardVariant,
   ScheduleBookingMode,
 } from "@/lib/offers/schedule-board";
+import { resolveRegistrationFlow } from "@/lib/registration-flow";
 import type { Quest, Venue, VenueOffer } from "@/lib/schemas";
 import { cn } from "@/lib/utils";
 
@@ -35,7 +35,13 @@ type Props = {
   mode?: ScheduleBookingMode;
   variant?: Pick<
     ScheduleBoardVariant,
-    "id" | "type" | "time" | "priceLabel" | "bookingMode"
+    | "id"
+    | "type"
+    | "time"
+    | "priceLabel"
+    | "registrationChannel"
+    | "allowPreliminaryRegistration"
+    | "bookingMode"
   >;
 };
 
@@ -52,14 +58,15 @@ export function OfferBookingAction({
   variant,
 }: Props) {
   const [open, setOpen] = React.useState(false);
-  const resolvedAction = resolveBookingAction(offer.mosBookingUrl);
+  const [view, setView] = React.useState<"form" | "mos_success">("form");
   const action: ScheduleBookingMode =
-    mode ??
-    variant?.bookingMode ??
-    (resolvedAction.kind === "mos"
-      ? { kind: "mos", label: "Записаться (Mos.ru)", url: resolvedAction.url }
-      : { kind: "form", label: buttonLabel });
-  const isWaitlistAction = action.kind === "waitlist";
+    mode ?? variant?.bookingMode ?? { kind: "form", label: buttonLabel };
+  const registrationChannel =
+    variant?.registrationChannel ?? offer.scheduleCard?.registrationChannel ?? "brainmaster";
+  const flowContext = resolveRegistrationFlow({
+    bookingMode: action,
+    registrationChannel,
+  });
   const buttonClassName = cn(
     "relative max-w-full overflow-hidden border-white/10 font-semibold text-xs shadow-lg transition-all duration-200 before:absolute before:inset-0 before:bg-white/20 before:opacity-0 before:transition-opacity hover:-translate-y-0.5 hover:before:opacity-100",
     compact ? "h-8 w-full px-3 sm:w-44" : "h-9 w-48 px-3",
@@ -80,6 +87,7 @@ export function OfferBookingAction({
   const priceLabel = variant?.priceLabel ?? offer.priceLabel;
 
   function openForm() {
+    setView("form");
     setOpen(true);
     trackBookingFormOpen({
       questSlug: quest.slug,
@@ -89,32 +97,26 @@ export function OfferBookingAction({
     });
   }
 
+  function handleOpenChange(nextOpen: boolean) {
+    setOpen(nextOpen);
+    if (!nextOpen) {
+      setView("form");
+    }
+  }
+
+  function trackMosOpen() {
+    if (action.kind !== "mos") return;
+    trackBookingExternal({
+      questSlug: quest.slug,
+      venueSlug: venue.slug,
+      offerId: offer.id,
+      schoolSlug,
+    });
+  }
+
   return (
     <div className={className}>
-      {action.kind === "mos" ? (
-        <a
-          className={cn(
-            buttonVariants({ variant: "outline", size: "sm" }),
-            buttonClassName,
-          )}
-          href={action.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={() =>
-            trackBookingExternal({
-              questSlug: quest.slug,
-              venueSlug: venue.slug,
-              offerId: offer.id,
-              schoolSlug,
-            })
-          }
-        >
-          <span className="relative z-10 inline-flex items-center gap-1.5">
-            {action.label}
-            <ExternalLink className="size-3.5" aria-hidden />
-          </span>
-        </a>
-      ) : action.kind === "disabled" ? (
+      {action.kind === "disabled" ? (
         <Button size="sm" className={buttonClassName} disabled>
           <span className="relative z-10">{action.label}</span>
         </Button>
@@ -130,7 +132,7 @@ export function OfferBookingAction({
         </p>
       ) : null}
 
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogContent
           className={cn(
             "gap-0 border-slate-800 bg-[#0F172A] p-0 text-slate-100 shadow-2xl shadow-black/50 sm:max-w-[410px]",
@@ -140,9 +142,12 @@ export function OfferBookingAction({
         >
           <DialogHeader className="border-slate-800 border-b px-5 py-4 pr-12">
             <DialogTitle className="font-heading text-lg text-white">
-              {isWaitlistAction ? "Заявка в лист ожидания" : "Оформление заявки"}
+              {view === "mos_success" ? "Спасибо за заявку" : flowContext.title}
             </DialogTitle>
           </DialogHeader>
+          {view === "mos_success" && action.kind === "mos" ? (
+            <MosBookingSuccess mosUrl={action.url} onOpenMos={trackMosOpen} />
+          ) : (
           <div className="px-5 py-4">
             <BookingForm
               summary={{
@@ -153,7 +158,8 @@ export function OfferBookingAction({
                 priceLabel,
               }}
               defaults={{
-                leadType: isWaitlistAction ? "waitlist" : "booking",
+                leadType: flowContext.leadType,
+                registrationChannel: flowContext.registrationChannel,
                 questSlug: quest.slug,
                 questTitle: quest.title,
                 offerId: offer.id,
@@ -163,12 +169,17 @@ export function OfferBookingAction({
                 venueName: venue.name,
                 schoolSlug,
               }}
-              submitLabel={
-                isWaitlistAction ? "Отправить заявку в лист ожидания" : undefined
-              }
-              onSuccess={() => setOpen(false)}
+              flowContext={flowContext}
+              onSuccess={() => {
+                if (action.kind === "mos") {
+                  setView("mos_success");
+                  return;
+                }
+                setOpen(false);
+              }}
             />
           </div>
+          )}
         </DialogContent>
       </Dialog>
     </div>

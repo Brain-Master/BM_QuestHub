@@ -54,6 +54,22 @@ function optionalBool() {
   }, z.boolean().optional());
 }
 
+function optionalRegistrationChannel() {
+  return z.preprocess((v) => {
+    if (v === undefined || v === null) return undefined;
+    if (typeof v !== "string") return v;
+    const t = v.trim().toLowerCase();
+    if (!t) return undefined;
+    if (["mos", "mos.ru", "mos_ru", "mosru", "моссру", "мосру"].includes(t)) {
+      return "mos_ru";
+    }
+    if (["brainmaster", "bm", "direct", "direct_bm", "напрямую"].includes(t)) {
+      return "brainmaster";
+    }
+    return t;
+  }, z.enum(["mos_ru", "brainmaster"]).optional());
+}
+
 function optionalPercent() {
   return z.preprocess((v) => {
     if (v === undefined || v === null) return undefined;
@@ -91,6 +107,8 @@ export const sheetRowSchema = z.object({
   enrolled: optionalIntNonneg(),
   status: z.string().min(1),
   notes: z.string().optional(),
+  registration_channel: optionalRegistrationChannel(),
+  allow_preliminary_registration: optionalBool(),
   display_title: z.string().optional(),
   description: z.string().optional(),
   tags: z.string().optional(),

@@ -234,6 +234,8 @@ export function ScheduleTariffList({
           note: item.formatNote,
           ageLabel: item.commonAgeLabel,
           mosRuCode: item.mosRuCode,
+          registrationChannel: item.registrationChannel,
+          allowPreliminaryRegistration: item.allowPreliminaryRegistration,
           bookingMode: item.bookingMode,
         },
       ];
