@@ -79,8 +79,10 @@ function normalizeSort(value: string | null): SitesSortValue {
     "name-desc",
     "activity-desc",
     "activity-asc",
-    "location-asc",
-    "location-desc",
+    "address-asc",
+    "address-desc",
+    "metro-asc",
+    "metro-desc",
   ];
   return allowed.includes(value as SitesSortValue)
     ? (value as SitesSortValue)
@@ -89,6 +91,10 @@ function normalizeSort(value: string | null): SitesSortValue {
 
 function normalizeView(value: string | null): SitesViewMode {
   return value === "list" || value === "map" ? value : DEFAULT_VIEW;
+}
+
+function normalizeSearch(value: string | null): string {
+  return value?.trim().toLocaleLowerCase("ru") ?? "";
 }
 
 function getInitials(name: string): string {
@@ -104,22 +110,66 @@ function getInitials(name: string): string {
     .toUpperCase();
 }
 
+function getPrimaryAddress(site: SiteScopeCard): string {
+  return site.campuses[0]?.address ?? site.locationLabel;
+}
+
+function getPrimaryMetro(site: SiteScopeCard): string {
+  return (
+    site.campuses.find((campus) => campus.metro && campus.metro !== "—")?.metro ??
+    "Метро уточняется"
+  );
+}
+
 function compareSites(a: SiteScopeCard, b: SiteScopeCard, sort: SitesSortValue) {
   if (sort === "name-asc") return a.name.localeCompare(b.name, "ru", { numeric: true });
   if (sort === "name-desc") return b.name.localeCompare(a.name, "ru", { numeric: true });
   if (sort === "activity-asc") return a.activityScore - b.activityScore;
   if (sort === "activity-desc") return b.activityScore - a.activityScore;
-  if (sort === "location-asc") {
-    return a.locationLabel.localeCompare(b.locationLabel, "ru", { numeric: true });
+  if (sort === "address-asc") {
+    return getPrimaryAddress(a).localeCompare(getPrimaryAddress(b), "ru", { numeric: true });
   }
-  return b.locationLabel.localeCompare(a.locationLabel, "ru", { numeric: true });
+  if (sort === "address-desc") {
+    return getPrimaryAddress(b).localeCompare(getPrimaryAddress(a), "ru", { numeric: true });
+  }
+  if (sort === "metro-asc") {
+    return getPrimaryMetro(a).localeCompare(getPrimaryMetro(b), "ru", { numeric: true });
+  }
+  return getPrimaryMetro(b).localeCompare(getPrimaryMetro(a), "ru", { numeric: true });
 }
 
-function LogoMark({ site }: { site: SiteScopeCard }) {
+function siteMatchesQuery(site: SiteScopeCard, query: string): boolean {
+  if (!query) return true;
+
+  const searchable = [
+    site.name,
+    site.locationLabel,
+    site.locationSummary,
+    site.cityLabel,
+    site.district,
+    ...site.campuses.flatMap((campus) => [
+      campus.name,
+      campus.address,
+      campus.metro,
+      campus.district,
+    ]),
+  ];
+
+  return searchable.some((value) => value?.toLocaleLowerCase("ru").includes(query));
+}
+
+function LogoMark({ site, compact = false }: { site: SiteScopeCard; compact?: boolean }) {
   const showImage = site.logoUrl?.startsWith("/");
 
   return (
-    <div className="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white p-1.5 shadow-lg ring-1 ring-white/40 sm:size-16 sm:p-2">
+    <div
+      className={cn(
+        "flex shrink-0 items-center justify-center overflow-hidden bg-white ring-1 ring-white/40",
+        compact
+          ? "size-14 rounded-2xl p-1.5 shadow-md sm:size-16"
+          : "size-12 rounded-2xl p-1.5 shadow-lg sm:size-16 sm:p-2",
+      )}
+    >
       {showImage && site.logoUrl ? (
         <Image
           src={site.logoUrl}
@@ -129,7 +179,12 @@ function LogoMark({ site }: { site: SiteScopeCard }) {
           className="size-full object-contain"
         />
       ) : (
-        <span className="font-heading font-semibold text-base text-slate-950 sm:text-lg">
+        <span
+          className={cn(
+            "font-heading font-semibold text-slate-950",
+            compact ? "text-lg sm:text-xl" : "text-base sm:text-lg",
+          )}
+        >
           {getInitials(site.name)}
         </span>
       )}
@@ -155,6 +210,26 @@ function SiteHeaderMeta({
         </span>
       ) : null}
       {site.district ? <span className="normal-case">{site.district}</span> : null}
+    </p>
+  );
+}
+
+function SiteListHeaderMeta({
+  site,
+  showCityInHeader,
+}: {
+  site: SiteScopeCard;
+  showCityInHeader: boolean;
+}) {
+  if (!showCityInHeader && !site.district) return null;
+
+  return (
+    <p className="flex flex-wrap items-center gap-x-1.5 text-muted-foreground text-xs">
+      {showCityInHeader ? (
+        <span className="font-medium uppercase tracking-[0.12em]">{site.cityLabel}</span>
+      ) : null}
+      {showCityInHeader && site.district ? <span aria-hidden>·</span> : null}
+      {site.district ? <span>{site.district}</span> : null}
     </p>
   );
 }
@@ -250,6 +325,78 @@ function LocationBlock({ site }: { site: SiteScopeCard }) {
   );
 }
 
+function SiteListLocation({ site }: { site: SiteScopeCard }) {
+  if (site.campusCount === 1) {
+    const campus = site.campuses[0];
+    if (!campus) return null;
+
+    return (
+      <div className="flex min-w-0 gap-1.5 text-sm">
+        <MapPin className="mt-0.5 size-3.5 shrink-0 text-primary" aria-hidden />
+        <p className="min-w-0 text-muted-foreground leading-snug">
+          <span className="font-medium text-foreground">{campus.address}</span>
+          {campus.metro && campus.metro !== "—" ? (
+            <>
+              <span aria-hidden> · </span>
+              <MetroLabel metro={campus.metro} className="inline-flex" />
+            </>
+          ) : null}
+        </p>
+      </div>
+    );
+  }
+
+  const distinctDistricts = new Set(
+    site.campuses.map((campus) => campus.district).filter(Boolean),
+  );
+  const showDistrictPerCampus = distinctDistricts.size > 1;
+
+  return (
+    <details className="group rounded-xl border border-white/10 bg-black/10 px-2.5 py-1.5 text-sm">
+      <summary className="flex cursor-pointer list-none items-start justify-between gap-3 marker:hidden">
+        <span className="flex min-w-0 gap-2">
+          <MapPin className="mt-0.5 size-3.5 shrink-0 text-primary" aria-hidden />
+          <span className="min-w-0 font-medium text-foreground leading-snug">
+            {site.locationSummary}
+          </span>
+        </span>
+        <span className="shrink-0 text-muted-foreground text-xs transition group-open:rotate-180" aria-hidden>
+          ↓
+        </span>
+      </summary>
+      <div className="mt-1.5 grid gap-1.5 border-white/10 border-t pt-1.5">
+        {site.campuses.map((campus) => {
+          const showTransit = Boolean(
+            (campus.metro && campus.metro !== "—") ||
+              (showDistrictPerCampus && campus.district),
+          );
+
+          return (
+            <div key={campus.slug} className="rounded-lg bg-white/[0.04] px-2.5 py-2">
+              <p className="font-medium text-foreground text-sm leading-snug">{campus.name}</p>
+              <p className="mt-0.5 text-muted-foreground text-xs leading-snug">{campus.address}</p>
+              {showTransit ? (
+                <p className="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-muted-foreground text-xs leading-snug">
+                  <MetroLabel metro={campus.metro} />
+                  {campus.metro &&
+                  campus.metro !== "—" &&
+                  showDistrictPerCampus &&
+                  campus.district ? (
+                    <span aria-hidden>·</span>
+                  ) : null}
+                  {showDistrictPerCampus && campus.district ? (
+                    <span>{campus.district}</span>
+                  ) : null}
+                </p>
+              ) : null}
+            </div>
+          );
+        })}
+      </div>
+    </details>
+  );
+}
+
 function SiteStats({ site }: { site: SiteScopeCard }) {
   return (
     <div className="grid grid-cols-2 gap-2 sm:gap-3">
@@ -267,6 +414,30 @@ function SiteStats({ site }: { site: SiteScopeCard }) {
         <p className="mt-0.5 text-muted-foreground text-xs sm:mt-1">групп</p>
         <p className="text-muted-foreground/80 text-[11px]">открыто</p>
       </div>
+    </div>
+  );
+}
+
+function SiteListStats({ site }: { site: SiteScopeCard }) {
+  const stats = [
+    { value: site.courseCount, label: "курсов", hint: "проводится" },
+    { value: site.shiftCount, label: "групп", hint: "открыто" },
+  ];
+
+  return (
+    <div className="flex flex-wrap gap-1.5">
+      {stats.map((stat) => (
+        <div
+          key={stat.hint}
+          className="inline-flex items-baseline gap-1.5 rounded-full border border-white/10 bg-white/[0.05] px-2.5 py-0.5 text-xs"
+        >
+          <span className="font-heading font-semibold text-foreground tabular-nums text-base leading-none">
+            {stat.value}
+          </span>
+          <span className="text-muted-foreground">{stat.label}</span>
+          <span className="text-muted-foreground/70">{stat.hint}</span>
+        </div>
+      ))}
     </div>
   );
 }
@@ -297,6 +468,71 @@ function SiteActions({ site }: { site: SiteScopeCard }) {
   );
 }
 
+function SiteListActions({ site }: { site: SiteScopeCard }) {
+  return (
+    <div className="grid grid-cols-2 gap-1.5 md:grid-cols-1">
+      <Link
+        href={`/sites/${site.slug}/agenda`}
+        className={cn(buttonVariants({ variant: "default", size: "sm" }), "gap-2")}
+        onClick={() => rememberSite(site)}
+      >
+        <CalendarDays className="size-4" aria-hidden />
+        Расписание
+      </Link>
+      <Link
+        href={`/sites/${site.slug}/catalog`}
+        className={cn(
+          buttonVariants({ variant: "outline", size: "sm" }),
+          "gap-2 border-white/10 bg-transparent hover:bg-white/5",
+        )}
+        onClick={() => rememberSite(site)}
+      >
+        <Grid2X2 className="size-4" aria-hidden />
+        Доступные курсы
+      </Link>
+    </div>
+  );
+}
+
+function SiteListCard({
+  site,
+  showCityInHeader,
+}: {
+  site: SiteScopeCard;
+  showCityInHeader: boolean;
+}) {
+  return (
+    <article className="group overflow-hidden rounded-2xl border border-white/10 bg-card/55 shadow-lg backdrop-blur-md transition hover:-translate-y-0.5 hover:border-white/15 hover:shadow-xl">
+      <div className="grid gap-2.5 p-2.5 md:grid-cols-[minmax(0,1fr)_12.5rem] md:items-center md:p-3">
+        <div className="flex min-w-0 gap-2.5">
+          <div className="relative flex w-20 shrink-0 self-stretch overflow-hidden rounded-2xl bg-gradient-to-br from-violet-700/80 via-indigo-700/65 to-cyan-700/60 p-1.5 sm:w-24">
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_25%_20%,rgba(255,255,255,0.22),transparent_42%)]"
+            />
+            <div className="relative flex w-full items-center justify-center">
+              <LogoMark site={site} compact />
+            </div>
+          </div>
+
+          <div className="grid min-w-0 flex-1 gap-1.5 py-0.5">
+            <div className="min-w-0">
+              <SiteListHeaderMeta site={site} showCityInHeader={showCityInHeader} />
+              <h3 className="font-heading text-lg font-semibold text-foreground leading-tight">
+                {site.name}
+              </h3>
+            </div>
+            <SiteListLocation site={site} />
+            <SiteListStats site={site} />
+          </div>
+        </div>
+
+        <SiteListActions site={site} />
+      </div>
+    </article>
+  );
+}
+
 function SiteCard({
   site,
   view,
@@ -306,12 +542,13 @@ function SiteCard({
   view: SitesViewMode;
   showCityInHeader: boolean;
 }) {
+  if (view === "list") {
+    return <SiteListCard site={site} showCityInHeader={showCityInHeader} />;
+  }
+
   return (
     <article
-      className={cn(
-        "group flex min-h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-card/55 shadow-lg backdrop-blur-md transition hover:-translate-y-0.5 hover:border-white/15 hover:shadow-xl",
-        view === "list" && "md:grid md:grid-cols-[minmax(0,1fr)_18rem] md:items-stretch",
-      )}
+      className="group flex min-h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-card/55 shadow-lg backdrop-blur-md transition hover:-translate-y-0.5 hover:border-white/15 hover:shadow-xl"
     >
       <div className="relative overflow-hidden bg-gradient-to-br from-violet-700/80 via-indigo-700/65 to-cyan-700/60 p-3.5 sm:p-5">
         <div
@@ -384,6 +621,8 @@ function SitesListSection({
   const searchParams = useSearchParams();
   const sort = normalizeSort(searchParams.get("sort"));
   const view = normalizeView(searchParams.get("view"));
+  const query = searchParams.get("q")?.trim() ?? "";
+  const normalizedQuery = normalizeSearch(query);
   const selectedCityLabel = cityCards.find((item) => item.slug === city)?.label;
   const showAllCitiesLink = cityCards.length > 1;
 
@@ -391,8 +630,9 @@ function SitesListSection({
     () =>
       sites
         .filter((site) => site.city === city)
+        .filter((site) => siteMatchesQuery(site, normalizedQuery))
         .sort((a, b) => compareSites(a, b, sort)),
-    [city, sites, sort],
+    [city, normalizedQuery, sites, sort],
   );
   const mapEnabled = visibleSites.some(siteHasMapLocation);
   const showCityInHeader = cityCards.length > 1;
@@ -443,6 +683,7 @@ function SitesListSection({
       <SitesPageToolbar
         cityOptions={cityOptions}
         city={city}
+        query={query}
         sort={sort}
         view={view}
         mapEnabled={mapEnabled}
@@ -457,8 +698,8 @@ function SitesListSection({
       ) : (
         <div
           className={cn(
-            "grid gap-6",
-            view === "grid" ? "sm:grid-cols-2 lg:grid-cols-3" : "grid-cols-1",
+            "grid",
+            view === "grid" ? "gap-6 sm:grid-cols-2 lg:grid-cols-3" : "grid-cols-1 gap-3",
           )}
         >
           {visibleSites.map((site) => (
