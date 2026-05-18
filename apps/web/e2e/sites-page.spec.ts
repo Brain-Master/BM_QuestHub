@@ -8,14 +8,18 @@ test.describe("Sites page", () => {
       page.getByRole("heading", { name: /Выберите (площадку|город)|Площадки ·/ }).first(),
     ).toBeVisible();
     await expect(page.getByLabel("Город")).toHaveCount(0);
+    await expect(page.getByLabel("Тип")).toHaveCount(0);
     await expect(page.getByLabel("Поиск")).toBeVisible();
     await expect(page.getByRole("button", { name: /По названию/ })).toBeVisible();
     await expect(page.getByRole("button", { name: "Список" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Сбросить" })).toBeHidden();
+    await expect(page.getByLabel("Цвета площадок")).toHaveCount(0);
 
     await page.getByRole("button", { name: "Список" }).click();
     await expect(page).toHaveURL(/view=list/);
     await page.getByLabel("Поиск").fill("Ясенево");
     await expect(page).toHaveURL(/q=%D0%AF%D1%81%D0%B5%D0%BD%D0%B5%D0%B2%D0%BE/);
+    await expect(page.getByRole("button", { name: "Сбросить" })).toBeVisible();
     await expect(page.getByText("Школа №2103").first()).toBeVisible();
     await page.getByRole("button", { name: /По названию/ }).click();
     await expect(page).toHaveURL(/sort=name-asc/);
@@ -38,11 +42,39 @@ test.describe("Sites page", () => {
     await expect(page.getByRole("button", { name: "Приблизить карту" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Отдалить карту" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Сброс" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Показать моё местоположение" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Открыть карту на весь экран" })).toBeVisible();
+    await page.getByRole("button", { name: /Фильтры/ }).click();
+    await expect(page.getByLabel("Цвета площадок")).toBeVisible();
     await expect(page.getByRole("complementary")).toBeVisible();
+    await expect(page.getByText(/найдено на карте из/)).toBeVisible();
     await expect(
       page.getByText("Статичная WebP-подложка, интерактивные точки"),
     ).toHaveCount(0);
+  });
+
+  test("keeps the map visible when map filters find no sites", async ({ page }) => {
+    await page.goto("/sites?view=map");
+
+    await page.getByRole("button", { name: /Фильтры/ }).click();
+    await page.getByLabel("Поиск").fill("нет такой площадки");
+    await expect(page).toHaveURL(/q=/);
+    await expect(
+      page.getByRole("img", { name: "Кибер-карта Москвы с площадками BrainMaster" }),
+    ).toBeVisible();
+    await expect(page.getByRole("button", { name: /Выбрать площадку/ })).toHaveCount(0);
+    await expect(page.getByText(/По текущим фильтрам площадки не найдены/)).toBeVisible();
+    await expect(page.getByRole("button", { name: "Сбросить фильтры" })).toBeVisible();
+  });
+
+  test("toggles site color mode for map points", async ({ page }) => {
+    await page.goto("/sites?view=map");
+
+    await page.getByRole("button", { name: /Фильтры/ }).click();
+    await page.getByLabel("Цвета площадок").click();
+    await expect(page).toHaveURL(/mapColors=site/);
+    await page.getByLabel("Цвета площадок").click();
+    await expect(page).not.toHaveURL(/mapColors=site/);
   });
 
   test("selects a map pin before opening the schedule", async ({ page }) => {
@@ -52,7 +84,25 @@ test.describe("Sites page", () => {
     await pin.click();
 
     await expect(page).toHaveURL(/view=map/);
-    await expect(page.getByText("Выберите площадку на карте или в списке.")).toHaveCount(0);
+    await expect(
+      page.getByRole("link", { name: "Посмотреть расписание площадки" }),
+    ).toBeVisible();
+    await page.getByRole("button", { name: "Скрыть" }).click();
+    await expect(
+      page.getByRole("link", { name: "Посмотреть расписание площадки" }),
+    ).toHaveCount(0);
+    await pin.click();
+    await expect(
+      page.getByRole("link", { name: "Посмотреть расписание площадки" }),
+    ).toBeVisible();
+    await page.getByTestId("sites-map-frame").click({
+      position: { x: 12, y: 12 },
+      force: true,
+    });
+    await expect(
+      page.getByRole("link", { name: "Посмотреть расписание площадки" }),
+    ).toHaveCount(0);
+    await pin.click();
     await expect(
       page.getByRole("link", { name: "Посмотреть расписание площадки" }),
     ).toBeVisible();
@@ -84,6 +134,11 @@ test.describe("Sites page", () => {
     ).toBeVisible();
     await expect(page.getByLabel("Экспорт координат карты")).toHaveValue(
       /SITE_MAP_POINTS/,
+    );
+    await expect(page.getByLabel("Экспорт координат карты")).toHaveValue(/:/);
+    await page.getByRole("button", { name: "Geo-точки" }).click();
+    await expect(page.getByLabel("Экспорт geo-точек карты")).toHaveValue(
+      /MAP_GEO_CONTROL_POINTS/,
     );
   });
 

@@ -7,17 +7,19 @@ import { useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 
 import { CitySelectionGrid } from "@/components/city-selection-grid";
+import { MetroLabel } from "@/components/metro-label";
 import { buttonVariants } from "@/components/ui/button";
 import {
   SitesPageToolbar,
   type CityOption,
+  type SitesMapColorMode,
   type SitesTypeFilterValue,
   type SitesSortValue,
   type SitesViewMode,
   type SiteTypeOption,
 } from "@/components/sites-page-toolbar";
 import { SitesMapSchematic } from "@/components/sites-map-schematic";
-import { siteHasMapLocation } from "@/lib/sites/map-projection";
+import { positionSitesOnMap, siteHasMapLocation } from "@/lib/sites/map-projection";
 import { PREFERRED_SCHOOL_STORAGE_KEY } from "@/lib/preferred-school";
 import type { CityCard } from "@/lib/sites/city-card";
 import { toCityOptions } from "@/lib/sites/city-card";
@@ -34,42 +36,6 @@ const DEFAULT_VIEW: SitesViewMode = "grid";
 const TYPE_LABELS: Record<SiteScopeCard["type"], string> = {
   school: "Школы-партнёры",
   bm_base: "Базы BrainMaster",
-};
-
-const METRO_LINES_BY_STATION: Record<
-  string,
-  { number: string; name: string; color: string }
-> = {
-  Беляево: {
-    number: "6",
-    name: "Калужско-Рижская линия",
-    color: "#F07E24",
-  },
-  "Верхние Лихоборы": {
-    number: "10",
-    name: "Люблинско-Дмитровская линия",
-    color: "#BED12C",
-  },
-  Орехово: {
-    number: "2",
-    name: "Замоскворецкая линия",
-    color: "#4FB04F",
-  },
-  Ясенево: {
-    number: "6",
-    name: "Калужско-Рижская линия",
-    color: "#F07E24",
-  },
-  "Юго-Западная": {
-    number: "1",
-    name: "Сокольническая линия",
-    color: "#E42313",
-  },
-  "Народное Ополчение": {
-    number: "11",
-    name: "Большая кольцевая линия",
-    color: "#82C0C0",
-  },
 };
 
 function rememberSite(site: SiteScopeCard) {
@@ -97,6 +63,10 @@ function normalizeSort(value: string | null): SitesSortValue {
 
 function normalizeView(value: string | null): SitesViewMode {
   return value === "list" || value === "map" ? value : DEFAULT_VIEW;
+}
+
+function normalizeMapColorMode(value: string | null): SitesMapColorMode {
+  return value === "site" ? "site" : "default";
 }
 
 function normalizeType(
@@ -248,28 +218,6 @@ function SiteListHeaderMeta({
       {showCityInHeader && site.district ? <span aria-hidden>·</span> : null}
       {site.district ? <span>{site.district}</span> : null}
     </p>
-  );
-}
-
-function MetroLabel({ metro, className }: { metro?: string; className?: string }) {
-  if (!metro || metro === "—") return null;
-
-  const line = METRO_LINES_BY_STATION[metro];
-
-  return (
-    <span className={cn("inline-flex items-center gap-1.5", className)}>
-      {line ? (
-        <span
-          aria-label={line.name}
-          title={line.name}
-          className="inline-flex size-4 shrink-0 items-center justify-center rounded-full font-semibold text-[10px] text-white leading-none"
-          style={{ backgroundColor: line.color }}
-        >
-          {line.number}
-        </span>
-      ) : null}
-      <span>{metro}</span>
-    </span>
   );
 }
 
@@ -638,6 +586,7 @@ function SitesListSection({
   const searchParams = useSearchParams();
   const sort = normalizeSort(searchParams.get("sort"));
   const view = normalizeView(searchParams.get("view"));
+  const mapColorMode = normalizeMapColorMode(searchParams.get("mapColors"));
   const query = searchParams.get("q")?.trim() ?? "";
   const normalizedQuery = normalizeSearch(query);
   const selectedCityLabel = cityCards.find((item) => item.slug === city)?.label;
@@ -657,7 +606,8 @@ function SitesListSection({
       label: TYPE_LABELS[value],
     }));
   }, [citySitesWithOpenGroups]);
-  const type = normalizeType(searchParams.get("type"), typeOptions);
+  const toolbarTypeOptions = typeOptions.length > 1 ? typeOptions : [];
+  const type = typeOptions.length > 1 ? normalizeType(searchParams.get("type"), typeOptions) : "all";
   const visibleSites = useMemo(
     () =>
       citySitesWithOpenGroups
@@ -666,7 +616,12 @@ function SitesListSection({
         .sort((a, b) => compareSites(a, b, sort)),
     [citySitesWithOpenGroups, normalizedQuery, sort, type],
   );
-  const mapEnabled = visibleSites.some(siteHasMapLocation);
+  const mapSites = useMemo(
+    () => citySitesWithOpenGroups.filter(siteHasMapLocation),
+    [citySitesWithOpenGroups],
+  );
+  const mapPointCount = useMemo(() => positionSitesOnMap(mapSites).length, [mapSites]);
+  const mapEnabled = mapSites.length > 0;
   const showCityInHeader = cityCards.length > 1;
   const toolbar = (
     <SitesPageToolbar
@@ -677,7 +632,11 @@ function SitesListSection({
       view={view}
       mapEnabled={mapEnabled}
       type={type}
-      typeOptions={typeOptions}
+      typeOptions={toolbarTypeOptions}
+      totalCount={citySitesWithOpenGroups.length}
+      visibleCount={visibleSites.length}
+      mapPointCount={mapPointCount}
+      mapColorMode={mapColorMode}
       variant={view === "map" ? "mapPanel" : "default"}
     />
   );
@@ -725,7 +684,7 @@ function SitesListSection({
         </div>
       </div>
 
-      {visibleSites.length === 0 ? (
+      {visibleSites.length === 0 && view !== "map" ? (
         <div className="grid gap-4">
           {toolbar}
           <p className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 text-center text-muted-foreground text-sm">
@@ -733,7 +692,12 @@ function SitesListSection({
           </p>
         </div>
       ) : view === "map" ? (
-        <SitesMapSchematic sites={visibleSites} filterSlot={toolbar} />
+        <SitesMapSchematic
+          sites={mapSites}
+          visibleSites={visibleSites}
+          filterSlot={toolbar}
+          mapColorMode={mapColorMode}
+        />
       ) : (
         <div className="grid gap-4">
           {toolbar}

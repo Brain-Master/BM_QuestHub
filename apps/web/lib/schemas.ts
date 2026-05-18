@@ -12,6 +12,7 @@ export const venueSchema = z.object({
   city: z.string().optional(),
   district: z.string().optional(),
   logoUrl: z.string().optional(),
+  mapColor: z.string().regex(/^#[0-9a-fA-F]{6}$/).optional(),
   latitude: z.number().optional(),
   longitude: z.number().optional(),
   /** Показывать площадку на странице /sites. По умолчанию true. */

@@ -1,4 +1,8 @@
-import { SITE_MAP_POINTS } from "@/lib/sites/map-calibration";
+import {
+  MAP_GEO_CONTROL_POINTS,
+  SITE_MAP_POINTS,
+  type MapGeoControlPoint,
+} from "@/lib/sites/map-calibration";
 import type { SiteCampus, SiteScopeCard } from "@/lib/sites/scope-card";
 
 /** Bounding box for Moscow city proper (approx.), used for lat/lon → map percent. */
@@ -9,10 +13,25 @@ export const MOSCOW_MAP_BOUNDS = {
   south: 55.55,
 } as const;
 
+type MapGeoBounds = typeof MOSCOW_MAP_BOUNDS;
+
 export type MapPercentPoint = {
   x: number;
   y: number;
 };
+
+export type ProjectedUserLocation =
+  | {
+      status: "inside";
+      point: MapPercentPoint;
+      distanceKm: 0;
+    }
+  | {
+      status: "outside";
+      point: MapPercentPoint;
+      directionDegrees: number;
+      distanceKm: number;
+    };
 
 /** Metro anchors calibrated to apps/web/public/sites/moscow-cyber-map.webp. */
 const METRO_ANCHORS: Record<string, MapPercentPoint> = {
@@ -31,22 +50,12 @@ const FALLBACK_ANCHORS: MapPercentPoint[] = [
   { x: 48, y: 66 },
 ];
 
-export const MAP_COLLISION_OFFSETS = [
-  { x: 0, y: 0 },
-  { x: 3.5, y: -2.5 },
-  { x: -3.5, y: 2.5 },
-  { x: 3.5, y: 3.5 },
-  { x: -3.5, y: -3.5 },
-] as const;
-
 export function projectLatLonToPercent(
   latitude: number,
   longitude: number,
   bounds = MOSCOW_MAP_BOUNDS,
 ): MapPercentPoint {
-  const { west, east, north, south } = bounds;
-  const x = ((longitude - west) / (east - west)) * 100;
-  const y = ((north - latitude) / (north - south)) * 100;
+  const { x, y } = projectLatLonToRawPercent(latitude, longitude, bounds);
 
   return {
     x: clampPercent(x),
@@ -54,71 +63,232 @@ export function projectLatLonToPercent(
   };
 }
 
+export function projectGeoToMapPercent(
+  latitude: number,
+  longitude: number,
+  controlPoints: readonly MapGeoControlPoint[] = MAP_GEO_CONTROL_POINTS,
+): MapPercentPoint {
+  const affinePoint = projectGeoToAffinePercent(latitude, longitude, controlPoints);
+  return affinePoint ?? projectLatLonToPercent(latitude, longitude);
+}
+
+export function projectUserLocationOnMap(
+  latitude: number,
+  longitude: number,
+  bounds: MapGeoBounds = MOSCOW_MAP_BOUNDS,
+): ProjectedUserLocation {
+  if (isLatLonInsideBounds(latitude, longitude, bounds)) {
+    return {
+      status: "inside",
+      point: projectGeoToMapPercent(latitude, longitude),
+      distanceKm: 0,
+    };
+  }
+
+  const rawPoint = projectLatLonToRawPercent(latitude, longitude, bounds);
+  const edgePoint = {
+    x: clampPercent(rawPoint.x),
+    y: clampPercent(rawPoint.y),
+  };
+  const nearestLatitude = Math.min(bounds.north, Math.max(bounds.south, latitude));
+  const nearestLongitude = Math.min(bounds.east, Math.max(bounds.west, longitude));
+
+  return {
+    status: "outside",
+    point: edgePoint,
+    directionDegrees: Math.atan2(rawPoint.y - edgePoint.y, rawPoint.x - edgePoint.x) * (180 / Math.PI),
+    distanceKm: haversineDistanceKm(latitude, longitude, nearestLatitude, nearestLongitude),
+  };
+}
+
 export function clampPercent(value: number): number {
   return Math.min(92, Math.max(8, value));
 }
 
-function primaryCampus(site: SiteScopeCard): SiteCampus | undefined {
+function projectLatLonToRawPercent(
+  latitude: number,
+  longitude: number,
+  bounds: MapGeoBounds,
+): MapPercentPoint {
+  const { west, east, north, south } = bounds;
+  return {
+    x: ((longitude - west) / (east - west)) * 100,
+    y: ((north - latitude) / (north - south)) * 100,
+  };
+}
+
+function projectGeoToAffinePercent(
+  latitude: number,
+  longitude: number,
+  controlPoints: readonly MapGeoControlPoint[],
+): MapPercentPoint | null {
+  if (controlPoints.length < 3) return null;
+
+  const xCoefficients = solveAffineCoefficients(controlPoints, "x");
+  const yCoefficients = solveAffineCoefficients(controlPoints, "y");
+  if (!xCoefficients || !yCoefficients) return null;
+
+  return {
+    x: clampPercent(xCoefficients[0] * longitude + xCoefficients[1] * latitude + xCoefficients[2]),
+    y: clampPercent(yCoefficients[0] * longitude + yCoefficients[1] * latitude + yCoefficients[2]),
+  };
+}
+
+function solveAffineCoefficients(
+  controlPoints: readonly MapGeoControlPoint[],
+  target: "x" | "y",
+): [number, number, number] | null {
+  const matrix = [
+    [0, 0, 0],
+    [0, 0, 0],
+    [0, 0, 0],
+  ];
+  const vector = [0, 0, 0];
+
+  for (const point of controlPoints) {
+    const row = [point.longitude, point.latitude, 1];
+    for (let i = 0; i < 3; i += 1) {
+      vector[i] += row[i] * point[target];
+      for (let j = 0; j < 3; j += 1) {
+        matrix[i][j] += row[i] * row[j];
+      }
+    }
+  }
+
+  return solveLinearSystem3(matrix, vector);
+}
+
+function solveLinearSystem3(matrix: number[][], vector: number[]): [number, number, number] | null {
+  const augmented = matrix.map((row, index) => [...row, vector[index]]);
+
+  for (let pivot = 0; pivot < 3; pivot += 1) {
+    let pivotRow = pivot;
+    for (let row = pivot + 1; row < 3; row += 1) {
+      if (Math.abs(augmented[row][pivot]) > Math.abs(augmented[pivotRow][pivot])) {
+        pivotRow = row;
+      }
+    }
+
+    if (Math.abs(augmented[pivotRow][pivot]) < 1e-9) return null;
+
+    [augmented[pivot], augmented[pivotRow]] = [augmented[pivotRow], augmented[pivot]];
+
+    const pivotValue = augmented[pivot][pivot];
+    for (let column = pivot; column < 4; column += 1) {
+      augmented[pivot][column] /= pivotValue;
+    }
+
+    for (let row = 0; row < 3; row += 1) {
+      if (row === pivot) continue;
+      const factor = augmented[row][pivot];
+      for (let column = pivot; column < 4; column += 1) {
+        augmented[row][column] -= factor * augmented[pivot][column];
+      }
+    }
+  }
+
+  return [augmented[0][3], augmented[1][3], augmented[2][3]];
+}
+
+function isLatLonInsideBounds(
+  latitude: number,
+  longitude: number,
+  bounds: MapGeoBounds,
+): boolean {
   return (
-    site.campuses.find(
-      (campus) =>
-        typeof campus.latitude === "number" && typeof campus.longitude === "number",
-    ) ?? site.campuses[0]
+    longitude >= bounds.west &&
+    longitude <= bounds.east &&
+    latitude >= bounds.south &&
+    latitude <= bounds.north
   );
 }
 
-function primaryMetro(site: SiteScopeCard): string | undefined {
-  return site.campuses.find((campus) => campus.metro && campus.metro !== "—")?.metro;
+function haversineDistanceKm(
+  latitudeA: number,
+  longitudeA: number,
+  latitudeB: number,
+  longitudeB: number,
+): number {
+  const earthRadiusKm = 6371;
+  const toRadians = (value: number) => (value * Math.PI) / 180;
+  const deltaLatitude = toRadians(latitudeB - latitudeA);
+  const deltaLongitude = toRadians(longitudeB - longitudeA);
+  const a =
+    Math.sin(deltaLatitude / 2) ** 2 +
+    Math.cos(toRadians(latitudeA)) *
+      Math.cos(toRadians(latitudeB)) *
+      Math.sin(deltaLongitude / 2) ** 2;
+
+  return earthRadiusKm * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
-export function resolveSiteMapPoint(site: SiteScopeCard, index: number): MapPercentPoint {
-  const calibratedPoint = SITE_MAP_POINTS[site.slug as keyof typeof SITE_MAP_POINTS];
+function campusHasMapLocation(campus: SiteCampus): boolean {
+  return (
+    Boolean(campus.address) ||
+    Boolean(campus.metro && campus.metro !== "—") ||
+    (typeof campus.latitude === "number" && typeof campus.longitude === "number")
+  );
+}
+
+export function getCampusMapPointKey(site: SiteScopeCard, campus: SiteCampus): string {
+  return `${site.slug}:${campus.slug}`;
+}
+
+export function resolveCampusMapPoint(params: {
+  site: SiteScopeCard;
+  campus: SiteCampus;
+  index: number;
+}): MapPercentPoint {
+  const { site, campus, index } = params;
+  const campusKey = getCampusMapPointKey(site, campus);
+  const calibratedPoint =
+    SITE_MAP_POINTS[campusKey as keyof typeof SITE_MAP_POINTS] ??
+    SITE_MAP_POINTS[site.slug as keyof typeof SITE_MAP_POINTS];
   if (calibratedPoint) return calibratedPoint;
 
-  const campus = primaryCampus(site);
   if (
-    campus &&
     typeof campus.latitude === "number" &&
     typeof campus.longitude === "number"
   ) {
-    return projectLatLonToPercent(campus.latitude, campus.longitude);
+    return projectGeoToMapPercent(campus.latitude, campus.longitude);
   }
 
-  const metro = primaryMetro(site);
-  if (metro && METRO_ANCHORS[metro]) return METRO_ANCHORS[metro];
+  if (campus.metro && METRO_ANCHORS[campus.metro]) return METRO_ANCHORS[campus.metro];
 
   return FALLBACK_ANCHORS[index % FALLBACK_ANCHORS.length];
 }
 
-export type PositionedSiteOnMap = MapPercentPoint & {
+export type PositionedSiteOnMapPoint = MapPercentPoint & {
+  id: string;
+  calibrationKey: string;
   site: SiteScopeCard;
+  campus: SiteCampus;
 };
 
-export function positionSitesOnMap(sites: SiteScopeCard[]): PositionedSiteOnMap[] {
-  const pointCounts = new Map<string, number>();
+export function positionSitesOnMap(sites: SiteScopeCard[]): PositionedSiteOnMapPoint[] {
+  return sites.flatMap((site, siteIndex) =>
+    site.campuses.filter(campusHasMapLocation).map((campus, campusIndex) => {
+      const point = resolveCampusMapPoint({
+        site,
+        campus,
+        index: siteIndex + campusIndex,
+      });
+      const calibrationKey = getCampusMapPointKey(site, campus);
 
-  return sites.map((site, index) => {
-    const point = resolveSiteMapPoint(site, index);
-    const key = `${Math.round(point.x)}:${Math.round(point.y)}`;
-    const collisionIndex = pointCounts.get(key) ?? 0;
-    const offset = MAP_COLLISION_OFFSETS[collisionIndex % MAP_COLLISION_OFFSETS.length];
-    pointCounts.set(key, collisionIndex + 1);
-
-    return {
-      site,
-      x: clampPercent(point.x + offset.x),
-      y: clampPercent(point.y + offset.y),
-    };
-  });
+      return {
+        id: calibrationKey,
+        calibrationKey,
+        site,
+        campus,
+        x: clampPercent(point.x),
+        y: clampPercent(point.y),
+      };
+    }),
+  );
 }
 
 export function siteHasMapLocation(site: SiteScopeCard): boolean {
-  return site.campuses.some(
-    (campus) =>
-      Boolean(campus.address) ||
-      Boolean(campus.metro && campus.metro !== "—") ||
-      (typeof campus.latitude === "number" && typeof campus.longitude === "number"),
-  );
+  return site.campuses.some(campusHasMapLocation);
 }
 
 export const MOSCOW_MAP_ATTRIBUTION = {

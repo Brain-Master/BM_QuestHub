@@ -24,6 +24,7 @@ export type SiteScopeCard = {
   city: string;
   cityLabel: string;
   logoUrl?: string;
+  mapColor?: string;
   district?: string;
   locationLabel: string;
   locationSummary: string;
@@ -107,6 +108,7 @@ export function buildSiteScopeCards(params: {
         city,
         cityLabel: getCityLabel(city),
         logoUrl: primaryVenue?.logoUrl,
+        mapColor: primaryVenue?.mapColor,
         district: primaryVenue?.district,
         locationLabel: resolveLocationLabel(scope.venues),
         locationSummary: resolveLocationSummary(scope.venues, campusCount),

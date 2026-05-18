@@ -35,7 +35,7 @@ export default async function DevCalibratorPage() {
           Калибратор точек карты
         </h1>
         <p className="mt-2 max-w-3xl text-muted-foreground text-sm leading-relaxed">
-          Перетащите пины на WebP-подложке, затем скопируйте объект в
+          Перетащите пины площадок и корпусов на WebP-подложке, затем скопируйте объект в
           <code className="mx-1 rounded bg-white/10 px-1.5 py-0.5">
             apps/web/lib/sites/map-calibration.ts
           </code>

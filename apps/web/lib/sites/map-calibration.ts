@@ -8,3 +8,12 @@ export const SITE_MAP_POINTS = {
   "school-937": { x: 65, y: 82 },
   "bm-base-moscow": { x: 50, y: 40 },
 } as const satisfies Record<string, { x: number; y: number }>;
+
+export type MapGeoControlPoint = {
+  x: number;
+  y: number;
+  latitude: number;
+  longitude: number;
+};
+
+export const MAP_GEO_CONTROL_POINTS = [] as const satisfies readonly MapGeoControlPoint[];
