@@ -1,5 +1,15 @@
 import { z } from "zod";
 
+import {
+  isValidChildAgeYears,
+  isValidPersonName,
+  isValidRuPhone,
+  normalizeChildAge,
+  normalizePersonName,
+  normalizeRuPhone,
+  parseChildAgeYears,
+} from "@/lib/lead-form-fields";
+
 export const venueTypeSchema = z.enum(["school", "bm_base"]);
 
 export const venuePhotoSchema = z.object({
@@ -193,10 +203,31 @@ export type Quest = z.infer<typeof questSchema>;
 export const leadSchema = z.object({
   leadType: z.enum(["booking", "waitlist", "mos_assist"]).default("booking"),
   registrationChannel: registrationChannelSchema.optional(),
-  parentName: z.string().min(1, "Укажите имя"),
-  contact: z.string().min(5, "Телефон или email"),
-  childName: z.string().min(1, "Укажите имя ребёнка"),
-  childAge: z.string().min(1, "Укажите возраст или класс"),
+  parentName: z
+    .string()
+    .transform(normalizePersonName)
+    .refine(isValidPersonName, {
+      message: "Укажите имя и фамилию (от 2 символов, буквы)",
+    }),
+  contact: z
+    .string()
+    .refine(isValidRuPhone, {
+      message: "Введите номер в формате +7 (999) 000-00-00",
+    })
+    .transform((value) => normalizeRuPhone(value)!),
+  childName: z
+    .string()
+    .transform(normalizePersonName)
+    .refine(isValidPersonName, {
+      message: "Укажите имя и фамилию ребёнка (от 2 символов, буквы)",
+    }),
+  childAge: z
+    .string()
+    .refine((value) => {
+      const years = parseChildAgeYears(value);
+      return years !== null && isValidChildAgeYears(years);
+    }, { message: "Укажите возраст числом от 1 до 18" })
+    .transform((value) => normalizeChildAge(value)!),
   comment: z.string().optional(),
   consent: z
     .boolean()

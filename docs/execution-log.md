@@ -35,6 +35,28 @@ Use this template for each entry:
 
 ## Entries
 
+### 2026-05-19 16:00 UTC+3 - Lead Form Field Validation
+
+**Goal:** Validate booking form fields and auto-format Russian phone numbers before submit.
+
+**Completed:**
+- Added `lead-form-fields` helpers for phone mask, person names, and child age (1–18).
+- Tightened `leadSchema` with normalized phone output and field-specific error messages.
+- Wired phone `Controller` mask, `onTouched` validation, and numeric age input in `BookingForm`.
+
+**Changed Files:**
+- `apps/web/lib/lead-form-fields.ts`: phone/name/age helpers.
+- `apps/web/lib/schemas.ts`: stricter `leadSchema`.
+- `apps/web/components/booking-form.tsx`: mask and input constraints.
+- `apps/web/e2e/schedule-board-data.spec.ts`: schema validation tests.
+
+**Validation:**
+- `npm run lint` (apps/web)
+- `npx playwright test e2e/schedule-board-data.spec.ts --project=chromium`
+
+**Open Items:**
+- None.
+
 ### 2026-05-19 14:00 UTC+3 - Booking Form Success Feedback
 
 **Goal:** Fix consent label layout in booking modals and show a clear success screen instead of closing immediately after submit.

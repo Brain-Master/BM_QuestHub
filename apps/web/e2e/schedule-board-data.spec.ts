@@ -212,10 +212,10 @@ test.describe("Schedule Board data rules", () => {
   test("waitlist lead payload keeps an explicit lead type", () => {
     const parsed = leadSchema.parse({
       leadType: "waitlist",
-      parentName: "Тест",
-      contact: "+7 999 000-00-00",
-      childName: "Петя",
-      childAge: "8 лет",
+      parentName: "Иван Тестов",
+      contact: "+7 (999) 000-00-00",
+      childName: "Петя Иванов",
+      childAge: "8",
       comment: "Нет аллергий",
       consent: true,
       questSlug: "minecraft",
@@ -234,10 +234,10 @@ test.describe("Schedule Board data rules", () => {
     const parsed = leadSchema.parse({
       leadType: "mos_assist",
       registrationChannel: "mos_ru",
-      parentName: "Тест",
-      contact: "+7 999 000-00-00",
-      childName: "Петя",
-      childAge: "8 лет",
+      parentName: "Иван Тестов",
+      contact: "+7 (999) 000-00-00",
+      childName: "Петя Иванов",
+      childAge: "8",
       consent: true,
       questSlug: "minecraft",
       questTitle: "Minecraft",
@@ -248,5 +248,82 @@ test.describe("Schedule Board data rules", () => {
 
     expect(parsed.leadType).toBe("mos_assist");
     expect(parsed.registrationChannel).toBe("mos_ru");
+  });
+
+  test("lead schema normalizes a masked Russian phone", () => {
+    const parsed = leadSchema.parse({
+      leadType: "booking",
+      parentName: "Иван Иванов",
+      contact: "+7 (999) 000-00-00",
+      childName: "Петя Иванов",
+      childAge: "9",
+      consent: true,
+      questSlug: "minecraft",
+      questTitle: "Minecraft",
+      offerId: "test-offer",
+      venueSlug: "test-venue",
+      venueName: "Тестовая площадка",
+    });
+
+    expect(parsed.contact).toBe("+79990000000");
+    expect(parsed.childAge).toBe("9");
+    expect(parsed.parentName).toBe("Иван Иванов");
+  });
+
+  test("lead schema rejects incomplete phone numbers", () => {
+    const result = leadSchema.safeParse({
+      leadType: "booking",
+      parentName: "Иван Иванов",
+      contact: "+7 (999) 000",
+      childName: "Петя Иванов",
+      childAge: "9",
+      consent: true,
+      questSlug: "minecraft",
+      questTitle: "Minecraft",
+      offerId: "test-offer",
+      venueSlug: "test-venue",
+      venueName: "Тестовая площадка",
+    });
+
+    expect(result.success).toBe(false);
+  });
+
+  test("lead schema rejects invalid child ages", () => {
+    const base = {
+      leadType: "booking" as const,
+      parentName: "Иван Иванов",
+      contact: "+7 (999) 000-00-00",
+      childName: "Петя Иванов",
+      consent: true,
+      questSlug: "minecraft",
+      questTitle: "Minecraft",
+      offerId: "test-offer",
+      venueSlug: "test-venue",
+      venueName: "Тестовая площадка",
+    };
+
+    for (const childAge of ["два", "0", "19", ""]) {
+      expect(leadSchema.safeParse({ ...base, childAge }).success).toBe(false);
+    }
+  });
+
+  test("lead schema rejects invalid person names", () => {
+    const base = {
+      leadType: "booking" as const,
+      contact: "+7 (999) 000-00-00",
+      childName: "Петя Иванов",
+      childAge: "9",
+      consent: true,
+      questSlug: "minecraft",
+      questTitle: "Minecraft",
+      offerId: "test-offer",
+      venueSlug: "test-venue",
+      venueName: "Тестовая площадка",
+    };
+
+    expect(leadSchema.safeParse({ ...base, parentName: "А" }).success).toBe(false);
+    expect(leadSchema.safeParse({ ...base, parentName: "12345" }).success).toBe(
+      false,
+    );
   });
 });

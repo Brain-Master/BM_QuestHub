@@ -7,6 +7,7 @@ import { Controller, useForm } from "react-hook-form";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { formatRuPhoneInput, normalizePersonName } from "@/lib/lead-form-fields";
 import { submitLeadToYandex } from "@/lib/lead-submit-client";
 import {
   LEGAL_PERSONAL_DATA_CONSENT_PATH,
@@ -101,6 +102,7 @@ export function BookingForm({
     submitLabel ?? flowContext?.submitLabel ?? "Забронировать место";
   const form = useForm<LeadFormInput, unknown, LeadPayload>({
     resolver: zodResolver(leadSchema),
+    mode: "onTouched",
     defaultValues: {
       leadType: "booking",
       parentName: "",
@@ -161,7 +163,9 @@ export function BookingForm({
             placeholder="Иван Иванов"
             className={fieldInputClass}
             aria-invalid={Boolean(form.formState.errors.parentName)}
-            {...form.register("parentName")}
+            {...form.register("parentName", {
+              setValueAs: normalizePersonName,
+            })}
           />
           <FieldError message={form.formState.errors.parentName?.message} />
         </div>
@@ -170,15 +174,28 @@ export function BookingForm({
           <Label htmlFor="contact" className={fieldLabelClass}>
             Телефон <span className="text-white">*</span>
           </Label>
-          <Input
-            id="contact"
-            type="tel"
-            autoComplete="tel"
-            inputMode="tel"
-            placeholder="+7 (999) 000-00-00"
-            className={fieldInputClass}
-            aria-invalid={Boolean(form.formState.errors.contact)}
-            {...form.register("contact")}
+          <Controller
+            control={form.control}
+            name="contact"
+            render={({ field }) => (
+              <Input
+                id="contact"
+                type="tel"
+                autoComplete="tel"
+                inputMode="tel"
+                placeholder="+7 (999) 000-00-00"
+                className={fieldInputClass}
+                aria-invalid={Boolean(form.formState.errors.contact)}
+                value={field.value}
+                onChange={(event) => {
+                  field.onChange(formatRuPhoneInput(event.target.value));
+                }}
+                onBlur={() => {
+                  field.onBlur();
+                  void form.trigger("contact");
+                }}
+              />
+            )}
           />
           <FieldError message={form.formState.errors.contact?.message} />
         </div>
@@ -195,7 +212,9 @@ export function BookingForm({
             placeholder="Петя Иванов"
             className={fieldInputClass}
             aria-invalid={Boolean(form.formState.errors.childName)}
-            {...form.register("childName")}
+            {...form.register("childName", {
+              setValueAs: normalizePersonName,
+            })}
           />
           <FieldError message={form.formState.errors.childName?.message} />
         </div>
@@ -206,10 +225,14 @@ export function BookingForm({
           </Label>
           <Input
             id="childAge"
-            placeholder="Например: 9"
+            inputMode="numeric"
+            maxLength={2}
+            placeholder="9"
             className={fieldInputClass}
             aria-invalid={Boolean(form.formState.errors.childAge)}
-            {...form.register("childAge")}
+            {...form.register("childAge", {
+              setValueAs: (value) => value.replace(/\D/g, "").slice(0, 2),
+            })}
           />
           <FieldError message={form.formState.errors.childAge?.message} />
         </div>
