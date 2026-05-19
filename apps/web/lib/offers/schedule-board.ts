@@ -15,6 +15,8 @@ import type {
   ScheduleVariant,
   VenueOffer,
 } from "@/lib/schemas";
+import { formatVariantTimeLabel } from "@/lib/offers/sheet-field-parsers";
+import { joinProgramName } from "@/lib/offers/program-name";
 
 export type { ScheduleStatusVariant };
 
@@ -57,6 +59,8 @@ export type ScheduleCapacityView = {
 
 export type ScheduleBoardItem = AgendaOfferItem & {
   displayTitle: string;
+  programNameH1: string | null;
+  programNameH2: string | null;
   description: string;
   teacherName: string | null;
   tags: string[];
@@ -73,6 +77,7 @@ export type ScheduleBoardItem = AgendaOfferItem & {
   mosRuCode: string | null;
   registrationChannel: RegistrationChannel;
   allowPreliminaryRegistration: boolean;
+  allowWaitlistWhenSoldOut: boolean;
   variants: ScheduleBoardVariant[];
   media: {
     hero: ScheduleMediaImage | null;
@@ -117,18 +122,28 @@ export function isOfferAutoArchived(
   return now > endOfLocalDate(offer.endDate);
 }
 
+export function getOfferEnrolledTotal(
+  offer: Pick<VenueOffer, "enrolled" | "scheduleCard">,
+): number | undefined {
+  const fromVariants = (offer.scheduleCard?.variants ?? [])
+    .map((variant) => variant.enrolled)
+    .filter((n): n is number => typeof n === "number");
+  if (fromVariants.length > 0) {
+    return fromVariants.reduce((sum, n) => sum + n, 0);
+  }
+  return offer.enrolled;
+}
+
 export function getScheduleCapacity(
-  offer: Pick<VenueOffer, "enrolled" | "maxCapacity">,
+  offer: Pick<VenueOffer, "enrolled" | "maxCapacity" | "scheduleCard">,
 ): ScheduleCapacityView {
-  if (
-    typeof offer.enrolled !== "number" ||
-    typeof offer.maxCapacity !== "number"
-  ) {
+  const enrolled = getOfferEnrolledTotal(offer);
+  if (typeof enrolled !== "number" || typeof offer.maxCapacity !== "number") {
     return null;
   }
 
   const total = offer.maxCapacity;
-  const booked = Math.min(offer.enrolled, total);
+  const booked = Math.min(enrolled, total);
   const left = Math.max(total - booked, 0);
   const percent = Math.min(Math.round((booked / total) * 100), 100);
   const isSoldOut = left <= 0;
@@ -262,7 +277,11 @@ function getRegistrationChannel(offer: VenueOffer): RegistrationChannel {
 function getAllowPreliminaryRegistration(
   offer: VenueOffer,
   statusKey: EventStatusV2,
+  variant?: ScheduleVariant,
 ): boolean {
+  if (typeof variant?.allowPreliminaryRegistration === "boolean") {
+    return variant.allowPreliminaryRegistration;
+  }
   return (
     offer.scheduleCard?.allowPreliminaryRegistration === true ||
     statusKey === "planning" ||
@@ -270,15 +289,35 @@ function getAllowPreliminaryRegistration(
   );
 }
 
+function variantRegistrationChannel(
+  variant: ScheduleVariant,
+  offer: VenueOffer,
+): RegistrationChannel {
+  return (
+    variant.registrationChannel ??
+    offer.scheduleCard?.registrationChannel ??
+    (offer.mosBookingUrl ? "mos_ru" : "brainmaster")
+  );
+}
+
+function variantAllowPreliminary(
+  variant: ScheduleVariant,
+  offer: VenueOffer,
+  statusKey: EventStatusV2,
+): boolean {
+  return getAllowPreliminaryRegistration(offer, statusKey, variant);
+}
+
 function normalizeVariants(
   offer: VenueOffer,
   statusKey: EventStatusV2,
   statusLabel: ScheduleDisplayStatus,
 ): ScheduleBoardVariant[] {
-  const registrationChannel = getRegistrationChannel(offer);
-  const allowPreliminaryRegistration = getAllowPreliminaryRegistration(
-    offer,
-    statusKey,
+  const fallbackTime = formatVariantTimeLabel(
+    offer.startDate,
+    offer.endDate,
+    offer.startTime,
+    offer.endTime,
   );
   const source =
     offer.scheduleCard?.variants && offer.scheduleCard.variants.length > 0
@@ -287,30 +326,35 @@ function normalizeVariants(
           {
             id: offer.id,
             type: offer.scheduleCard?.formatType ?? offer.shiftLabel,
-            time:
-              offer.scheduleCard?.formatTime ??
-              `Пн-Пт, ${offer.startTime}–${offer.endTime}`,
+            time: fallbackTime,
             priceLabel: offer.priceLabel,
             note:
               offer.scheduleCard?.formatNote ??
               offer.includedNote ??
-              null,
-            ageLabel: offer.scheduleCard?.ageLabel ?? null,
-            mosRuCode: offer.scheduleCard?.mosRuCode ?? null,
+              undefined,
+            ageLabel: offer.scheduleCard?.ageLabel,
+            mosRuCode: offer.scheduleCard?.mosRuCode,
             mosBookingUrl: offer.mosBookingUrl ?? undefined,
+            registrationChannel: offer.scheduleCard?.registrationChannel,
+            allowPreliminaryRegistration:
+              offer.scheduleCard?.allowPreliminaryRegistration,
           },
         ];
 
   return source.map((variant) => ({
     id: variant.id,
     type: variant.type,
-    time: variant.time,
+    time: variant.time?.trim() ? variant.time : fallbackTime,
     priceLabel: variant.priceLabel,
     note: variant.note?.trim() ? variant.note : null,
     ageLabel: variant.ageLabel?.trim() ? variant.ageLabel : null,
     mosRuCode: variant.mosRuCode?.trim() ? variant.mosRuCode : null,
-    registrationChannel,
-    allowPreliminaryRegistration,
+    registrationChannel: variantRegistrationChannel(variant, offer),
+    allowPreliminaryRegistration: variantAllowPreliminary(
+      variant,
+      offer,
+      statusKey,
+    ),
     bookingMode: getScheduleBookingMode(offer, statusLabel, variant),
   }));
 }
@@ -346,10 +390,15 @@ export function buildScheduleBoardItem(
   const questHref = buildQuestHref(quest.slug, offer.id, schoolSlug);
   const dateLabel = card?.shortDate ?? formatScheduleDateRange(offer.startDate, offer.endDate);
   const primaryVariant = variants[0];
+  const programNameH1 = card?.programNameH1?.trim() || null;
+  const programNameH2 = card?.programNameH2?.trim() || null;
+  const joinedProgram = joinProgramName(programNameH1 ?? undefined, programNameH2 ?? undefined);
 
   return {
     ...item,
-    displayTitle: card?.displayTitle ?? quest.title,
+    displayTitle: card?.displayTitle ?? (joinedProgram || quest.title),
+    programNameH1,
+    programNameH2,
     description: card?.description ?? fallbackFromQuest,
     teacherName: card?.teacherName ?? null,
     timelineDateLabel:
@@ -357,7 +406,7 @@ export function buildScheduleBoardItem(
     shortDateLabel: dateLabel,
     shiftNumber: card?.shiftNumber ?? null,
     locationNote: card?.locationNote ?? null,
-    programFilterLabel: card?.programFilterLabel ?? quest.title,
+    programFilterLabel: card?.programFilterLabel ?? (joinedProgram || quest.title),
     commonAgeLabel,
     tags: card?.tags.length ? card.tags : [world?.name ?? quest.worldSlug],
     dateLabel,
@@ -370,6 +419,7 @@ export function buildScheduleBoardItem(
     allowPreliminaryRegistration:
       primaryVariant?.allowPreliminaryRegistration ??
       getAllowPreliminaryRegistration(offer, statusKey),
+    allowWaitlistWhenSoldOut: offer.scheduleCard?.allowWaitlistWhenSoldOut ?? false,
     variants,
     media: {
       hero:

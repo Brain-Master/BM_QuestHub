@@ -115,6 +115,8 @@ function scheduleItemMatchesQuery(item: ScheduleBoardItem, query: string): boole
 
   const haystack = [
     item.displayTitle,
+    item.programNameH1,
+    item.programNameH2,
     item.programFilterLabel,
     item.quest.title,
     item.world?.name,

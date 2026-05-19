@@ -2,9 +2,22 @@ import { fetchSheetValuesGrid as fetchGrid } from "@/lib/google/fetch-sheet-grid
 import { hotSheetConfig } from "@/lib/google/sheet-env";
 
 /**
- * Read hot schedule sheet (GOOGLE_SHEETS_HOT_* or legacy GOOGLE_SHEETS_SPREADSHEET_ID).
+ * Read hot schedule sheets (Группы + Форматы).
  */
+export async function fetchHotSheetGrids(): Promise<{
+  groups: string[][];
+  formats: string[][];
+}> {
+  const { spreadsheetId, ranges } = hotSheetConfig();
+  const [groups, formats] = await Promise.all([
+    fetchGrid({ spreadsheetId, range: ranges.groups }),
+    fetchGrid({ spreadsheetId, range: ranges.formats }),
+  ]);
+  return { groups, formats };
+}
+
+/** @deprecated use fetchHotSheetGrids */
 export async function fetchSheetValuesGrid(): Promise<string[][]> {
-  const { spreadsheetId, range } = hotSheetConfig();
-  return fetchGrid({ spreadsheetId, range });
+  const { formats } = await fetchHotSheetGrids();
+  return formats;
 }

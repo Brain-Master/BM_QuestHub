@@ -22,29 +22,40 @@ const COLD_ID =
   process.env.GOOGLE_SHEETS_COLD_SPREADSHEET_ID?.trim() ||
   "1fqeVC8BhjGWtOR20NhCUQuhwgchkCCzYsmiudpGE4jc";
 
-const HOT_HEADERS = [
-  "program_name",
+const HOT_GROUP_HEADERS = [
+  "shift_group_id",
+  "program_name_h1",
+  "program_name_h2",
   "quest_slug",
   "venue_slug",
   "start_date",
   "end_date",
-  "start_time",
-  "end_time",
-  "price",
   "school_name",
   "address",
   "status",
   "metro_station",
   "teacher",
-  "age_group",
+  "max_capacity",
+  "notes",
+  "description",
+  "tags",
+  "is_archived",
+  "allow_waitlist_when_sold_out",
+];
+
+const HOT_FORMAT_HEADERS = [
+  "shift_group_id",
+  "start_time",
+  "end_time",
+  "price",
+  "format_type",
+  "format_note",
+  "registration_channel",
+  "enrolled",
   "mos_ru_code",
   "mos_ru_link",
-  "max_capacity",
-  "enrolled",
-  "notes",
-  "registration_channel",
-  "display_title",
-  "description",
+  "age_group",
+  "allow_preliminary_registration",
 ];
 
 const COLD_SHEETS = {
@@ -173,8 +184,9 @@ async function writeRow(spreadsheetId, range, values, token) {
 
 async function main() {
   const token = await getAuthToken();
-  await ensureSheetTitles(HOT_ID, ["Расписание"], token);
-  await writeRow(HOT_ID, "'Расписание'!A1", HOT_HEADERS, token);
+  await ensureSheetTitles(HOT_ID, ["Группы", "Форматы"], token);
+  await writeRow(HOT_ID, "'Группы'!A1", HOT_GROUP_HEADERS, token);
+  await writeRow(HOT_ID, "'Форматы'!A1", HOT_FORMAT_HEADERS, token);
 
   await ensureSheetTitles(COLD_ID, Object.keys(COLD_SHEETS), token);
   for (const [title, headers] of Object.entries(COLD_SHEETS)) {

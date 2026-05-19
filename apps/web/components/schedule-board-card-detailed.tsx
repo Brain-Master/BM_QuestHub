@@ -10,6 +10,7 @@ import { ScheduleMedia } from "@/components/schedule-media";
 import { ScheduleStatusBadge } from "@/components/schedule-status-badge";
 import { ScheduleTariffList } from "@/components/schedule-tariff-list";
 import { Badge } from "@/components/ui/badge";
+import { ScheduleCardTitle } from "@/components/schedule-card-title";
 import type { ScheduleBoardItem } from "@/lib/offers/schedule-board";
 import { cn } from "@/lib/utils";
 
@@ -97,9 +98,10 @@ export function ScheduleBoardCardDetailed({
                 className="group/title inline-flex items-start gap-2 text-foreground transition hover:text-primary"
                 onClick={onNavigate}
               >
-                <h3 className="font-heading text-2xl font-semibold leading-tight tracking-tight sm:text-3xl">
-                  {item.displayTitle}
-                </h3>
+                <ScheduleCardTitle
+                  item={item}
+                  headingClassName="font-heading text-2xl font-semibold leading-tight tracking-tight sm:text-3xl"
+                />
                 <ArrowUpRight
                   className="mt-1 size-5 shrink-0 opacity-0 transition group-hover/title:opacity-100"
                   aria-hidden

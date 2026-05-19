@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
 
+import { placeVariantsInFooter } from "../components/schedule-board-card-compact";
 import {
   buildScheduleBoardItem,
   formatScheduleDateRange,
@@ -207,6 +208,60 @@ test.describe("Schedule Board data rules", () => {
 
     expect(boardItem.variants).toHaveLength(2);
     expect(boardItem.commonAgeLabel).toBe("6–13 лет");
+    expect(placeVariantsInFooter(boardItem.variants.length)).toBe(false);
+  });
+
+  test("three schedule card variants use compact footer placement", () => {
+    const item = offer({
+      scheduleCard: {
+        isArchived: false,
+        tags: [],
+        variants: [
+          {
+            id: "half",
+            type: "Интенсив (полдня)",
+            time: "Пн-Пт, 9:00 – 12:30",
+            priceLabel: "8 500 ₽",
+            ageLabel: "6–13 лет",
+          },
+          {
+            id: "full",
+            type: "Полный день",
+            time: "Пн-Пт, 8:00 – 18:00",
+            priceLabel: "14 000 ₽",
+            ageLabel: "6–13 лет",
+          },
+          {
+            id: "short",
+            type: "Короткий формат",
+            time: "Пн-Пт, 11:30 – 15:30",
+            priceLabel: "1 600 ₽",
+            ageLabel: "6–13 лет",
+          },
+        ],
+      },
+    });
+
+    const boardItem = buildScheduleBoardItem({
+      offer: item,
+      quest: {
+        slug: "test",
+        title: "Тестовая программа",
+        worldSlug: "test-world",
+        ageLabel: "6–13 лет",
+        tagline: "Тест",
+      },
+      venue: {
+        slug: "test-venue",
+        name: "Тестовая площадка",
+        type: "school",
+        address: "Тестовый адрес",
+      },
+      world: null,
+    });
+
+    expect(boardItem.variants).toHaveLength(3);
+    expect(placeVariantsInFooter(boardItem.variants.length)).toBe(true);
   });
 
   test("waitlist lead payload keeps an explicit lead type", () => {

@@ -2,7 +2,10 @@
 
 export type HotSheetConfig = {
   spreadsheetId: string;
-  range: string;
+  ranges: {
+    groups: string;
+    formats: string;
+  };
 };
 
 export type ColdSheetConfig = {
@@ -22,10 +25,11 @@ export function hotSheetConfig(): HotSheetConfig {
     process.env.GOOGLE_SHEETS_HOT_SPREADSHEET_ID?.trim() ||
     process.env.GOOGLE_SHEETS_SPREADSHEET_ID?.trim() ||
     DEFAULT_HOT_ID;
-  const range =
-    process.env.GOOGLE_SHEETS_HOT_RANGE?.trim() ||
-    process.env.GOOGLE_SHEETS_RANGE?.trim() ||
-    "'Расписание'!A:AZ";
+
+  const groups =
+    process.env.GOOGLE_SHEETS_HOT_RANGE_GROUPS?.trim() || "'Группы'!A:AZ";
+  const formats =
+    process.env.GOOGLE_SHEETS_HOT_RANGE_FORMATS?.trim() || "'Форматы'!A:AZ";
 
   if (!spreadsheetId) {
     throw new Error(
@@ -33,7 +37,7 @@ export function hotSheetConfig(): HotSheetConfig {
     );
   }
 
-  return { spreadsheetId, range };
+  return { spreadsheetId, ranges: { groups, formats } };
 }
 
 export function coldSheetConfig(): ColdSheetConfig {

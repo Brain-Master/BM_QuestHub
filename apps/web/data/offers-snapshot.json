@@ -1,11 +1,233 @@
 {
   "version": 1,
-  "generatedAt": "2026-05-19T13:11:23.200Z",
+  "generatedAt": "2026-05-19T22:52:46.413Z",
   "source": "google_sheet",
   "offersByQuest": {
+    "cyber-rhythm": [
+      {
+        "id": "sheet:cyber-rhythm:school-1517-narodnoe-opolchenie:2026-06-22:2026-06-26",
+        "venueSlug": "school-1517-narodnoe-opolchenie",
+        "shiftLabel": "КиберРитм + Minecraft: Пробуждение Стража · Школа №1517",
+        "startDate": "2026-06-22",
+        "endDate": "2026-06-26",
+        "startTime": "9:00",
+        "endTime": "12:45",
+        "dateRange": "22.06.2026 — 26.06.2026",
+        "daySchedule": "Ежедневно: 9:00–12:45",
+        "priceLabel": "35 000 ₽",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/842871",
+        "includedNote": "Формат интенсива. Контакт: Хмельков Д.А.\n\nВозраст: 6–13 лет\n\nКод карточки mos.ru: 2445194",
+        "sheetStatus": "Согласование",
+        "enrolled": 0,
+        "maxCapacity": 20,
+        "scheduleCard": {
+          "displayTitle": "КиберРитм + Minecraft: Пробуждение Стража",
+          "description": "Двойная смена! Формат 2 недель. Сначала мы пройдем полный путь инженера и соберем свою Bluetooth-колонку в \"КиберРитме\", а на второй неделе оживим умного Стража из Minecraft с датчиками движения!",
+          "teacherName": "Хмельков Даниил Антонович",
+          "tags": [
+            "Офлайн",
+            "Марафон (2 недели)"
+          ],
+          "programNameH1": "КиберРитм + Minecraft",
+          "programNameH2": "Пробуждение Стража",
+          "programFilterLabel": "КиберРитм + Minecraft: Пробуждение Стража",
+          "ageLabel": "6–13 лет",
+          "formatType": "Марафон (2 недели)",
+          "formatNote": "Две программы подряд (5 + 5 дней)",
+          "mosRuCode": "2445194",
+          "status": "Согласование",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": true,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": true,
+          "variants": [
+            {
+              "id": "school-1517-narodnoe-opolchenie:2026-06-22:марафон-2-недели",
+              "type": "Марафон (2 недели)",
+              "time": "Пн-Пт, 9:00 – 12:45",
+              "priceLabel": "35 000 ₽",
+              "note": "Две программы подряд (5 + 5 дней)",
+              "ageLabel": "6–13 лет",
+              "mosRuCode": "2445194",
+              "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/842871",
+              "enrolled": 0,
+              "registrationChannel": "mos_ru",
+              "allowPreliminaryRegistration": true
+            }
+          ]
+        }
+      },
+      {
+        "id": "sheet:cyber-rhythm:school-17-belyaevo:2026-06-22:2026-06-26",
+        "venueSlug": "school-17-belyaevo",
+        "shiftLabel": "КиберРитм: Инженерия Звука · Школа №17",
+        "startDate": "2026-06-22",
+        "endDate": "2026-06-26",
+        "startTime": "9:00",
+        "endTime": "13:00",
+        "dateRange": "22.06.2026 — 26.06.2026",
+        "daySchedule": "Ежедневно: 9:00–13:00",
+        "priceLabel": "17 500 ₽",
+        "mosBookingUrl": null,
+        "includedNote": "Формат интенсива.\n\nВозраст: 6–13 лет",
+        "sheetStatus": "Согласование",
+        "enrolled": 0,
+        "maxCapacity": 20,
+        "scheduleCard": {
+          "displayTitle": "КиберРитм: Инженерия Звука",
+          "description": "«КиберРитм» — музыку и гаджеты создаем сами! За 5 дней интенсива ваш ребенок пройдет полный путь инженера: от первых опытов со звуком до 3D-моделирования и сборки собственной Bluetooth-колонки! Мы освоим магию акустики, электронику и безопасную пайку. Превращаем любовь к гаджетам в реальные навыки!",
+          "teacherName": "Сидоренко Анастасия Михайловна",
+          "tags": [
+            "Офлайн",
+            "Инженерия Звука"
+          ],
+          "programNameH1": "КиберРитм",
+          "programNameH2": "Инженерия Звука",
+          "programFilterLabel": "КиберРитм: Инженерия Звука",
+          "ageLabel": "6–13 лет",
+          "formatType": "Интенсив (полдня)",
+          "formatNote": "Формат интенсива.",
+          "status": "Согласование",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": true,
+          "registrationChannel": "brainmaster",
+          "allowPreliminaryRegistration": true,
+          "variants": [
+            {
+              "id": "school-17-belyaevo:2026-06-22:интенсив-полдня",
+              "type": "Интенсив (полдня)",
+              "time": "Пн-Пт, 9:00 – 13:00",
+              "priceLabel": "17 500 ₽",
+              "note": "Формат интенсива.",
+              "ageLabel": "6–13 лет",
+              "enrolled": 0,
+              "registrationChannel": "brainmaster",
+              "allowPreliminaryRegistration": true
+            }
+          ]
+        }
+      },
+      {
+        "id": "sheet:cyber-rhythm:school-2103-yasenevo:2026-06-22:2026-06-26",
+        "venueSlug": "school-2103-yasenevo",
+        "shiftLabel": "КиберРитм: Инженерия Звука · Школа №2103",
+        "startDate": "2026-06-22",
+        "endDate": "2026-06-26",
+        "startTime": "8:00",
+        "endTime": "18:00",
+        "dateRange": "22.06.2026 — 26.06.2026",
+        "daySchedule": "Ежедневно: 8:00–18:00",
+        "priceLabel": "8 500 ₽",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/839055",
+        "includedNote": "Формат интенсива. Корпус ШО-3.\n\nВозраст: 6–13 лет\n\nКод карточки mos.ru: 2442453",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 0,
+        "maxCapacity": 20,
+        "scheduleCard": {
+          "displayTitle": "КиберРитм: Инженерия Звука",
+          "description": "«КиберРитм» — музыку и гаджеты создаем сами! За 5 дней интенсива ваш ребенок пройдет полный путь инженера: от первых опытов со звуком до 3D-моделирования и сборки собственной Bluetooth-колонки! Мы освоим магию акустики, электронику и безопасную пайку. Превращаем любовь к гаджетам в реальные навыки!",
+          "teacherName": "Любченко Виталий Владимирович",
+          "tags": [
+            "Офлайн",
+            "Инженерия Звука"
+          ],
+          "locationNote": "Корпус ШО-3",
+          "programNameH1": "КиберРитм",
+          "programNameH2": "Инженерия Звука",
+          "programFilterLabel": "КиберРитм: Инженерия Звука",
+          "ageLabel": "6–13 лет",
+          "formatType": "Интенсив (полдня)",
+          "formatNote": "Формат интенсива. Корпус ШО-3.",
+          "mosRuCode": "2442453",
+          "status": "Идёт набор",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": true,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "school-2103-yasenevo:2026-06-22:интенсив-полдня",
+              "type": "Интенсив (полдня)",
+              "time": "Пн-Пт, 9:00 – 12:30",
+              "priceLabel": "8 500 ₽",
+              "note": "Формат интенсива. Корпус ШО-3.",
+              "ageLabel": "6–13 лет",
+              "mosRuCode": "2442453",
+              "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/839055",
+              "enrolled": 0,
+              "registrationChannel": "mos_ru",
+              "allowPreliminaryRegistration": false
+            },
+            {
+              "id": "school-2103-yasenevo:2026-06-22:полный-день",
+              "type": "Полный день",
+              "time": "Пн-Пт, 8:00 – 18:00",
+              "priceLabel": "100 000 ₽",
+              "note": "Формат интенсива. Корпус ШО-3.",
+              "ageLabel": "6–13 лет",
+              "mosRuCode": "2442453",
+              "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/839055",
+              "enrolled": 0,
+              "registrationChannel": "mos_ru",
+              "allowPreliminaryRegistration": false
+            }
+          ]
+        }
+      },
+      {
+        "id": "sheet:cyber-rhythm:school-937-orekhovo:2026-06-22:2026-06-26",
+        "venueSlug": "school-937-orekhovo",
+        "shiftLabel": "КиберРитм: Инженерия Звука · Школа №937",
+        "startDate": "2026-06-22",
+        "endDate": "2026-06-26",
+        "startTime": "9:00",
+        "endTime": "12:30",
+        "dateRange": "22.06.2026 — 26.06.2026",
+        "daySchedule": "Ежедневно: 9:00–12:30",
+        "priceLabel": "8 500 ₽",
+        "mosBookingUrl": null,
+        "includedNote": "Формат интенсива.\n\nВозраст: 6–13 лет",
+        "sheetStatus": "Согласование",
+        "enrolled": 0,
+        "maxCapacity": 20,
+        "scheduleCard": {
+          "displayTitle": "КиберРитм: Инженерия Звука",
+          "description": "«КиберРитм» — музыку и гаджеты создаем сами! За 5 дней интенсива ваш ребенок пройдет полный путь инженера: от первых опытов со звуком до 3D-моделирования и сборки собственной Bluetooth-колонки! Мы освоим магию акустики, электронику и безопасную пайку. Превращаем любовь к гаджетам в реальные навыки!",
+          "teacherName": "Юдицкий Илья Игоревич",
+          "tags": [
+            "Офлайн",
+            "Инженерия Звука"
+          ],
+          "programNameH1": "КиберРитм",
+          "programNameH2": "Инженерия Звука",
+          "programFilterLabel": "КиберРитм: Инженерия Звука",
+          "ageLabel": "6–13 лет",
+          "formatType": "Интенсив (полдня)",
+          "formatNote": "Формат интенсива.",
+          "status": "Согласование",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": true,
+          "registrationChannel": "brainmaster",
+          "allowPreliminaryRegistration": true,
+          "variants": [
+            {
+              "id": "school-937-orekhovo:2026-06-22:интенсив-полдня",
+              "type": "Интенсив (полдня)",
+              "time": "Пн-Пт, 9:00 – 12:30",
+              "priceLabel": "8 500 ₽",
+              "note": "Формат интенсива.",
+              "ageLabel": "6–13 лет",
+              "enrolled": 0,
+              "registrationChannel": "brainmaster",
+              "allowPreliminaryRegistration": true
+            }
+          ]
+        }
+      }
+    ],
     "mekhvarium-laboratoriya-kineticheskih-monstrov": [
       {
-        "id": "sheet:mekhvarium-laboratoriya-kineticheskih-monstrov:school-1212-yasenevo:2026-06-01:2026-06-05:8:30",
+        "id": "sheet:mekhvarium-laboratoriya-kineticheskih-monstrov:school-1212-yasenevo:2026-06-01:2026-06-05",
         "venueSlug": "school-1212-yasenevo",
         "shiftLabel": "Мехвариум: Лаборатория Кинетических Монстров · Школа №1212",
         "startDate": "2026-06-01",
@@ -28,10 +250,11 @@
             "Офлайн",
             "Полный день"
           ],
+          "programNameH1": "Мехвариум",
+          "programNameH2": "Лаборатория Кинетических Монстров",
           "programFilterLabel": "Мехвариум: Лаборатория Кинетических Монстров",
           "ageLabel": "6–13 лет",
           "formatType": "Полный день",
-          "formatTime": "Пн-Пт, 8:30 – 16:30",
           "formatNote": "Питание: завтрак, обед, полдник",
           "mosRuCode": "2440640",
           "status": "Идёт набор",
@@ -41,218 +264,32 @@
           "allowPreliminaryRegistration": false,
           "variants": [
             {
-              "id": "school-1212-yasenevo:2026-06-01:8:30",
+              "id": "school-1212-yasenevo:2026-06-01:полный-день",
               "type": "Полный день",
               "time": "Пн-Пт, 8:30 – 16:30",
               "priceLabel": "15 300 ₽",
               "note": "Питание: завтрак, обед, полдник",
               "ageLabel": "6–13 лет",
               "mosRuCode": "2440640",
-              "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/840243"
+              "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/840243",
+              "enrolled": 0,
+              "registrationChannel": "mos_ru",
+              "allowPreliminaryRegistration": false
             }
           ]
         }
       },
       {
-        "id": "sheet:mekhvarium-laboratoriya-kineticheskih-monstrov:school-2103-yasenevo:2026-05-25:2026-05-29:9:00",
-        "venueSlug": "school-2103-yasenevo",
-        "shiftLabel": "Мехвариум: Лаборатория Кинетических Монстров · Школа №2103",
-        "startDate": "2026-05-25",
-        "endDate": "2026-05-29",
-        "startTime": "9:00",
-        "endTime": "12:30",
-        "dateRange": "25.05.2026 — 29.05.2026",
-        "daySchedule": "Ежедневно: 9:00–12:30",
-        "priceLabel": "8 500 ₽",
-        "mosBookingUrl": null,
-        "includedNote": "В приоритете 1 класс. Корпус ШО-4.\n\nВозраст: 6–13 лет",
-        "sheetStatus": "Идёт набор",
-        "enrolled": 0,
-        "maxCapacity": 20,
-        "scheduleCard": {
-          "displayTitle": "Мехвариум: Лаборатория Кинетических Монстров",
-          "description": "«Мехвариум: Лаборатория Кинетических Монстров» — создай своего шагающего монстра! Добро пожаловать в секретную лабораторию! За 5 дней ты станешь настоящим инженером-изобретателем. Мы будем собирать эпичных киборгов: соберем скелет с настоящими шестеренками, слепим мощные мышцы и наплавим непробиваемую 3D-броню! Ты сам оживишь своего киборга и заберешь его домой. Готов запустить реактор? Включайся!",
-          "teacherName": "Толмачова Василиса Владимировна",
-          "tags": [
-            "Офлайн",
-            "Инженерия"
-          ],
-          "locationNote": "Корпус ШО-4",
-          "programFilterLabel": "Мехвариум: Лаборатория Кинетических Монстров",
-          "ageLabel": "6–13 лет",
-          "formatType": "Интенсив (полдня)",
-          "formatTime": "Пн-Пт, 9:00 – 12:30",
-          "formatNote": "В приоритете 1 класс",
-          "status": "Идёт набор",
-          "isArchived": false,
-          "allowWaitlistWhenSoldOut": true,
-          "registrationChannel": "brainmaster",
-          "allowPreliminaryRegistration": false,
-          "variants": [
-            {
-              "id": "school-2103-yasenevo:2026-05-25:9:00",
-              "type": "Интенсив (полдня)",
-              "time": "Пн-Пт, 9:00 – 12:30",
-              "priceLabel": "8 500 ₽",
-              "note": "В приоритете 1 класс",
-              "ageLabel": "6–13 лет"
-            }
-          ]
-        }
-      },
-      {
-        "id": "sheet:mekhvarium-laboratoriya-kineticheskih-monstrov:school-2103-yasenevo:2026-06-01:2026-06-05:9:00",
-        "venueSlug": "school-2103-yasenevo",
-        "shiftLabel": "Мехвариум: Лаборатория Кинетических Монстров · Школа №2103",
-        "startDate": "2026-06-01",
-        "endDate": "2026-06-05",
-        "startTime": "9:00",
-        "endTime": "12:30",
-        "dateRange": "01.06.2026 — 05.06.2026",
-        "daySchedule": "Ежедневно: 9:00–12:30",
-        "priceLabel": "8 500 ₽",
-        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/841885",
-        "includedNote": "Формат интенсива. Корпус ШО-3.\n\nВозраст: 6–13 лет\n\nКод карточки mos.ru: 2444383",
-        "sheetStatus": "Идёт набор",
-        "enrolled": 0,
-        "maxCapacity": 20,
-        "scheduleCard": {
-          "displayTitle": "Мехвариум: Лаборатория Кинетических Монстров",
-          "description": "«Мехвариум: Лаборатория Кинетических Монстров» — создай своего шагающего монстра! Добро пожаловать в секретную лабораторию! За 5 дней ты станешь настоящим инженером-изобретателем. Мы будем собирать эпичных киборгов: соберем скелет с настоящими шестеренками, слепим мощные мышцы и наплавим непробиваемую 3D-броню! Ты сам оживишь своего киборга и заберешь его домой. Готов запустить реактор? Включайся!",
-          "teacherName": "Толмачова Василиса Владимировна",
-          "tags": [
-            "Офлайн",
-            "Инженерия"
-          ],
-          "locationNote": "Корпус ШО-3",
-          "programFilterLabel": "Мехвариум: Лаборатория Кинетических Монстров",
-          "ageLabel": "6–13 лет",
-          "formatType": "Интенсив (полдня)",
-          "formatTime": "Пн-Пт, 9:00 – 12:30",
-          "formatNote": "Формат интенсива. Корпус ШО-3.",
-          "mosRuCode": "2444383",
-          "status": "Идёт набор",
-          "isArchived": false,
-          "allowWaitlistWhenSoldOut": true,
-          "registrationChannel": "mos_ru",
-          "allowPreliminaryRegistration": false,
-          "variants": [
-            {
-              "id": "school-2103-yasenevo:2026-06-01:9:00",
-              "type": "Интенсив (полдня)",
-              "time": "Пн-Пт, 9:00 – 12:30",
-              "priceLabel": "8 500 ₽",
-              "note": "Формат интенсива. Корпус ШО-3.",
-              "ageLabel": "6–13 лет",
-              "mosRuCode": "2444383",
-              "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/841885"
-            }
-          ]
-        }
-      },
-      {
-        "id": "sheet:mekhvarium-laboratoriya-kineticheskih-monstrov:school-937-orekhovo:2026-05-25:2026-05-29:9:00",
-        "venueSlug": "school-937-orekhovo",
-        "shiftLabel": "Мехвариум: Лаборатория Кинетических Монстров · Школа №937",
-        "startDate": "2026-05-25",
-        "endDate": "2026-05-29",
-        "startTime": "9:00",
-        "endTime": "12:30",
-        "dateRange": "25.05.2026 — 29.05.2026",
-        "daySchedule": "Ежедневно: 9:00–12:30",
-        "priceLabel": "8 500 ₽",
-        "mosBookingUrl": null,
-        "includedNote": "Формат интенсива.\n\nВозраст: 6–13 лет",
-        "sheetStatus": "Согласование",
-        "enrolled": 0,
-        "maxCapacity": 20,
-        "scheduleCard": {
-          "displayTitle": "Мехвариум: Лаборатория Кинетических Монстров",
-          "description": "«Мехвариум: Лаборатория Кинетических Монстров» — создай своего шагающего монстра! Добро пожаловать в секретную лабораторию! За 5 дней ты станешь настоящим инженером-изобретателем. Мы будем собирать эпичных киборгов: соберем скелет с настоящими шестеренками, слепим мощные мышцы и наплавим непробиваемую 3D-броню! Ты сам оживишь своего киборга и заберешь его домой. Готов запустить реактор? Включайся!",
-          "teacherName": "Кузьменков Владимир Евгеньевич",
-          "tags": [
-            "Офлайн",
-            "Инженерия"
-          ],
-          "programFilterLabel": "Мехвариум: Лаборатория Кинетических Монстров",
-          "ageLabel": "6–13 лет",
-          "formatType": "Интенсив (полдня)",
-          "formatTime": "Пн-Пт, 9:00 – 12:30",
-          "formatNote": "Формат интенсива.",
-          "status": "Согласование",
-          "isArchived": false,
-          "allowWaitlistWhenSoldOut": true,
-          "registrationChannel": "brainmaster",
-          "allowPreliminaryRegistration": true,
-          "variants": [
-            {
-              "id": "school-937-orekhovo:2026-05-25:9:00",
-              "type": "Интенсив (полдня)",
-              "time": "Пн-Пт, 9:00 – 12:30",
-              "priceLabel": "8 500 ₽",
-              "note": "Формат интенсива.",
-              "ageLabel": "6–13 лет"
-            }
-          ]
-        }
-      },
-      {
-        "id": "sheet:mekhvarium-laboratoriya-kineticheskih-monstrov:school-937-orekhovo:2026-06-01:2026-06-05:9:00",
-        "venueSlug": "school-937-orekhovo",
-        "shiftLabel": "Мехвариум: Лаборатория Кинетических Монстров · Школа №937",
-        "startDate": "2026-06-01",
-        "endDate": "2026-06-05",
-        "startTime": "9:00",
-        "endTime": "12:30",
-        "dateRange": "01.06.2026 — 05.06.2026",
-        "daySchedule": "Ежедневно: 9:00–12:30",
-        "priceLabel": "8 500 ₽",
-        "mosBookingUrl": null,
-        "includedNote": "Формат интенсива.\n\nВозраст: 6–13 лет",
-        "sheetStatus": "Согласование",
-        "enrolled": 0,
-        "maxCapacity": 20,
-        "scheduleCard": {
-          "displayTitle": "Мехвариум: Лаборатория Кинетических Монстров",
-          "description": "«Мехвариум: Лаборатория Кинетических Монстров» — создай своего шагающего монстра! Добро пожаловать в секретную лабораторию! За 5 дней ты станешь настоящим инженером-изобретателем. Мы будем собирать эпичных киборгов: соберем скелет с настоящими шестеренками, слепим мощные мышцы и наплавим непробиваемую 3D-броню! Ты сам оживишь своего киборга и заберешь его домой. Готов запустить реактор? Включайся!",
-          "teacherName": "Саитова Софья Юрьевна",
-          "tags": [
-            "Офлайн",
-            "Инженерия"
-          ],
-          "programFilterLabel": "Мехвариум: Лаборатория Кинетических Монстров",
-          "ageLabel": "6–13 лет",
-          "formatType": "Интенсив (полдня)",
-          "formatTime": "Пн-Пт, 9:00 – 12:30",
-          "formatNote": "Формат интенсива.",
-          "status": "Согласование",
-          "isArchived": false,
-          "allowWaitlistWhenSoldOut": true,
-          "registrationChannel": "brainmaster",
-          "allowPreliminaryRegistration": true,
-          "variants": [
-            {
-              "id": "school-937-orekhovo:2026-06-01:9:00",
-              "type": "Интенсив (полдня)",
-              "time": "Пн-Пт, 9:00 – 12:30",
-              "priceLabel": "8 500 ₽",
-              "note": "Формат интенсива.",
-              "ageLabel": "6–13 лет"
-            }
-          ]
-        }
-      },
-      {
-        "id": "sheet:mekhvarium-laboratoriya-kineticheskih-monstrov:school-1383-verkhnie-likhobory:2026-06-01:2026-06-05:9:00",
+        "id": "sheet:mekhvarium-laboratoriya-kineticheskih-monstrov:school-1383-verkhnie-likhobory:2026-06-01:2026-06-05",
         "venueSlug": "school-1383-verkhnie-likhobory",
         "shiftLabel": "Мехвариум: Лаборатория Инженерных Монстров · Школа №1383",
         "startDate": "2026-06-01",
         "endDate": "2026-06-05",
         "startTime": "9:00",
-        "endTime": "13:00",
+        "endTime": "18:00",
         "dateRange": "01.06.2026 — 05.06.2026",
-        "daySchedule": "Ежедневно: 9:00–13:00",
-        "priceLabel": "10 000 ₽",
+        "daySchedule": "Ежедневно: 9:00–18:00",
+        "priceLabel": "16 500 ₽",
         "mosBookingUrl": null,
         "includedNote": "Формат интенсива. Контакт: Халаджан Г.А.\n\nВозраст: 6–13 лет",
         "sheetStatus": "Согласование",
@@ -266,11 +303,12 @@
             "Офлайн",
             "Инженерия"
           ],
+          "programNameH1": "Мехвариум",
+          "programNameH2": "Лаборатория Инженерных Монстров",
           "programFilterLabel": "Мехвариум: Лаборатория Инженерных Монстров",
           "ageLabel": "6–13 лет",
-          "formatType": "Интенсив (полдня)",
-          "formatTime": "Пн-Пт, 9:00 – 12:30",
-          "formatNote": "Формат интенсива. Контакт: Халаджан Г.А.",
+          "formatType": "Полный день",
+          "formatNote": "Питание: Обед + Полдник",
           "status": "Согласование",
           "isArchived": false,
           "allowWaitlistWhenSoldOut": true,
@@ -278,18 +316,32 @@
           "allowPreliminaryRegistration": true,
           "variants": [
             {
-              "id": "school-1383-verkhnie-likhobory:2026-06-01:9:00",
+              "id": "school-1383-verkhnie-likhobory:2026-06-01:полный-день",
+              "type": "Полный день",
+              "time": "Пн-Пт, 9:00 – 18:00",
+              "priceLabel": "16 500 ₽",
+              "note": "Питание: Обед + Полдник",
+              "ageLabel": "6–13 лет",
+              "enrolled": 0,
+              "registrationChannel": "brainmaster",
+              "allowPreliminaryRegistration": true
+            },
+            {
+              "id": "school-1383-verkhnie-likhobory:2026-06-01:интенсив-полдня",
               "type": "Интенсив (полдня)",
               "time": "Пн-Пт, 9:00 – 12:30",
               "priceLabel": "10 000 ₽",
               "note": "Формат интенсива. Контакт: Халаджан Г.А.",
-              "ageLabel": "6–13 лет"
+              "ageLabel": "6–13 лет",
+              "enrolled": 0,
+              "registrationChannel": "brainmaster",
+              "allowPreliminaryRegistration": true
             }
           ]
         }
       },
       {
-        "id": "sheet:mekhvarium-laboratoriya-kineticheskih-monstrov:school-1517-narodnoe-opolchenie:2026-06-01:2026-06-05:9:00",
+        "id": "sheet:mekhvarium-laboratoriya-kineticheskih-monstrov:school-1517-narodnoe-opolchenie:2026-06-01:2026-06-05",
         "venueSlug": "school-1517-narodnoe-opolchenie",
         "shiftLabel": "Мехвариум: Лаборатория Кинетических Монстров · Школа №1517",
         "startDate": "2026-06-01",
@@ -308,10 +360,11 @@
           "displayTitle": "Мехвариум: Лаборатория Кинетических Монстров",
           "teacherName": "Хмельков Даниил Антонович",
           "tags": [],
+          "programNameH1": "Мехвариум",
+          "programNameH2": "Лаборатория Кинетических Монстров",
           "programFilterLabel": "Мехвариум: Лаборатория Кинетических Монстров",
           "formatType": "Мехвариум: Лаборатория Кинетических Монстров",
-          "formatTime": "Ежедневно: 9:00–13:00",
-          "formatNote": "Формат интенсива. Контакт: Хмельков Д.А.\n\nВозраст: 6–13 лет",
+          "formatNote": "Формат интенсива. Контакт: Хмельков Д.А. Возраст: 6–13 лет",
           "status": "Согласование",
           "isArchived": false,
           "allowWaitlistWhenSoldOut": true,
@@ -319,17 +372,20 @@
           "allowPreliminaryRegistration": true,
           "variants": [
             {
-              "id": "school-1517-narodnoe-opolchenie:2026-06-01:9:00",
+              "id": "school-1517-narodnoe-opolchenie:2026-06-01:мехвариум-лаборатория-кинетических-монстров",
               "type": "Мехвариум: Лаборатория Кинетических Монстров",
-              "time": "Ежедневно: 9:00–13:00",
+              "time": "Пн-Пт, 9:00 – 13:00",
               "priceLabel": "17 500 ₽",
-              "note": "Формат интенсива. Контакт: Хмельков Д.А.\n\nВозраст: 6–13 лет"
+              "note": "Формат интенсива. Контакт: Хмельков Д.А. Возраст: 6–13 лет",
+              "enrolled": 0,
+              "registrationChannel": "brainmaster",
+              "allowPreliminaryRegistration": true
             }
           ]
         }
       },
       {
-        "id": "sheet:mekhvarium-laboratoriya-kineticheskih-monstrov:school-17-belyaevo:2026-06-01:2026-06-05:9:00",
+        "id": "sheet:mekhvarium-laboratoriya-kineticheskih-monstrov:school-17-belyaevo:2026-06-01:2026-06-05",
         "venueSlug": "school-17-belyaevo",
         "shiftLabel": "Мехвариум: Лаборатория Кинетических Монстров · Школа №17",
         "startDate": "2026-06-01",
@@ -352,10 +408,11 @@
             "Офлайн",
             "Инженерия"
           ],
+          "programNameH1": "Мехвариум",
+          "programNameH2": "Лаборатория Кинетических Монстров",
           "programFilterLabel": "Мехвариум: Лаборатория Кинетических Монстров",
           "ageLabel": "6–13 лет",
           "formatType": "Интенсив (полдня)",
-          "formatTime": "Пн-Пт, 9:00 – 13:00",
           "formatNote": "Формат интенсива.",
           "status": "Согласование",
           "isArchived": false,
@@ -364,26 +421,158 @@
           "allowPreliminaryRegistration": true,
           "variants": [
             {
-              "id": "school-17-belyaevo:2026-06-01:9:00",
+              "id": "school-17-belyaevo:2026-06-01:интенсив-полдня",
               "type": "Интенсив (полдня)",
               "time": "Пн-Пт, 9:00 – 13:00",
               "priceLabel": "17 500 ₽",
               "note": "Формат интенсива.",
-              "ageLabel": "6–13 лет"
+              "ageLabel": "6–13 лет",
+              "enrolled": 0,
+              "registrationChannel": "brainmaster",
+              "allowPreliminaryRegistration": true
             }
           ]
         }
       },
       {
-        "id": "sheet:mekhvarium-laboratoriya-kineticheskih-monstrov:school-875-yugo-zapadnaya:2026-06-01:2026-06-05:9:00",
+        "id": "sheet:mekhvarium-laboratoriya-kineticheskih-monstrov:school-2103-yasenevo:2026-05-25:2026-05-29",
+        "venueSlug": "school-2103-yasenevo",
+        "shiftLabel": "Мехвариум: Лаборатория Кинетических Монстров · Школа №2103",
+        "startDate": "2026-05-25",
+        "endDate": "2026-05-29",
+        "startTime": "8:00",
+        "endTime": "18:00",
+        "dateRange": "25.05.2026 — 29.05.2026",
+        "daySchedule": "Ежедневно: 8:00–18:00",
+        "priceLabel": "8 500 ₽",
+        "mosBookingUrl": null,
+        "includedNote": "В приоритете 1 класс. Корпус ШО-4.\n\nВозраст: 6–13 лет",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 0,
+        "maxCapacity": 20,
+        "scheduleCard": {
+          "displayTitle": "Мехвариум: Лаборатория Кинетических Монстров",
+          "description": "«Мехвариум: Лаборатория Кинетических Монстров» — создай своего шагающего монстра! Добро пожаловать в секретную лабораторию! За 5 дней ты станешь настоящим инженером-изобретателем. Мы будем собирать эпичных киборгов: соберем скелет с настоящими шестеренками, слепим мощные мышцы и наплавим непробиваемую 3D-броню! Ты сам оживишь своего киборга и заберешь его домой. Готов запустить реактор? Включайся!",
+          "teacherName": "Толмачова Василиса Владимировна",
+          "tags": [
+            "Офлайн",
+            "Инженерия"
+          ],
+          "locationNote": "Корпус ШО-4",
+          "programNameH1": "Мехвариум",
+          "programNameH2": "Лаборатория Кинетических Монстров",
+          "programFilterLabel": "Мехвариум: Лаборатория Кинетических Монстров",
+          "ageLabel": "6–13 лет",
+          "formatType": "Интенсив (полдня)",
+          "formatNote": "В приоритете 1 класс",
+          "status": "Идёт набор",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": true,
+          "registrationChannel": "brainmaster",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "school-2103-yasenevo:2026-05-25:интенсив-полдня",
+              "type": "Интенсив (полдня)",
+              "time": "Пн-Пт, 9:00 – 12:30",
+              "priceLabel": "8 500 ₽",
+              "note": "В приоритете 1 класс",
+              "ageLabel": "6–13 лет",
+              "enrolled": 0,
+              "registrationChannel": "brainmaster",
+              "allowPreliminaryRegistration": false
+            },
+            {
+              "id": "school-2103-yasenevo:2026-05-25:полный-день",
+              "type": "Полный день",
+              "time": "Пн-Пт, 8:00 – 18:00",
+              "priceLabel": "14 000 ₽",
+              "note": "В приоритете 1 класс",
+              "ageLabel": "6–13 лет",
+              "enrolled": 0,
+              "registrationChannel": "brainmaster",
+              "allowPreliminaryRegistration": false
+            }
+          ]
+        }
+      },
+      {
+        "id": "sheet:mekhvarium-laboratoriya-kineticheskih-monstrov:school-2103-yasenevo:2026-06-01:2026-06-05",
+        "venueSlug": "school-2103-yasenevo",
+        "shiftLabel": "Мехвариум: Лаборатория Кинетических Монстров · Школа №2103",
+        "startDate": "2026-06-01",
+        "endDate": "2026-06-05",
+        "startTime": "8:00",
+        "endTime": "18:00",
+        "dateRange": "01.06.2026 — 05.06.2026",
+        "daySchedule": "Ежедневно: 8:00–18:00",
+        "priceLabel": "8 500 ₽",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/841885",
+        "includedNote": "Формат интенсива. Корпус ШО-3.\n\nВозраст: 6–13 лет\n\nКод карточки mos.ru: 2444383",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 0,
+        "maxCapacity": 20,
+        "scheduleCard": {
+          "displayTitle": "Мехвариум: Лаборатория Кинетических Монстров",
+          "description": "«Мехвариум: Лаборатория Кинетических Монстров» — создай своего шагающего монстра! Добро пожаловать в секретную лабораторию! За 5 дней ты станешь настоящим инженером-изобретателем. Мы будем собирать эпичных киборгов: соберем скелет с настоящими шестеренками, слепим мощные мышцы и наплавим непробиваемую 3D-броню! Ты сам оживишь своего киборга и заберешь его домой. Готов запустить реактор? Включайся!",
+          "teacherName": "Толмачова Василиса Владимировна",
+          "tags": [
+            "Офлайн",
+            "Инженерия"
+          ],
+          "locationNote": "Корпус ШО-3",
+          "programNameH1": "Мехвариум",
+          "programNameH2": "Лаборатория Кинетических Монстров",
+          "programFilterLabel": "Мехвариум: Лаборатория Кинетических Монстров",
+          "ageLabel": "6–13 лет",
+          "formatType": "Интенсив (полдня)",
+          "formatNote": "Формат интенсива. Корпус ШО-3.",
+          "mosRuCode": "2444383",
+          "status": "Идёт набор",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": true,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "school-2103-yasenevo:2026-06-01:интенсив-полдня",
+              "type": "Интенсив (полдня)",
+              "time": "Пн-Пт, 9:00 – 12:30",
+              "priceLabel": "8 500 ₽",
+              "note": "Формат интенсива. Корпус ШО-3.",
+              "ageLabel": "6–13 лет",
+              "mosRuCode": "2444383",
+              "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/841885",
+              "enrolled": 0,
+              "registrationChannel": "mos_ru",
+              "allowPreliminaryRegistration": false
+            },
+            {
+              "id": "school-2103-yasenevo:2026-06-01:полный-день",
+              "type": "Полный день",
+              "time": "Пн-Пт, 8:00 – 18:00",
+              "priceLabel": "14 000 ₽",
+              "note": "Формат интенсива. Корпус ШО-3.",
+              "ageLabel": "6–13 лет",
+              "mosRuCode": "2444383",
+              "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/841885",
+              "enrolled": 0,
+              "registrationChannel": "mos_ru",
+              "allowPreliminaryRegistration": false
+            }
+          ]
+        }
+      },
+      {
+        "id": "sheet:mekhvarium-laboratoriya-kineticheskih-monstrov:school-875-yugo-zapadnaya:2026-06-01:2026-06-05",
         "venueSlug": "school-875-yugo-zapadnaya",
         "shiftLabel": "Мехвариум: Лаборатория Кинетических Монстров · Школа №875",
         "startDate": "2026-06-01",
         "endDate": "2026-06-05",
-        "startTime": "9:00",
-        "endTime": "13:00",
+        "startTime": "11:30",
+        "endTime": "15:30",
         "dateRange": "01.06.2026 — 05.06.2026",
-        "daySchedule": "Ежедневно: 9:00–13:00",
+        "daySchedule": "Ежедневно: 11:30–15:30",
         "priceLabel": "1 600 ₽",
         "mosBookingUrl": null,
         "includedNote": "Формат интенсива.\n\nВозраст: 6–13 лет",
@@ -398,10 +587,11 @@
             "Офлайн",
             "Короткий интенсив"
           ],
+          "programNameH1": "Мехвариум",
+          "programNameH2": "Лаборатория Кинетических Монстров",
           "programFilterLabel": "Мехвариум: Лаборатория Кинетических Монстров",
           "ageLabel": "6–13 лет",
           "formatType": "Интенсив (полдня)",
-          "formatTime": "Пн-Пт, 11:30 – 15:30",
           "formatNote": "Короткий формат (4 ак.ч. в день)",
           "status": "Согласование",
           "isArchived": false,
@@ -410,97 +600,49 @@
           "allowPreliminaryRegistration": true,
           "variants": [
             {
-              "id": "school-875-yugo-zapadnaya:2026-06-01:9:00",
+              "id": "school-875-yugo-zapadnaya:2026-06-01:интенсив-полдня",
               "type": "Интенсив (полдня)",
               "time": "Пн-Пт, 11:30 – 15:30",
               "priceLabel": "1 600 ₽",
               "note": "Короткий формат (4 ак.ч. в день)",
-              "ageLabel": "6–13 лет"
-            }
-          ]
-        }
-      }
-    ],
-    "mekhvarium-masterskaya-gidravlicheskih-monstrov": [
-      {
-        "id": "sheet:mekhvarium-masterskaya-gidravlicheskih-monstrov:school-2103-yasenevo:2026-06-08:2026-06-11:9:00",
-        "venueSlug": "school-2103-yasenevo",
-        "shiftLabel": "Мехвариум: Мастерская Гидравлических Монстров · Школа №2103",
-        "startDate": "2026-06-08",
-        "endDate": "2026-06-11",
-        "startTime": "9:00",
-        "endTime": "12:30",
-        "dateRange": "08.06.2026 — 11.06.2026",
-        "daySchedule": "Ежедневно: 9:00–12:30",
-        "priceLabel": "6 800 ₽",
-        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/841892",
-        "includedNote": "Укороченная смена (4 дня). Формат интенсива. Корпус ШО-3.\n\nВозраст: 6–13 лет\n\nКод карточки mos.ru: 2444393",
-        "sheetStatus": "Идёт набор",
-        "enrolled": 0,
-        "maxCapacity": 20,
-        "scheduleCard": {
-          "displayTitle": "Мехвариум: Мастерская Гидравлических Монстров",
-          "description": "«КиберЛагерь Мехвариум: Мастерская Гидравлических Монстров» — укрощаем силу воды! За время интенсива ребята станут агентами секретного бюро и создадут свою Монстро-Станцию! Электричество отменяется — механизмы работают исключительно на силе гидравлики. Из шприцев, силиконовых трубок и дерева дети соберут кран-лифт, мощный пресс, клешню-манипулятор и балансировочный 3D-лабиринт. Включаем инженерию на максимум!",
-          "teacherName": "Толмачова Василиса Владимировна",
-          "tags": [
-            "Офлайн",
-            "Гидравлика"
-          ],
-          "locationNote": "Корпус ШО-3",
-          "programFilterLabel": "Мехвариум: Мастерская Гидравлических Монстров",
-          "ageLabel": "6–13 лет",
-          "formatType": "Интенсив (4 дня)",
-          "formatTime": "Пн-Чт, 9:00 – 12:30",
-          "formatNote": "Укороченная смена (4 дня). Формат интенсива. Корпус ШО-3.",
-          "mosRuCode": "2444393",
-          "status": "Идёт набор",
-          "isArchived": false,
-          "allowWaitlistWhenSoldOut": true,
-          "registrationChannel": "mos_ru",
-          "allowPreliminaryRegistration": false,
-          "variants": [
-            {
-              "id": "school-2103-yasenevo:2026-06-08:9:00",
-              "type": "Интенсив (4 дня)",
-              "time": "Пн-Чт, 9:00 – 12:30",
-              "priceLabel": "6 800 ₽",
-              "note": "Укороченная смена (4 дня). Формат интенсива. Корпус ШО-3.",
               "ageLabel": "6–13 лет",
-              "mosRuCode": "2444393",
-              "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/841892"
+              "enrolled": 0,
+              "registrationChannel": "brainmaster",
+              "allowPreliminaryRegistration": true
             }
           ]
         }
       },
       {
-        "id": "sheet:mekhvarium-masterskaya-gidravlicheskih-monstrov:school-937-orekhovo:2026-06-08:2026-06-11:9:00",
+        "id": "sheet:mekhvarium-laboratoriya-kineticheskih-monstrov:school-937-orekhovo:2026-05-25:2026-05-29",
         "venueSlug": "school-937-orekhovo",
-        "shiftLabel": "Мехвариум: Мастерская Гидравлических Монстров · Школа №937",
-        "startDate": "2026-06-08",
-        "endDate": "2026-06-11",
+        "shiftLabel": "Мехвариум: Лаборатория Кинетических Монстров · Школа №937",
+        "startDate": "2026-05-25",
+        "endDate": "2026-05-29",
         "startTime": "9:00",
         "endTime": "12:30",
-        "dateRange": "08.06.2026 — 11.06.2026",
+        "dateRange": "25.05.2026 — 29.05.2026",
         "daySchedule": "Ежедневно: 9:00–12:30",
-        "priceLabel": "1 600 ₽",
+        "priceLabel": "8 500 ₽",
         "mosBookingUrl": null,
-        "includedNote": "Укороченная смена (4 дня). Формат интенсива.\n\nВозраст: 6–13 лет",
+        "includedNote": "Формат интенсива.\n\nВозраст: 6–13 лет",
         "sheetStatus": "Согласование",
         "enrolled": 0,
         "maxCapacity": 20,
         "scheduleCard": {
-          "displayTitle": "Мехвариум: Мастерская Гидравлических Монстров",
-          "description": "«КиберЛагерь Мехвариум: Мастерская Гидравлических Монстров» — укрощаем силу воды! За время интенсива ребята станут агентами секретного бюро и создадут свою Монстро-Станцию! Электричество отменяется — механизмы работают исключительно на силе гидравлики. Из шприцев, силиконовых трубок и дерева дети соберут кран-лифт, мощный пресс, клешню-манипулятор и балансировочный 3D-лабиринт. Включаем инженерию на максимум!",
-          "teacherName": "Юдицкий Илья Игоревич",
+          "displayTitle": "Мехвариум: Лаборатория Кинетических Монстров",
+          "description": "«Мехвариум: Лаборатория Кинетических Монстров» — создай своего шагающего монстра! Добро пожаловать в секретную лабораторию! За 5 дней ты станешь настоящим инженером-изобретателем. Мы будем собирать эпичных киборгов: соберем скелет с настоящими шестеренками, слепим мощные мышцы и наплавим непробиваемую 3D-броню! Ты сам оживишь своего киборга и заберешь его домой. Готов запустить реактор? Включайся!",
+          "teacherName": "Кузьменков Владимир Евгеньевич",
           "tags": [
             "Офлайн",
-            "Гидравлика"
+            "Инженерия"
           ],
-          "programFilterLabel": "Мехвариум: Мастерская Гидравлических Монстров",
+          "programNameH1": "Мехвариум",
+          "programNameH2": "Лаборатория Кинетических Монстров",
+          "programFilterLabel": "Мехвариум: Лаборатория Кинетических Монстров",
           "ageLabel": "6–13 лет",
-          "formatType": "Интенсив (4 дня)",
-          "formatTime": "Пн-Чт, 11:30 – 15:30",
-          "formatNote": "Укороченный формат (4 ак.ч. в день)",
+          "formatType": "Интенсив (полдня)",
+          "formatNote": "Формат интенсива.",
           "status": "Согласование",
           "isArchived": false,
           "allowWaitlistWhenSoldOut": true,
@@ -508,27 +650,82 @@
           "allowPreliminaryRegistration": true,
           "variants": [
             {
-              "id": "school-937-orekhovo:2026-06-08:9:00",
-              "type": "Интенсив (4 дня)",
-              "time": "Пн-Чт, 11:30 – 15:30",
-              "priceLabel": "1 600 ₽",
-              "note": "Укороченный формат (4 ак.ч. в день)",
-              "ageLabel": "6–13 лет"
+              "id": "school-937-orekhovo:2026-05-25:интенсив-полдня",
+              "type": "Интенсив (полдня)",
+              "time": "Пн-Пт, 9:00 – 12:30",
+              "priceLabel": "8 500 ₽",
+              "note": "Формат интенсива.",
+              "ageLabel": "6–13 лет",
+              "enrolled": 0,
+              "registrationChannel": "brainmaster",
+              "allowPreliminaryRegistration": true
             }
           ]
         }
       },
       {
-        "id": "sheet:mekhvarium-masterskaya-gidravlicheskih-monstrov:school-1383-verkhnie-likhobory:2026-06-08:2026-06-11:9:00",
+        "id": "sheet:mekhvarium-laboratoriya-kineticheskih-monstrov:school-937-orekhovo:2026-06-01:2026-06-05",
+        "venueSlug": "school-937-orekhovo",
+        "shiftLabel": "Мехвариум: Лаборатория Кинетических Монстров · Школа №937",
+        "startDate": "2026-06-01",
+        "endDate": "2026-06-05",
+        "startTime": "9:00",
+        "endTime": "12:30",
+        "dateRange": "01.06.2026 — 05.06.2026",
+        "daySchedule": "Ежедневно: 9:00–12:30",
+        "priceLabel": "8 500 ₽",
+        "mosBookingUrl": null,
+        "includedNote": "Формат интенсива.\n\nВозраст: 6–13 лет",
+        "sheetStatus": "Согласование",
+        "enrolled": 0,
+        "maxCapacity": 20,
+        "scheduleCard": {
+          "displayTitle": "Мехвариум: Лаборатория Кинетических Монстров",
+          "description": "«Мехвариум: Лаборатория Кинетических Монстров» — создай своего шагающего монстра! Добро пожаловать в секретную лабораторию! За 5 дней ты станешь настоящим инженером-изобретателем. Мы будем собирать эпичных киборгов: соберем скелет с настоящими шестеренками, слепим мощные мышцы и наплавим непробиваемую 3D-броню! Ты сам оживишь своего киборга и заберешь его домой. Готов запустить реактор? Включайся!",
+          "teacherName": "Саитова Софья Юрьевна",
+          "tags": [
+            "Офлайн",
+            "Инженерия"
+          ],
+          "programNameH1": "Мехвариум",
+          "programNameH2": "Лаборатория Кинетических Монстров",
+          "programFilterLabel": "Мехвариум: Лаборатория Кинетических Монстров",
+          "ageLabel": "6–13 лет",
+          "formatType": "Интенсив (полдня)",
+          "formatNote": "Формат интенсива.",
+          "status": "Согласование",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": true,
+          "registrationChannel": "brainmaster",
+          "allowPreliminaryRegistration": true,
+          "variants": [
+            {
+              "id": "school-937-orekhovo:2026-06-01:интенсив-полдня",
+              "type": "Интенсив (полдня)",
+              "time": "Пн-Пт, 9:00 – 12:30",
+              "priceLabel": "8 500 ₽",
+              "note": "Формат интенсива.",
+              "ageLabel": "6–13 лет",
+              "enrolled": 0,
+              "registrationChannel": "brainmaster",
+              "allowPreliminaryRegistration": true
+            }
+          ]
+        }
+      }
+    ],
+    "mekhvarium-masterskaya-gidravlicheskih-monstrov": [
+      {
+        "id": "sheet:mekhvarium-masterskaya-gidravlicheskih-monstrov:school-1383-verkhnie-likhobory:2026-06-08:2026-06-11",
         "venueSlug": "school-1383-verkhnie-likhobory",
         "shiftLabel": "Мехвариум: Мастерская Гидравлических Монстров · Школа №1383",
         "startDate": "2026-06-08",
         "endDate": "2026-06-11",
         "startTime": "9:00",
-        "endTime": "13:00",
+        "endTime": "18:00",
         "dateRange": "08.06.2026 — 11.06.2026",
-        "daySchedule": "Ежедневно: 9:00–13:00",
-        "priceLabel": "8 000 ₽",
+        "daySchedule": "Ежедневно: 9:00–18:00",
+        "priceLabel": "13 200 ₽",
         "mosBookingUrl": null,
         "includedNote": "Укороченная смена (4 дня). Формат интенсива. Контакт: Халаджан Г.А.\n\nВозраст: 6–13 лет",
         "sheetStatus": "Согласование",
@@ -542,11 +739,12 @@
             "Офлайн",
             "Гидравлика"
           ],
+          "programNameH1": "Мехвариум",
+          "programNameH2": "Мастерская Гидравлических Монстров",
           "programFilterLabel": "Мехвариум: Мастерская Гидравлических Монстров",
           "ageLabel": "6–13 лет",
-          "formatType": "Интенсив (4 дня)",
-          "formatTime": "Пн-Чт, 9:00 – 12:30",
-          "formatNote": "Укороченная смена (4 дня). Формат интенсива. Контакт: Халаджан Г.А.",
+          "formatType": "Полный день (4 дня)",
+          "formatNote": "Питание: Обед + Полдник",
           "status": "Согласование",
           "isArchived": false,
           "allowWaitlistWhenSoldOut": true,
@@ -554,26 +752,40 @@
           "allowPreliminaryRegistration": true,
           "variants": [
             {
-              "id": "school-1383-verkhnie-likhobory:2026-06-08:9:00",
+              "id": "school-1383-verkhnie-likhobory:2026-06-08:полный-день-4-дня",
+              "type": "Полный день (4 дня)",
+              "time": "Пн-Чт, 9:00 – 18:00",
+              "priceLabel": "13 200 ₽",
+              "note": "Питание: Обед + Полдник",
+              "ageLabel": "6–13 лет",
+              "enrolled": 0,
+              "registrationChannel": "brainmaster",
+              "allowPreliminaryRegistration": true
+            },
+            {
+              "id": "school-1383-verkhnie-likhobory:2026-06-08:интенсив-4-дня",
               "type": "Интенсив (4 дня)",
               "time": "Пн-Чт, 9:00 – 12:30",
               "priceLabel": "8 000 ₽",
               "note": "Укороченная смена (4 дня). Формат интенсива. Контакт: Халаджан Г.А.",
-              "ageLabel": "6–13 лет"
+              "ageLabel": "6–13 лет",
+              "enrolled": 0,
+              "registrationChannel": "brainmaster",
+              "allowPreliminaryRegistration": true
             }
           ]
         }
       },
       {
-        "id": "sheet:mekhvarium-masterskaya-gidravlicheskih-monstrov:school-1517-narodnoe-opolchenie:2026-06-08:2026-06-11:9:00",
+        "id": "sheet:mekhvarium-masterskaya-gidravlicheskih-monstrov:school-1517-narodnoe-opolchenie:2026-06-08:2026-06-11",
         "venueSlug": "school-1517-narodnoe-opolchenie",
         "shiftLabel": "Мехвариум: Кинетические + Гидравлические Монстры · Школа №1517",
         "startDate": "2026-06-08",
         "endDate": "2026-06-11",
         "startTime": "9:00",
-        "endTime": "13:00",
+        "endTime": "12:45",
         "dateRange": "08.06.2026 — 11.06.2026",
-        "daySchedule": "Ежедневно: 9:00–13:00",
+        "daySchedule": "Ежедневно: 9:00–12:45",
         "priceLabel": "31 500 ₽",
         "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/842914",
         "includedNote": "Укороченная смена (4 дня). Формат интенсива. Контакт: Хмельков Д.А.\n\nВозраст: 6–13 лет\n\nКод карточки mos.ru: 2445152",
@@ -588,10 +800,11 @@
             "Офлайн",
             "Марафон (2 недели)"
           ],
+          "programNameH1": "Мехвариум",
+          "programNameH2": "Кинетические + Гидравлические Монстры",
           "programFilterLabel": "Мехвариум: Кинетические + Гидравлические Монстры",
           "ageLabel": "6–13 лет",
           "formatType": "Марафон (2 недели)",
-          "formatTime": "Пн-Пт, 9:00 – 12:45",
           "formatNote": "Две программы подряд (5 + 4 дня)",
           "mosRuCode": "2445152",
           "status": "Согласование",
@@ -601,20 +814,23 @@
           "allowPreliminaryRegistration": true,
           "variants": [
             {
-              "id": "school-1517-narodnoe-opolchenie:2026-06-08:9:00",
+              "id": "school-1517-narodnoe-opolchenie:2026-06-08:марафон-2-недели",
               "type": "Марафон (2 недели)",
-              "time": "Пн-Пт, 9:00 – 12:45",
+              "time": "Пн-Чт, 9:00 – 12:45",
               "priceLabel": "31 500 ₽",
               "note": "Две программы подряд (5 + 4 дня)",
               "ageLabel": "6–13 лет",
               "mosRuCode": "2445152",
-              "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/842914"
+              "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/842914",
+              "enrolled": 0,
+              "registrationChannel": "mos_ru",
+              "allowPreliminaryRegistration": true
             }
           ]
         }
       },
       {
-        "id": "sheet:mekhvarium-masterskaya-gidravlicheskih-monstrov:school-17-belyaevo:2026-06-08:2026-06-11:9:00",
+        "id": "sheet:mekhvarium-masterskaya-gidravlicheskih-monstrov:school-17-belyaevo:2026-06-08:2026-06-11",
         "venueSlug": "school-17-belyaevo",
         "shiftLabel": "Мехвариум: Мастерская Гидравлических Монстров · Школа №17",
         "startDate": "2026-06-08",
@@ -637,10 +853,11 @@
             "Офлайн",
             "Гидравлика"
           ],
+          "programNameH1": "Мехвариум",
+          "programNameH2": "Мастерская Гидравлических Монстров",
           "programFilterLabel": "Мехвариум: Мастерская Гидравлических Монстров",
           "ageLabel": "6–13 лет",
           "formatType": "Интенсив (4 дня)",
-          "formatTime": "Пн-Чт, 9:00 – 13:00",
           "formatNote": "Формат интенсива.",
           "status": "Согласование",
           "isArchived": false,
@@ -649,49 +866,51 @@
           "allowPreliminaryRegistration": true,
           "variants": [
             {
-              "id": "school-17-belyaevo:2026-06-08:9:00",
+              "id": "school-17-belyaevo:2026-06-08:интенсив-4-дня",
               "type": "Интенсив (4 дня)",
               "time": "Пн-Чт, 9:00 – 13:00",
               "priceLabel": "14 000 ₽",
               "note": "Формат интенсива.",
-              "ageLabel": "6–13 лет"
+              "ageLabel": "6–13 лет",
+              "enrolled": 0,
+              "registrationChannel": "brainmaster",
+              "allowPreliminaryRegistration": true
             }
           ]
         }
-      }
-    ],
-    "minecraft-probuzhdenie-strazhey": [
+      },
       {
-        "id": "sheet:minecraft-probuzhdenie-strazhey:school-2103-yasenevo:2026-06-15:2026-06-19:9:00",
+        "id": "sheet:mekhvarium-masterskaya-gidravlicheskih-monstrov:school-2103-yasenevo:2026-06-08:2026-06-11",
         "venueSlug": "school-2103-yasenevo",
-        "shiftLabel": "Minecraft: Пробуждение Стража · Школа №2103",
-        "startDate": "2026-06-15",
-        "endDate": "2026-06-19",
-        "startTime": "9:00",
-        "endTime": "12:30",
-        "dateRange": "15.06.2026 — 19.06.2026",
-        "daySchedule": "Ежедневно: 9:00–12:30",
-        "priceLabel": "8 500 ₽",
-        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/841894",
-        "includedNote": "Формат интенсива. Корпус ШО-3.\n\nВозраст: 6–13 лет\n\nКод карточки mos.ru: 2444397",
+        "shiftLabel": "Мехвариум: Мастерская Гидравлических Монстров · Школа №2103",
+        "startDate": "2026-06-08",
+        "endDate": "2026-06-11",
+        "startTime": "8:00",
+        "endTime": "18:00",
+        "dateRange": "08.06.2026 — 11.06.2026",
+        "daySchedule": "Ежедневно: 8:00–18:00",
+        "priceLabel": "6 800 ₽",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/841892",
+        "includedNote": "Укороченная смена (4 дня). Формат интенсива. Корпус ШО-3.\n\nВозраст: 6–13 лет\n\nКод карточки mos.ru: 2444393",
         "sheetStatus": "Идёт набор",
         "enrolled": 0,
         "maxCapacity": 20,
         "scheduleCard": {
-          "displayTitle": "Minecraft: Пробуждение Стража",
-          "description": "«Minecraft 2.0: Пробуждение Стража» — продолжение Легендарного Квеста! Игра снова выходит за пределы монитора, и ставки растут! За время интенсива ребята скрафтят не просто игрушку, а настоящего умного робота-моба. Мы по-взрослому спаяем печатную плату, установим ИК-датчик движения, мощный аккумулятор и аудиомодуль. Твой личный Страж-Крипер буквально оживет!",
-          "teacherName": "Любченко Виталий Владимирович",
+          "displayTitle": "Мехвариум: Мастерская Гидравлических Монстров",
+          "description": "«КиберЛагерь Мехвариум: Мастерская Гидравлических Монстров» — укрощаем силу воды! За время интенсива ребята станут агентами секретного бюро и создадут свою Монстро-Станцию! Электричество отменяется — механизмы работают исключительно на силе гидравлики. Из шприцев, силиконовых трубок и дерева дети соберут кран-лифт, мощный пресс, клешню-манипулятор и балансировочный 3D-лабиринт. Включаем инженерию на максимум!",
+          "teacherName": "Толмачова Василиса Владимировна",
           "tags": [
             "Офлайн",
-            "IT и Электроника"
+            "Гидравлика"
           ],
           "locationNote": "Корпус ШО-3",
-          "programFilterLabel": "Minecraft: Пробуждение Стража",
+          "programNameH1": "Мехвариум",
+          "programNameH2": "Мастерская Гидравлических Монстров",
+          "programFilterLabel": "Мехвариум: Мастерская Гидравлических Монстров",
           "ageLabel": "6–13 лет",
-          "formatType": "Интенсив (полдня)",
-          "formatTime": "Пн-Пт, 9:00 – 12:30",
-          "formatNote": "Формат интенсива. Корпус ШО-3.",
-          "mosRuCode": "2444397",
+          "formatType": "Интенсив (4 дня)",
+          "formatNote": "Укороченная смена (4 дня). Формат интенсива. Корпус ШО-3.",
+          "mosRuCode": "2444393",
           "status": "Идёт набор",
           "isArchived": false,
           "allowWaitlistWhenSoldOut": true,
@@ -699,47 +918,64 @@
           "allowPreliminaryRegistration": false,
           "variants": [
             {
-              "id": "school-2103-yasenevo:2026-06-15:9:00",
-              "type": "Интенсив (полдня)",
-              "time": "Пн-Пт, 9:00 – 12:30",
-              "priceLabel": "8 500 ₽",
-              "note": "Формат интенсива. Корпус ШО-3.",
+              "id": "school-2103-yasenevo:2026-06-08:интенсив-4-дня",
+              "type": "Интенсив (4 дня)",
+              "time": "Пн-Чт, 9:00 – 12:30",
+              "priceLabel": "6 800 ₽",
+              "note": "Укороченная смена (4 дня). Формат интенсива. Корпус ШО-3.",
               "ageLabel": "6–13 лет",
-              "mosRuCode": "2444397",
-              "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/841894"
+              "mosRuCode": "2444393",
+              "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/841892",
+              "enrolled": 0,
+              "registrationChannel": "mos_ru",
+              "allowPreliminaryRegistration": false
+            },
+            {
+              "id": "school-2103-yasenevo:2026-06-08:полный-день-4-дня",
+              "type": "Полный день (4 дня)",
+              "time": "Пн-Чт, 8:00 – 18:00",
+              "priceLabel": "11 200 ₽",
+              "note": "Укороченная смена (4 дня). Формат интенсива. Корпус ШО-3.",
+              "ageLabel": "6–13 лет",
+              "mosRuCode": "2444393",
+              "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/841892",
+              "enrolled": 0,
+              "registrationChannel": "mos_ru",
+              "allowPreliminaryRegistration": false
             }
           ]
         }
       },
       {
-        "id": "sheet:minecraft-probuzhdenie-strazhey:school-937-orekhovo:2026-06-15:2026-06-19:9:00",
+        "id": "sheet:mekhvarium-masterskaya-gidravlicheskih-monstrov:school-937-orekhovo:2026-06-08:2026-06-11",
         "venueSlug": "school-937-orekhovo",
-        "shiftLabel": "Minecraft: Пробуждение Стража · Школа №937",
-        "startDate": "2026-06-15",
-        "endDate": "2026-06-19",
+        "shiftLabel": "Мехвариум: Мастерская Гидравлических Монстров · Школа №937",
+        "startDate": "2026-06-08",
+        "endDate": "2026-06-11",
         "startTime": "9:00",
         "endTime": "12:30",
-        "dateRange": "15.06.2026 — 19.06.2026",
+        "dateRange": "08.06.2026 — 11.06.2026",
         "daySchedule": "Ежедневно: 9:00–12:30",
-        "priceLabel": "8 500 ₽",
+        "priceLabel": "6 800 ₽",
         "mosBookingUrl": null,
-        "includedNote": "Формат интенсива.\n\nВозраст: 6–13 лет",
+        "includedNote": "Укороченная смена (4 дня). Формат интенсива.\n\nВозраст: 6–13 лет",
         "sheetStatus": "Согласование",
         "enrolled": 0,
         "maxCapacity": 20,
         "scheduleCard": {
-          "displayTitle": "Minecraft: Пробуждение Стража",
-          "description": "«Minecraft 2.0: Пробуждение Стража» — продолжение Легендарного Квеста! Игра снова выходит за пределы монитора, и ставки растут! За время интенсива ребята скрафтят не просто игрушку, а настоящего умного робота-моба. Мы по-взрослому спаяем печатную плату, установим ИК-датчик движения, мощный аккумулятор и аудиомодуль. Твой личный Страж-Крипер буквально оживет!",
+          "displayTitle": "Мехвариум: Мастерская Гидравлических Монстров",
+          "description": "«КиберЛагерь Мехвариум: Мастерская Гидравлических Монстров» — укрощаем силу воды! За время интенсива ребята станут агентами секретного бюро и создадут свою Монстро-Станцию! Электричество отменяется — механизмы работают исключительно на силе гидравлики. Из шприцев, силиконовых трубок и дерева дети соберут кран-лифт, мощный пресс, клешню-манипулятор и балансировочный 3D-лабиринт. Включаем инженерию на максимум!",
           "teacherName": "Юдицкий Илья Игоревич",
           "tags": [
             "Офлайн",
-            "IT и Электроника"
+            "Гидравлика"
           ],
-          "programFilterLabel": "Minecraft: Пробуждение Стража",
+          "programNameH1": "Мехвариум",
+          "programNameH2": "Мастерская Гидравлических Монстров",
+          "programFilterLabel": "Мехвариум: Мастерская Гидравлических Монстров",
           "ageLabel": "6–13 лет",
-          "formatType": "Интенсив (полдня)",
-          "formatTime": "Пн-Пт, 9:00 – 12:30",
-          "formatNote": "Формат интенсива.",
+          "formatType": "Интенсив (4 дня)",
+          "formatNote": "Укороченный формат (4 ак.ч. в день)",
           "status": "Согласование",
           "isArchived": false,
           "allowWaitlistWhenSoldOut": true,
@@ -747,27 +983,32 @@
           "allowPreliminaryRegistration": true,
           "variants": [
             {
-              "id": "school-937-orekhovo:2026-06-15:9:00",
-              "type": "Интенсив (полдня)",
-              "time": "Пн-Пт, 9:00 – 12:30",
-              "priceLabel": "8 500 ₽",
-              "note": "Формат интенсива.",
-              "ageLabel": "6–13 лет"
+              "id": "school-937-orekhovo:2026-06-08:интенсив-4-дня",
+              "type": "Интенсив (4 дня)",
+              "time": "Пн-Чт, 9:00 – 12:30",
+              "priceLabel": "6 800 ₽",
+              "note": "Укороченный формат (4 ак.ч. в день)",
+              "ageLabel": "6–13 лет",
+              "enrolled": 0,
+              "registrationChannel": "brainmaster",
+              "allowPreliminaryRegistration": true
             }
           ]
         }
-      },
+      }
+    ],
+    "minecraft-probuzhdenie-strazhey": [
       {
-        "id": "sheet:minecraft-probuzhdenie-strazhey:school-1383-verkhnie-likhobory:2026-06-22:2026-06-26:9:00",
+        "id": "sheet:minecraft-probuzhdenie-strazhey:school-1383-verkhnie-likhobory:2026-06-22:2026-06-26",
         "venueSlug": "school-1383-verkhnie-likhobory",
         "shiftLabel": "Minecraft: Пробуждение Стража · Школа №1383",
         "startDate": "2026-06-22",
         "endDate": "2026-06-26",
         "startTime": "9:00",
-        "endTime": "13:00",
+        "endTime": "18:00",
         "dateRange": "22.06.2026 — 26.06.2026",
-        "daySchedule": "Ежедневно: 9:00–13:00",
-        "priceLabel": "10 000 ₽",
+        "daySchedule": "Ежедневно: 9:00–18:00",
+        "priceLabel": "16 500 ₽",
         "mosBookingUrl": null,
         "includedNote": "Формат интенсива. Контакт: Халаджан Г.А.\n\nВозраст: 6–13 лет",
         "sheetStatus": "Согласование",
@@ -781,11 +1022,12 @@
             "Офлайн",
             "IT и Электроника"
           ],
+          "programNameH1": "Minecraft",
+          "programNameH2": "Пробуждение Стража",
           "programFilterLabel": "Minecraft: Пробуждение Стража",
           "ageLabel": "6–13 лет",
-          "formatType": "Интенсив (полдня)",
-          "formatTime": "Пн-Пт, 9:00 – 12:30",
-          "formatNote": "Формат интенсива. Контакт: Халаджан Г.А.",
+          "formatType": "Полный день",
+          "formatNote": "Питание: Обед + Полдник",
           "status": "Согласование",
           "isArchived": false,
           "allowWaitlistWhenSoldOut": true,
@@ -793,18 +1035,32 @@
           "allowPreliminaryRegistration": true,
           "variants": [
             {
-              "id": "school-1383-verkhnie-likhobory:2026-06-22:9:00",
+              "id": "school-1383-verkhnie-likhobory:2026-06-22:полный-день",
+              "type": "Полный день",
+              "time": "Пн-Пт, 9:00 – 18:00",
+              "priceLabel": "16 500 ₽",
+              "note": "Питание: Обед + Полдник",
+              "ageLabel": "6–13 лет",
+              "enrolled": 0,
+              "registrationChannel": "brainmaster",
+              "allowPreliminaryRegistration": true
+            },
+            {
+              "id": "school-1383-verkhnie-likhobory:2026-06-22:интенсив-полдня",
               "type": "Интенсив (полдня)",
               "time": "Пн-Пт, 9:00 – 12:30",
               "priceLabel": "10 000 ₽",
               "note": "Формат интенсива. Контакт: Халаджан Г.А.",
-              "ageLabel": "6–13 лет"
+              "ageLabel": "6–13 лет",
+              "enrolled": 0,
+              "registrationChannel": "brainmaster",
+              "allowPreliminaryRegistration": true
             }
           ]
         }
       },
       {
-        "id": "sheet:minecraft-probuzhdenie-strazhey:school-1517-narodnoe-opolchenie:2026-06-15:2026-06-19:9:00",
+        "id": "sheet:minecraft-probuzhdenie-strazhey:school-1517-narodnoe-opolchenie:2026-06-15:2026-06-19",
         "venueSlug": "school-1517-narodnoe-opolchenie",
         "shiftLabel": "Minecraft: Пробуждение Стража · Школа №1517",
         "startDate": "2026-06-15",
@@ -823,10 +1079,11 @@
           "displayTitle": "Minecraft: Пробуждение Стража",
           "teacherName": "Хмельков Даниил Антонович",
           "tags": [],
+          "programNameH1": "Minecraft",
+          "programNameH2": "Пробуждение Стража",
           "programFilterLabel": "Minecraft: Пробуждение Стража",
           "formatType": "Minecraft: Пробуждение Стража",
-          "formatTime": "Ежедневно: 9:00–13:00",
-          "formatNote": "Формат интенсива. Контакт: Хмельков Д.А.\n\nВозраст: 6–13 лет",
+          "formatNote": "Формат интенсива. Контакт: Хмельков Д.А. Возраст: 6–13 лет",
           "status": "Согласование",
           "isArchived": false,
           "allowWaitlistWhenSoldOut": true,
@@ -834,17 +1091,20 @@
           "allowPreliminaryRegistration": true,
           "variants": [
             {
-              "id": "school-1517-narodnoe-opolchenie:2026-06-15:9:00",
+              "id": "school-1517-narodnoe-opolchenie:2026-06-15:minecraft-пробуждение-стража",
               "type": "Minecraft: Пробуждение Стража",
-              "time": "Ежедневно: 9:00–13:00",
+              "time": "Пн-Пт, 9:00 – 13:00",
               "priceLabel": "17 500 ₽",
-              "note": "Формат интенсива. Контакт: Хмельков Д.А.\n\nВозраст: 6–13 лет"
+              "note": "Формат интенсива. Контакт: Хмельков Д.А. Возраст: 6–13 лет",
+              "enrolled": 0,
+              "registrationChannel": "brainmaster",
+              "allowPreliminaryRegistration": true
             }
           ]
         }
       },
       {
-        "id": "sheet:minecraft-probuzhdenie-strazhey:school-17-belyaevo:2026-06-15:2026-06-19:9:00",
+        "id": "sheet:minecraft-probuzhdenie-strazhey:school-17-belyaevo:2026-06-15:2026-06-19",
         "venueSlug": "school-17-belyaevo",
         "shiftLabel": "Minecraft: Пробуждение Стража · Школа №17",
         "startDate": "2026-06-15",
@@ -867,10 +1127,11 @@
             "Офлайн",
             "IT и Электроника"
           ],
+          "programNameH1": "Minecraft",
+          "programNameH2": "Пробуждение Стража",
           "programFilterLabel": "Minecraft: Пробуждение Стража",
           "ageLabel": "6–13 лет",
           "formatType": "Интенсив (полдня)",
-          "formatTime": "Пн-Пт, 9:00 – 13:00",
           "formatNote": "Формат интенсива.",
           "status": "Согласование",
           "isArchived": false,
@@ -879,49 +1140,51 @@
           "allowPreliminaryRegistration": true,
           "variants": [
             {
-              "id": "school-17-belyaevo:2026-06-15:9:00",
+              "id": "school-17-belyaevo:2026-06-15:интенсив-полдня",
               "type": "Интенсив (полдня)",
               "time": "Пн-Пт, 9:00 – 13:00",
               "priceLabel": "17 500 ₽",
               "note": "Формат интенсива.",
-              "ageLabel": "6–13 лет"
+              "ageLabel": "6–13 лет",
+              "enrolled": 0,
+              "registrationChannel": "brainmaster",
+              "allowPreliminaryRegistration": true
             }
           ]
         }
-      }
-    ],
-    "cyber-rhythm": [
+      },
       {
-        "id": "sheet:cyber-rhythm:school-2103-yasenevo:2026-06-22:2026-06-26:9:00",
+        "id": "sheet:minecraft-probuzhdenie-strazhey:school-2103-yasenevo:2026-06-15:2026-06-19",
         "venueSlug": "school-2103-yasenevo",
-        "shiftLabel": "КиберЛагерь КиберРитм: Инженерия Звука · Школа №2103",
-        "startDate": "2026-06-22",
-        "endDate": "2026-06-26",
-        "startTime": "9:00",
-        "endTime": "12:30",
-        "dateRange": "22.06.2026 — 26.06.2026",
-        "daySchedule": "Ежедневно: 9:00–12:30",
+        "shiftLabel": "Minecraft: Пробуждение Стража · Школа №2103",
+        "startDate": "2026-06-15",
+        "endDate": "2026-06-19",
+        "startTime": "8:00",
+        "endTime": "18:00",
+        "dateRange": "15.06.2026 — 19.06.2026",
+        "daySchedule": "Ежедневно: 8:00–18:00",
         "priceLabel": "8 500 ₽",
-        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/839055",
-        "includedNote": "Формат интенсива. Корпус ШО-3.\n\nВозраст: 6–13 лет\n\nКод карточки mos.ru: 2442453",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/841894",
+        "includedNote": "Формат интенсива. Корпус ШО-3.\n\nВозраст: 6–13 лет\n\nКод карточки mos.ru: 2444397",
         "sheetStatus": "Идёт набор",
         "enrolled": 0,
         "maxCapacity": 20,
         "scheduleCard": {
-          "displayTitle": "КиберЛагерь КиберРитм: Инженерия Звука",
-          "description": "«КиберРитм» — музыку и гаджеты создаем сами! За 5 дней интенсива ваш ребенок пройдет полный путь инженера: от первых опытов со звуком до 3D-моделирования и сборки собственной Bluetooth-колонки! Мы освоим магию акустики, электронику и безопасную пайку. Превращаем любовь к гаджетам в реальные навыки!",
+          "displayTitle": "Minecraft: Пробуждение Стража",
+          "description": "«Minecraft 2.0: Пробуждение Стража» — продолжение Легендарного Квеста! Игра снова выходит за пределы монитора, и ставки растут! За время интенсива ребята скрафтят не просто игрушку, а настоящего умного робота-моба. Мы по-взрослому спаяем печатную плату, установим ИК-датчик движения, мощный аккумулятор и аудиомодуль. Твой личный Страж-Крипер буквально оживет!",
           "teacherName": "Любченко Виталий Владимирович",
           "tags": [
             "Офлайн",
-            "Инженерия Звука"
+            "IT и Электроника"
           ],
           "locationNote": "Корпус ШО-3",
-          "programFilterLabel": "КиберЛагерь КиберРитм: Инженерия Звука",
+          "programNameH1": "Minecraft",
+          "programNameH2": "Пробуждение Стража",
+          "programFilterLabel": "Minecraft: Пробуждение Стража",
           "ageLabel": "6–13 лет",
           "formatType": "Интенсив (полдня)",
-          "formatTime": "Пн-Пт, 9:00 – 12:30",
           "formatNote": "Формат интенсива. Корпус ШО-3.",
-          "mosRuCode": "2442453",
+          "mosRuCode": "2444397",
           "status": "Идёт набор",
           "isArchived": false,
           "allowWaitlistWhenSoldOut": true,
@@ -929,27 +1192,43 @@
           "allowPreliminaryRegistration": false,
           "variants": [
             {
-              "id": "school-2103-yasenevo:2026-06-22:9:00",
+              "id": "school-2103-yasenevo:2026-06-15:интенсив-полдня",
               "type": "Интенсив (полдня)",
               "time": "Пн-Пт, 9:00 – 12:30",
               "priceLabel": "8 500 ₽",
               "note": "Формат интенсива. Корпус ШО-3.",
               "ageLabel": "6–13 лет",
-              "mosRuCode": "2442453",
-              "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/839055"
+              "mosRuCode": "2444397",
+              "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/841894",
+              "enrolled": 0,
+              "registrationChannel": "mos_ru",
+              "allowPreliminaryRegistration": false
+            },
+            {
+              "id": "school-2103-yasenevo:2026-06-15:полный-день",
+              "type": "Полный день",
+              "time": "Пн-Пт, 8:00 – 18:00",
+              "priceLabel": "14 000 ₽",
+              "note": "Формат интенсива. Корпус ШО-3.",
+              "ageLabel": "6–13 лет",
+              "mosRuCode": "2444397",
+              "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/841894",
+              "enrolled": 0,
+              "registrationChannel": "mos_ru",
+              "allowPreliminaryRegistration": false
             }
           ]
         }
       },
       {
-        "id": "sheet:cyber-rhythm:school-937-orekhovo:2026-06-22:2026-06-26:9:00",
+        "id": "sheet:minecraft-probuzhdenie-strazhey:school-937-orekhovo:2026-06-15:2026-06-19",
         "venueSlug": "school-937-orekhovo",
-        "shiftLabel": "КиберЛагерь КиберРитм: Инженерия Звука · Школа №937",
-        "startDate": "2026-06-22",
-        "endDate": "2026-06-26",
+        "shiftLabel": "Minecraft: Пробуждение Стража · Школа №937",
+        "startDate": "2026-06-15",
+        "endDate": "2026-06-19",
         "startTime": "9:00",
         "endTime": "12:30",
-        "dateRange": "22.06.2026 — 26.06.2026",
+        "dateRange": "15.06.2026 — 19.06.2026",
         "daySchedule": "Ежедневно: 9:00–12:30",
         "priceLabel": "8 500 ₽",
         "mosBookingUrl": null,
@@ -958,17 +1237,18 @@
         "enrolled": 0,
         "maxCapacity": 20,
         "scheduleCard": {
-          "displayTitle": "КиберЛагерь КиберРитм: Инженерия Звука",
-          "description": "«КиберРитм» — музыку и гаджеты создаем сами! За 5 дней интенсива ваш ребенок пройдет полный путь инженера: от первых опытов со звуком до 3D-моделирования и сборки собственной Bluetooth-колонки! Мы освоим магию акустики, электронику и безопасную пайку. Превращаем любовь к гаджетам в реальные навыки!",
+          "displayTitle": "Minecraft: Пробуждение Стража",
+          "description": "«Minecraft 2.0: Пробуждение Стража» — продолжение Легендарного Квеста! Игра снова выходит за пределы монитора, и ставки растут! За время интенсива ребята скрафтят не просто игрушку, а настоящего умного робота-моба. Мы по-взрослому спаяем печатную плату, установим ИК-датчик движения, мощный аккумулятор и аудиомодуль. Твой личный Страж-Крипер буквально оживет!",
           "teacherName": "Юдицкий Илья Игоревич",
           "tags": [
             "Офлайн",
-            "Инженерия Звука"
+            "IT и Электроника"
           ],
-          "programFilterLabel": "КиберЛагерь КиберРитм: Инженерия Звука",
+          "programNameH1": "Minecraft",
+          "programNameH2": "Пробуждение Стража",
+          "programFilterLabel": "Minecraft: Пробуждение Стража",
           "ageLabel": "6–13 лет",
           "formatType": "Интенсив (полдня)",
-          "formatTime": "Пн-Пт, 9:00 – 12:30",
           "formatNote": "Формат интенсива.",
           "status": "Согласование",
           "isArchived": false,
@@ -977,107 +1257,15 @@
           "allowPreliminaryRegistration": true,
           "variants": [
             {
-              "id": "school-937-orekhovo:2026-06-22:9:00",
+              "id": "school-937-orekhovo:2026-06-15:интенсив-полдня",
               "type": "Интенсив (полдня)",
               "time": "Пн-Пт, 9:00 – 12:30",
               "priceLabel": "8 500 ₽",
               "note": "Формат интенсива.",
-              "ageLabel": "6–13 лет"
-            }
-          ]
-        }
-      },
-      {
-        "id": "sheet:cyber-rhythm:school-1517-narodnoe-opolchenie:2026-06-22:2026-06-26:9:00",
-        "venueSlug": "school-1517-narodnoe-opolchenie",
-        "shiftLabel": "КиберРитм + Minecraft: Пробуждение Стража · Школа №1517",
-        "startDate": "2026-06-22",
-        "endDate": "2026-06-26",
-        "startTime": "9:00",
-        "endTime": "13:00",
-        "dateRange": "22.06.2026 — 26.06.2026",
-        "daySchedule": "Ежедневно: 9:00–13:00",
-        "priceLabel": "35 000 ₽",
-        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/842871",
-        "includedNote": "Формат интенсива. Контакт: Хмельков Д.А.\n\nВозраст: 6–13 лет\n\nКод карточки mos.ru: 2445194",
-        "sheetStatus": "Согласование",
-        "enrolled": 0,
-        "maxCapacity": 20,
-        "scheduleCard": {
-          "displayTitle": "КиберРитм + Minecraft: Пробуждение Стража",
-          "description": "Двойная смена! Формат 2 недель. Сначала мы пройдем полный путь инженера и соберем свою Bluetooth-колонку в \"КиберРитме\", а на второй неделе оживим умного Стража из Minecraft с датчиками движения!",
-          "teacherName": "Хмельков Даниил Антонович",
-          "tags": [
-            "Офлайн",
-            "Марафон (2 недели)"
-          ],
-          "programFilterLabel": "КиберРитм + Minecraft: Пробуждение Стража",
-          "ageLabel": "6–13 лет",
-          "formatType": "Марафон (2 недели)",
-          "formatTime": "Пн-Пт, 9:00 – 12:45",
-          "formatNote": "Две программы подряд (5 + 5 дней)",
-          "mosRuCode": "2445194",
-          "status": "Согласование",
-          "isArchived": false,
-          "allowWaitlistWhenSoldOut": true,
-          "registrationChannel": "mos_ru",
-          "allowPreliminaryRegistration": true,
-          "variants": [
-            {
-              "id": "school-1517-narodnoe-opolchenie:2026-06-22:9:00",
-              "type": "Марафон (2 недели)",
-              "time": "Пн-Пт, 9:00 – 12:45",
-              "priceLabel": "35 000 ₽",
-              "note": "Две программы подряд (5 + 5 дней)",
               "ageLabel": "6–13 лет",
-              "mosRuCode": "2445194",
-              "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/842871"
-            }
-          ]
-        }
-      },
-      {
-        "id": "sheet:cyber-rhythm:school-17-belyaevo:2026-06-22:2026-06-26:9:00",
-        "venueSlug": "school-17-belyaevo",
-        "shiftLabel": "КиберЛагерь КиберРитм: Инженерия Звука · Школа №17",
-        "startDate": "2026-06-22",
-        "endDate": "2026-06-26",
-        "startTime": "9:00",
-        "endTime": "13:00",
-        "dateRange": "22.06.2026 — 26.06.2026",
-        "daySchedule": "Ежедневно: 9:00–13:00",
-        "priceLabel": "17 500 ₽",
-        "mosBookingUrl": null,
-        "includedNote": "Формат интенсива.\n\nВозраст: 6–13 лет",
-        "sheetStatus": "Согласование",
-        "enrolled": 0,
-        "maxCapacity": 20,
-        "scheduleCard": {
-          "displayTitle": "КиберЛагерь КиберРитм: Инженерия Звука",
-          "description": "«КиберРитм» — музыку и гаджеты создаем сами! За 5 дней интенсива ваш ребенок пройдет полный путь инженера: от первых опытов со звуком до 3D-моделирования и сборки собственной Bluetooth-колонки! Мы освоим магию акустики, электронику и безопасную пайку. Превращаем любовь к гаджетам в реальные навыки!",
-          "teacherName": "Сидоренко Анастасия Михайловна",
-          "tags": [
-            "Офлайн",
-            "Инженерия Звука"
-          ],
-          "programFilterLabel": "КиберЛагерь КиберРитм: Инженерия Звука",
-          "ageLabel": "6–13 лет",
-          "formatType": "Интенсив (полдня)",
-          "formatTime": "Пн-Пт, 9:00 – 13:00",
-          "formatNote": "Формат интенсива.",
-          "status": "Согласование",
-          "isArchived": false,
-          "allowWaitlistWhenSoldOut": true,
-          "registrationChannel": "brainmaster",
-          "allowPreliminaryRegistration": true,
-          "variants": [
-            {
-              "id": "school-17-belyaevo:2026-06-22:9:00",
-              "type": "Интенсив (полдня)",
-              "time": "Пн-Пт, 9:00 – 13:00",
-              "priceLabel": "17 500 ₽",
-              "note": "Формат интенсива.",
-              "ageLabel": "6–13 лет"
+              "enrolled": 0,
+              "registrationChannel": "brainmaster",
+              "allowPreliminaryRegistration": true
             }
           ]
         }
@@ -1085,16 +1273,16 @@
     ],
     "minecraft-taina-drevnih-inzhenerov": [
       {
-        "id": "sheet:minecraft-taina-drevnih-inzhenerov:school-1383-verkhnie-likhobory:2026-06-15:2026-06-19:9:00",
+        "id": "sheet:minecraft-taina-drevnih-inzhenerov:school-1383-verkhnie-likhobory:2026-06-15:2026-06-19",
         "venueSlug": "school-1383-verkhnie-likhobory",
         "shiftLabel": "Minecraft: Тайна Древних Инженеров · Школа №1383",
         "startDate": "2026-06-15",
         "endDate": "2026-06-19",
         "startTime": "9:00",
-        "endTime": "13:00",
+        "endTime": "18:00",
         "dateRange": "15.06.2026 — 19.06.2026",
-        "daySchedule": "Ежедневно: 9:00–13:00",
-        "priceLabel": "10 000 ₽",
+        "daySchedule": "Ежедневно: 9:00–18:00",
+        "priceLabel": "16 500 ₽",
         "mosBookingUrl": null,
         "includedNote": "Формат интенсива. Контакт: Халаджан Г.А.\n\nВозраст: 6–13 лет",
         "sheetStatus": "Согласование",
@@ -1108,11 +1296,12 @@
             "Офлайн",
             "IT и Электроника"
           ],
+          "programNameH1": "Minecraft",
+          "programNameH2": "Тайна Древних Инженеров",
           "programFilterLabel": "Minecraft: Тайна Древних Инженеров",
           "ageLabel": "6–13 лет",
-          "formatType": "Интенсив (полдня)",
-          "formatTime": "Пн-Пт, 9:00 – 12:30",
-          "formatNote": "Формат интенсива. Контакт: Халаджан Г.А.",
+          "formatType": "Полный день",
+          "formatNote": "Питание: Обед + Полдник",
           "status": "Согласование",
           "isArchived": false,
           "allowWaitlistWhenSoldOut": true,
@@ -1120,12 +1309,26 @@
           "allowPreliminaryRegistration": true,
           "variants": [
             {
-              "id": "school-1383-verkhnie-likhobory:2026-06-15:9:00",
+              "id": "school-1383-verkhnie-likhobory:2026-06-15:полный-день",
+              "type": "Полный день",
+              "time": "Пн-Пт, 9:00 – 18:00",
+              "priceLabel": "16 500 ₽",
+              "note": "Питание: Обед + Полдник",
+              "ageLabel": "6–13 лет",
+              "enrolled": 0,
+              "registrationChannel": "brainmaster",
+              "allowPreliminaryRegistration": true
+            },
+            {
+              "id": "school-1383-verkhnie-likhobory:2026-06-15:интенсив-полдня",
               "type": "Интенсив (полдня)",
               "time": "Пн-Пт, 9:00 – 12:30",
               "priceLabel": "10 000 ₽",
               "note": "Формат интенсива. Контакт: Халаджан Г.А.",
-              "ageLabel": "6–13 лет"
+              "ageLabel": "6–13 лет",
+              "enrolled": 0,
+              "registrationChannel": "brainmaster",
+              "allowPreliminaryRegistration": true
             }
           ]
         }

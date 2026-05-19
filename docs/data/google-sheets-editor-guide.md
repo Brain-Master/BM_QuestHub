@@ -11,9 +11,40 @@
 
 ## Вкладки
 
-**Hot:** `Расписание` — одна строка = одна смена. Обязательные колонки: `program_name`, `quest_slug`, `venue_slug`, `start_date`, `end_date`, `start_time`, `end_time`, `price`, `school_name`, `address`, `status`. Полный список — [`sheet-contract.ts`](../../apps/web/lib/offers/sheet-contract.ts).
+### Hot: «Группы» + «Форматы»
 
-**Cold:**
+**Подробная схема данных (pipeline, ID, snapshot):** [hot-schedule-data.md](./hot-schedule-data.md)
+
+Связь **1 : N** по колонке `shift_group_id`:
+
+| Лист | Строка = | Обязательные поля |
+|------|----------|-------------------|
+| **Группы** | одна смена (карточка на сайте) | `shift_group_id`, `program_name_h2`, `quest_slug`, `venue_slug`, `start_date`, `end_date`, `address`, `status` |
+| **Форматы** | один тариф внутри смены | `shift_group_id`, `start_time`, `end_time`, `price` |
+
+На листе **Группы** — общие данные: `program_name_h1` (вселенная, h1), `program_name_h2` (курс, h2), `school_name`, `description`, …  
+На листе **Группы** также: `allow_waitlist_when_sold_out` (лист ожидания при «Мест нет» для всей смены).  
+На листе **Форматы** — тариф: `format_type`, `registration_channel`, `enrolled`, `mos_ru_code`, `age_group`, …
+
+Подпись «Мехвариум: Лаборатория…» = `program_name_h1` + `program_name_h2` (двоеточие только в UI). Старая колонка `program_name` при sync делится по первому `:`.
+
+Несколько строк на **Форматы** с одним `shift_group_id` → одна карточка на сайте с несколькими тарифами.
+
+Колонки `format_time` в таблице **нет** — расписание тарифа на сайте считается из дат группы и `start_time`/`end_time` формата.
+
+**Цена:** допустимы `8500`, `'8500`, `8 500`, `14'000,00`, `8 500 ₽` — нормализуются в [`sheet-field-parsers.ts`](../../apps/web/lib/offers/sheet-field-parsers.ts).
+
+Полные списки колонок — [`sheet-contract.ts`](../../apps/web/lib/offers/sheet-contract.ts) (`GROUP_REQUIRED_HEADERS`, `FORMAT_REQUIRED_HEADERS`).
+
+```bash
+make seed-sheet-headers              # создать листы и шапки «Группы» / «Форматы»
+make import-site-data-to-sheets --hot-only   # заполнить из snapshot
+make backfill-shift-group-ids        # пересчитать shift_group_id на листе «Группы»
+```
+
+Лист `Расписание` (старый плоский формат) **больше не читается** sync-ом.
+
+### Cold
 
 - `Миры` — вселенные (slug, name, description, theme_key, …)
 - `Площадки` — venues (slug, name, type, address, …)
@@ -42,23 +73,3 @@ node scripts/setup-content-admin.mjs   # токен для Apps Script → secre
 | Cold | S3 catalog/map + **Timeweb deploy** → 2–5 мин |
 
 Порядок при новой площадке/курсе: сначала **Cold**, затем **Hot**.
-
-## Локально (разработчик)
-
-```bash
-cp scripts/sheets.env.example scripts/sheets.env
-# + GOOGLE_SERVICE_ACCOUNT_JSON в scripts/sheets.env или apps/web/.env.local
-
-make publish-sheet-hot
-make publish-sheet-cold
-```
-
-## Env
-
-См. [`scripts/sheets.env.example`](../../scripts/sheets.env.example) и [`apps/web/.env.example`](../../apps/web/.env.example).
-
-GitHub Actions secrets: `GOOGLE_SERVICE_ACCOUNT_JSON`, S3 keys, `CONTENT_REBUILD_GITHUB_TOKEN`; vars: `GOOGLE_SHEETS_HOT_SPREADSHEET_ID`, `GOOGLE_SHEETS_COLD_SPREADSHEET_ID`, `TIMEWEB_APP_ID`.
-
-## Этап 2
-
-Лёгкая CMS с формами и preview — [`cms-roadmap.md`](../deployment/cms-roadmap.md).

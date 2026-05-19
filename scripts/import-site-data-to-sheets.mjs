@@ -11,6 +11,16 @@ import YAML from "yaml";
 
 import { loadDotEnv, loadRepoEnv } from "./load-dotenv.mjs";
 
+function splitProgramName(full) {
+  const s = String(full || "").trim();
+  const idx = s.indexOf(":");
+  if (idx === -1) return { program_name_h1: "", program_name_h2: s };
+  return {
+    program_name_h1: s.slice(0, idx).trim(),
+    program_name_h2: s.slice(idx + 1).trim(),
+  };
+}
+
 const ROOT = loadRepoEnv();
 loadDotEnv(path.join(ROOT, "scripts", "sheets.env"));
 loadDotEnv(path.join(ROOT, "apps", "web", ".env.local"));
@@ -22,35 +32,40 @@ const COLD_ID =
   process.env.GOOGLE_SHEETS_COLD_SPREADSHEET_ID?.trim() ||
   "1fqeVC8BhjGWtOR20NhCUQuhwgchkCCzYsmiudpGE4jc";
 
-const HOT_HEADERS = [
-  "program_name",
+const HOT_GROUP_HEADERS = [
+  "shift_group_id",
+  "program_name_h1",
+  "program_name_h2",
   "quest_slug",
   "venue_slug",
   "start_date",
   "end_date",
-  "start_time",
-  "end_time",
-  "price",
   "school_name",
   "address",
   "status",
   "metro_station",
   "teacher",
-  "age_group",
-  "mos_ru_code",
-  "mos_ru_link",
   "max_capacity",
-  "enrolled",
   "notes",
-  "registration_channel",
-  "display_title",
   "description",
   "tags",
-  "format_type",
-  "format_time",
-  "format_note",
   "is_archived",
   "allow_waitlist_when_sold_out",
+];
+
+const HOT_FORMAT_HEADERS = [
+  "shift_group_id",
+  "start_time",
+  "end_time",
+  "price",
+  "format_type",
+  "format_note",
+  "enrolled",
+  "mos_ru_code",
+  "mos_ru_link",
+  "age_group",
+  "registration_channel",
+  "allow_preliminary_registration",
 ];
 
 const WEB = path.join(ROOT, "apps", "web");
@@ -104,8 +119,29 @@ function boolCell(v) {
 
 function parsePriceLabel(label) {
   if (!label) return "";
-  const digits = String(label).replace(/\D/g, "");
-  return digits || "";
+  let s = String(label).trim().replace(/^'+/, "");
+  const usDecimal = s.match(/^([\d\s'’]+)\.(\d{1,2})$/);
+  if (usDecimal) {
+    return usDecimal[1].replace(/[^\d]/g, "") || "";
+  }
+  const comma = s.match(/^(.+),(\d{1,2})$/);
+  if (comma) {
+    return comma[1].replace(/[^\d]/g, "") || "";
+  }
+  return s.replace(/[^\d]/g, "") || "";
+}
+
+function shiftGroupIdFromOffer(offer, questSlug) {
+  if (offer.id?.startsWith("sheet:")) return offer.id.slice("sheet:".length);
+  return `${questSlug}:${offer.venueSlug}:${offer.startDate}:${offer.endDate}`;
+}
+
+function parseTimesFromVariantTime(timeStr, fallbackStart, fallbackEnd) {
+  const m = String(timeStr || "").match(
+    /(\d{1,2}:\d{2})\s*[–—-]\s*(\d{1,2}:\d{2})/,
+  );
+  if (m) return { start: m[1], end: m[2] };
+  return { start: fallbackStart, end: fallbackEnd };
 }
 
 function stripIncludedParts(note) {
@@ -131,57 +167,102 @@ function buildVenueIndex() {
   return bySlug;
 }
 
-function offerToRow(offer, questSlug, venueBySlug) {
+function offerToGroupRow(offer, questSlug, venueBySlug) {
   const sc = offer.scheduleCard ?? {};
   const venue = venueBySlug.get(offer.venueSlug) ?? {};
   const parts = (offer.shiftLabel ?? "").split(" · ");
   const schoolName = parts.length > 1 ? parts[parts.length - 1].trim() : "";
-  const variant = sc.variants?.[0];
+  const programSource =
+    sc.programFilterLabel ??
+    (sc.programNameH1 || sc.programNameH2
+      ? [sc.programNameH1, sc.programNameH2].filter(Boolean).join(": ")
+      : "") ??
+    parts[0]?.trim() ??
+    "";
+  const { program_name_h1, program_name_h2 } = splitProgramName(programSource);
   const row = {
-    program_name: sc.programFilterLabel ?? parts[0]?.trim() ?? "",
+    shift_group_id: shiftGroupIdFromOffer(offer, questSlug),
+    program_name_h1,
+    program_name_h2,
     quest_slug: questSlug,
     venue_slug: offer.venueSlug ?? "",
     start_date: offer.startDate ?? "",
     end_date: offer.endDate ?? "",
-    start_time: offer.startTime ?? "",
-    end_time: offer.endTime ?? "",
-    price: parsePriceLabel(offer.priceLabel),
     school_name: schoolName,
     address: venue.address ?? "",
     status: offer.sheetStatus ?? sc.status ?? "",
     metro_station: venue.metro ?? "",
     teacher: sc.teacherName ?? "",
-    age_group: sc.ageLabel ?? "",
-    mos_ru_code: sc.mosRuCode ?? variant?.mosRuCode ?? "",
-    mos_ru_link: offer.mosBookingUrl ?? variant?.mosBookingUrl ?? "",
     max_capacity:
       offer.maxCapacity === undefined ? "" : String(offer.maxCapacity),
-    enrolled: offer.enrolled === undefined ? "" : String(offer.enrolled),
     notes: stripIncludedParts(offer.includedNote),
-    registration_channel: sc.registrationChannel ?? "",
-    display_title: sc.displayTitle ?? "",
     description: sc.description ?? "",
     tags: (sc.tags ?? []).join("; "),
-    format_type: sc.formatType ?? "",
-    format_time: sc.formatTime ?? offer.daySchedule ?? "",
-    format_note: sc.formatNote ?? "",
     is_archived: boolCell(sc.isArchived),
     allow_waitlist_when_sold_out: boolCell(sc.allowWaitlistWhenSoldOut),
   };
-  return HOT_HEADERS.map((h) => row[h] ?? "");
+  return HOT_GROUP_HEADERS.map((h) => row[h] ?? "");
 }
 
-function buildHotRows() {
+function offerToFormatRow(offer, questSlug, variant) {
+  const sc = offer.scheduleCard ?? {};
+  const formatType = variant?.type ?? sc.formatType ?? "";
+  const formatNote = variant?.note ?? sc.formatNote ?? "";
+  const priceSource = variant?.priceLabel ?? offer.priceLabel;
+  const times = parseTimesFromVariantTime(
+    variant?.time,
+    offer.startTime ?? "",
+    offer.endTime ?? "",
+  );
+  const row = {
+    shift_group_id: shiftGroupIdFromOffer(offer, questSlug),
+    start_time: times.start,
+    end_time: times.end,
+    price: parsePriceLabel(priceSource),
+    format_type: formatType,
+    format_note: formatNote,
+    enrolled:
+      variant?.enrolled === undefined ? "" : String(variant.enrolled),
+    mos_ru_code: variant?.mosRuCode ?? sc.mosRuCode ?? "",
+    mos_ru_link: variant?.mosBookingUrl ?? offer.mosBookingUrl ?? "",
+    age_group: variant?.ageLabel ?? sc.ageLabel ?? "",
+    registration_channel:
+      variant?.registrationChannel ?? sc.registrationChannel ?? "",
+    allow_preliminary_registration: boolCell(
+      variant?.allowPreliminaryRegistration ?? sc.allowPreliminaryRegistration,
+    ),
+  };
+  return HOT_FORMAT_HEADERS.map((h) => row[h] ?? "");
+}
+
+function buildHotSheets() {
   const snapshot = readJson("data/offers-snapshot.json");
   const venueBySlug = buildVenueIndex();
-  const rows = [];
+  const groupById = new Map();
+  const formatRows = [];
   for (const [questSlug, offers] of Object.entries(snapshot.offersByQuest ?? {})) {
     for (const offer of offers) {
       const slug = questSlug || questSlugFromOfferId(offer.id);
-      rows.push(offerToRow(offer, slug, venueBySlug));
+      const groupId = shiftGroupIdFromOffer(offer, slug);
+      if (!groupById.has(groupId)) {
+        groupById.set(groupId, offerToGroupRow(offer, slug, venueBySlug));
+      }
+      const variants = offer.scheduleCard?.variants?.length
+        ? offer.scheduleCard.variants
+        : [null];
+      for (const variant of variants) {
+        formatRows.push({
+          groupId,
+          row: offerToFormatRow(offer, slug, variant),
+        });
+      }
     }
   }
-  return rows;
+  const groups = [...groupById.entries()]
+    .sort(([a], [b]) => a.localeCompare(b, "ru"))
+    .map(([, row]) => row);
+  formatRows.sort((a, b) => a.groupId.localeCompare(b.groupId, "ru"));
+  return { groups, formats: formatRows.map((e) => e.row) };
 }
 
 function worldToRow(w) {
@@ -320,9 +401,11 @@ async function main() {
   const token = await getAuthToken();
 
   if (doHot) {
-    await writeHeadersIfNeeded(HOT_ID, "'Расписание'!A1", HOT_HEADERS, token);
-    const rows = buildHotRows();
-    await clearAndWrite(HOT_ID, "Расписание", HOT_HEADERS, rows, token);
+    await writeHeadersIfNeeded(HOT_ID, "'Группы'!A1", HOT_GROUP_HEADERS, token);
+    await writeHeadersIfNeeded(HOT_ID, "'Форматы'!A1", HOT_FORMAT_HEADERS, token);
+    const { groups, formats } = buildHotSheets();
+    await clearAndWrite(HOT_ID, "Группы", HOT_GROUP_HEADERS, groups, token);
+    await clearAndWrite(HOT_ID, "Форматы", HOT_FORMAT_HEADERS, formats, token);
   }
 
   if (doCold) {

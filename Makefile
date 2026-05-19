@@ -59,6 +59,9 @@ setup-content-admin:
 import-site-data-to-sheets:
 	node scripts/import-site-data-to-sheets.mjs
 
+backfill-shift-group-ids:
+	node scripts/backfill-shift-group-ids.mjs
+
 deploy-yandex-content-admin:
 	node scripts/deploy-yandex-content-admin.mjs
 

@@ -1,5 +1,7 @@
 # Content deploy vs code deploy (hybrid)
 
+**Статус, диагностика и план работ:** [content-pipeline-status-plan.md](./content-pipeline-status-plan.md) (актуальный сводный документ).
+
 Static Timeweb App with **Google Sheets** as editor UI (этап 1) and optional CMS later (этап 2).
 
 | Tier | Source | On site | Timeweb rebuild |
@@ -49,6 +51,7 @@ Git push → Timeweb — React/TS only.
 
 ## Related
 
+- [hot-schedule-data.md](../data/hot-schedule-data.md) — структура HOT (Sheets → snapshot → UI)
 - [google-sheets-editor-guide.md](../data/google-sheets-editor-guide.md)
 - [cms-roadmap.md](./cms-roadmap.md)
 - [catalog-snapshot-contract.md](../data/catalog-snapshot-contract.md)

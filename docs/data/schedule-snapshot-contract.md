@@ -1,5 +1,7 @@
 # Schedule Snapshot Contract
 
+**Источник данных (Google Sheets, листы «Группы» / «Форматы»):** [hot-schedule-data.md](./hot-schedule-data.md)
+
 `apps/web/data/offers-snapshot.json` is the normalized schedule input for the
 Next.js app. Google Sheet is only the current producer. A future external
 service can publish the same JSON shape to S3 without changing Schedule Board
@@ -108,11 +110,18 @@ NEXT_PUBLIC_S3_PUBLIC_BASE_URL=https://<public-s3-base>
 - Each offer must satisfy `VenueOffer` from `apps/web/lib/schemas.ts`.
 - `venueSlug` must match a known venue from `content/venues`.
 - `startDate` and `endDate` use `YYYY-MM-DD`; `startTime` and `endTime` use
-  `H:mm` or `HH:mm`.
+  `H:mm` or `HH:mm` (span across all formats in the shift group).
+- `id` is stable per shift group: `sheet:{shift_group_id}` where
+  `shift_group_id` is `quest:venue:start:end` or an explicit column from Hot Sheet.
+- `maxCapacity` is per shift group; `scheduleCard.variants[].enrolled` is per
+  format. UI capacity uses the sum of variant enrollments vs `maxCapacity`.
+- `scheduleCard.variants[]` holds one entry per format (type, time, price,
+  mos.ru, enrolled). Hot Sheet: one row on «Группы», N rows on «Форматы» per
+  `shift_group_id` merge into one offer.
 - `scheduleCard` is optional for compatibility, but new producer data should
   fill it for Schedule Board quality.
-- `scheduleCard.allowWaitlistWhenSoldOut=true` enables a waitlist CTA only when
-  capacity is sold out.
+- `scheduleCard.allowWaitlistWhenSoldOut=true` (лист «Группы»,
+  `allow_waitlist_when_sold_out`) enables a waitlist CTA when capacity is sold out.
 - `scheduleCard.media.*.focalPoint` uses percentages from `0` to `100` for CSS
   `object-position`.
 

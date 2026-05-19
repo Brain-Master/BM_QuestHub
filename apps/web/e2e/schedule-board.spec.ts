@@ -22,6 +22,30 @@ test.describe("Schedule Board UX", () => {
     ).toBeVisible();
   });
 
+  test("compact card with three or more formats renders all tariffs in footer", async ({
+    page,
+  }, testInfo) => {
+    test.skip(
+      testInfo.project.name === "mobile-chrome",
+      "Compact footer placement is a desktop layout pattern.",
+    );
+
+    await page.goto("/agenda");
+
+    const footerCard = page
+      .getByTestId("schedule-card")
+      .filter({ has: page.getByTestId("schedule-card-tariff-footer") })
+      .first();
+
+    if ((await footerCard.count()) === 0) {
+      test.skip(true, "Current snapshot has no shift with three or more formats.");
+    }
+
+    const tariffRows = footerCard.getByTestId("schedule-tariff-row");
+    await expect(tariffRows.first()).toBeVisible();
+    expect(await tariffRows.count()).toBeGreaterThanOrEqual(3);
+  });
+
   test("starts in compact mode without losing cards or CTA zone", async ({
     page,
   }, testInfo) => {

@@ -23,13 +23,6 @@ type Props = {
   onNavigate?: () => void;
 };
 
-function splitDisplayTitle(title: string, fallbackWorld: string): { world: string; title: string } {
-  const [prefix, ...rest] = title.split(":");
-  const nextTitle = rest.join(":").trim();
-  if (prefix && nextTitle) return { world: prefix.trim(), title: nextTitle };
-  return { world: fallbackWorld, title };
-}
-
 function hrefWithVariant(href: string, variantId: string): string {
   const [pathAndQuery, hash] = href.split("#");
   const [path, query = ""] = pathAndQuery.split("?");
@@ -82,7 +75,6 @@ export function ScheduleBoardCardMobile({
       ];
   const image = item.media.compact ?? item.media.hero;
   const price = priceSummary(variants);
-  const titleParts = splitDisplayTitle(item.displayTitle, item.tags[0] ?? item.world?.name ?? "Квест");
   const showSchool = !schoolSlug;
 
   return (
@@ -124,9 +116,11 @@ export function ScheduleBoardCardMobile({
 
         <div className="min-w-0 py-1 pr-1">
           <div className="mb-1.5 flex flex-wrap gap-1.5">
+            {item.programNameH1 ? (
             <Badge variant="outline" className="border-white/10 bg-black/20 px-2 py-0.5 text-[10px]">
-              {titleParts.world}
+              {item.programNameH1}
             </Badge>
+            ) : null}
           </div>
           <h3 className="font-heading text-base font-semibold leading-tight text-foreground">
             <Link
@@ -134,7 +128,7 @@ export function ScheduleBoardCardMobile({
               className="rounded-sm transition hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               onClick={onNavigate}
             >
-              {titleParts.title}
+              {item.programNameH2 ?? item.displayTitle}
             </Link>
           </h3>
           <div className="mt-2 grid gap-1.5 text-muted-foreground text-xs">

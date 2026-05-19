@@ -115,6 +115,10 @@ export const scheduleVariantSchema = z.object({
   ageLabel: nullableOptionalString,
   mosRuCode: nullableOptionalString,
   mosBookingUrl: nullableOptionalString,
+  /** Записано на этот формат (агрегат группы = сумма по variants). */
+  enrolled: z.number().int().nonnegative().optional(),
+  registrationChannel: registrationChannelSchema.optional(),
+  allowPreliminaryRegistration: z.boolean().optional(),
 });
 
 export const scheduleCardSchema = z.object({
@@ -126,6 +130,11 @@ export const scheduleCardSchema = z.object({
   shortDate: nullableOptionalString,
   shiftNumber: nullableOptionalString,
   locationNote: nullableOptionalString,
+  /** Вселенная / бренд (заголовок h1). */
+  programNameH1: nullableOptionalString,
+  /** Название курса (заголовок h2). */
+  programNameH2: nullableOptionalString,
+  /** Полная подпись для фильтров и поиска (h1 + h2). */
   programFilterLabel: nullableOptionalString,
   ageLabel: nullableOptionalString,
   formatType: nullableOptionalString,
