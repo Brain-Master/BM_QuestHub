@@ -130,7 +130,7 @@ function buildEnvironment() {
     CONTENT_REBUILD_REPOSITORY:
       process.env.CONTENT_REBUILD_REPOSITORY?.trim() || "Brain-Master/BM_QuestHub",
     CONTENT_REBUILD_REF:
-      process.env.CONTENT_REBUILD_REF?.trim() || "feat/unified-data-model-v2",
+      process.env.CONTENT_REBUILD_REF?.trim() || "main",
     SHEET_SYNC_WORKFLOW: "sheet-sync.yml",
     TIMEWEB_API_TOKEN: process.env.TIMEWEB_API_TOKEN?.trim() || "",
     TIMEWEB_APP_ID: process.env.TIMEWEB_APP_ID?.trim() || "",

@@ -37,6 +37,8 @@ Browser fetches `${NEXT_PUBLIC_S3_PUBLIC_BASE_URL}/data/offers-snapshot.json` (S
 
 Timeweb build with `SITE_SNAPSHOT_SOURCE=s3` bakes catalog/map into HTML after deploy.
 
+`make publish-sheet-cold` and GitHub Actions call [`scripts/timeweb-deploy.mjs`](../../scripts/timeweb-deploy.mjs), which resolves the latest `commit_sha` for the app’s configured Git branch (or `TIMEWEB_DEPLOY_BRANCH` in `scripts/timeweb.env`) before `POST /apps/{id}/deploy`.
+
 ## Code deploy
 
 Git push → Timeweb — React/TS only.

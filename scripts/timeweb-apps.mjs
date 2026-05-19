@@ -11,36 +11,32 @@
 import fs from "node:fs";
 import path from "node:path";
 import { loadRepoEnv } from "./load-dotenv.mjs";
+import {
+  brainMasterProvider,
+  fetchCommitSha,
+  findQuestHubRepo,
+  listProviders,
+  timewebApi,
+} from "./timeweb-vcs.mjs";
 
 const ROOT = loadRepoEnv();
-const API = "https://api.timeweb.cloud";
 
-async function api(pathname, options = {}) {
+function requireToken() {
   const token = process.env.TIMEWEB_API_TOKEN?.trim();
   if (!token) {
     console.error("[timeweb-apps] set TIMEWEB_API_TOKEN in scripts/timeweb.env");
     process.exit(1);
   }
-  const res = await fetch(`${API}${pathname}`, {
-    ...options,
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-      ...(options.headers || {}),
-    },
-  });
-  const text = await res.text();
-  let body;
+  return token;
+}
+
+async function api(pathname, options = {}) {
   try {
-    body = text ? JSON.parse(text) : null;
-  } catch {
-    body = text;
-  }
-  if (!res.ok) {
-    console.error(`[timeweb-apps] ${res.status} ${pathname}`, body);
+    return await timewebApi(requireToken(), pathname, options);
+  } catch (e) {
+    console.error(e.message);
     process.exit(1);
   }
-  return body;
 }
 
 function readAppEnvs() {
@@ -59,39 +55,6 @@ function readAppEnvs() {
   return envs;
 }
 
-async function listProviders() {
-  const body = await api("/api/v1/vcs-provider");
-  return body?.providers ?? body?.vcs_providers ?? body ?? [];
-}
-
-function brainMasterProvider(providers) {
-  return (
-    providers.find((p) => p.login === "Brain-Master" || p.provider === "github") ??
-    providers[0]
-  );
-}
-
-async function fetchCommitSha(providerId, repositoryId, branch) {
-  const body = await api(
-    `/api/v1/vcs-provider/${providerId}/repository/${repositoryId}/branch?name=${encodeURIComponent(branch)}`,
-  );
-  const commits = body?.commits ?? [];
-  const sha = commits[0]?.sha ?? commits[0]?.commit_sha;
-  if (sha) return sha;
-  throw new Error(`[timeweb-apps] no commit for branch ${branch}`);
-}
-
-async function findQuestHubRepo(providerId) {
-  const body = await api(`/api/v1/vcs-provider/${providerId}`);
-  const repos = body?.repositories ?? body ?? [];
-  return repos.find(
-    (r) =>
-      r.full_name?.toLowerCase().includes("bm_questhub") ||
-      r.name?.toLowerCase() === "bm_questhub" ||
-      r.url?.includes("BM_QuestHub"),
-  );
-}
-
 async function main() {
   const cmd = process.argv[2] || "list";
 
@@ -101,7 +64,8 @@ async function main() {
   }
 
   if (cmd === "repos") {
-    const providers = await listProviders();
+    const token = requireToken();
+    const providers = await listProviders(token);
     console.log("[timeweb-apps] providers:", JSON.stringify(providers, null, 2));
     for (const p of providers) {
       const id = p.id ?? p.provider_id;
@@ -117,7 +81,8 @@ async function main() {
     const appName = nameIdx >= 0 ? process.argv[nameIdx + 1] : "bm-questhub";
     const branch = branchIdx >= 0 ? process.argv[branchIdx + 1] : "main";
 
-    const providers = await listProviders();
+    const token = requireToken();
+    const providers = await listProviders(token);
     if (!providers.length) {
       console.error(
         "[timeweb-apps] No VCS providers. Link GitHub in App Platform panel first.",
@@ -126,7 +91,7 @@ async function main() {
     }
     const provider = brainMasterProvider(providers);
     const providerId = provider.id ?? provider.provider_id;
-    const repo = await findQuestHubRepo(providerId);
+    const repo = await findQuestHubRepo(token, providerId);
     if (!repo) {
       console.error("[timeweb-apps] BM_QuestHub repo not found. Run: node scripts/timeweb-apps.mjs repos");
       process.exit(1);
@@ -153,7 +118,7 @@ async function main() {
       : envs.NEXT_PUBLIC_S3_PUBLIC_BASE_URL;
     if (s3Base) envs.NEXT_PUBLIC_S3_PUBLIC_BASE_URL = s3Base;
 
-    const commitSha = await fetchCommitSha(providerId, repositoryId, branch);
+    const commitSha = await fetchCommitSha(token, providerId, repositoryId, branch);
     console.log(`[timeweb-apps] deploy branch ${branch} @ ${commitSha.slice(0, 7)}`);
 
     const payload = {
