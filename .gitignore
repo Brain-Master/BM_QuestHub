@@ -18,7 +18,20 @@ __pycache__/
 .Python
 .venv/
 venv/
+
+# Env / секреты (шаблоны *.example коммитим явно)
 .env
+.env.*
+!.env.example
+
+# Локальные ключи и credentials (не коммитить)
+/secret/
+*credentials*.json
+*service-account*.json
+*.pem
+
+# Артефакты деплоя Yandex Cloud Functions и похожие zip-пакеты
+**/function.zip
 
 # Node (если появятся пакеты вне apps/web)
 node_modules/
