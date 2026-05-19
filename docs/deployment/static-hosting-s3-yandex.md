@@ -91,6 +91,81 @@ Yandex should validate the payload again server-side, add its own trusted `recei
 `leadType` is `booking` for regular booking leads and `waitlist` for sold-out
 offers that allow a waitlist CTA.
 
+## Yandex Lead Receiver
+
+The production receiver lives in `apps/yandex-lead-receiver` and is intended
+for Yandex Cloud Functions with handler `index.handler`. It has no runtime npm
+dependencies; Google Sheets authorization is done with the service account JWT
+flow.
+
+The function accepts `POST` lead payloads and `OPTIONS` CORS preflight. A lead
+is acknowledged with `200 OK` only after the primary delivery succeeds:
+
+- Telegram Bot API sends a readable notification to the configured chat.
+- Google Sheets API appends the lead to the configured private spreadsheet.
+
+n8n forwarding is best-effort. The function calls `N8N_WEBHOOK_URL` with a
+short timeout before responding, but n8n errors do not fail the lead once
+Telegram and Google Sheets have accepted it. Do not move n8n forwarding after
+the response; a serverless runtime can freeze the process immediately after
+returning.
+
+### Function Environment
+
+Set these secrets only on the Yandex Cloud Function:
+
+```text
+ALLOWED_ORIGINS=https://quest.b-master.pro,https://1517.quest.b-master.pro
+TELEGRAM_BOT_TOKEN=<telegram bot token>
+TELEGRAM_CHAT_ID=<telegram chat id>
+GOOGLE_SERVICE_ACCOUNT_JSON=<one-line service account json>
+# Or use GOOGLE_SERVICE_ACCOUNT_JSON_BASE64 for CLI deployments.
+GOOGLE_SHEETS_SPREADSHEET_ID=<spreadsheet id>
+GOOGLE_LEADS_SHEET_RANGE=Leads!A:S
+N8N_WEBHOOK_URL=<optional n8n production webhook>
+N8N_TIMEOUT_MS=2500
+```
+
+Share the target Google Sheet with the service account `client_email` and give
+it edit access. The service account JSON must stay server-side; never expose it
+through `NEXT_PUBLIC_*`.
+
+### Deployment Sketch
+
+Create a zip from `apps/yandex-lead-receiver` and deploy it as a Yandex Cloud
+Function version with Node.js 18+ and entry point `index.handler`.
+
+Example shape:
+
+```bash
+cd apps/yandex-lead-receiver
+zip -r function.zip index.js package.json
+yc serverless function version create \
+  --function-name questhub-lead-receiver \
+  --runtime nodejs18 \
+  --entrypoint index.handler \
+  --memory 128m \
+  --execution-timeout 10s \
+  --source-path function.zip \
+  --environment ALLOWED_ORIGINS="https://quest.b-master.pro" \
+  --environment GOOGLE_LEADS_SHEET_RANGE="Leads!A:S"
+```
+
+Pass sensitive values with the Yandex Cloud console, a secrets flow, or your
+deployment environment rather than committing them. After the version is public,
+put its invoke URL into the static site build as `NEXT_PUBLIC_LEAD_SUBMIT_URL`.
+
+Current test/prod receiver (function `bm-lead-receiver`):
+
+```text
+NEXT_PUBLIC_LEAD_SUBMIT_URL=https://functions.yandexcloud.net/d4ellekng389grh5rck4
+```
+
+For local development, copy the line into `apps/web/.env.local` (gitignored) and
+restart the Next dev server so the public env is baked into the client bundle.
+On Timeweb (or any static host), set the same variable in the project build
+environment before `npm run build`.
+
 ## Offers Update Flow
 
 First cut: bake `apps/web/data/offers-snapshot.json` into the static build. Updating the schedule means:

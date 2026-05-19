@@ -35,6 +35,39 @@ Use this template for each entry:
 
 ## Entries
 
+### 2026-05-19 00:01 UTC+3 - Yandex Lead Receiver
+
+**Goal:** Route static-site lead forms through Yandex Cloud Functions with server-side Telegram, Google Sheets, and n8n integrations.
+
+**Completed:**
+- Added a standalone Yandex Cloud Function receiver for lead validation, CORS, Telegram delivery, Google Sheets append, and best-effort n8n forwarding.
+- Documented function environment, Google Sheet column order, and deployment flow.
+- Added local smoke tests for valid leads, validation failures, primary delivery failures, n8n failure tolerance, and sheet row order.
+- Deployed the receiver to Yandex Cloud Function `bm-lead-receiver` and verified a test lead reaches Google Sheets.
+
+**Changed Files:**
+- `apps/yandex-lead-receiver/index.js`: serverless lead receiver.
+- `apps/yandex-lead-receiver/index.test.js`: smoke tests for receiver behavior.
+- `apps/yandex-lead-receiver/package.json`: local test script and Node engine.
+- `apps/yandex-lead-receiver/.env.example`: Yandex Function environment template.
+- `apps/yandex-lead-receiver/README.md`: receiver usage and sheet column contract.
+- `docs/deployment/static-hosting-s3-yandex.md`: deployment and secret-handling guidance.
+- `docs/execution-log.md`: this journal entry.
+
+**Decisions:**
+- Keep the receiver dependency-free for a small deployable function zip.
+- Treat Telegram and Google Sheets as primary delivery; n8n is best-effort and does not block accepted leads.
+
+**Validation:**
+- `node --test` in `apps/yandex-lead-receiver`
+- `npm --prefix apps/web run lint`
+- Yandex Function test POST returned `ok: true`.
+- Google Sheets read-back confirmed the test lead row was appended.
+- IDE diagnostics reported no linter errors for edited files.
+
+**Open Items:**
+- Set `NEXT_PUBLIC_LEAD_SUBMIT_URL` in Timeweb build env, redeploy static site, and run a live browser form submission on prod.
+
 ### 2026-05-18 07:02 UTC+3 - Legal Policy And Registration Flows
 
 **Goal:** Publish the personal data policy, link it from booking surfaces, and split booking UX into mos.ru assistance, preliminary registration, and direct BrainMaster flows.
