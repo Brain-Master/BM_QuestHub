@@ -1,8 +1,7 @@
 import { Badge } from "@/components/ui/badge";
-import type {
-  ScheduleDisplayStatus,
-  ScheduleStatusVariant,
-} from "@/lib/offers/schedule-board";
+import type { ScheduleDisplayStatus } from "@/lib/offers/schedule-board";
+import { isScheduleDisplayStatusLive } from "@/lib/offers/schedule-dictionaries";
+import type { ScheduleStatusVariant } from "@/lib/offers/schedule-dictionaries";
 import { cn } from "@/lib/utils";
 
 const variantClass: Record<ScheduleStatusVariant, string> = {
@@ -27,7 +26,7 @@ type Props = {
 };
 
 export function ScheduleStatusBadge({ label, variant, className }: Props) {
-  const isLive = label === "Идёт набор" || label === "Можно присоединиться";
+  const isLive = isScheduleDisplayStatusLive(label);
 
   return (
     <Badge

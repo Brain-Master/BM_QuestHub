@@ -5,6 +5,8 @@ import path from "node:path";
 
 import { parse as parseYaml } from "yaml";
 
+import { scheduleV2ToOffersByQuest } from "@/lib/data/v2/v2-to-v1";
+import { loadScheduleSnapshotV2 } from "@/lib/data/site-snapshot-loader";
 import {
   questSchema,
   venueSchema,
@@ -13,12 +15,9 @@ import {
   type Venue,
   type World,
 } from "@/lib/schemas";
-import { readOffersSnapshot } from "@/lib/offers/snapshot-io";
 import { filterQuestsForSchool as filterQuestsForSchoolPure } from "@/lib/school-scope";
 
 const CONTENT_ROOT = path.join(/*turbopackIgnore: true*/ process.cwd(), "content");
-
-let strictScheduleV2Validated = false;
 
 async function loadDirYaml<T>(
   dirName: string,
@@ -59,7 +58,7 @@ export async function loadVenues(): Promise<Venue[]> {
 }
 
 export async function loadQuests(): Promise<Quest[]> {
-  const [questsRaw, snapshot] = await Promise.all([
+  const [questsRaw, schedule] = await Promise.all([
     loadDirYaml("quests", (data, file) => {
       const r = questSchema.safeParse(data);
       if (!r.success) {
@@ -67,25 +66,18 @@ export async function loadQuests(): Promise<Quest[]> {
       }
       return r.data;
     }),
-    readOffersSnapshot(),
+    loadScheduleSnapshotV2(),
   ]);
 
-  if (process.env.SITE_SNAPSHOT_STRICT === "1" && !strictScheduleV2Validated) {
-    strictScheduleV2Validated = true;
-    const { offersSnapshotV1ToScheduleV2 } = await import("@/lib/data/v2/v1-to-v2");
-    const { assertNoPrivateFields } = await import("@/lib/data/v2/private-field-denylist");
-    const scheduleV2 = offersSnapshotV1ToScheduleV2(snapshot);
-    assertNoPrivateFields(scheduleV2);
-    if (scheduleV2.events.length === 0) {
-      throw new Error(
-        "[site-snapshot-v2] SITE_SNAPSHOT_STRICT: V1 offers produced zero V2 events",
-      );
-    }
+  const offersByQuest = scheduleV2ToOffersByQuest(schedule);
+
+  if (process.env.SITE_SNAPSHOT_STRICT === "1" && schedule.events.length === 0) {
+    throw new Error("[loadQuests] SITE_SNAPSHOT_STRICT: no schedule events loaded");
   }
 
   return questsRaw.map((q) => ({
     ...q,
-    offers: snapshot.offersByQuest[q.slug] ?? [],
+    offers: offersByQuest[q.slug] ?? [],
   }));
 }
 

@@ -2,6 +2,11 @@ slug: cyber-rhythm
 name: Cyber Rhythm
 description: Неон, звук и инженерия — миссия «Восстановление частоты» в мире синтвейва.
 themeKey: cyber-rhythm
+presentation:
+  cardLabel: Cyber Rhythm
+  cardGradient: "from-fuchsia-500/35 via-violet-600/25 to-cyan-400/30 dark:from-fuchsia-500/25 dark:via-violet-950/60 dark:to-cyan-950/40"
+  cardGlow: "shadow-[0_0_60px_-12px] shadow-fuchsia-500/35"
+  iconKey: waves
 tagline: Здесь инженерию слышно — от первого сигнала до своей колонки в неоновом свете.
 pitch: >
   Cyber Rhythm — синтвейв-вселенная BrainMaster: дети проходят цепочку «звук → инструменты → корпус и электроника → сборка», чтобы восстановить «несущую частоту» и включить своё устройство.

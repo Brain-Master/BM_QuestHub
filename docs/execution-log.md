@@ -35,6 +35,28 @@ Use this template for each entry:
 
 ## Entries
 
+### 2026-05-19 18:30 UTC+3 - Yandex Object Storage CDN
+
+**Goal:** Document and automate public S3/CDN on Yandex Object Storage (pricing, bucket setup, sync, build env) and load V2 schedule snapshots over HTTP.
+
+**Completed:**
+- Pricing note with free tier and Quest Hub scenarios (`docs/deployment/yandex-object-storage-pricing.md`).
+- Setup guide: IAM, bucket policy, CDN/CORS, env for Timeweb/CI (`docs/deployment/yandex-object-storage-setup.md`).
+- `scripts/sync-s3-public.mjs`, `scripts/s3.env.example`, `make validate-snapshots` / `s3-sync-*`.
+- `resolvePublicSnapshotUrl` + remote `schedule-snapshot.json` in `site-snapshot-loader.ts`.
+- Expanded `apps/web/.env.example` and `static-hosting-s3-yandex.md`.
+
+**Changed Files:**
+- `apps/web/lib/data/public-snapshot-url.ts`, `site-snapshot-loader.ts`, `site-config-loader.ts`
+- `scripts/sync-s3-public.mjs`, `Makefile`, `.gitignore`
+- `docs/deployment/yandex-object-storage-*.md`, `apps/web/media/README.md`
+
+**Validation:**
+- `make validate-snapshots`, `make check`
+
+**Open Items:**
+- Create bucket and `scripts/s3.env` in Yandex Cloud console; first `make s3-sync-data` after keys are set.
+
 ### 2026-05-19 16:00 UTC+3 - Lead Form Field Validation
 
 **Goal:** Validate booking form fields and auto-format Russian phone numbers before submit.

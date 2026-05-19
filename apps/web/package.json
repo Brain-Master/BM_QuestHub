@@ -10,7 +10,8 @@
     "lint": "eslint",
     "test:e2e": "playwright test",
     "validate:snapshots": "node ../../scripts/validate-public-snapshot.mjs",
-    "check": "npm run lint && npm run validate:snapshots && npm run build"
+    "audit:hardcoded-data": "node ../../scripts/audit-hardcoded-data.mjs",
+    "check": "npm run lint && npm run validate:snapshots && npm run audit:hardcoded-data && npm run build"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.1",

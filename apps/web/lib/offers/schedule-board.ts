@@ -1,10 +1,22 @@
+import type { EventStatusV2 } from "@/lib/data/v2/entities";
 import type { AgendaOfferItem } from "@/lib/offers/agenda";
+import {
+  CAPACITY_LABELS,
+  eventStatusLabel,
+  eventStatusVariant,
+  rawSheetStatusToKey,
+  SCHEDULE_CTA,
+  SHEET_PLANNING_STATUSES,
+} from "@/lib/offers/schedule-dictionaries";
+import type { ScheduleStatusVariant } from "@/lib/offers/schedule-dictionaries";
 import type {
   RegistrationChannel,
   ScheduleMediaImage,
   ScheduleVariant,
   VenueOffer,
 } from "@/lib/schemas";
+
+export type { ScheduleStatusVariant };
 
 export type ScheduleDisplayStatus =
   | "Идёт набор"
@@ -13,14 +25,6 @@ export type ScheduleDisplayStatus =
   | "Мест нет"
   | "Завершено"
   | "Отменено";
-
-export type ScheduleStatusVariant =
-  | "success"
-  | "info"
-  | "purple"
-  | "warning"
-  | "default"
-  | "destructive";
 
 export type ScheduleBookingMode =
   | { kind: "form"; label: string }
@@ -87,7 +91,6 @@ export type ScheduleBoardItem = AgendaOfferItem & {
   questHref: string;
 };
 
-const PLANNING_STATUSES = new Set(["Планируется", "Согласование"]);
 const RU_MONTHS = [
   "января",
   "февраля",
@@ -138,40 +141,55 @@ export function getScheduleCapacity(
     percent,
     isLow,
     isSoldOut,
-    label: isSoldOut ? "Мест нет" : `Осталось ${formatPlaces(left)}`,
+    label: isSoldOut
+      ? CAPACITY_LABELS.soldOut
+      : `${CAPACITY_LABELS.remainingPrefix} ${formatPlaces(left)}`,
   };
+}
+
+export function resolveScheduleStatusKey(
+  offer: VenueOffer,
+  now = new Date(),
+): EventStatusV2 {
+  const rawStatus = offer.scheduleCard?.status ?? offer.sheetStatus ?? "";
+  const mapped = rawSheetStatusToKey(rawStatus);
+  const cancelledLabel = eventStatusLabel("cancelled");
+  const soldOutLabel = eventStatusLabel("sold_out");
+
+  const isCancelled =
+    mapped === "cancelled" || rawStatus === cancelledLabel || rawStatus === "Отменено";
+  const isArchivedState =
+    offer.scheduleCard?.isArchived === true ||
+    isOfferAutoArchived(offer, now) ||
+    isCancelled;
+  const capacity = getScheduleCapacity(offer);
+  const isSoldOut =
+    capacity?.isSoldOut === true ||
+    mapped === "sold_out" ||
+    rawStatus === soldOutLabel ||
+    rawStatus === "Мест нет";
+
+  if (isCancelled) return "cancelled";
+  if (isArchivedState) return "finished";
+  if (mapped === "join_late") return "join_late";
+  if (SHEET_PLANNING_STATUSES.has(rawStatus)) return "planning";
+  if (isSoldOut) return "sold_out";
+  if (mapped) return mapped;
+  return "recruiting";
 }
 
 export function getScheduleDisplayStatus(
   offer: VenueOffer,
   now = new Date(),
 ): ScheduleDisplayStatus {
-  const rawStatus = offer.scheduleCard?.status ?? offer.sheetStatus ?? "";
-  const isCancelled = rawStatus === "Отменено";
-  const isArchivedState =
-    offer.scheduleCard?.isArchived === true ||
-    isOfferAutoArchived(offer, now) ||
-    isCancelled;
-  const capacity = getScheduleCapacity(offer);
-  const isSoldOut = capacity?.isSoldOut === true || rawStatus === "Мест нет";
-
-  if (isCancelled) return "Отменено";
-  if (isArchivedState) return "Завершено";
-  if (rawStatus === "Можно присоединиться") return "Можно присоединиться";
-  if (PLANNING_STATUSES.has(rawStatus)) return "Скоро старт";
-  if (isSoldOut) return "Мест нет";
-  return "Идёт набор";
+  return eventStatusLabel(resolveScheduleStatusKey(offer, now)) as ScheduleDisplayStatus;
 }
 
 export function getScheduleStatusVariant(
-  status: ScheduleDisplayStatus,
+  offer: VenueOffer,
+  now = new Date(),
 ): ScheduleStatusVariant {
-  if (status === "Отменено") return "destructive";
-  if (status === "Завершено") return "default";
-  if (status === "Можно присоединиться") return "purple";
-  if (status === "Скоро старт") return "info";
-  if (status === "Мест нет") return "warning";
-  return "success";
+  return eventStatusVariant(resolveScheduleStatusKey(offer, now));
 }
 
 export function getScheduleBookingMode(
@@ -179,23 +197,30 @@ export function getScheduleBookingMode(
   status: ScheduleDisplayStatus,
   variant?: Pick<ScheduleVariant, "mosBookingUrl">,
 ): ScheduleBookingMode {
-  if (status === "Отменено") return { kind: "disabled", label: "Отменено" };
-  if (status === "Завершено") return { kind: "disabled", label: "Завершено" };
-  if (status === "Мест нет") {
+  const statusKey = resolveScheduleStatusKey(offer);
+  const cta = SCHEDULE_CTA;
+
+  if (statusKey === "cancelled") {
+    return { kind: "disabled", label: cta.cancelledDisabled };
+  }
+  if (statusKey === "finished") {
+    return { kind: "disabled", label: cta.finishedDisabled };
+  }
+  if (statusKey === "sold_out") {
     return offer.scheduleCard?.allowWaitlistWhenSoldOut
-      ? { kind: "waitlist", label: "В лист ожидания" }
-      : { kind: "disabled", label: "Мест нет" };
+      ? { kind: "waitlist", label: cta.waitlist }
+      : { kind: "disabled", label: cta.soldOutDisabled };
   }
 
   const mosBookingUrl = variant?.mosBookingUrl ?? offer.mosBookingUrl;
   if (mosBookingUrl) {
-    return { kind: "mos", label: "Записаться (Mos.ru)", url: mosBookingUrl };
+    return { kind: "mos", label: cta.bookMos, url: mosBookingUrl };
   }
 
-  if (status === "Скоро старт") {
-    return { kind: "waitlist", label: "Предварительная заявка" };
+  if (statusKey === "planning") {
+    return { kind: "waitlist", label: cta.preliminary };
   }
-  return { kind: "form", label: "Записаться" };
+  return { kind: "form", label: cta.book };
 }
 
 export function formatScheduleDateRange(start: string, end: string): string {
@@ -236,24 +261,24 @@ function getRegistrationChannel(offer: VenueOffer): RegistrationChannel {
 
 function getAllowPreliminaryRegistration(
   offer: VenueOffer,
-  status: ScheduleDisplayStatus,
+  statusKey: EventStatusV2,
 ): boolean {
   return (
     offer.scheduleCard?.allowPreliminaryRegistration === true ||
-    status === "Скоро старт" ||
-    (status === "Мест нет" &&
-      offer.scheduleCard?.allowWaitlistWhenSoldOut === true)
+    statusKey === "planning" ||
+    (statusKey === "sold_out" && offer.scheduleCard?.allowWaitlistWhenSoldOut === true)
   );
 }
 
 function normalizeVariants(
   offer: VenueOffer,
-  status: ScheduleDisplayStatus,
+  statusKey: EventStatusV2,
+  statusLabel: ScheduleDisplayStatus,
 ): ScheduleBoardVariant[] {
   const registrationChannel = getRegistrationChannel(offer);
   const allowPreliminaryRegistration = getAllowPreliminaryRegistration(
     offer,
-    status,
+    statusKey,
   );
   const source =
     offer.scheduleCard?.variants && offer.scheduleCard.variants.length > 0
@@ -286,7 +311,7 @@ function normalizeVariants(
     mosRuCode: variant.mosRuCode?.trim() ? variant.mosRuCode : null,
     registrationChannel,
     allowPreliminaryRegistration,
-    bookingMode: getScheduleBookingMode(offer, status, variant),
+    bookingMode: getScheduleBookingMode(offer, statusLabel, variant),
   }));
 }
 
@@ -310,9 +335,10 @@ export function buildScheduleBoardItem(
 ): ScheduleBoardItem {
   const { offer, quest, world } = item;
   const card = offer.scheduleCard;
-  const statusLabel = getScheduleDisplayStatus(offer, now);
+  const statusKey = resolveScheduleStatusKey(offer, now);
+  const statusLabel = eventStatusLabel(statusKey) as ScheduleDisplayStatus;
   const capacity = getScheduleCapacity(offer);
-  const variants = normalizeVariants(offer, statusLabel);
+  const variants = normalizeVariants(offer, statusKey, statusLabel);
   const commonAgeLabel = getCommonAgeLabel(variants, card?.ageLabel ?? quest.ageLabel);
   const hero = card?.media?.hero ?? card?.media?.fallback ?? null;
   const compact = card?.media?.compact ?? hero;
@@ -343,7 +369,7 @@ export function buildScheduleBoardItem(
       primaryVariant?.registrationChannel ?? getRegistrationChannel(offer),
     allowPreliminaryRegistration:
       primaryVariant?.allowPreliminaryRegistration ??
-      getAllowPreliminaryRegistration(offer, statusLabel),
+      getAllowPreliminaryRegistration(offer, statusKey),
     variants,
     media: {
       hero:
@@ -359,11 +385,11 @@ export function buildScheduleBoardItem(
     },
     status: {
       label: statusLabel,
-      variant: getScheduleStatusVariant(statusLabel),
-      isArchivedState: statusLabel === "Завершено" || statusLabel === "Отменено",
-      isSoldOut: statusLabel === "Мест нет",
-      isPlanning: statusLabel === "Скоро старт",
-      isCancelled: statusLabel === "Отменено",
+      variant: eventStatusVariant(statusKey),
+      isArchivedState: statusKey === "finished" || statusKey === "cancelled",
+      isSoldOut: statusKey === "sold_out",
+      isPlanning: statusKey === "planning",
+      isCancelled: statusKey === "cancelled",
     },
     capacity,
     bookingMode: primaryVariant?.bookingMode ?? getScheduleBookingMode(offer, statusLabel),

@@ -30,6 +30,9 @@ venv/
 *service-account*.json
 *.pem
 
+# Локальные ключи выкладки в Object Storage
+scripts/s3.env
+
 # Артефакты деплоя Yandex Cloud Functions и похожие zip-пакеты
 **/function.zip
 

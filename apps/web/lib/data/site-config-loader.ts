@@ -3,6 +3,7 @@ import "server-only";
 import fs from "node:fs/promises";
 import path from "node:path";
 
+import { resolvePublicSnapshotUrl } from "@/lib/data/public-snapshot-url";
 import {
   siteConfigSchema,
   type SiteConfig,
@@ -21,23 +22,8 @@ function siteConfigPath(): string {
 }
 
 function siteConfigUrl(): string | null {
-  const manifestUrl = process.env.SITE_SNAPSHOT_MANIFEST_URL?.trim();
-  if (manifestUrl) {
-    try {
-      const base = new URL(manifestUrl);
-      return new URL("data/v2/site-config.json", base).toString();
-    } catch {
-      return null;
-    }
-  }
-
-  if (process.env.SITE_SNAPSHOT_SOURCE !== "s3") return null;
-
-  const publicBase = process.env.NEXT_PUBLIC_S3_PUBLIC_BASE_URL?.trim();
-  if (!publicBase) return null;
-
-  const base = publicBase.endsWith("/") ? publicBase : `${publicBase}/`;
-  return new URL("data/v2/site-config.json", base).toString();
+  const manifestUrl = process.env.SITE_SNAPSHOT_MANIFEST_URL?.trim() || null;
+  return resolvePublicSnapshotUrl("data/v2/site-config.json", { manifestUrl });
 }
 
 export function parseSiteConfig(data: unknown): SiteConfig {

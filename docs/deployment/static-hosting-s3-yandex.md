@@ -1,28 +1,30 @@
 # Static Hosting, S3, And Yandex Receiver
 
+**Timeweb (production):**
+
+- [timeweb-app-platform.md](./timeweb-app-platform.md) — App Platform, static Next export, domains.
+- [timeweb-object-storage-setup.md](./timeweb-object-storage-setup.md) — S3 bucket, `make s3-sync-*`.
+- [timeweb-object-storage-pricing.md](./timeweb-object-storage-pricing.md) — cost estimate.
+
+**Yandex Object Storage (legacy):** [yandex-object-storage-setup.md](./yandex-object-storage-setup.md)
+
 ## Runtime Shape
 
-- Timeweb serves the exported static site from `apps/web/out`.
+- **Timeweb App Platform** serves the static export from `apps/web/out` (see [timeweb-app-platform.md](./timeweb-app-platform.md)).
 - The site has no Next.js server, API routes, or server actions in production.
-- Public media and optional public JSON data live in hot S3 storage.
+- Public media and JSON live on **Timeweb Object Storage** (`https://s3.twcstorage.ru`, public base `https://<bucket>.s3.twcstorage.ru`).
 - The browser submits leads only to `NEXT_PUBLIC_LEAD_SUBMIT_URL`.
 - The Yandex receiver owns all private integrations: Telegram notifications, n8n forwarding, validation, rate limiting, and secrets.
 
-## Timeweb Static Settings
+## Timeweb App Platform (preferred)
 
-If the Timeweb project root is the repository root:
+Use [timeweb-app-platform.md](./timeweb-app-platform.md). Summary:
 
-- Build command: `npm run build`
-- Build output directory: `apps/web/out`
-- Project directory: empty
+- Type: Next.js, **SSR off**
+- Build: `npm run build` (repo root) → output `apps/web/out`
+- Env: [`apps/web/timeweb.app.env.example`](../../apps/web/timeweb.app.env.example)
 
-If the Timeweb project root is `apps/web`:
-
-- Build command: `npm run build`
-- Build output directory: `out`
-- Project directory: `apps/web`
-
-Do not enable SSR for the static deployment.
+Legacy static hosting (without App Platform) uses the same build/output paths if the Timeweb project root is the repository root or `apps/web`.
 
 ## School Subdomain Aliases
 
@@ -37,7 +39,7 @@ https://quest.b-master.pro/sites/1517/catalog/
 ```
 
 Pretty school subdomains are a hosting/CDN concern. Configure aliases like
-`1517.quest.b-master.pro` to serve the same static bundle and rewrite the root
+`1517.b-master.pro` (or `1517.quest.b-master.pro`) to serve the same static bundle and rewrite the root
 path to the matching generated route, for example
 `/sites/1517/agenda/`. The app also generates canonical
 `/sites/school-1517/...` pages for internal links. Do not rely on Next.js
@@ -62,9 +64,29 @@ Use stable, cache-friendly paths:
 s3://<bucket>/media/quests/<quest-slug>/<file>
 s3://<bucket>/media/worlds/<world-slug>/<file>
 s3://<bucket>/data/offers-snapshot.json
+s3://<bucket>/data/v2/site-manifest.json
+s3://<bucket>/data/v2/site-config.json
+s3://<bucket>/data/v2/schedule-snapshot.json
+s3://<bucket>/…                          # optional: full static export (apps/web/out)
 ```
 
+Local upload sources: `apps/web/media/`, `apps/web/data/`, `apps/web/out/`. Sync: `make s3-sync-data` | `s3-sync-media` | `s3-sync-static` (see setup doc).
+
 For files that are replaced in place, use conservative cache headers or version the filename/path. Large media can use long cache headers when filenames are content-versioned.
+
+## Build / CI environment (S3 snapshots)
+
+Set **before** `npm run build` on Timeweb or CI (public vars + build-time flags):
+
+```text
+NEXT_PUBLIC_S3_PUBLIC_BASE_URL=https://bm-questhub.s3.twcstorage.ru
+OFFERS_SNAPSHOT_SOURCE=s3
+SITE_SNAPSHOT_SOURCE=s3
+```
+
+Optional: `OFFERS_SNAPSHOT_URL`, `SITE_SNAPSHOT_MANIFEST_URL`, `SITE_SNAPSHOT_STRICT=1`. Full table: [timeweb-object-storage-setup.md §5](./timeweb-object-storage-setup.md#5-build-time-env-app-platform--ci).
+
+Secrets for `aws s3 sync` live in `scripts/s3.env` only — never in `NEXT_PUBLIC_*`.
 
 ## Lead Payload Contract
 
@@ -179,3 +201,7 @@ The JSON shape is documented in `docs/data/schedule-snapshot-contract.md`.
 For build-time reads from S3 before client-side refresh exists, set
 `OFFERS_SNAPSHOT_URL` to the public snapshot URL, or set
 `OFFERS_SNAPSHOT_SOURCE=s3` together with `NEXT_PUBLIC_S3_PUBLIC_BASE_URL`.
+
+V2 site snapshots: `SITE_SNAPSHOT_SOURCE=s3` loads manifest, `site-config`, and
+`schedule-snapshot.json` from the public base (see `apps/web/lib/data/site-snapshot-loader.ts`).
+Publish manifest last after uploading all snapshot files.

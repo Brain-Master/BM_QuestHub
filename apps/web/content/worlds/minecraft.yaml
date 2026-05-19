@@ -2,6 +2,11 @@ slug: minecraft
 name: Minecraft
 description: Цифровая археология и перенос кубической логики в реальные артефакты и роботов.
 themeKey: minecraft
+presentation:
+  cardLabel: Minecraft
+  cardGradient: "from-emerald-400/35 via-lime-500/20 to-teal-900/35 dark:from-emerald-500/20 dark:via-emerald-950/55 dark:to-lime-950/35"
+  cardGlow: "shadow-[0_0_50px_-14px] shadow-emerald-500/30"
+  iconKey: blocks
 tagline: Кубическая логика любимой игры — в пайку, схемы, 3D и робототехнику на столе.
 pitch: >
   Мир Minecraft в BrainMaster — это не «ещё один экран», а инженерные раскопки «древних инженеров»: редстоун, макетные платы, 3D-печать и робототехника. Две миссии независимы — можно начать с любой программы.

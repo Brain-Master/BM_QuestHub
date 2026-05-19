@@ -9,7 +9,7 @@ type Props = {
 };
 
 export function WorldHubHero({ world }: Props) {
-  const v = getWorldVisual(world.slug);
+  const v = getWorldVisual(world);
   const Icon = v.Icon;
 
   return (

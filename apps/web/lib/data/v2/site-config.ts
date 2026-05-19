@@ -40,7 +40,37 @@ export const mapPercentPointSchema = z.object({
   y: z.number().min(0).max(100),
 });
 
+export const mapGeoControlPointSchema = z.object({
+  x: z.number(),
+  y: z.number(),
+  latitude: z.number(),
+  longitude: z.number(),
+});
+
+export const scheduleCtaSchema = z.object({
+  book: z.string(),
+  bookMos: z.string(),
+  waitlist: z.string(),
+  preliminary: z.string(),
+  soldOutDisabled: z.string(),
+  cancelledDisabled: z.string(),
+  finishedDisabled: z.string(),
+});
+
+export const capacityLabelsSchema = z.object({
+  soldOut: z.string(),
+  remainingPrefix: z.string(),
+});
+
+export const programSlugFragmentSchema = z.object({
+  needle: z.string(),
+  slug: z.string(),
+});
+
 export const mapConfigSchema = z.object({
+  city: z.string().min(1),
+  label: z.string().min(1),
+  imageSrc: z.string().min(1),
   bounds: z.object({
     west: z.number(),
     east: z.number(),
@@ -49,6 +79,8 @@ export const mapConfigSchema = z.object({
   }),
   metroAnchors: z.record(z.string(), mapPercentPointSchema),
   fallbackAnchors: z.array(mapPercentPointSchema),
+  sitePoints: z.record(z.string(), mapPercentPointSchema),
+  geoControlPoints: z.array(mapGeoControlPointSchema),
 });
 
 export const registrationFlowCopySchema = z.object({
@@ -100,10 +132,15 @@ export const publicDictionariesSchema = z.object({
         "default",
         "destructive",
       ]),
+      livePulse: z.boolean().optional(),
     }),
   ),
   metroLines: z.record(z.string(), metroLineDictionaryEntrySchema),
   registrationFlow: registrationFlowCopySchema,
+  scheduleCta: scheduleCtaSchema,
+  capacity: capacityLabelsSchema,
+  sheetPlanningStatuses: z.array(z.string()),
+  programSlugFragments: z.array(programSlugFragmentSchema).optional(),
 });
 
 export const legalDocumentSchema = z.object({
@@ -125,6 +162,7 @@ export const siteConfigSchema = z.object({
   legal: z.array(legalDocumentSchema).default([]),
 });
 
+export type MapGeoControlPoint = z.infer<typeof mapGeoControlPointSchema>;
 export type BrandProfile = z.infer<typeof brandProfileSchema>;
 export type NavigationConfig = z.infer<typeof navigationConfigSchema>;
 export type MapConfig = z.infer<typeof mapConfigSchema>;

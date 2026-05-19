@@ -11,13 +11,14 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { difficultyToLevel } from "@/lib/quest-difficulty-level";
-import type { Quest } from "@/lib/schemas";
+import type { Quest, World } from "@/lib/schemas";
 import { cn } from "@/lib/utils";
 import { getWorldVisual } from "@/lib/world-visuals";
 
 type Props = {
   quest: Quest;
   worldName: string;
+  world?: Pick<World, "slug" | "name" | "presentation">;
   schoolSlug?: string;
 };
 
@@ -60,8 +61,10 @@ function buildMetaLine(quest: Quest): string {
   return parts.join(" · ");
 }
 
-export function QuestCard({ quest, worldName, schoolSlug }: Props) {
-  const v = getWorldVisual(quest.worldSlug);
+export function QuestCard({ quest, worldName, world, schoolSlug }: Props) {
+  const v = getWorldVisual(
+    world ?? { slug: quest.worldSlug, name: worldName },
+  );
   const Icon = v.Icon;
 
   const href = schoolSlug

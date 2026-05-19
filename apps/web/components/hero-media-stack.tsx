@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { getWorldVisual } from "@/lib/world-visuals";
+import { getWorldVisualBySlug } from "@/lib/world-visuals";
 
 type Props = {
   worldSlug: string;
@@ -21,7 +21,7 @@ export function HeroMediaStack({
   embedTitle,
   className,
 }: Props) {
-  const v = getWorldVisual(worldSlug);
+  const v = getWorldVisualBySlug(worldSlug);
   const hasVideo = Boolean(heroVideoUrl?.trim());
 
   return (

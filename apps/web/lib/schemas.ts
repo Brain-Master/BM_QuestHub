@@ -62,6 +62,14 @@ export const worldSchema = z.object({
   /** Только embed-URL для iframe VK/YouTube */
   heroVideoUrl: z.string().optional(),
   heroImageUrl: z.string().optional(),
+  presentation: z
+    .object({
+      cardLabel: z.string().optional(),
+      cardGradient: z.string().min(1),
+      cardGlow: z.string().min(1),
+      iconKey: z.enum(["blocks", "cpu", "waves", "orbit"]),
+    })
+    .optional(),
 });
 
 export type World = z.infer<typeof worldSchema>;

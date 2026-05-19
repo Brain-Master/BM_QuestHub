@@ -1,6 +1,7 @@
 import siteConfig from "@/data/v2/site-config.json";
 
 import { applyTemplate } from "@/lib/data/template";
+import { SCHEDULE_CTA } from "@/lib/offers/schedule-dictionaries";
 import type { ScheduleBookingMode } from "@/lib/offers/schedule-board";
 import type { LeadFormInput, RegistrationChannel } from "@/lib/schemas";
 import { BRAINMASTER_SUPPORT_PHONE } from "@/lib/site-contact";
@@ -36,7 +37,7 @@ function templateVars(channel: RegistrationChannel): Record<string, string> {
 function isPreliminaryWaitlist(bookingMode: ScheduleBookingMode): boolean {
   return (
     bookingMode.kind === "waitlist" &&
-    bookingMode.label === "Предварительная заявка"
+    bookingMode.label === SCHEDULE_CTA.preliminary
   );
 }
 

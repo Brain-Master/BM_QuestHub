@@ -41,7 +41,7 @@ Producer must upload all files, then swap manifest last.
 |----------|------|
 | `SITE_SNAPSHOT_MANIFEST_URL` | Full URL to manifest (overrides local) |
 | `NEXT_PUBLIC_S3_PUBLIC_BASE_URL` | Base for relative snapshot paths when source is `s3` |
-| `SITE_SNAPSHOT_SOURCE` | `local` (default) or `s3` |
+| `SITE_SNAPSHOT_SOURCE` | `local` (default) or `s3` — when `s3`, manifest, `site-config`, and `schedule-snapshot.json` load over HTTP from the public base |
 | `SITE_CONFIG_PATH` | Override path to `site-config.json` fallback |
 
 Schedule V1 compatibility (unchanged):

@@ -10,7 +10,9 @@ type Props = {
 };
 
 export function QuestHeroBanner({ quest, world }: Props) {
-  const v = getWorldVisual(quest.worldSlug);
+  const v = world
+    ? getWorldVisual(world)
+    : getWorldVisual({ slug: quest.worldSlug, name: quest.worldSlug });
   const Icon = v.Icon;
 
   return (

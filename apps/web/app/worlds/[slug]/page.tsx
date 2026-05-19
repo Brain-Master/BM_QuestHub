@@ -110,7 +110,7 @@ export default async function WorldHubPage({ params }: Props) {
             Скоро здесь появятся карточки — черновики уже в репозитории контента.
           </div>
         ) : (
-          <QuestGrid quests={filtered} worldNames={worldNames} />
+          <QuestGrid quests={filtered} worldNames={worldNames} worlds={worlds} />
         )}
       </section>
 

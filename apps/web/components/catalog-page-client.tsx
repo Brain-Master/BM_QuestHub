@@ -92,6 +92,7 @@ export function CatalogPageClient({
           <QuestGrid
             quests={filtered}
             worldNames={worldNames}
+            worlds={worlds}
             schoolSlug={school}
           />
         )}

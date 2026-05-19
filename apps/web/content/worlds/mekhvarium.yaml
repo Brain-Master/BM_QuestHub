@@ -2,6 +2,11 @@ slug: mekhvarium
 name: Мехвариум
 description: Bio-punk лаборатории монстров — механика, гидравлика и инженерный характер в каждом проекте.
 themeKey: mekhvarium
+presentation:
+  cardLabel: Мехвариум
+  cardGradient: "from-amber-400/30 via-orange-600/25 to-rose-900/35 dark:from-amber-500/22 dark:via-orange-950/55 dark:to-amber-950/40"
+  cardGlow: "shadow-[0_0_55px_-12px] shadow-amber-500/35"
+  iconKey: cpu
 tagline: Лаборатории, где «монстров» собирают из шестерён, воды и характера.
 pitch: >
   Мехвариум — мир индустриальной фантастики BrainMaster: дети работают как инженеры секретной станции. Две независимые программы — кинетические роботы и гидравлические установки — объединены атмосферой био-панка и честной инженерной дисциплиной.
