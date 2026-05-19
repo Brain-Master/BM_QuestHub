@@ -159,6 +159,70 @@ test("n8n failure does not fail accepted lead", async () => {
   assert.equal(body.n8nForwarded, false);
 });
 
+function stripSpoiler(text) {
+  return text.replace(/<tg-spoiler>[\s\S]*<\/tg-spoiler>/, "");
+}
+
+test("formatTelegramMessage renders mos_assist lead for humans", () => {
+  const lead = _internals.normalizeLead(
+    leadPayload({
+      leadType: "mos_assist",
+      registrationChannel: "mos_ru",
+      parentName: "Тестировой Тестян",
+      contact: "89999999999",
+      childName: "кулебяка",
+      childAge: "111",
+      questSlug: "mekhvarium-laboratoriya-kineticheskih-monstrov",
+      questTitle: "Мехвариум: лаборатория кинетических монстров",
+      offerId:
+        "sheet:mekhvarium-laboratoriya-kineticheskih-monstrov:school-1212-yasenevo:2026-06-01:2026-06-05:8:30",
+      variantTitle: "Полный день · Пн-Пт, 8:30 – 16:30",
+      venueSlug: "school-1212-yasenevo",
+      venueName: "ГБОУ Школа №1212",
+      comment: "Бубубу",
+    }),
+    "d8573ec0-ab0d-4a69-bd8b-1c8dfef84af7",
+  );
+  lead.receivedAt = "2026-05-19T00:05:44.044Z";
+
+  const text = _internals.formatTelegramMessage(lead);
+  const visible = stripSpoiler(text);
+
+  assert.match(visible, /Запись через mos\.ru/);
+  assert.match(visible, /Тестировой Тестян/);
+  assert.match(visible, /кулебяка · 111/);
+  assert.match(visible, /Мехвариум: лаборатория кинетических монстров/);
+  assert.match(visible, /ГБОУ Школа №1212/);
+  assert.match(visible, /1–5 июня 2026/);
+  assert.match(visible, /Полный день · Пн-Пт, 8:30 – 16:30/);
+  assert.match(visible, /Бубубу/);
+  assert.match(visible, /МСК/);
+  assert.doesNotMatch(visible, /mekhvarium-laboratoriya/);
+  assert.doesNotMatch(visible, /sheet:/);
+  assert.match(text, /<tg-spoiler>/);
+  assert.match(text, /d8573ec0-ab0d-4a69-bd8b-1c8dfef84af7/);
+  assert.match(text, /offer: sheet:mekhvarium/);
+});
+
+test("formatTelegramMessage renders booking lead title", () => {
+  const lead = _internals.normalizeLead(leadPayload(), "req-booking");
+  const text = stripSpoiler(_internals.formatTelegramMessage(lead));
+
+  assert.match(text, /Новая заявка на бронирование/);
+  assert.doesNotMatch(text, /портал mos\.ru/);
+});
+
+test("formatTelegramMessage escapes HTML in user fields", () => {
+  const lead = _internals.normalizeLead(
+    leadPayload({ comment: "<script>alert(1)</script>" }),
+    "req-xss",
+  );
+  const text = _internals.formatTelegramMessage(lead);
+
+  assert.match(text, /&lt;script&gt;alert\(1\)&lt;\/script&gt;/);
+  assert.doesNotMatch(text, /<script>alert/);
+});
+
 test("sheet row contract keeps expected column order", () => {
   const lead = _internals.normalizeLead(leadPayload(), "req-5");
   assert.deepEqual(_internals.leadToSheetRow(lead), [

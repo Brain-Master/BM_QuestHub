@@ -159,27 +159,160 @@ function normalizeLead(payload, requestId) {
   };
 }
 
+const RU_MONTHS = [
+  "января",
+  "февраля",
+  "марта",
+  "апреля",
+  "мая",
+  "июня",
+  "июля",
+  "августа",
+  "сентября",
+  "октября",
+  "ноября",
+  "декабря",
+];
+
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+function leadTypeTitle(leadType) {
+  const titles = {
+    mos_assist: "Запись через mos.ru",
+    waitlist: "Заявка в лист ожидания",
+    booking: "Новая заявка на бронирование",
+  };
+  return titles[leadType] ?? "Новая заявка Quest Hub";
+}
+
+function registrationChannelLabel(channel) {
+  if (channel === "mos_ru") return "портал mos.ru (договор школы)";
+  if (channel === "brainmaster") return "BrainMaster напрямую";
+  return "";
+}
+
+function parseIsoDate(iso) {
+  const match = iso.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) return null;
+  const [, year, month, day] = match;
+  return {
+    year: Number(year),
+    month: Number(month) - 1,
+    day: Number(day),
+  };
+}
+
+function formatRuDateRange(start, end) {
+  const startDate = parseIsoDate(start);
+  const endDate = parseIsoDate(end);
+  if (!startDate || !endDate) {
+    return start === end ? start : `${start} – ${end}`;
+  }
+
+  const { day: startDay, month: startMonth, year: startYear } = startDate;
+  const { day: endDay, month: endMonth, year: endYear } = endDate;
+
+  if (start === end) return `${startDay} ${RU_MONTHS[startMonth]} ${startYear}`;
+  if (startMonth === endMonth && startYear === endYear) {
+    return `${startDay}–${endDay} ${RU_MONTHS[startMonth]} ${startYear}`;
+  }
+  return `${startDay} ${RU_MONTHS[startMonth]} – ${endDay} ${RU_MONTHS[endMonth]} ${endYear}`;
+}
+
+function parseSheetOfferId(offerId) {
+  const match = offerId.match(
+    /^sheet:([^:]+):([^:]+):(\d{4}-\d{2}-\d{2}):(\d{4}-\d{2}-\d{2}):(.+)$/,
+  );
+  if (!match) return null;
+  const [, questSlug, venueSlug, start, end, startTime] = match;
+  return { questSlug, venueSlug, start, end, startTime };
+}
+
+function formatReceivedAtMsk(iso) {
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return iso;
+  const formatted = new Intl.DateTimeFormat("ru-RU", {
+    timeZone: "Europe/Moscow",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).format(date);
+  return `${formatted} МСК`;
+}
+
+function formatContactHtml(contact) {
+  const trimmed = contact.trim();
+  const digits = trimmed.replace(/\D/g, "");
+  const looksLikePhone = /^[\d\s+\-()]+$/.test(trimmed) && digits.length >= 10;
+  if (!looksLikePhone) return escapeHtml(trimmed);
+
+  let tel = digits;
+  if (tel.length === 11 && tel.startsWith("8")) tel = `7${tel.slice(1)}`;
+  if (tel.length === 10) tel = `7${tel}`;
+  return `<a href="tel:+${tel}">${escapeHtml(trimmed)}</a>`;
+}
+
+function buildTelegramSpoiler(lead) {
+  const lines = [];
+  if (lead.requestId) lines.push(`ID: ${lead.requestId}`);
+  if (lead.questSlug) lines.push(`quest: ${lead.questSlug}`);
+  if (lead.venueSlug) lines.push(`venue: ${lead.venueSlug}`);
+  if (lead.offerId) lines.push(`offer: ${lead.offerId}`);
+  if (lead.variantId) lines.push(`variant: ${lead.variantId}`);
+  if (lead.schoolSlug) lines.push(`school: ${lead.schoolSlug}`);
+  if (lines.length === 0) return "";
+  return `<tg-spoiler>${lines.map((line) => escapeHtml(line)).join("\n")}</tg-spoiler>`;
+}
+
 function formatTelegramMessage(lead) {
-  return [
-    "Новая заявка Quest Hub",
+  const blocks = [`📝 <b>${escapeHtml(leadTypeTitle(lead.leadType))}</b>`];
+
+  if (lead.leadType === "waitlist" && lead.registrationChannel) {
+    const channelLabel = registrationChannelLabel(lead.registrationChannel);
+    if (channelLabel) blocks.push(`📋 ${escapeHtml(channelLabel)}`);
+  }
+
+  blocks.push(
     "",
-    `Тип: ${lead.leadType}`,
-    lead.registrationChannel ? `Канал регистрации: ${lead.registrationChannel}` : "",
-    `Родитель: ${lead.parentName}`,
-    `Контакт: ${lead.contact}`,
-    `Ребенок: ${lead.childName}`,
-    `Возраст/класс: ${lead.childAge}`,
+    `👤 ${escapeHtml(lead.parentName)}`,
+    `📞 ${formatContactHtml(lead.contact)}`,
     "",
-    `Квест: ${lead.questTitle} (${lead.questSlug})`,
-    `Площадка: ${lead.venueName} (${lead.venueSlug})`,
-    `Оффер: ${lead.offerId}`,
-    lead.variantTitle ? `Вариант: ${lead.variantTitle}` : "",
-    lead.schoolSlug ? `Школа/scope: ${lead.schoolSlug}` : "",
-    lead.comment ? `Комментарий: ${lead.comment}` : "",
+    `👧 ${escapeHtml(lead.childName)} · ${escapeHtml(lead.childAge)}`,
     "",
-    `Получено: ${lead.receivedAt}`,
-    `Request ID: ${lead.requestId}`,
-  ].filter(Boolean).join("\n");
+    `🎯 ${escapeHtml(lead.questTitle)}`,
+    `📍 ${escapeHtml(lead.venueName)}`,
+  );
+
+  const sheetOffer = parseSheetOfferId(lead.offerId);
+  if (sheetOffer) {
+    const dateLine = formatRuDateRange(sheetOffer.start, sheetOffer.end);
+    if (dateLine) blocks.push(`📅 ${escapeHtml(dateLine)}`);
+  }
+
+  if (lead.variantTitle) {
+    blocks.push(`🕐 ${escapeHtml(lead.variantTitle)}`);
+  }
+
+  if (lead.comment) {
+    blocks.push("", `💬 ${escapeHtml(lead.comment)}`);
+  }
+
+  blocks.push("", `🕒 ${escapeHtml(formatReceivedAtMsk(lead.receivedAt))}`);
+
+  const spoiler = buildTelegramSpoiler(lead);
+  if (spoiler) {
+    blocks.push("", spoiler);
+  }
+
+  return blocks.join("\n");
 }
 
 async function sendTelegramLead(lead) {
@@ -191,6 +324,7 @@ async function sendTelegramLead(lead) {
     body: JSON.stringify({
       chat_id: chatId,
       text: formatTelegramMessage(lead),
+      parse_mode: "HTML",
       disable_web_page_preview: true,
     }),
   });
@@ -386,12 +520,16 @@ async function handler(event = {}, context = {}) {
 exports.handler = handler;
 exports._internals = {
   appendLeadToGoogleSheet,
+  buildTelegramSpoiler,
   deliverPrimaryLead,
+  escapeHtml,
+  formatRuDateRange,
   formatTelegramMessage,
   forwardLeadToN8n,
   getMethod,
   leadToSheetRow,
   normalizeLead,
   parseJsonBody,
+  parseSheetOfferId,
   validateLeadPayload,
 };
