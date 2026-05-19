@@ -7,7 +7,7 @@
 
 WEB := apps/web
 
-.PHONY: run check dev-host dev-restart brand-assets docs-index validate-snapshots s3-sync-data s3-sync-media s3-sync-static s3-sync-all
+.PHONY: run check dev-host dev-restart brand-assets docs-index validate-snapshots scripts-s3-deps timeweb-s3-setup timeweb-setup s3-sync-data s3-sync-media s3-sync-static s3-sync-all
 
 # PNG/WebP/ICO из assets/brand/brainmaster-logo.png → assets/brand/generated/ (+ Next app/ + public/brand/)
 brand-assets:
@@ -26,19 +26,29 @@ check:
 validate-snapshots:
 	node scripts/validate-public-snapshot.mjs
 
-# bash: подгружает scripts/s3.env (Git Bash / WSL / macOS / Linux)
-S3_SYNC = bash -c 'set -a; [ -f scripts/s3.env ] && . ./scripts/s3.env; set +a; node scripts/sync-s3-public.mjs'
+# Loads scripts/s3.env + scripts/timeweb.env via Node (Windows-friendly)
+S3_SYNC = node scripts/run-s3-sync.mjs
 
-s3-sync-data:
+scripts-s3-deps:
+	cd scripts && npm install --omit=dev
+
+# TIMEWEB_API_TOKEN in scripts/timeweb.env → create bucket + scripts/s3.env
+timeweb-s3-setup:
+	node scripts/timeweb-provision-s3.mjs --setup bm-questhub
+
+timeweb-setup: scripts-s3-deps
+	node scripts/timeweb-setup.mjs
+
+s3-sync-data: scripts-s3-deps
 	$(S3_SYNC) data
 
-s3-sync-media:
+s3-sync-media: scripts-s3-deps
 	$(S3_SYNC) media
 
-s3-sync-static:
+s3-sync-static: scripts-s3-deps
 	$(S3_SYNC) static
 
-s3-sync-all:
+s3-sync-all: scripts-s3-deps
 	$(S3_SYNC) all
 
 # Сначала проверки, затем dev-сервер, доступный в LAN (0.0.0.0)

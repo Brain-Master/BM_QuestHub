@@ -3,6 +3,7 @@ import { Manrope, Onest } from "next/font/google";
 
 import "./globals.css";
 
+import { HostScopeBootstrap } from "@/components/host-scope-bootstrap";
 import { ScrollToTopButton } from "@/components/scroll-to-top-button";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
@@ -48,6 +49,7 @@ export default async function RootLayout({
       data-scroll-behavior="smooth"
     >
       <body className="bm-page-bg flex min-h-full flex-col bg-background text-foreground">
+        <HostScopeBootstrap />
         <YandexMetrika />
         <SiteHeader worlds={worlds} navigation={siteConfig.navigation} />
         <div className="flex flex-1 flex-col">{children}</div>

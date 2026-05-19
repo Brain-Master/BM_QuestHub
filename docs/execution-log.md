@@ -35,6 +35,45 @@ Use this template for each entry:
 
 ## Entries
 
+### 2026-05-19 07:15 UTC+3 - Production domains + lead CORS
+
+**Goal:** Bind `quest.b-master.pro` / `1517.b-master.pro` to App Platform and restrict Yandex lead receiver CORS.
+
+**Completed:**
+- DNS A records via Timeweb API v2 (`app_id` 195536): `quest.b-master.pro`, `1517.b-master.pro` → app IP `46.19.64.95`; both on app domain list.
+- `https://quest.b-master.pro/` returns **200** (static export).
+- Yandex Function `bm-lead-receiver` version `d4ej5lne3i60fqjq78nj` with production `ALLOWED_ORIGINS` (Telegram/Sheets env preserved).
+- Scripts: `scripts/timeweb-domains.mjs`, `scripts/yandex-lead-receiver-env-patch.mjs`.
+
+**Validation:**
+- `curl -I https://quest.b-master.pro/` → 200
+- CORS preflight `Origin: https://quest.b-master.pro` → `Access-Control-Allow-Origin` matches
+
+**Open Items:**
+- Remove mistaken subdomain `quest.b-master.pro.b-master.pro` in Timeweb panel (API delete returned 404).
+- Revoke API JWT if it was pasted in chat; rotate `scripts/timeweb.env`.
+- Optional: apex `b-master.pro` redirect; school path rewrites on `1517.b-master.pro`.
+
+### 2026-05-19 22:00 UTC+3 - Timeweb S3 + App Platform migration (repo)
+
+**Goal:** Move public S3 to Timeweb (`s3.twcstorage.ru`), document App Platform deploy, keep Yandex lead receiver.
+
+**Completed:**
+- Timeweb defaults in `sync-s3-public.mjs`; SDK fallback via `scripts/sync-s3-sdk.mjs` + `scripts/package.json`.
+- Docs: `timeweb-object-storage-*`, `timeweb-app-platform.md`, `timeweb-deploy-checklist.md`, `SECURITY-api-keys.md`.
+- Yandex storage docs marked legacy; `timeweb.app.env.example`, school domains `*.b-master.pro` in hosting docs.
+- `ALLOWED_ORIGINS` example updated for `quest.b-master.pro` / `1517.b-master.pro`.
+
+**Validation:** `make check`
+
+**Deployed (Timeweb API, 2026-05-19):**
+- S3 bucket `bm-questhub` — `https://bm-questhub.s3.twcstorage.ru`
+- App Platform `bm-questhub` (id 195536) — `https://brain-master-bm-questhub-4552.twc1.net` (branch `feat/unified-data-model-v2`)
+
+**Open Items:**
+- Revoke old API JWT from chat; rotate keys in `scripts/timeweb.env` / `scripts/s3.env`.
+- See follow-up entry **Production domains + lead CORS** (domains bound 2026-05-19).
+
 ### 2026-05-19 18:30 UTC+3 - Yandex Object Storage CDN
 
 **Goal:** Document and automate public S3/CDN on Yandex Object Storage (pricing, bucket setup, sync, build env) and load V2 schedule snapshots over HTTP.

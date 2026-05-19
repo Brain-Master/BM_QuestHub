@@ -75,9 +75,13 @@ Local sources: `apps/web/data/`, `apps/web/media/`.
 
 ## 4. Upload
 
-Requires [AWS CLI v2](https://aws.amazon.com/cli/).
+Uses AWS CLI when installed; otherwise `@aws-sdk/client-s3` (`make scripts-s3-deps` installs it under `scripts/node_modules`).
 
 ```bash
+# Automated (scripts/timeweb.env with TIMEWEB_API_TOKEN):
+make timeweb-setup
+
+# Or manual:
 make validate-snapshots
 make s3-sync-data
 make s3-sync-media   # skips if apps/web/media is empty

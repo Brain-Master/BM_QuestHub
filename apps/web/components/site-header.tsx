@@ -10,6 +10,8 @@ import {
   parsePreferredSchool,
   PREFERRED_SCHOOL_STORAGE_KEY,
 } from "@/lib/preferred-school";
+import { normalizePathname } from "@/lib/host-scope";
+import { useHostScope } from "@/lib/use-host-scope";
 import type { NavigationConfig } from "@/lib/data/v2/site-config";
 import type { World } from "@/lib/schemas";
 import { cn } from "@/lib/utils";
@@ -26,8 +28,26 @@ export function SiteHeader({ worlds, navigation }: Props) {
   const [preferredSchoolSlug, setPreferredSchoolSlug] = React.useState<string | null>(null);
   const menuRef = React.useRef<HTMLElement | null>(null);
   const swipeStartX = React.useRef<number | null>(null);
+  const { school: hostSchool } = useHostScope();
+  const onSchoolHost = hostSchool !== null;
   const pathSchoolSlug = pathname.match(/^\/sites\/([^/]+)/)?.[1] ?? null;
-  const effectiveSchoolSlug = pathSchoolSlug ?? preferredSchoolSlug;
+  const effectiveSchoolSlug =
+    pathSchoolSlug ?? hostSchool?.routeSlug ?? preferredSchoolSlug;
+  const normalizedPath = normalizePathname(pathname);
+  const agendaHref = onSchoolHost
+    ? "/agenda/"
+    : effectiveSchoolSlug
+      ? `/sites/${effectiveSchoolSlug}/agenda`
+      : "/agenda";
+  const catalogHref = onSchoolHost
+    ? "/catalog/"
+    : effectiveSchoolSlug
+      ? `/sites/${effectiveSchoolSlug}/catalog`
+      : "/catalog";
+  const sitesHref = onSchoolHost && hostSchool
+    ? `/sites/${hostSchool.routeSlug}/`
+    : "/sites";
+  const homeHref = onSchoolHost ? "/" : "/";
   const knownWorldSlugs = React.useMemo(
     () => new Set(worlds.map((world) => world.slug)),
     [worlds],
@@ -39,19 +59,27 @@ export function SiteHeader({ worlds, navigation }: Props) {
   );
   const navItems = [
     {
-      href: effectiveSchoolSlug ? `/sites/${effectiveSchoolSlug}/agenda` : "/agenda",
+      href: agendaHref,
       label: "Расписание",
-      active: pathname === "/agenda" || /^\/sites\/[^/]+\/agenda$/.test(pathname),
+      active:
+        normalizedPath === "/agenda/" ||
+        /^\/sites\/[^/]+\/agenda\/?$/.test(pathname),
     },
     {
-      href: "/sites",
+      href: sitesHref,
       label: "Площадки",
-      active: pathname === "/sites" || /^\/sites\/[^/]+$/.test(pathname),
+      active:
+        normalizedPath === "/sites/" ||
+        (onSchoolHost
+          ? normalizedPath === `/sites/${hostSchool?.routeSlug}/`
+          : /^\/sites\/[^/]+\/?$/.test(pathname)),
     },
     {
-      href: effectiveSchoolSlug ? `/sites/${effectiveSchoolSlug}/catalog` : "/catalog",
+      href: catalogHref,
       label: "Курсы",
-      active: pathname === "/catalog" || /^\/sites\/[^/]+\/catalog$/.test(pathname),
+      active:
+        normalizedPath === "/catalog/" ||
+        /^\/sites\/[^/]+\/catalog\/?$/.test(pathname),
     },
   ];
   const linkClassName = (active = false) => cn(
@@ -132,7 +160,7 @@ export function SiteHeader({ worlds, navigation }: Props) {
     <header className="sticky top-0 z-50 border-b border-white/10 bg-background/75 backdrop-blur-xl supports-[backdrop-filter]:bg-background/55">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3">
         <Link
-          href="/"
+          href={homeHref}
           className="group flex max-w-full items-center gap-3 rounded-xl outline-none ring-offset-background transition hover:opacity-95 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
           <span className="relative flex size-10 shrink-0 overflow-hidden rounded-xl bg-white/5 ring-1 ring-white/10">

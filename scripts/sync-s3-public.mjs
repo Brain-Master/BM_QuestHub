@@ -53,6 +53,19 @@ function die(msg) {
   process.exit(1);
 }
 
+function awsAvailable() {
+  const probe = spawnSync("aws", ["--version"], {
+    env: process.env,
+    shell: process.platform === "win32",
+    stdio: "ignore",
+  });
+  return !probe.error && probe.status === 0;
+}
+
+async function runSdkSync(targetArg) {
+  await import("./sync-s3-sdk.mjs").then((m) => m.runS3SdkSync(targetArg));
+}
+
 function runAws(args) {
   const result = spawnSync("aws", args, {
     stdio: "inherit",
@@ -60,11 +73,12 @@ function runAws(args) {
     shell: process.platform === "win32",
   });
   if (result.error) {
-    die(`aws CLI failed: ${result.error.message}. Install AWS CLI v2.`);
+    return false;
   }
   if (result.status !== 0) {
     process.exit(result.status ?? 1);
   }
+  return true;
 }
 
 function validateSnapshots() {
@@ -78,7 +92,7 @@ function validateSnapshots() {
   }
 }
 
-function syncTarget(name, config, bucket) {
+async function syncTarget(name, config, bucket) {
   const local = config.local;
   if (!fs.existsSync(local)) {
     if (config.optional) {
@@ -124,11 +138,24 @@ const names =
     ? Object.keys(TARGETS)
     : targetArg.split(",").map((s) => s.trim());
 
-for (const name of names) {
-  const config = TARGETS[name];
-  if (!config) die(`unknown target "${name}"; use: data | media | static | all`);
-  if (config.validate) validateSnapshots();
-  syncTarget(name, config, bucket);
+async function main() {
+  if (!awsAvailable()) {
+    console.warn("[sync-s3-public] AWS CLI not found — using @aws-sdk/client-s3");
+    if (names.some((n) => TARGETS[n]?.validate)) validateSnapshots();
+    await runSdkSync(targetArg);
+    return;
+  }
+
+  for (const name of names) {
+    const config = TARGETS[name];
+    if (!config) die(`unknown target "${name}"; use: data | media | static | all`);
+    if (config.validate) validateSnapshots();
+    await syncTarget(name, config, bucket);
+  }
+  console.log("[sync-s3-public] done");
 }
 
-console.log("[sync-s3-public] done");
+main().catch((e) => {
+  console.error(e);
+  process.exit(1);
+});

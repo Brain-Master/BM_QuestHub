@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "baseDomain": "b-master.pro",
+  "portalOrigin": "https://quest.b-master.pro",
+  "reserved": [
+    "quest",
+    "www",
+    "teacher",
+    "n8n",
+    "s",
+    "moodle",
+    "mail",
+    "api",
+    "dev",
+    "staging",
+    "admin"
+  ],
+  "schools": {
+    "17": {
+      "scopeSlug": "school-17",
+      "routeSlug": "17",
+      "name": "Школа №17"
+    },
+    "875": {
+      "scopeSlug": "school-875",
+      "routeSlug": "875",
+      "name": "Школа №875"
+    },
+    "937": {
+      "scopeSlug": "school-937",
+      "routeSlug": "937",
+      "name": "Школа №937"
+    },
+    "1212": {
+      "scopeSlug": "school-1212",
+      "routeSlug": "1212",
+      "name": "ГБОУ Школа №1212"
+    },
+    "1383": {
+      "scopeSlug": "school-1383",
+      "routeSlug": "1383",
+      "name": "Школа №1383"
+    },
+    "1517": {
+      "scopeSlug": "school-1517",
+      "routeSlug": "1517",
+      "name": "Школа №1517"
+    },
+    "2103": {
+      "scopeSlug": "school-2103",
+      "routeSlug": "2103",
+      "name": "Школа №2103"
+    }
+  }
+}

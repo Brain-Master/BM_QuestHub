@@ -28,22 +28,38 @@ Legacy static hosting (without App Platform) uses the same build/output paths if
 
 ## School Subdomain Aliases
 
-The app itself is path-first because static export cannot inspect request
-hostnames at runtime. School-scoped links should target generated pages such as:
+DNS: wildcard `*.b-master.pro` → the same App Platform app as `quest.b-master.pro`.
+
+**Build-time map:** `npm run generate:host-aliases` (runs before `next build`) writes
+[`apps/web/public/host-aliases.json`](../../apps/web/public/host-aliases.json) from
+`content/venues` (`schoolScopeSlug` → host label, e.g. `1517` for `school-1517`).
+
+**Runtime (client):** [`SubdomainScopeRedirect`](../../apps/web/components/subdomain-scope-redirect.tsx)
+on school hosts rewrites short paths to scoped static pages:
+
+| Request on `1517.b-master.pro` | Redirects to |
+|-------------------------------|--------------|
+| `/` | `/sites/1517/` |
+| `/agenda/` | `/sites/1517/agenda/` |
+| `/catalog/` | `/sites/1517/catalog/` |
+
+Unknown `*.b-master.pro` (not in the map, not reserved) → `https://quest.b-master.pro` (same path).
+Reserved: `quest`, `www`, `teacher`, `n8n`, `s`, `moodle`, `mail`, `api`, …
+
+Canonical URLs on the main portal remain path-based:
 
 ```text
-https://quest.b-master.pro/sites/school-1517/agenda/
-https://quest.b-master.pro/sites/school-1517/catalog/
 https://quest.b-master.pro/sites/1517/agenda/
-https://quest.b-master.pro/sites/1517/catalog/
+https://quest.b-master.pro/sites/school-1517/catalog/
 ```
 
-Pretty school subdomains are a hosting/CDN concern. Configure aliases like
-`1517.b-master.pro` (or `1517.quest.b-master.pro`) to serve the same static bundle and rewrite the root
-path to the matching generated route, for example
-`/sites/1517/agenda/`. The app also generates canonical
-`/sites/school-1517/...` pages for internal links. Do not rely on Next.js
-middleware or API routes for this in the static deployment.
+**SSL:** wildcard DNS does not imply wildcard TLS — confirm HTTPS for new school hosts in Timeweb
+(wildcard cert or per-subdomain binding).
+
+**Phase 2 (optional):** Caddy/nginx rewrite so `/agenda/` is served without changing the URL
+(no client redirect). See `scripts/host-alias-core.mjs` for the path mapping rules.
+
+Do not use Next.js `middleware` in static export; logic lives in client + generated JSON.
 
 ## Public Environment Variables
 

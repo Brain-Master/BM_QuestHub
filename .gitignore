@@ -32,6 +32,8 @@ venv/
 
 # Локальные ключи выкладки в Object Storage
 scripts/s3.env
+scripts/timeweb.env
+scripts/node_modules/
 
 # Артефакты деплоя Yandex Cloud Functions и похожие zip-пакеты
 **/function.zip
