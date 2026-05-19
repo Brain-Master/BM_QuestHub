@@ -6,6 +6,8 @@ import path from "node:path";
 import { venueOfferSchema } from "@/lib/schemas";
 import { z } from "zod";
 
+import { snapshotFetchInit } from "@/lib/data/snapshot-fetch";
+
 import type { OffersSnapshotSource, OffersSnapshotV1 } from "./snapshot-types";
 
 const snapshotSchema = z.object({
@@ -49,16 +51,29 @@ export function parseOffersSnapshot(
   return parsed.data;
 }
 
+function countOffers(snapshot: OffersSnapshotV1): number {
+  return Object.values(snapshot.offersByQuest).reduce(
+    (sum, offers) => sum + offers.length,
+    0,
+  );
+}
+
 export async function readLocalOffersSnapshot(): Promise<OffersSnapshotV1> {
   const file = snapshotPath();
   try {
     const raw = await fs.readFile(file, "utf8");
     const data = JSON.parse(raw) as unknown;
-    return parseOffersSnapshot(data, "invalid_file");
+    const snapshot = parseOffersSnapshot(data, "invalid_file");
+    console.info(
+      `[offers-snapshot] loaded ${countOffers(snapshot)} offers from local ${file}`,
+    );
+    return snapshot;
   } catch (e) {
     const err = e as NodeJS.ErrnoException;
     if (err.code !== "ENOENT") {
       console.error("[offers-snapshot] read error:", err.message);
+    } else {
+      console.warn(`[offers-snapshot] local file missing: ${file}`);
     }
     return emptySnapshot("missing_or_unreadable");
   }
@@ -66,15 +81,19 @@ export async function readLocalOffersSnapshot(): Promise<OffersSnapshotV1> {
 
 export async function readRemoteOffersSnapshot(url: string): Promise<OffersSnapshotV1> {
   try {
-    const res = await fetch(url, { cache: "no-store" });
+    const res = await fetch(url, snapshotFetchInit());
     if (!res.ok) {
       throw new Error(`HTTP ${res.status}`);
     }
     const data = (await res.json()) as unknown;
-    return parseOffersSnapshot(data, "invalid_file");
+    const snapshot = parseOffersSnapshot(data, "invalid_file");
+    console.info(
+      `[offers-snapshot] loaded ${countOffers(snapshot)} offers from ${url}`,
+    );
+    return snapshot;
   } catch (e) {
     const err = e as Error;
-    console.error("[offers-snapshot] remote read error:", err.message);
+    console.warn(`[offers-snapshot] remote read failed (${url}): ${err.message}`);
     return emptySnapshot("missing_or_unreadable");
   }
 }
@@ -82,7 +101,16 @@ export async function readRemoteOffersSnapshot(url: string): Promise<OffersSnaps
 /** Чтение последнего успешного снимка; при отсутствии или ошибке — пустой объект. */
 export async function readOffersSnapshot(): Promise<OffersSnapshotV1> {
   const url = snapshotUrl();
-  if (url) return readRemoteOffersSnapshot(url);
+  if (url) {
+    const remote = await readRemoteOffersSnapshot(url);
+    if (countOffers(remote) === 0) {
+      console.warn(
+        `[offers-snapshot] remote snapshot empty, falling back to local (${snapshotPath()})`,
+      );
+      return readLocalOffersSnapshot();
+    }
+    return remote;
+  }
   return readLocalOffersSnapshot();
 }
 

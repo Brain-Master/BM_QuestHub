@@ -4,6 +4,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 
 import { resolvePublicSnapshotUrl } from "@/lib/data/public-snapshot-url";
+import { snapshotFetchInit } from "@/lib/data/snapshot-fetch";
 import {
   siteConfigSchema,
   type SiteConfig,
@@ -22,6 +23,8 @@ function siteConfigPath(): string {
 }
 
 function siteConfigUrl(): string | null {
+  if (process.env.SITE_SNAPSHOT_SOURCE !== "s3") return null;
+
   const manifestUrl = process.env.SITE_SNAPSHOT_MANIFEST_URL?.trim() || null;
   return resolvePublicSnapshotUrl("data/v2/site-config.json", { manifestUrl });
 }
@@ -44,7 +47,7 @@ async function readLocalSiteConfig(): Promise<SiteConfig> {
 }
 
 async function readRemoteSiteConfig(url: string): Promise<SiteConfig> {
-  const res = await fetch(url, { cache: "no-store" });
+  const res = await fetch(url, snapshotFetchInit());
   if (!res.ok) {
     throw new Error(`HTTP ${res.status}`);
   }
@@ -56,14 +59,22 @@ export async function loadSiteConfig(): Promise<SiteConfig> {
   if (cachedConfig) return cachedConfig;
 
   const url = siteConfigUrl();
+  const localPath = siteConfigPath();
   try {
-    cachedConfig = url ? await readRemoteSiteConfig(url) : await readLocalSiteConfig();
+    if (url) {
+      cachedConfig = await readRemoteSiteConfig(url);
+      console.info(`[site-config] loaded from ${url}`);
+    } else {
+      cachedConfig = await readLocalSiteConfig();
+      console.info(`[site-config] loaded from local ${localPath}`);
+    }
   } catch (e) {
     const err = e as Error;
-    console.error("[site-config] load error:", err.message);
-    if (!cachedConfig) {
-      cachedConfig = await readLocalSiteConfig();
-    }
+    console.warn(
+      `[site-config] remote load failed${url ? ` (${url})` : ""}: ${err.message}, falling back to local ${localPath}`,
+    );
+    cachedConfig = await readLocalSiteConfig();
+    console.info(`[site-config] loaded from local ${localPath}`);
   }
 
   return cachedConfig!;

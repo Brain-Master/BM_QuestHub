@@ -45,7 +45,10 @@ NEXT_PUBLIC_LEAD_SUBMIT_URL=https://functions.yandexcloud.net/d4ellekng389grh5rc
 NEXT_PUBLIC_YM_ID=
 OFFERS_SNAPSHOT_SOURCE=s3
 SITE_SNAPSHOT_SOURCE=s3
+SITE_SNAPSHOT_STRICT=1
 ```
+
+Build runs `verify:s3` before `next build` when snapshot sources are `s3`; empty or missing S3 data fails the build instead of shipping an empty schedule.
 
 Do not set `AWS_*` or `GOOGLE_*` here.
 

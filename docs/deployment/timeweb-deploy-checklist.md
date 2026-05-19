@@ -16,12 +16,16 @@ Complete after merging Timeweb S3 + App Platform docs to `main`.
   - `make timeweb-setup` — creates bucket `bm-questhub`, writes `scripts/s3.env`, uploads `data/`, verifies HTTP.
 - [ ] Manual steps only: `make timeweb-s3-setup` then `make s3-sync-data`
 - [ ] `curl -sI https://bm-questhub.s3.twcstorage.ru/data/v2/site-manifest.json` → 200
+- [ ] `curl -sI https://bm-questhub.s3.twcstorage.ru/data/offers-snapshot.json` → 200 (non-zero `Content-Length`)
+- [ ] `curl -sI https://bm-questhub.s3.twcstorage.ru/data/v2/site-config.json` → 200
+- [ ] After JSON changes in S3: **redeploy** App Platform (static export reads S3 only at build time)
 
 ## App Platform
 
 - [ ] [Create app](https://timeweb.cloud/my/apps/create) — Next.js, **SSR off**, repo `Brain-Master/BM_QuestHub`.
 - [ ] Build: `npm run build`, output `apps/web/out` (see [timeweb-app-platform.md](./timeweb-app-platform.md)).
-- [ ] Env from [`apps/web/timeweb.app.env.example`](../../apps/web/timeweb.app.env.example).
+- [ ] Env from [`apps/web/timeweb.app.env.example`](../../apps/web/timeweb.app.env.example) (include `SITE_SNAPSHOT_STRICT=1`).
+- [ ] Build log shows `[verify-s3] OK loaded …` and `[offers-snapshot]` / `[site-manifest]` info lines (not `remote read error`).
 - [ ] Deploy succeeds; note public `*.twc1.net` URL in execution log.
 
 ## Domains
