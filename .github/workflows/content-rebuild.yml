@@ -1,0 +1,49 @@
+# Rebuild static site after S3 content snapshots change (no code deploy required for editors).
+name: Content rebuild
+
+on:
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: Why this rebuild was triggered
+        required: false
+        default: snapshot-publish
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+
+      - name: Install web dependencies
+        run: npm ci
+        working-directory: apps/web
+
+      - name: Install scripts dependencies
+        run: npm ci --omit=dev
+        working-directory: scripts
+
+      - name: Validate public snapshots
+        run: node scripts/validate-public-snapshot.mjs
+
+      - name: Build static export (fetch snapshots from S3)
+        env:
+          NEXT_PUBLIC_S3_PUBLIC_BASE_URL: ${{ vars.S3_PUBLIC_BASE_URL }}
+          OFFERS_SNAPSHOT_SOURCE: s3
+          SITE_SNAPSHOT_SOURCE: s3
+          NEXT_PUBLIC_SITE_URL: ${{ vars.SITE_URL }}
+          NEXT_PUBLIC_LEAD_SUBMIT_URL: ${{ vars.LEAD_SUBMIT_URL }}
+        run: npm run build
+        working-directory: apps/web
+
+      # Timeweb App Platform auto-deploys on push to main; this workflow validates S3-backed build.
+      # Optional: add s3-sync-static or Timeweb deploy API step when credentials are in repo secrets.
+
+      - name: Log completion
+        run: echo "Content rebuild OK — reason=${{ inputs.reason }}"

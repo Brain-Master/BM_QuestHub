@@ -3,19 +3,14 @@ import "server-only";
 import fs from "node:fs/promises";
 import path from "node:path";
 
-import { venueOfferSchema } from "@/lib/schemas";
-import { z } from "zod";
-
 import { snapshotFetchInit } from "@/lib/data/snapshot-fetch";
+import {
+  countOffersInSnapshot,
+  emptyOffersSnapshot,
+  parseOffersSnapshot,
+} from "@/lib/offers/snapshot-parse";
 
-import type { OffersSnapshotSource, OffersSnapshotV1 } from "./snapshot-types";
-
-const snapshotSchema = z.object({
-  version: z.literal(1),
-  generatedAt: z.string(),
-  source: z.string().optional(),
-  offersByQuest: z.record(z.string(), z.array(venueOfferSchema)),
-});
+import type { OffersSnapshotV1 } from "./snapshot-types";
 
 function snapshotPath(): string {
   const override = process.env.OFFERS_SNAPSHOT_PATH;
@@ -36,26 +31,10 @@ function snapshotUrl(): string | null {
   return new URL("data/offers-snapshot.json", base).toString();
 }
 
-export function parseOffersSnapshot(
-  data: unknown,
-  invalidSource: OffersSnapshotSource = "invalid_file",
-): OffersSnapshotV1 {
-  const parsed = snapshotSchema.safeParse(data);
-  if (!parsed.success) {
-    console.error(
-      "[offers-snapshot] invalid snapshot payload, ignoring:",
-      parsed.error.flatten(),
-    );
-    return emptySnapshot(invalidSource);
-  }
-  return parsed.data;
-}
+export { parseOffersSnapshot } from "@/lib/offers/snapshot-parse";
 
 function countOffers(snapshot: OffersSnapshotV1): number {
-  return Object.values(snapshot.offersByQuest).reduce(
-    (sum, offers) => sum + offers.length,
-    0,
-  );
+  return countOffersInSnapshot(snapshot);
 }
 
 export async function readLocalOffersSnapshot(): Promise<OffersSnapshotV1> {
@@ -75,7 +54,7 @@ export async function readLocalOffersSnapshot(): Promise<OffersSnapshotV1> {
     } else {
       console.warn(`[offers-snapshot] local file missing: ${file}`);
     }
-    return emptySnapshot("missing_or_unreadable");
+    return emptyOffersSnapshot("missing_or_unreadable");
   }
 }
 
@@ -94,7 +73,7 @@ export async function readRemoteOffersSnapshot(url: string): Promise<OffersSnaps
   } catch (e) {
     const err = e as Error;
     console.warn(`[offers-snapshot] remote read failed (${url}): ${err.message}`);
-    return emptySnapshot("missing_or_unreadable");
+    return emptyOffersSnapshot("missing_or_unreadable");
   }
 }
 
@@ -112,15 +91,6 @@ export async function readOffersSnapshot(): Promise<OffersSnapshotV1> {
     return remote;
   }
   return readLocalOffersSnapshot();
-}
-
-function emptySnapshot(source: OffersSnapshotSource): OffersSnapshotV1 {
-  return {
-    version: 1,
-    generatedAt: new Date(0).toISOString(),
-    source,
-    offersByQuest: {},
-  };
 }
 
 /** Атомарная запись: temp в том же каталоге, затем rename. */

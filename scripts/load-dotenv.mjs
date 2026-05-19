@@ -31,5 +31,6 @@ export function loadDotEnv(filePath) {
 export function loadRepoEnv() {
   loadDotEnv(path.join(ROOT, "scripts", "timeweb.env"));
   loadDotEnv(path.join(ROOT, "scripts", "s3.env"));
+  loadDotEnv(path.join(ROOT, "scripts", "sheets.env"));
   return ROOT;
 }

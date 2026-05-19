@@ -1,13 +1,21 @@
 {
   "version": 2,
-  "generatedAt": "2026-05-19T00:00:00.000Z",
-  "source": "local_site_config",
+  "generatedAt": "2026-05-19T12:07:23.735Z",
+  "source": "export-yaml-to-snapshots",
   "snapshots": {
     "site": {
       "path": "data/v2/site-config.json"
     },
     "schedule": {
       "path": "data/offers-snapshot.json"
+    },
+    "catalog": {
+      "path": "data/v2/catalog-snapshot.json",
+      "contentHash": "sha256:98508e0f516d57795e639166f7a4662cc0fb2a8bb10841e85f0d1dea26d57b26"
+    },
+    "map": {
+      "path": "data/v2/map-snapshot.json",
+      "contentHash": "sha256:75b87634f3ab0b4247cc110bb75d4f5bad7a663e133548240eaf09b15e14c59a"
     }
   }
 }

@@ -1,0 +1,6 @@
+{
+  "name": "@bm-questhub/producer",
+  "private": true,
+  "type": "module",
+  "description": "Publish public snapshots to S3 and trigger static site content rebuild"
+}

@@ -67,7 +67,10 @@ Apply in bucket settings → access policy. See [bucket policies](https://timewe
 s3://bm-questhub/data/offers-snapshot.json
 s3://bm-questhub/data/v2/site-manifest.json
 s3://bm-questhub/data/v2/site-config.json
+s3://bm-questhub/data/v2/catalog-snapshot.json
+s3://bm-questhub/data/v2/map-snapshot.json
 s3://bm-questhub/data/v2/schedule-snapshot.json
+s3://bm-questhub/data/v2/detail/<courseSlug>.json
 s3://bm-questhub/media/quests/<slug>/<file>
 ```
 
@@ -105,9 +108,12 @@ SITE_SNAPSHOT_SOURCE=s3
 
 Do **not** put `AWS_*` in App Platform — the build only fetches public HTTP URLs.
 
-## 6. CORS (optional)
+## 6. CORS (required for live schedule)
 
-Only if the **browser** will fetch S3 directly. Build-time `fetch` does not need CORS.
+The browser fetches `data/offers-snapshot.json` for runtime schedule (poll 60s).
+Build-time `fetch` does not need CORS.
+
+Example policy: [`scripts/timeweb-s3-cors.example.json`](../../scripts/timeweb-s3-cors.example.json)
 
 [Timeweb CORS guide](https://timeweb.cloud/docs/s3-storage/supported-features/cors-setup)
 

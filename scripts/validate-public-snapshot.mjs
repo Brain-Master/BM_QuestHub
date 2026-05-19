@@ -23,11 +23,22 @@ const PRIVATE_KEYS = [
   "sheetrowid",
 ];
 
-const PUBLIC_FILES = [
-  path.join(WEB, "data", "v2", "site-config.json"),
-  path.join(WEB, "data", "v2", "site-manifest.json"),
-  path.join(WEB, "data", "offers-snapshot.json"),
-];
+function collectPublicFiles() {
+  const files = [
+    path.join(WEB, "data", "v2", "site-config.json"),
+    path.join(WEB, "data", "v2", "site-manifest.json"),
+    path.join(WEB, "data", "v2", "catalog-snapshot.json"),
+    path.join(WEB, "data", "v2", "map-snapshot.json"),
+    path.join(WEB, "data", "offers-snapshot.json"),
+  ];
+  const detailDir = path.join(WEB, "data", "v2", "detail");
+  if (fs.existsSync(detailDir)) {
+    for (const name of fs.readdirSync(detailDir)) {
+      if (name.endsWith(".json")) files.push(path.join(detailDir, name));
+    }
+  }
+  return files;
+}
 
 function findViolations(value, currentPath = "") {
   const violations = [];
@@ -50,7 +61,7 @@ function findViolations(value, currentPath = "") {
 
 let failed = false;
 
-for (const file of PUBLIC_FILES) {
+for (const file of collectPublicFiles()) {
   if (!fs.existsSync(file)) {
     console.warn(`[validate-public-snapshot] skip missing ${path.relative(ROOT, file)}`);
     continue;

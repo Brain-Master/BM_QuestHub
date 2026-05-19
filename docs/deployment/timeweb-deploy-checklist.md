@@ -18,7 +18,18 @@ Complete after merging Timeweb S3 + App Platform docs to `main`.
 - [ ] `curl -sI https://bm-questhub.s3.twcstorage.ru/data/v2/site-manifest.json` → 200
 - [ ] `curl -sI https://bm-questhub.s3.twcstorage.ru/data/offers-snapshot.json` → 200 (non-zero `Content-Length`)
 - [ ] `curl -sI https://bm-questhub.s3.twcstorage.ru/data/v2/site-config.json` → 200
-- [ ] After JSON changes in S3: **redeploy** App Platform (static export reads S3 only at build time)
+- [ ] `curl -sI https://bm-questhub.s3.twcstorage.ru/data/v2/catalog-snapshot.json` → 200
+- [ ] `curl -sI https://bm-questhub.s3.twcstorage.ru/data/v2/map-snapshot.json` → 200
+- [ ] CORS on bucket for **hot schedule** — [`scripts/timeweb-s3-cors.example.json`](../../scripts/timeweb-s3-cors.example.json)
+
+## Content admin (optional)
+
+- [ ] Deploy [`apps/yandex-content-admin`](../../apps/yandex-content-admin/) with env from `.env.example`
+- [ ] Build [`apps/admin`](../../apps/admin/) with `VITE_CONTENT_ADMIN_URL`; host `dist/` or use locally
+- [ ] GitHub repo secrets for `content-rebuild.yml`: `S3_PUBLIC_BASE_URL`, `SITE_URL`, `LEAD_SUBMIT_URL`
+- [ ] `TIMEWEB_APP_ID` + `TIMEWEB_API_TOKEN` in `scripts/timeweb.env` for cold publish (`make timeweb-deploy`)
+- [ ] Hot schedule: `make content-publish-hot` — **no** redeploy; verify `/agenda` updates within 60s
+- [ ] Cold content: admin or `make content-publish` → Timeweb API deploy ([content-deploy.md](./content-deploy.md))
 
 ## App Platform
 

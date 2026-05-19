@@ -2,6 +2,7 @@
 
 **Timeweb (production):**
 
+- [content-deploy.md](./content-deploy.md) — S3 SSOT, content vs code deploy, admin.
 - [timeweb-app-platform.md](./timeweb-app-platform.md) — App Platform, static Next export, domains.
 - [timeweb-object-storage-setup.md](./timeweb-object-storage-setup.md) — S3 bucket, `make s3-sync-*`.
 - [timeweb-object-storage-pricing.md](./timeweb-object-storage-pricing.md) — cost estimate.

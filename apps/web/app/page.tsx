@@ -1,17 +1,17 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 
-import { CatalogPageClient } from "@/components/catalog-page-client";
+import { LiveCatalog } from "@/components/live-catalog";
 import { PortalHero } from "@/components/portal-hero";
-import { loadQuests, loadVenues, loadWorlds } from "@/lib/content/load";
+import { loadQuestsShell, loadVenues, loadWorlds } from "@/lib/content/load";
 
 export const metadata: Metadata = {
   title: "Курсы BrainMaster",
 };
 
 export default async function HomePage() {
-  const [quests, venues, worlds] = await Promise.all([
-    loadQuests(),
+  const [baseQuests, venues, worlds] = await Promise.all([
+    loadQuestsShell(),
     loadVenues(),
     loadWorlds(),
   ]);
@@ -29,7 +29,7 @@ export default async function HomePage() {
           <div className="mb-10 h-28 animate-pulse rounded-2xl bg-white/5" />
         }
       >
-        <CatalogPageClient quests={quests} venues={venues} worlds={worlds} />
+        <LiveCatalog baseQuests={baseQuests} venues={venues} worlds={worlds} />
       </Suspense>
     </main>
   );

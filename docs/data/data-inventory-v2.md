@@ -16,7 +16,7 @@ Inventory for unified data model V2. **Status**: `migrated` | `in-code` | `inten
 
 | Field group | Location | Status | V2 entity |
 |-------------|----------|--------|-----------|
-| World / quest / venue facts | `content/worlds`, `quests`, `venues` | `content-yaml` | Universe, Course, Venue |
+| World / quest / venue facts | `data/v2/catalog-snapshot.json`, `map-snapshot.json`, `detail/*` | `snapshot` (YAML dev fallback) | Universe, Course, Venue |
 | World card visuals (gradient, icon) | `content/worlds/*.yaml` `presentation` | `content-yaml` | Universe.presentation |
 | Shift rows | `data/offers-snapshot.json` | `snapshot` | Event + EventVariant |
 

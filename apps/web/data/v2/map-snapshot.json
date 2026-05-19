@@ -1,0 +1,176 @@
+{
+  "version": 2,
+  "generatedAt": "2026-05-19T12:07:23.735Z",
+  "source": "export-yaml-to-snapshots",
+  "integrity": {
+    "contentHash": "sha256:75b87634f3ab0b4247cc110bb75d4f5bad7a663e133548240eaf09b15e14c59a"
+  },
+  "venues": [
+    {
+      "slug": "bm-base-moscow",
+      "name": "База BrainMaster (Москва)",
+      "type": "bm_base",
+      "address": "Москва, адрес уточняется при записи",
+      "metro": "—",
+      "city": "moscow",
+      "district": "Москва",
+      "logoUrl": "/brand/brainmaster-mark.png",
+      "entranceNote": "Адрес базы BrainMaster подтверждаем при записи на конкретную смену.",
+      "directions": [
+        "Выберите смену в расписании и оставьте заявку.",
+        "После подтверждения записи мы отправим точный адрес и схему прохода.",
+        "Координатор подскажет место встречи и порядок допуска."
+      ],
+      "contactNote": "Для открытых городских смен детали локации зависят от программы и даты.",
+      "photos": [],
+      "schoolScopeSlug": null
+    },
+    {
+      "slug": "school-1212-yasenevo",
+      "name": "ГБОУ Школа №1212",
+      "type": "school",
+      "address": "Новоясеневский проспект, 24к3",
+      "metro": "Ясенево",
+      "city": "moscow",
+      "latitude": 55.6039,
+      "longitude": 37.5287,
+      "district": "Ясенево",
+      "logoUrl": "/venues/logos/school-1212-placeholder.png",
+      "entranceNote": "Перед стартом смены подтвердим вход, место встречи и кабинет в корпусе.",
+      "directions": [
+        "Постройте маршрут до Новоясеневского проспекта, 24к3 и ориентируйтесь на главный вход школы.",
+        "На входе скажите, что вы на занятия BrainMaster.",
+        "Дождитесь координатора BrainMaster в согласованной зоне встречи."
+      ],
+      "contactNote": "Точный кабинет и порядок прохода отправляем родителям перед началом смены.",
+      "photos": [],
+      "schoolScopeSlug": "school-1212"
+    },
+    {
+      "slug": "school-1383-verkhnie-likhobory",
+      "name": "Школа №1383",
+      "type": "school",
+      "address": "ул. Дубнинская, 7",
+      "metro": "Верхние Лихоборы",
+      "city": "moscow",
+      "latitude": 55.85788,
+      "longitude": 37.56627,
+      "district": "Бескудниковский",
+      "logoUrl": "/venues/logos/school-1383-placeholder.png",
+      "entranceNote": "Перед стартом смены подтвердим вход, место встречи и кабинет в корпусе.",
+      "directions": [
+        "Постройте маршрут до ул. Дубнинская, 7 и ориентируйтесь на главный вход школы.",
+        "На входе скажите, что вы на занятия BrainMaster.",
+        "Дождитесь координатора BrainMaster в согласованной зоне встречи."
+      ],
+      "contactNote": "Точный кабинет и порядок прохода отправляем родителям перед началом смены.",
+      "photos": [],
+      "schoolScopeSlug": "school-1383"
+    },
+    {
+      "slug": "school-1517-narodnoe-opolchenie",
+      "name": "Школа №1517",
+      "type": "school",
+      "address": "ул. М. Тухачевского, 58к2",
+      "metro": "Народное Ополчение",
+      "city": "moscow",
+      "latitude": 55.7856,
+      "longitude": 37.4576,
+      "district": "Хорошёво-Мнёвники",
+      "logoUrl": "/venues/logos/school-1517-placeholder.png",
+      "entranceNote": "Перед стартом смены подтвердим вход, место встречи и кабинет в корпусе.",
+      "directions": [
+        "Постройте маршрут до ул. М. Тухачевского, 58к2 и ориентируйтесь на главный вход школы.",
+        "На входе скажите, что вы на занятия BrainMaster.",
+        "Дождитесь координатора BrainMaster в согласованной зоне встречи."
+      ],
+      "contactNote": "Точный кабинет и порядок прохода отправляем родителям перед началом смены.",
+      "photos": [],
+      "schoolScopeSlug": "school-1517"
+    },
+    {
+      "slug": "school-17-belyaevo",
+      "name": "Школа №17",
+      "type": "school",
+      "address": "ул. Введенского, 28",
+      "metro": "Беляево",
+      "city": "moscow",
+      "latitude": 55.6364,
+      "longitude": 37.5323,
+      "district": "Коньково",
+      "logoUrl": "/venues/logos/school-17-placeholder.png",
+      "entranceNote": "Перед стартом смены подтвердим вход, место встречи и кабинет в корпусе.",
+      "directions": [
+        "Постройте маршрут до ул. Введенского, 28 и ориентируйтесь на главный вход школы.",
+        "На входе скажите, что вы на занятия BrainMaster.",
+        "Дождитесь координатора BrainMaster в согласованной зоне встречи."
+      ],
+      "contactNote": "Точный кабинет и порядок прохода отправляем родителям перед началом смены.",
+      "photos": [],
+      "schoolScopeSlug": "school-17"
+    },
+    {
+      "slug": "school-2103-yasenevo",
+      "name": "Школа №2103",
+      "type": "school",
+      "address": "Голубинская ул., 13к2",
+      "metro": "Ясенево",
+      "city": "moscow",
+      "latitude": 55.603,
+      "longitude": 37.5175,
+      "district": "Ясенево",
+      "logoUrl": "/venues/logos/school-2103-placeholder.png",
+      "entranceNote": "Перед стартом смены подтвердим вход, место встречи и кабинет в корпусе.",
+      "directions": [
+        "Постройте маршрут до Голубинской ул., 13к2 и ориентируйтесь на главный вход школы.",
+        "На входе скажите, что вы на занятия BrainMaster.",
+        "Дождитесь координатора BrainMaster в согласованной зоне встречи."
+      ],
+      "contactNote": "Точный кабинет и порядок прохода отправляем родителям перед началом смены.",
+      "photos": [],
+      "schoolScopeSlug": "school-2103"
+    },
+    {
+      "slug": "school-875-yugo-zapadnaya",
+      "name": "Школа №875",
+      "type": "school",
+      "address": "пр-кт Вернадского, 101, корп. 6",
+      "metro": "Юго-Западная",
+      "city": "moscow",
+      "latitude": 55.6632,
+      "longitude": 37.4904,
+      "district": "Проспект Вернадского",
+      "logoUrl": "/venues/logos/school-875-placeholder.png",
+      "entranceNote": "Перед стартом смены подтвердим вход, место встречи и кабинет в корпусе.",
+      "directions": [
+        "Постройте маршрут до проспекта Вернадского, 101, корп. 6 и ориентируйтесь на главный вход школы.",
+        "На входе скажите, что вы на занятия BrainMaster.",
+        "Дождитесь координатора BrainMaster в согласованной зоне встречи."
+      ],
+      "contactNote": "Точный кабинет и порядок прохода отправляем родителям перед началом смены.",
+      "photos": [],
+      "schoolScopeSlug": "school-875"
+    },
+    {
+      "slug": "school-937-orekhovo",
+      "name": "Школа №937",
+      "type": "school",
+      "address": "ул. Маршала Захарова, 25",
+      "metro": "Орехово",
+      "city": "moscow",
+      "latitude": 55.619,
+      "longitude": 37.6996,
+      "district": "Орехово-Борисово",
+      "logoUrl": "/venues/logos/school-937-placeholder.png",
+      "entranceNote": "Перед стартом смены подтвердим вход, место встречи и кабинет в корпусе.",
+      "directions": [
+        "Постройте маршрут до ул. Маршала Захарова, 25 и ориентируйтесь на главный вход школы.",
+        "На входе скажите, что вы на занятия BrainMaster.",
+        "Дождитесь координатора BrainMaster в согласованной зоне встречи."
+      ],
+      "contactNote": "Точный кабинет и порядок прохода отправляем родителям перед началом смены.",
+      "photos": [],
+      "schoolScopeSlug": "school-937"
+    }
+  ]
+}

@@ -5,18 +5,15 @@ import { notFound } from "next/navigation";
 import { ContentSection } from "@/components/content-section";
 import { QuestHeroBanner } from "@/components/quest-hero-banner";
 import { QuestHeroMeta } from "@/components/quest-hero-meta";
-import { ScheduleBoard } from "@/components/schedule-board";
+import { LiveQuestSchedule } from "@/components/live-quest-schedule";
 import {
   loadQuestBySlug,
   loadQuests,
+  loadQuestsShell,
   loadVenues,
   loadWorldBySlug,
-  venueBySlugMap,
+  loadWorlds,
 } from "@/lib/content/load";
-import {
-  groupAgendaItems,
-  type AgendaOfferItem,
-} from "@/lib/offers/agenda";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -59,40 +56,12 @@ export default async function QuestPage({ params }: Props) {
   const quest = await loadQuestBySlug(slug);
   if (!quest) notFound();
 
-  const [venues, world] = await Promise.all([
+  const [venues, worlds, baseQuests] = await Promise.all([
     loadVenues(),
-    loadWorldBySlug(quest.worldSlug),
+    loadWorlds(),
+    loadQuestsShell(),
   ]);
-
-  const vmap = venueBySlugMap(venues);
-  const agendaItems: AgendaOfferItem[] = quest.offers
-    .map((offer) => {
-      const venue = vmap.get(offer.venueSlug);
-      if (!venue) return null;
-      return {
-        offer,
-        quest: {
-          slug: quest.slug,
-          title: quest.title,
-          worldSlug: quest.worldSlug,
-          format: quest.format,
-          ageLabel: quest.ageLabel,
-          catalogTagline: quest.catalogTagline,
-          tagline: quest.tagline,
-          heroImageUrl: quest.heroImageUrl,
-        },
-        venue,
-        world: world
-          ? {
-              slug: world.slug,
-              name: world.name,
-              themeKey: world.themeKey,
-            }
-          : null,
-      };
-    })
-    .filter((r): r is NonNullable<typeof r> => r !== null);
-  const groups = groupAgendaItems(agendaItems);
+  const world = await loadWorldBySlug(quest.worldSlug);
 
   return (
     <article
@@ -151,12 +120,11 @@ export default async function QuestPage({ params }: Props) {
         id="schedule-offers"
         className="scroll-mt-28 rounded-2xl border border-white/10 bg-card/35 p-4 backdrop-blur-md sm:p-6 md:p-8"
       >
-        <ScheduleBoard
-          groups={groups}
-          title="Площадки и запись"
-          description="Если для смены ещё нет карточки mos.ru, кнопка открывает форму заявки в модальном окне."
-          showProgramFilter={false}
-          displayMode="quest"
+        <LiveQuestSchedule
+          baseQuests={baseQuests}
+          venues={venues}
+          worlds={worlds}
+          questSlug={slug}
         />
       </section>
     </article>

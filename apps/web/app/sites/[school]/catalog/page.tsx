@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
-import { CatalogPageClient } from "@/components/catalog-page-client";
+import { LiveCatalog } from "@/components/live-catalog";
 import { RememberSchoolOnVisit } from "@/components/remember-school-on-visit";
-import { loadQuests, loadVenues, loadWorlds } from "@/lib/content/load";
+import { loadQuestsShell, loadVenues, loadWorlds } from "@/lib/content/load";
 import { getSchoolScopes, resolveSchoolScope } from "@/lib/offers/agenda";
 
 type Props = {
@@ -31,8 +31,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function SchoolCatalogPage({ params }: Props) {
   const { school: schoolSlug } = await params;
-  const [quests, venues, worlds] = await Promise.all([
-    loadQuests(),
+  const [baseQuests, venues, worlds] = await Promise.all([
+    loadQuestsShell(),
     loadVenues(),
     loadWorlds(),
   ]);
@@ -48,8 +48,8 @@ export default async function SchoolCatalogPage({ params }: Props) {
           <div className="mb-10 h-28 animate-pulse rounded-2xl bg-white/5" />
         }
       >
-        <CatalogPageClient
-          quests={quests}
+        <LiveCatalog
+          baseQuests={baseQuests}
           venues={venues}
           worlds={worlds}
           fixedSchool={{ slug: school.slug, name: school.name }}

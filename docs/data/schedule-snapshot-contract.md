@@ -20,6 +20,17 @@ s3://<bucket>/data/offers-snapshot.json
 https://<public-s3-base>/data/offers-snapshot.json
 ```
 
+## Runtime (production, recommended)
+
+When `NEXT_PUBLIC_S3_PUBLIC_BASE_URL` is set, the browser loads offers via
+[`apps/web/lib/offers/snapshot-client.ts`](../../apps/web/lib/offers/snapshot-client.ts)
+and [`useLiveSchedule`](../../apps/web/lib/offers/use-live-schedule.ts) (poll 60s).
+**No Timeweb redeploy** after `make s3-sync-data`. Configure **CORS** on the bucket.
+
+Build-time merge is optional (empty offers in static shell).
+
+## Build-time (fallback / local dev)
+
 The app reads the local file by default. For build-time S3 reads, set either:
 
 ```text

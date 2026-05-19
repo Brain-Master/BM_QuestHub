@@ -73,7 +73,10 @@ export function buildSiteScopeCards(params: {
   quests: Quest[];
   venues: Venue[];
   worlds: World[];
+  /** When true, keep sites with courses even if schedule rows are not loaded yet. */
+  scheduleLoading?: boolean;
 }): SiteScopeCard[] {
+  const scheduleLoading = params.scheduleLoading ?? false;
   return params.scopes
     .map((scope) => {
       const primaryVenue = scope.venues[0];
@@ -134,8 +137,10 @@ export function buildSiteScopeCards(params: {
         ),
       };
     })
-    .filter(
-      (card) => card.listedOnSites && (card.courseCount > 0 || card.shiftCount > 0),
-    );
+    .filter((card) => {
+      if (!card.listedOnSites) return false;
+      if (scheduleLoading) return card.courseCount > 0;
+      return card.courseCount > 0 || card.shiftCount > 0;
+    });
 }
 
