@@ -129,10 +129,27 @@ test.describe("Schedule Board data rules", () => {
     expect(flow).toMatchObject({
       kind: "waitlist",
       leadType: "waitlist",
-      title: "Заявка в лист ожидания",
+      title: "Предварительная заявка",
+      successTitle: "Заявка принята",
     });
-    expect(flow.noticeText).toContain("откроется запись");
+    expect(flow.noticeText).toContain("старте набора");
     expect(flow.noticeText).toContain("портал mos.ru");
+    expect(flow.successText).toContain("не бронь места");
+  });
+
+  test("sold-out waitlist success copy mentions a freed spot", () => {
+    const flow = resolveRegistrationFlow({
+      bookingMode: { kind: "waitlist", label: "В лист ожидания" },
+      registrationChannel: "brainmaster",
+    });
+
+    expect(flow).toMatchObject({
+      kind: "waitlist",
+      title: "Заявка в лист ожидания",
+      successTitle: "Вы в листе ожидания",
+    });
+    expect(flow.noticeText).toContain("не бронь места");
+    expect(flow.successText).toContain("освободится место");
   });
 
   test("date range is displayed as a human Russian range", () => {

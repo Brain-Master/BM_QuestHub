@@ -248,14 +248,14 @@ export function BookingForm({
           />
           <Label
             htmlFor="consent"
-            className="min-w-0 text-slate-400 text-xs leading-relaxed font-normal"
+            className="block min-w-0 text-slate-400 text-xs leading-relaxed font-normal"
           >
             Даю{" "}
             <Link
               href={LEGAL_PERSONAL_DATA_CONSENT_PATH}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-cyan-300 underline underline-offset-3 hover:text-cyan-200"
+              className="inline text-cyan-300 underline underline-offset-3 hover:text-cyan-200"
             >
               согласие на обработку персональных данных
             </Link>
@@ -264,7 +264,7 @@ export function BookingForm({
               href={LEGAL_PERSONAL_DATA_PATH}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-cyan-300 underline underline-offset-3 hover:text-cyan-200"
+              className="inline text-cyan-300 underline underline-offset-3 hover:text-cyan-200"
             >
               политикой обработки персональных данных
             </Link>

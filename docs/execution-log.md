@@ -35,6 +35,28 @@ Use this template for each entry:
 
 ## Entries
 
+### 2026-05-19 14:00 UTC+3 - Booking Form Success Feedback
+
+**Goal:** Fix consent label layout in booking modals and show a clear success screen instead of closing immediately after submit.
+
+**Completed:**
+- Consent label uses block layout so legal links wrap as continuous text.
+- Added `LeadFormSuccess` and `lead_success` dialog view for booking and waitlist flows.
+- Differentiated success copy for preliminary waitlist, sold-out waitlist, and regular booking in `resolveRegistrationFlow`.
+
+**Changed Files:**
+- `apps/web/components/booking-form.tsx`: block consent label, inline policy links.
+- `apps/web/components/lead-form-success.tsx`: post-submit success UI.
+- `apps/web/components/offer-booking-action.tsx`: keep modal open on success.
+- `apps/web/lib/registration-flow.ts`: success titles and messages per flow.
+- `apps/web/e2e/schedule-board-data.spec.ts`: waitlist success copy coverage.
+
+**Validation:**
+- `npm run lint` (apps/web)
+
+**Open Items:**
+- None.
+
 ### 2026-05-19 00:01 UTC+3 - Yandex Lead Receiver
 
 **Goal:** Route static-site lead forms through Yandex Cloud Functions with server-side Telegram, Google Sheets, and n8n integrations.

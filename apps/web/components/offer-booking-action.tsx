@@ -3,6 +3,7 @@
 import * as React from "react";
 
 import { BookingForm } from "@/components/booking-form";
+import { LeadFormSuccess } from "@/components/lead-form-success";
 import { MosBookingSuccess } from "@/components/mos-booking-success";
 import { Button } from "@/components/ui/button";
 import {
@@ -58,7 +59,9 @@ export function OfferBookingAction({
   variant,
 }: Props) {
   const [open, setOpen] = React.useState(false);
-  const [view, setView] = React.useState<"form" | "mos_success">("form");
+  const [view, setView] = React.useState<"form" | "mos_success" | "lead_success">(
+    "form",
+  );
   const action: ScheduleBookingMode =
     mode ?? variant?.bookingMode ?? { kind: "form", label: buttonLabel };
   const registrationChannel =
@@ -142,12 +145,24 @@ export function OfferBookingAction({
         >
           <DialogHeader className="relative z-10 border-slate-700/80 border-b bg-[#0F172A] px-5 py-4 pr-12 shadow-[0_10px_24px_rgba(2,6,23,0.35)]">
             <DialogTitle className="font-heading text-lg text-white">
-              {view === "mos_success" ? "Спасибо за заявку" : flowContext.title}
+              {view === "form"
+                ? flowContext.title
+                : view === "mos_success"
+                  ? "Спасибо за заявку"
+                  : flowContext.successTitle}
             </DialogTitle>
           </DialogHeader>
           {view === "mos_success" && action.kind === "mos" ? (
             <div className="bm-scrollbar min-h-0 overflow-y-auto overscroll-contain [scrollbar-gutter:stable] [scrollbar-width:thin]">
               <MosBookingSuccess mosUrl={action.url} onOpenMos={trackMosOpen} />
+            </div>
+          ) : view === "lead_success" ? (
+            <div className="bm-scrollbar min-h-0 overflow-y-auto overscroll-contain [scrollbar-gutter:stable] [scrollbar-width:thin]">
+              <LeadFormSuccess
+                title={flowContext.successTitle}
+                text={flowContext.successText}
+                onClose={() => setOpen(false)}
+              />
             </div>
           ) : (
             <div className="bm-scrollbar min-h-0 overflow-y-auto overscroll-contain px-5 py-4 [scrollbar-gutter:stable] [scrollbar-width:thin]">
@@ -179,7 +194,7 @@ export function OfferBookingAction({
                     setView("mos_success");
                     return;
                   }
-                  setOpen(false);
+                  setView("lead_success");
                 }}
               />
             </div>
