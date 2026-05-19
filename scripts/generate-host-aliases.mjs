@@ -6,13 +6,18 @@
  */
 import fs from "node:fs";
 import path from "node:path";
+import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
-import { parse as parseYaml } from "yaml";
 
 import { buildHostAliasesDocument } from "./host-alias-core.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
+/** Resolved via apps/web (Timeweb runs npm ci there before build). */
+const requireFromWeb = createRequire(
+  path.join(ROOT, "apps", "web", "package.json"),
+);
+const { parse: parseYaml } = requireFromWeb("yaml");
 const VENUES_DIR = path.join(ROOT, "apps", "web", "content", "venues");
 const OUT = path.join(ROOT, "apps", "web", "public", "host-aliases.json");
 
