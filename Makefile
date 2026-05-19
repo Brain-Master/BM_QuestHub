@@ -7,12 +7,16 @@
 
 WEB := apps/web
 
-.PHONY: run check dev-host dev-restart brand-assets
+.PHONY: run check dev-host dev-restart brand-assets docs-index
 
 # PNG/WebP/ICO из assets/brand/brainmaster-logo.png → assets/brand/generated/ (+ Next app/ + public/brand/)
 brand-assets:
 	python -m pip install -q -r scripts/requirements-brand-assets.txt
 	python scripts/generate_brainmaster_assets.py --sync-next
+
+# Индексы кода: docs/indexes/* из исходников и DocAsCode-тегов
+docs-index:
+	python scripts/generate_indexes.py
 
 # Проверки: линтер + production build
 check:

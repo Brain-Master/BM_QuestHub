@@ -8,6 +8,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { YandexMetrika } from "@/components/yandex-metrika";
 import { loadWorlds } from "@/lib/content/load";
+import { loadSiteConfig } from "@/lib/data/site-config-loader";
 
 const bodySans = Manrope({
   variable: "--font-manrope",
@@ -37,7 +38,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const worlds = await loadWorlds();
+  const [worlds, siteConfig] = await Promise.all([loadWorlds(), loadSiteConfig()]);
 
   return (
     <html
@@ -48,7 +49,7 @@ export default async function RootLayout({
     >
       <body className="bm-page-bg flex min-h-full flex-col bg-background text-foreground">
         <YandexMetrika />
-        <SiteHeader worlds={worlds} />
+        <SiteHeader worlds={worlds} navigation={siteConfig.navigation} />
         <div className="flex flex-1 flex-col">{children}</div>
         <ScrollToTopButton />
         <SiteFooter />

@@ -1,3 +1,9 @@
+import siteConfig from "@/data/v2/site-config.json";
+
+import type { CityConfig } from "@/lib/data/v2/entities";
+
+export type CityMeta = CityConfig;
+
 export const DEFAULT_CITY = "moscow";
 
 type SiteForCityAggregation = {
@@ -5,14 +11,6 @@ type SiteForCityAggregation = {
   courseSlugs: string[];
   shiftCount: number;
   studentCount: number;
-};
-
-export type CityMeta = {
-  slug: string;
-  label: string;
-  imageUrl?: string;
-  sortOrder?: number;
-  gradient: string;
 };
 
 export type CityCard = {
@@ -32,34 +30,11 @@ export type CityOption = {
   label: string;
 };
 
-export const CITY_META: Record<string, CityMeta> = {
-  moscow: {
-    slug: "moscow",
-    label: "Москва",
-    sortOrder: 0,
-    gradient: "from-violet-700/90 via-indigo-700/85 to-cyan-700/80",
-  },
-  krasnodar: {
-    slug: "krasnodar",
-    label: "Краснодар",
-    sortOrder: 1,
-    gradient: "from-emerald-700/90 via-teal-700/85 to-cyan-700/80",
-  },
-  rostov: {
-    slug: "rostov",
-    label: "Ростов-на-Дону",
-    sortOrder: 2,
-    gradient: "from-orange-700/90 via-rose-700/85 to-red-700/80",
-  },
-  ufa: {
-    slug: "ufa",
-    label: "Уфа",
-    sortOrder: 3,
-    gradient: "from-blue-700/90 via-indigo-700/85 to-violet-700/80",
-  },
-};
-
 const DEFAULT_GRADIENT = "from-violet-700/90 via-indigo-700/85 to-cyan-700/80";
+
+export const CITY_META: Record<string, CityMeta> = Object.fromEntries(
+  siteConfig.cities.map((city) => [city.slug, city]),
+);
 
 export function getCityLabel(slug: string): string {
   return CITY_META[slug]?.label ?? slug;

@@ -22,6 +22,13 @@ IGNORE_DIRS = {
     "node_modules",
     "dist",
     "build",
+    "out",  # Next.js static export (apps/web/out)
+    ".next",
+    "coverage",
+    "test-results",
+    "playwright-report",
+    "blob-report",
+    ".vercel",
 }
 
 CODE_EXTENSIONS = {

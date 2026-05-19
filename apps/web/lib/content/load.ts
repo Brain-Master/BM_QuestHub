@@ -18,6 +18,8 @@ import { filterQuestsForSchool as filterQuestsForSchoolPure } from "@/lib/school
 
 const CONTENT_ROOT = path.join(/*turbopackIgnore: true*/ process.cwd(), "content");
 
+let strictScheduleV2Validated = false;
+
 async function loadDirYaml<T>(
   dirName: string,
   parse: (data: unknown, file: string) => T,
@@ -68,6 +70,19 @@ export async function loadQuests(): Promise<Quest[]> {
     readOffersSnapshot(),
   ]);
 
+  if (process.env.SITE_SNAPSHOT_STRICT === "1" && !strictScheduleV2Validated) {
+    strictScheduleV2Validated = true;
+    const { offersSnapshotV1ToScheduleV2 } = await import("@/lib/data/v2/v1-to-v2");
+    const { assertNoPrivateFields } = await import("@/lib/data/v2/private-field-denylist");
+    const scheduleV2 = offersSnapshotV1ToScheduleV2(snapshot);
+    assertNoPrivateFields(scheduleV2);
+    if (scheduleV2.events.length === 0) {
+      throw new Error(
+        "[site-snapshot-v2] SITE_SNAPSHOT_STRICT: V1 offers produced zero V2 events",
+      );
+    }
+  }
+
   return questsRaw.map((q) => ({
     ...q,
     offers: snapshot.offersByQuest[q.slug] ?? [],
@@ -95,3 +110,5 @@ export function filterQuestsForSchool(
 ): Quest[] {
   return filterQuestsForSchoolPure(quests, venues, schoolSlug);
 }
+
+export { loadScheduleSnapshotV2 } from "@/lib/data/site-snapshot-loader";

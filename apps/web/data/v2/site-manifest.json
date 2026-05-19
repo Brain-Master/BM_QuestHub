@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "generatedAt": "2026-05-19T00:00:00.000Z",
+  "source": "local_site_config",
+  "snapshots": {
+    "site": {
+      "path": "data/v2/site-config.json"
+    },
+    "schedule": {
+      "path": "data/offers-snapshot.json"
+    }
+  }
+}

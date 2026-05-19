@@ -6,7 +6,6 @@ import {
   type VenueOffer,
 } from "@/lib/schemas";
 
-import { resolveQuestSlug } from "./quest-slug";
 import type { SheetRow } from "./sheet-contract";
 
 function formatRuDateRange(start: string, end: string): string {
@@ -181,12 +180,7 @@ export function mapSheetRowToVenueOffer(
   row: SheetRow,
   venueSlugs: Set<string>,
 ): { ok: MappedOffer } | { error: string } {
-  const questSlug = resolveQuestSlug(row.program_name, row.quest_slug ?? null);
-  if (!questSlug) {
-    return {
-      error: `Не удалось сопоставить program_name с квестом: «${row.program_name}» (добавьте колонку quest_slug или расширьте lib/offers/quest-slug.ts).`,
-    };
-  }
+  const questSlug = row.quest_slug.trim();
 
   if (!venueSlugs.has(row.venue_slug)) {
     return {

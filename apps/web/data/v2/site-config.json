@@ -1,0 +1,188 @@
+{
+  "version": 2,
+  "generatedAt": "2026-05-19T00:00:00.000Z",
+  "source": "local_site_config",
+  "brand": {
+    "legalName": "BrainMaster",
+    "siteTitle": "Вселенная Инженерных Квестов · BrainMaster",
+    "contacts": {
+      "supportPhone": "+7 (977) 967-88-00",
+      "supportPhoneHref": "tel:+79779678800",
+      "legalEmail": "ask@b-master.pro",
+      "legalEmailHref": "mailto:ask@b-master.pro"
+    }
+  },
+  "navigation": {
+    "worldGroups": [
+      {
+        "label": "Мехвариум",
+        "slug": "mekhvarium",
+        "programs": [
+          {
+            "label": "Лаборатория кинетических монстров",
+            "slug": "mekhvarium-laboratoriya-kineticheskih-monstrov"
+          },
+          {
+            "label": "Мастерская гидравлических монстров",
+            "slug": "mekhvarium-masterskaya-gidravlicheskih-monstrov"
+          }
+        ]
+      },
+      {
+        "label": "Minecraft",
+        "slug": "minecraft",
+        "programs": [
+          {
+            "label": "Тайна древних инженеров",
+            "slug": "minecraft-taina-drevnih-inzhenerov"
+          },
+          {
+            "label": "Пробуждение стражей",
+            "slug": "minecraft-probuzhdenie-strazhey"
+          }
+        ]
+      },
+      {
+        "label": "КиберРитм",
+        "slug": "cyber-rhythm",
+        "programs": [
+          {
+            "label": "Инженерия звука",
+            "slug": "cyber-rhythm"
+          }
+        ]
+      }
+    ]
+  },
+  "cities": [
+    {
+      "slug": "moscow",
+      "label": "Москва",
+      "sortOrder": 0,
+      "gradient": "from-violet-700/90 via-indigo-700/85 to-cyan-700/80"
+    },
+    {
+      "slug": "krasnodar",
+      "label": "Краснодар",
+      "sortOrder": 1,
+      "gradient": "from-emerald-700/90 via-teal-700/85 to-cyan-700/80"
+    },
+    {
+      "slug": "rostov",
+      "label": "Ростов-на-Дону",
+      "sortOrder": 2,
+      "gradient": "from-orange-700/90 via-rose-700/85 to-red-700/80"
+    },
+    {
+      "slug": "ufa",
+      "label": "Уфа",
+      "sortOrder": 3,
+      "gradient": "from-blue-700/90 via-indigo-700/85 to-violet-700/80"
+    }
+  ],
+  "map": {
+    "bounds": {
+      "west": 37.35,
+      "east": 37.88,
+      "north": 55.92,
+      "south": 55.55
+    },
+    "metroAnchors": {
+      "Верхние Лихоборы": { "x": 48, "y": 25 },
+      "Народное Ополчение": { "x": 35, "y": 45 },
+      "Юго-Западная": { "x": 35, "y": 72 },
+      "Беляево": { "x": 42, "y": 78 },
+      "Ясенево": { "x": 46, "y": 85 },
+      "Орехово": { "x": 65, "y": 82 }
+    },
+    "fallbackAnchors": [
+      { "x": 50, "y": 40 },
+      { "x": 42, "y": 54 },
+      { "x": 60, "y": 56 },
+      { "x": 48, "y": 66 }
+    ]
+  },
+  "dictionaries": {
+    "registrationChannels": {
+      "mos_ru": "портал mos.ru (договор школы)",
+      "brainmaster": "BrainMaster напрямую"
+    },
+    "eventStatus": {
+      "planning": { "label": "Скоро старт", "variant": "info" },
+      "recruiting": { "label": "Идёт набор", "variant": "success" },
+      "in_progress": { "label": "Идёт набор", "variant": "success" },
+      "join_late": { "label": "Можно присоединиться", "variant": "purple" },
+      "sold_out": { "label": "Мест нет", "variant": "warning" },
+      "waitlist": { "label": "Мест нет", "variant": "warning" },
+      "finished": { "label": "Завершено", "variant": "default" },
+      "cancelled": { "label": "Отменено", "variant": "destructive" }
+    },
+    "metroLines": {
+      "Беляево": {
+        "number": "6",
+        "name": "Калужско-Рижская линия",
+        "color": "#F07E24"
+      },
+      "Верхние Лихоборы": {
+        "number": "10",
+        "name": "Люблинско-Дмитровская линия",
+        "color": "#BED12C"
+      },
+      "Орехово": {
+        "number": "2",
+        "name": "Замоскворецкая линия",
+        "color": "#4FB04F"
+      },
+      "Ясенево": {
+        "number": "6",
+        "name": "Калужско-Рижская линия",
+        "color": "#F07E24"
+      },
+      "Юго-Западная": {
+        "number": "1",
+        "name": "Сокольническая линия",
+        "color": "#E42313"
+      },
+      "Народное Ополчение": {
+        "number": "11",
+        "name": "Большая кольцевая линия",
+        "color": "#82C0C0"
+      }
+    },
+    "registrationFlow": {
+      "mosAssist": {
+        "title": "Запись через mos.ru",
+        "noticeTitle": "Сначала закрепим вашу заявку",
+        "noticeText": "Оставьте контакты, и мы поможем пройти оформление на mos.ru: подскажем по договору, оплате и не дадим заявке потеряться. После отправки откроем портал, а если понадобится помощь, мы на связи: {supportPhone}.",
+        "submitLabel": "Перейти к записи на mos.ru",
+        "successTitle": "Спасибо за заявку",
+        "successText": "Контакты сохранены. Дальше оформите запись на mos.ru — мы на связи, если понадобится помощь."
+      },
+      "waitlist": {
+        "title": "Заявка в лист ожидания",
+        "noticeTitle": "Сообщим, если освободится место",
+        "noticeText": "Оставьте контакты — это не бронь места. Если кто-то откажется, мы свяжемся с вами и подскажем, как оформить участие через {registrationChannel}.",
+        "submitLabel": "Оставить заявку на уведомление",
+        "successTitle": "Вы в листе ожидания",
+        "successText": "Мы сохранили ваши контакты. Если освободится место, свяжемся с вами в порядке очереди. Вопросы — {supportPhone}."
+      },
+      "waitlistPreliminary": {
+        "title": "Предварительная заявка",
+        "noticeTitle": "Сообщим, когда откроется запись",
+        "noticeText": "Оставьте контакты, и мы заранее предупредим вас о старте набора. Когда места появятся, подскажем следующий шаг оформления через {registrationChannel}.",
+        "submitLabel": "Оставить заявку на уведомление",
+        "successTitle": "Заявка принята",
+        "successText": "Мы сохранили ваши контакты и напишем или позвоним, когда откроется запись. Это не бронь места. Вопросы — {supportPhone}."
+      },
+      "brainmaster": {
+        "title": "Оформление заявки",
+        "noticeTitle": "Закрепим вашу заявку",
+        "noticeText": "Оставьте контакты, и мы свяжемся с вами, чтобы подтвердить место, уточнить детали программы и спокойно довести оформление до конца.",
+        "submitLabel": "Забронировать место",
+        "successTitle": "Заявка отправлена",
+        "successText": "Мы получили ваши контакты и свяжемся с вами, чтобы подтвердить место и детали программы. Если вопрос срочный — {supportPhone}."
+      }
+    }
+  },
+  "legal": []
+}

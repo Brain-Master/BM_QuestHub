@@ -3,6 +3,8 @@ import { z } from "zod";
 /** Обязательные заголовки (после нормализации в snake_case). */
 export const REQUIRED_SHEET_HEADERS = [
   "program_name",
+  "quest_slug",
+  "venue_slug",
   "start_date",
   "end_date",
   "start_time",
@@ -82,14 +84,7 @@ function optionalPercent() {
 /** Одна строка листа после склейки с заголовками. */
 export const sheetRowSchema = z.object({
   venue_slug: z.string().min(1),
-  quest_slug: z
-    .preprocess(
-      (v) =>
-        v === undefined || v === null || (typeof v === "string" && !v.trim())
-          ? undefined
-          : v,
-      z.string().min(1).optional(),
-    ),
+  quest_slug: z.string().min(1),
   program_name: z.string().min(1),
   school_name: z.string().min(1),
   metro_station: z.string().optional(),

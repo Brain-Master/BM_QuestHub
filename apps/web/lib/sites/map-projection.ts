@@ -3,15 +3,14 @@ import {
   SITE_MAP_POINTS,
   type MapGeoControlPoint,
 } from "@/lib/sites/map-calibration";
+import {
+  MAP_FALLBACK_ANCHORS,
+  METRO_MAP_ANCHORS,
+  MOSCOW_MAP_BOUNDS,
+} from "@/lib/sites/map-config";
 import type { SiteCampus, SiteScopeCard } from "@/lib/sites/scope-card";
 
-/** Bounding box for Moscow city proper (approx.), used for lat/lon → map percent. */
-export const MOSCOW_MAP_BOUNDS = {
-  west: 37.35,
-  east: 37.88,
-  north: 55.92,
-  south: 55.55,
-} as const;
+export { MOSCOW_MAP_BOUNDS };
 
 type MapGeoBounds = typeof MOSCOW_MAP_BOUNDS;
 
@@ -32,23 +31,6 @@ export type ProjectedUserLocation =
       directionDegrees: number;
       distanceKm: number;
     };
-
-/** Metro anchors calibrated to apps/web/public/sites/moscow-cyber-map.webp. */
-const METRO_ANCHORS: Record<string, MapPercentPoint> = {
-  "Верхние Лихоборы": { x: 48, y: 25 },
-  "Народное Ополчение": { x: 35, y: 45 },
-  "Юго-Западная": { x: 35, y: 72 },
-  Беляево: { x: 42, y: 78 },
-  Ясенево: { x: 46, y: 85 },
-  Орехово: { x: 65, y: 82 },
-};
-
-const FALLBACK_ANCHORS: MapPercentPoint[] = [
-  { x: 50, y: 40 },
-  { x: 42, y: 54 },
-  { x: 60, y: 56 },
-  { x: 48, y: 66 },
-];
 
 export function projectLatLonToPercent(
   latitude: number,
@@ -262,9 +244,14 @@ export function resolveCampusMapPoint(params: {
   const calibratedSitePoint = sitePoints[site.slug];
   if (calibratedSitePoint) return calibratedSitePoint;
 
-  if (campus.metro && METRO_ANCHORS[campus.metro]) return METRO_ANCHORS[campus.metro];
+  const metroAnchor =
+    campus.metro &&
+    METRO_MAP_ANCHORS[campus.metro as keyof typeof METRO_MAP_ANCHORS];
+  if (metroAnchor) {
+    return metroAnchor;
+  }
 
-  return FALLBACK_ANCHORS[index % FALLBACK_ANCHORS.length];
+  return MAP_FALLBACK_ANCHORS[index % MAP_FALLBACK_ANCHORS.length];
 }
 
 export type PositionedSiteOnMapPoint = MapPercentPoint & {

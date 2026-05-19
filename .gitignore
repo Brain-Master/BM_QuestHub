@@ -35,3 +35,6 @@ venv/
 
 # Node (если появятся пакеты вне apps/web)
 node_modules/
+
+# Локальные бекапы контента/данных (см. backups/README.md)
+/backups/data-pre-v2-migration-*/

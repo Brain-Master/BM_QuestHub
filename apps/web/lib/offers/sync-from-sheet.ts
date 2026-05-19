@@ -13,8 +13,6 @@ import { sheetRowSchema, validateHeaderRow } from "./sheet-contract";
 import { writeOffersSnapshotAtomic } from "./snapshot-io";
 import type { OffersSnapshotV1 } from "./snapshot-types";
 import { sendTelegramAlert } from "./telegram";
-import { venueSlugFromSchoolName } from "./venue-from-school";
-
 function rowObject(
   headers: string[],
   cells: string[],
@@ -88,13 +86,6 @@ export async function syncOffersFromGoogleSheet(): Promise<SyncOffersResult> {
       !String(obj.address ?? "").trim() &&
       !String(obj.status ?? "").trim();
     if (isMostlyEmpty) continue;
-
-    // Если колонка venue_slug отсутствует в листе — выводим её из school_name.
-    if (!obj.venue_slug || !String(obj.venue_slug).trim()) {
-      const schoolName = String(obj.school_name ?? "").trim();
-      const derived = venueSlugFromSchoolName(schoolName);
-      if (derived) obj.venue_slug = derived;
-    }
 
     const parsed = sheetRowSchema.safeParse(obj);
     if (!parsed.success) {

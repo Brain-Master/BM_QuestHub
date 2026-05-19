@@ -10,66 +10,16 @@ import {
   parsePreferredSchool,
   PREFERRED_SCHOOL_STORAGE_KEY,
 } from "@/lib/preferred-school";
+import type { NavigationConfig } from "@/lib/data/v2/site-config";
 import type { World } from "@/lib/schemas";
 import { cn } from "@/lib/utils";
 
 type Props = {
   worlds: World[];
+  navigation: NavigationConfig;
 };
 
-type ProgramNavItem = {
-  label: string;
-  slug: string;
-};
-
-type WorldNavGroup = {
-  label: string;
-  slug: string;
-  programs: ProgramNavItem[];
-};
-
-const WORLD_NAV_GROUPS: WorldNavGroup[] = [
-  {
-    label: "Мехвариум",
-    slug: "mekhvarium",
-    programs: [
-      {
-        label: "Лаборатория кинетических монстров",
-        slug: "mekhvarium-laboratoriya-kineticheskih-monstrov",
-      },
-      {
-        label: "Мастерская гидравлических монстров",
-        slug: "mekhvarium-masterskaya-gidravlicheskih-monstrov",
-      },
-    ],
-  },
-  {
-    label: "Minecraft",
-    slug: "minecraft",
-    programs: [
-      {
-        label: "Тайна древних инженеров",
-        slug: "minecraft-taina-drevnih-inzhenerov",
-      },
-      {
-        label: "Пробуждение стражей",
-        slug: "minecraft-probuzhdenie-strazhey",
-      },
-    ],
-  },
-  {
-    label: "КиберРитм",
-    slug: "cyber-rhythm",
-    programs: [
-      {
-        label: "Инженерия звука",
-        slug: "cyber-rhythm",
-      },
-    ],
-  },
-];
-
-export function SiteHeader({ worlds }: Props) {
+export function SiteHeader({ worlds, navigation }: Props) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = React.useState(false);
   const [openMobileWorldSlug, setOpenMobileWorldSlug] = React.useState<string | null>(null);
@@ -83,8 +33,9 @@ export function SiteHeader({ worlds }: Props) {
     [worlds],
   );
   const worldNavGroups = React.useMemo(
-    () => WORLD_NAV_GROUPS.filter((group) => knownWorldSlugs.has(group.slug)),
-    [knownWorldSlugs],
+    () =>
+      navigation.worldGroups.filter((group) => knownWorldSlugs.has(group.slug)),
+    [knownWorldSlugs, navigation.worldGroups],
   );
   const navItems = [
     {
