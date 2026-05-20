@@ -104,15 +104,15 @@ export default async function QuestPage({ params }: Props) {
         <p className="whitespace-pre-line">{quest.story}</p>
       </ContentSection>
 
-      <ContentSection title="Инженерный фокус (для родителей)">
+      <ContentSection title="Что останется после интенсива?">
         <p className="whitespace-pre-line">{quest.skillsParent}</p>
       </ContentSection>
 
-      <ContentSection title="Результат и «лут»">
+      <ContentSection title="Гаджет, сделанный своими руками">
         <p className="whitespace-pre-line">{quest.loot}</p>
       </ContentSection>
 
-      <ContentSection title="Подход BrainMaster">
+      <ContentSection title="Как проходит работа на интенсиве">
         <p className="whitespace-pre-line">{quest.approach}</p>
       </ContentSection>
 
