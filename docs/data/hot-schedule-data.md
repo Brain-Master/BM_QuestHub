@@ -168,7 +168,7 @@ flowchart LR
 | 7 | `collectDuplicateIds` — дубликаты `id` оффера → ошибка |
 | 8 | `groupOffersByQuest` → `OffersSnapshotV1` |
 
-CLI: `make publish-sheet-hot` → [`scripts/publish-sheet-hot.mjs`](../../scripts/publish-sheet-hot.mjs) → sync + validate + `run-s3-sync.mjs data`.
+CLI: `make publish-sheet-hot` → [`scripts/publish-sheet-hot.mjs`](../../scripts/publish-sheet-hot.mjs) → sync + validate + `run-s3-sync.mjs data-hot` (only `offers-snapshot.json` on S3).
 
 CI: [`.github/workflows/sheet-sync.yml`](../../.github/workflows/sheet-sync.yml) по webhook content-admin.
 

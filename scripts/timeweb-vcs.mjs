@@ -76,10 +76,34 @@ export async function findQuestHubRepo(token, providerId) {
   );
 }
 
+const COMMIT_SHA_RE = /^[0-9a-f]{40}$/i;
+
+/** CI / local override — skip Timeweb VCS branch API when set. */
+export function resolveCommitShaOverride() {
+  const raw =
+    process.env.TIMEWEB_COMMIT_SHA?.trim() || process.env.GITHUB_SHA?.trim() || "";
+  if (!raw) return null;
+  if (!COMMIT_SHA_RE.test(raw)) {
+    throw new Error(
+      `[timeweb-vcs] invalid commit SHA override "${raw}" (expected 40 hex chars)`,
+    );
+  }
+  return raw.toLowerCase();
+}
+
 /**
  * Resolve commit SHA for redeploying an existing Timeweb app.
  */
 export async function resolveDeployCommitSha(token, appId, branchOverride) {
+  const override = resolveCommitShaOverride();
+  if (override) {
+    const branch =
+      branchOverride?.trim() ||
+      process.env.TIMEWEB_DEPLOY_BRANCH?.trim() ||
+      "main";
+    return { commitSha: override, branch, providerId: null, repositoryId: null };
+  }
+
   const raw = await timewebApi(token, `/api/v1/apps/${appId}`);
   const app = unwrapApp(raw);
   const { branch, providerId, repositoryId } = resolveAppVcs(app, branchOverride);

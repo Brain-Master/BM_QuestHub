@@ -9,6 +9,9 @@
  *   AWS_DEFAULT_REGION (default ru-1)
  *
  * Usage:
+ *   node scripts/sync-s3-public.mjs data-hot
+ *   node scripts/sync-s3-public.mjs data-cold
+ *   node scripts/sync-s3-public.mjs data-hot,data-cold
  *   node scripts/sync-s3-public.mjs data
  *   node scripts/sync-s3-public.mjs media
  *   node scripts/sync-s3-public.mjs static
@@ -21,15 +24,35 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const WEB = path.join(ROOT, "apps", "web");
+const DATA_DIR = path.join(WEB, "data");
+const OFFERS_SNAPSHOT = path.join(DATA_DIR, "offers-snapshot.json");
+const DATA_V2 = path.join(DATA_DIR, "v2");
 const ENDPOINT = process.env.S3_ENDPOINT?.trim() || "https://s3.twcstorage.ru";
 const REGION = process.env.AWS_DEFAULT_REGION?.trim() || "ru-1";
 
 const TARGETS = {
+  "data-hot": {
+    local: OFFERS_SNAPSHOT,
+    remote: "s3://${bucket}/data/offers-snapshot.json",
+    cacheControl: "public, max-age=60",
+    validate: true,
+    mode: "cp",
+  },
+  "data-cold": {
+    local: DATA_V2,
+    remote: "s3://${bucket}/data/v2",
+    cacheControl: "public, max-age=60",
+    validate: true,
+    mode: "sync",
+    delete: true,
+  },
   data: {
-    local: path.join(WEB, "data"),
+    local: DATA_DIR,
     remote: "s3://${bucket}/data",
     cacheControl: "public, max-age=60",
     validate: true,
+    mode: "sync",
+    delete: true,
   },
   media: {
     local: process.env.S3_MEDIA_LOCAL_PATH?.trim()
@@ -37,7 +60,8 @@ const TARGETS = {
     remote: "s3://${bucket}/media",
     cacheControl: "public, max-age=31536000, immutable",
     validate: false,
-    optional: true,
+    mode: "sync",
+    delete: true,
   },
   static: {
     local: path.join(WEB, "out"),
@@ -45,8 +69,15 @@ const TARGETS = {
     cacheControl: "public, max-age=3600",
     validate: false,
     requiresBuild: true,
+    mode: "sync",
+    delete: true,
   },
 };
+
+/** Full bootstrap targets (excludes tier-specific data-hot / data-cold). */
+const ALL_TARGETS = ["data", "media", "static"];
+
+const TARGET_HELP = "data-hot | data-cold | data | media | static | all";
 
 function die(msg) {
   console.error(`[sync-s3-public] ${msg}`);
@@ -92,6 +123,11 @@ function validateSnapshots() {
   }
 }
 
+function resolveNames(targetArg) {
+  if (targetArg === "all") return ALL_TARGETS;
+  return targetArg.split(",").map((s) => s.trim());
+}
+
 async function syncTarget(name, config, bucket) {
   const local = config.local;
   if (!fs.existsSync(local)) {
@@ -108,19 +144,16 @@ async function syncTarget(name, config, bucket) {
   }
 
   const remote = config.remote.replace("${bucket}", bucket);
-  const args = [
-    "s3",
-    "sync",
-    local,
-    remote,
-    "--endpoint-url",
-    ENDPOINT,
-    "--region",
-    REGION,
-    "--delete",
-    "--cache-control",
-    config.cacheControl,
-  ];
+  const baseArgs = ["--endpoint-url", ENDPOINT, "--region", REGION, "--cache-control", config.cacheControl];
+
+  if (config.mode === "cp") {
+    console.log(`[sync-s3-public] ${name}: ${local} -> ${remote}`);
+    runAws(["s3", "cp", local, remote, ...baseArgs]);
+    return;
+  }
+
+  const args = ["s3", "sync", local, remote, ...baseArgs];
+  if (config.delete) args.push("--delete");
 
   console.log(`[sync-s3-public] ${name}: ${local} -> ${remote}`);
   runAws(args);
@@ -133,10 +166,7 @@ if (!process.env.AWS_ACCESS_KEY_ID?.trim() || !process.env.AWS_SECRET_ACCESS_KEY
   die("set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY (S3 keys from bucket dashboard)");
 }
 
-const names =
-  targetArg === "all"
-    ? Object.keys(TARGETS)
-    : targetArg.split(",").map((s) => s.trim());
+const names = resolveNames(targetArg);
 
 async function main() {
   if (!awsAvailable()) {
@@ -148,7 +178,7 @@ async function main() {
 
   for (const name of names) {
     const config = TARGETS[name];
-    if (!config) die(`unknown target "${name}"; use: data | media | static | all`);
+    if (!config) die(`unknown target "${name}"; use: ${TARGET_HELP}`);
     if (config.validate) validateSnapshots();
     await syncTarget(name, config, bucket);
   }

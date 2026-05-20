@@ -44,18 +44,30 @@ jobs:
       - name: Validate snapshots
         run: node scripts/validate-public-snapshot.mjs
 
-      - name: Upload to S3
+      - name: Upload hot schedule to S3
+        if: inputs.tier == 'hot'
         env:
           S3_BUCKET: ${{ secrets.S3_BUCKET }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           S3_ENDPOINT: ${{ vars.S3_ENDPOINT }}
           AWS_DEFAULT_REGION: ru-1
-        run: node scripts/run-s3-sync.mjs data
+        run: node scripts/run-s3-sync.mjs data-hot
+
+      - name: Upload cold catalog to S3
+        if: inputs.tier == 'cold'
+        env:
+          S3_BUCKET: ${{ secrets.S3_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          S3_ENDPOINT: ${{ vars.S3_ENDPOINT }}
+          AWS_DEFAULT_REGION: ru-1
+        run: node scripts/run-s3-sync.mjs data-cold
 
       - name: Timeweb deploy (cold only)
         if: inputs.tier == 'cold'
         env:
           TIMEWEB_API_TOKEN: ${{ secrets.TIMEWEB_API_TOKEN }}
           TIMEWEB_APP_ID: ${{ vars.TIMEWEB_APP_ID }}
+          GITHUB_SHA: ${{ github.sha }}
         run: node scripts/timeweb-deploy.mjs

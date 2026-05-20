@@ -13,7 +13,17 @@ Static Timeweb App with **Google Sheets** as editor UI (этап 1) and optional
 
 1. Edit hot or cold Google Sheet.
 2. **BrainMaster → Опубликовать** (Apps Script → `POST /sync/hot` or `/sync/cold` on Yandex content-admin).
-3. GitHub Actions [`sheet-sync.yml`](../../.github/workflows/sheet-sync.yml) runs sync → S3 → (cold) Timeweb deploy.
+3. GitHub Actions [`sheet-sync.yml`](../../.github/workflows/sheet-sync.yml) runs sync → tier-specific S3 upload → (cold) Timeweb deploy.
+
+## S3 upload (tier-isolated)
+
+| Target | CLI / CI | S3 path |
+|--------|----------|---------|
+| **Hot** | `data-hot` — [`sync-s3-public.mjs`](../../scripts/sync-s3-public.mjs) | `data/offers-snapshot.json` only (no delete of `data/v2/`) |
+| **Cold** | `data-cold` | `data/v2/**` only (does not touch schedule snapshot) |
+| **Bootstrap** | `data` — `make s3-sync-data` | full `data/` tree |
+
+Cold publish must not upload the whole `data/` folder: checkout can contain a stale `offers-snapshot.json` from git and overwrite the live schedule on S3.
 
 ## Local commands
 
@@ -39,7 +49,7 @@ Browser fetches `${NEXT_PUBLIC_S3_PUBLIC_BASE_URL}/data/offers-snapshot.json` (S
 
 Timeweb build with `SITE_SNAPSHOT_SOURCE=s3` bakes catalog/map into HTML after deploy.
 
-`make publish-sheet-cold` and GitHub Actions call [`scripts/timeweb-deploy.mjs`](../../scripts/timeweb-deploy.mjs), which resolves the latest `commit_sha` for the app’s configured Git branch (or `TIMEWEB_DEPLOY_BRANCH` in `scripts/timeweb.env`) before `POST /apps/{id}/deploy`.
+`make publish-sheet-cold` and GitHub Actions call [`scripts/timeweb-deploy.mjs`](../../scripts/timeweb-deploy.mjs). In CI, `GITHUB_SHA` is passed so deploy does not depend on Timeweb’s GitHub VCS API. Locally, commit SHA is resolved from the app’s branch (`TIMEWEB_DEPLOY_BRANCH` in `scripts/timeweb.env`) unless `TIMEWEB_COMMIT_SHA` is set.
 
 ## Code deploy
 

@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /**
  * Content publish pipeline:
- *   --hot-only   → validate + s3-sync (no Timeweb deploy)
- *   --cold       → validate + s3-sync + Timeweb API deploy (default)
+ *   --hot-only   → validate + s3-sync-data-hot (no Timeweb deploy)
+ *   --cold       → validate + s3-sync-data-cold + Timeweb API deploy (default)
  *   --skip-export / --skip-deploy
  */
 import { spawnSync } from "node:child_process";
@@ -58,7 +58,7 @@ async function main() {
 
   run("validate snapshots", "scripts/validate-public-snapshot.mjs");
   runMake("scripts-s3-deps");
-  runMake("s3-sync-data");
+  runMake(hotOnly ? "s3-sync-data-hot" : "s3-sync-data-cold");
 
   if (!skipDeploy) {
     await triggerContentDeploy(tier);

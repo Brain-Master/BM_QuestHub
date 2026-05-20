@@ -81,8 +81,9 @@ flowchart TB
 |-----------|------|
 | Hot без redeploy | `apps/producer/deploy-hook.mjs` (`tier=hot` skip) |
 | `--hot-only` | `apps/producer/publish.mjs` |
-| Timeweb API deploy | `scripts/timeweb-deploy.mjs` + `timeweb-vcs.mjs` |
+| Timeweb API deploy | `scripts/timeweb-deploy.mjs` + `timeweb-vcs.mjs` (`GITHUB_SHA` in CI) |
 | Sheet publish CLI | `make publish-sheet-hot` / `make publish-sheet-cold` |
+| S3 tier upload | `data-hot` / `data-cold` in `sync-s3-public.mjs` (cold does not overwrite schedule) |
 | CI | `.github/workflows/sheet-sync.yml` |
 | Content-admin API | `apps/yandex-content-admin` — `/sync/hot`, `/sync/cold` |
 
@@ -110,6 +111,7 @@ flowchart TB
 | Hot sync падает | **Dev** | `make publish-sheet-hot` → `Дубликаты id офферов` → snapshot на диск/S3 не обновляется |
 | Несколько форматов на смену | **Dev/прод** | Нужны N строк на «Форматы» + `consolidateOffersByShiftGroup` (см. [hot-schedule-data.md](../data/hot-schedule-data.md)); данные могут быть ещё не восстановлены в Sheet |
 | Cold из Sheets HTTP 500 | **Sheets** | `GitHub sheet-sync 404` — PAT / `CONTENT_REBUILD_REPOSITORY` на Yandex Function |
+| Cold откатывает hot на проде | **Прод** | **Исправлено:** cold больше не делает `s3 sync` всего `data/` — только `data-cold` → `data/v2/` |
 
 ---
 

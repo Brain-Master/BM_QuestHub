@@ -16,15 +16,33 @@ import {
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const WEB = path.join(ROOT, "apps", "web");
+const DATA_DIR = path.join(WEB, "data");
+const OFFERS_SNAPSHOT = path.join(DATA_DIR, "offers-snapshot.json");
+const DATA_V2 = path.join(DATA_DIR, "v2");
 const ENDPOINT = process.env.S3_ENDPOINT?.trim() || "https://s3.twcstorage.ru";
 const REGION = process.env.AWS_DEFAULT_REGION?.trim() || "ru-1";
 
 const TARGETS = {
+  "data-hot": {
+    local: OFFERS_SNAPSHOT,
+    key: "data/offers-snapshot.json",
+    cacheControl: "public, max-age=60",
+    validate: true,
+    singleFile: true,
+  },
+  "data-cold": {
+    local: DATA_V2,
+    prefix: "data/v2/",
+    cacheControl: "public, max-age=60",
+    validate: true,
+    delete: true,
+  },
   data: {
-    local: path.join(WEB, "data"),
+    local: DATA_DIR,
     prefix: "data/",
     cacheControl: "public, max-age=60",
     validate: true,
+    delete: true,
   },
   media: {
     local: process.env.S3_MEDIA_LOCAL_PATH?.trim() || path.join(WEB, "media"),
@@ -32,6 +50,7 @@ const TARGETS = {
     cacheControl: "public, max-age=31536000, immutable",
     validate: false,
     optional: true,
+    delete: true,
   },
   static: {
     local: path.join(WEB, "out"),
@@ -39,8 +58,13 @@ const TARGETS = {
     cacheControl: "public, max-age=3600",
     validate: false,
     requiresBuild: true,
+    delete: true,
   },
 };
+
+const ALL_TARGETS = ["data", "media", "static"];
+
+const TARGET_HELP = "data-hot | data-cold | data | media | static | all";
 
 function die(msg) {
   console.error(`[sync-s3-sdk] ${msg}`);
@@ -64,6 +88,11 @@ function validateSnapshots() {
   if (result.status !== 0) die("validate-public-snapshot failed");
 }
 
+function resolveNames(targetArg) {
+  if (targetArg === "all") return ALL_TARGETS;
+  return targetArg.split(",").map((s) => s.trim());
+}
+
 async function listRemoteKeys(client, bucket, prefix) {
   const keys = new Set();
   let token;
@@ -83,7 +112,27 @@ async function listRemoteKeys(client, bucket, prefix) {
   return keys;
 }
 
-async function syncTarget(client, bucket, name, config) {
+async function uploadSingleFile(client, bucket, name, config) {
+  const local = config.local;
+  if (!fs.existsSync(local)) {
+    die(`missing ${path.relative(ROOT, local)}`);
+  }
+
+  const key = config.key;
+  console.log(`[sync-s3-sdk] ${name}: ${local} -> s3://${bucket}/${key}`);
+
+  await client.send(
+    new PutObjectCommand({
+      Bucket: bucket,
+      Key: key,
+      Body: fs.readFileSync(local),
+      CacheControl: config.cacheControl,
+      ContentType: contentType(local),
+    }),
+  );
+}
+
+async function syncDirectory(client, bucket, name, config) {
   const local = config.local;
   if (!fs.existsSync(local)) {
     if (config.optional) {
@@ -118,6 +167,8 @@ async function syncTarget(client, bucket, name, config) {
     uploaded.add(key);
   }
 
+  if (!config.delete) return;
+
   const remote = await listRemoteKeys(client, bucket, prefix);
   for (const key of remote) {
     if (!key.startsWith(prefix) && prefix) continue;
@@ -125,6 +176,14 @@ async function syncTarget(client, bucket, name, config) {
       await client.send(new DeleteObjectCommand({ Bucket: bucket, Key: key }));
     }
   }
+}
+
+async function syncTarget(client, bucket, name, config) {
+  if (config.singleFile) {
+    await uploadSingleFile(client, bucket, name, config);
+    return;
+  }
+  await syncDirectory(client, bucket, name, config);
 }
 
 function contentType(file) {
@@ -156,14 +215,11 @@ export async function runS3SdkSync(targetArg = "all") {
     forcePathStyle: true,
   });
 
-  const names =
-    targetArg === "all"
-      ? Object.keys(TARGETS)
-      : targetArg.split(",").map((s) => s.trim());
+  const names = resolveNames(targetArg);
 
   for (const name of names) {
     const config = TARGETS[name];
-    if (!config) die(`unknown target "${name}"`);
+    if (!config) die(`unknown target "${name}"; use: ${TARGET_HELP}`);
     if (config.validate) validateSnapshots();
     await syncTarget(client, bucket, name, config);
   }

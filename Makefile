@@ -7,7 +7,7 @@
 
 WEB := apps/web
 
-.PHONY: run check dev-host dev-restart brand-assets docs-index validate-snapshots export-yaml-snapshots content-publish content-publish-hot sync-sheet-hot sync-sheet-cold publish-sheet-hot publish-sheet-cold seed-sheet-headers encode-hero-video scripts-s3-deps timeweb-s3-setup timeweb-setup s3-sync-data s3-sync-media s3-sync-static s3-sync-all timeweb-deploy
+.PHONY: run check dev-host dev-restart brand-assets docs-index validate-snapshots export-yaml-snapshots content-publish content-publish-hot sync-sheet-hot sync-sheet-cold publish-sheet-hot publish-sheet-cold seed-sheet-headers encode-hero-video scripts-s3-deps timeweb-s3-setup timeweb-setup s3-sync-data s3-sync-data-hot s3-sync-data-cold s3-sync-media s3-sync-static s3-sync-all timeweb-deploy
 
 # PNG/WebP/ICO из assets/brand/brainmaster-logo.png → assets/brand/generated/ (+ Next app/ + public/brand/)
 brand-assets:
@@ -90,8 +90,15 @@ timeweb-s3-setup:
 timeweb-setup: scripts-s3-deps
 	node scripts/timeweb-setup.mjs
 
+# Full data/ tree — bootstrap and legacy YAML publish only
 s3-sync-data: scripts-s3-deps
 	$(S3_SYNC) data
+
+s3-sync-data-hot: scripts-s3-deps
+	$(S3_SYNC) data-hot
+
+s3-sync-data-cold: scripts-s3-deps
+	$(S3_SYNC) data-cold
 
 s3-sync-media: scripts-s3-deps
 	$(S3_SYNC) media
