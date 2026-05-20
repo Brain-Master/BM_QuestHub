@@ -3,6 +3,7 @@
     "AllowedHeaders": ["*"],
     "AllowedMethods": ["GET", "HEAD"],
     "AllowedOrigins": [
+      "https://b-master.pro",
       "https://quest.b-master.pro",
       "https://1517.b-master.pro",
       "http://localhost:3000",
