@@ -435,7 +435,8 @@ body::-webkit-scrollbar-thumb:hover,
     transition-duration: 0.01ms !important;
   }
 
-  .marketing-hero__iframe {
+  .marketing-hero__iframe,
+  .marketing-hero__video {
     display: none !important;
   }
 }

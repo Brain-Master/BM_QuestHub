@@ -21,6 +21,8 @@ export function WorldHubHero({ world }: Props) {
     >
       <HeroMediaStack
         worldSlug={world.slug}
+        heroVideoFileUrl={world.heroVideoFileUrl}
+        heroVideoEmbedUrl={world.heroVideoEmbedUrl}
         heroVideoUrl={world.heroVideoUrl}
         heroImageUrl={world.heroImageUrl}
         embedTitle={`Видео о мире «${world.name}»`}

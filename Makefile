@@ -7,7 +7,7 @@
 
 WEB := apps/web
 
-.PHONY: run check dev-host dev-restart brand-assets docs-index validate-snapshots export-yaml-snapshots content-publish content-publish-hot sync-sheet-hot sync-sheet-cold publish-sheet-hot publish-sheet-cold seed-sheet-headers scripts-s3-deps timeweb-s3-setup timeweb-setup s3-sync-data s3-sync-media s3-sync-static s3-sync-all timeweb-deploy
+.PHONY: run check dev-host dev-restart brand-assets docs-index validate-snapshots export-yaml-snapshots content-publish content-publish-hot sync-sheet-hot sync-sheet-cold publish-sheet-hot publish-sheet-cold seed-sheet-headers encode-hero-video scripts-s3-deps timeweb-s3-setup timeweb-setup s3-sync-data s3-sync-media s3-sync-static s3-sync-all timeweb-deploy
 
 # PNG/WebP/ICO из assets/brand/brainmaster-logo.png → assets/brand/generated/ (+ Next app/ + public/brand/)
 brand-assets:
@@ -49,6 +49,12 @@ publish-sheet-cold:
 
 seed-sheet-headers:
 	node scripts/seed-google-sheet-headers.mjs
+
+# Encode hero MP4 + poster for S3: make encode-hero-video SLUG=cyber-rhythm SOURCE=/path/to/in.mp4
+encode-hero-video:
+	@test -n "$(SLUG)" || (echo "Set SLUG=quest-or-world-slug" && exit 1)
+	@test -n "$(SOURCE)" || (echo "Set SOURCE=/path/to/source.mp4" && exit 1)
+	node scripts/encode-hero-video.mjs --slug "$(SLUG)" --source "$(SOURCE)" $(if $(KIND),--kind $(KIND),)
 
 setup-sheets-env:
 	node scripts/setup-sheets-env.mjs

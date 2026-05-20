@@ -3,6 +3,7 @@ import { Manrope, Onest } from "next/font/google";
 
 import "./globals.css";
 
+import { AnalyticsVisitScope } from "@/components/analytics-visit-scope";
 import { HostScopeBootstrap } from "@/components/host-scope-bootstrap";
 import { ScrollToTopButton } from "@/components/scroll-to-top-button";
 import { SiteFooter } from "@/components/site-footer";
@@ -50,6 +51,7 @@ export default async function RootLayout({
     >
       <body className="bm-page-bg flex min-h-full flex-col bg-background text-foreground">
         <HostScopeBootstrap />
+        <AnalyticsVisitScope />
         <YandexMetrika />
         <SiteHeader worlds={worlds} navigation={siteConfig.navigation} />
         <div className="flex flex-1 flex-col">{children}</div>

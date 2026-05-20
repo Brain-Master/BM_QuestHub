@@ -59,7 +59,14 @@ export const worldSchema = z.object({
   pitch: z.string(),
   /** Маркетинговые буллеты «почему этот мир» */
   highlights: z.array(z.string()),
-  /** Только embed-URL для iframe VK/YouTube */
+  /** Прямой URL MP4/WebM (обычно S3 `media/worlds/...`). */
+  heroVideoFileUrl: z.string().optional(),
+  /** Embed VK `video_ext` / YouTube — загружается по клику. */
+  heroVideoEmbedUrl: z.string().optional(),
+  /**
+   * @deprecated Используйте heroVideoEmbedUrl или heroVideoFileUrl.
+   * Если задан один URL: embed-хост → embed, иначе файл.
+   */
   heroVideoUrl: z.string().optional(),
   heroImageUrl: z.string().optional(),
   presentation: z
@@ -197,8 +204,12 @@ export const questSchema = z.object({
   skills: z.array(z.string()),
   difficulty: z.string().optional(),
   activeInCampaign: z.boolean(),
+  /** Прямой URL MP4/WebM (S3 `media/quests/<slug>/hero.mp4`). */
+  heroVideoFileUrl: z.string().optional(),
+  /** Embed VK / YouTube — по клику «Полная версия». */
+  heroVideoEmbedUrl: z.string().optional(),
   /**
-   * Только URL для iframe (VK video_ext / YouTube embed), не страница просмотра в соцсети.
+   * @deprecated Используйте heroVideoEmbedUrl или heroVideoFileUrl.
    */
   heroVideoUrl: z.string().optional(),
   heroImageUrl: z.string().optional(),

@@ -16,7 +16,8 @@ activeInCampaign: true
 groupSize: до 12 человек — уточняется по смене
 durationLabel: "Часы смены — по выбранной площадке"
 priceHint: Стоимость и условия — после выбора площадки и смены (без цифр из архивных макетов).
-heroVideoUrl: "https://vk.com/video_ext.php?oid=-221557445&id=456239026"
+heroVideoFileUrl: "media/quests/minecraft-taina-drevnih-inzhenerov/hero.mp4"
+heroVideoEmbedUrl: "https://vk.com/video_ext.php?oid=-221557445&id=456239026"
 heroImageUrl: "/quests/minecraft-taina-drevnih-inzhenerov-cover.png"
 story: >
   Участники вступают в гильдию инженеров, выполняют командные миссии и разгадывают тайны Древних. На острове — кризис редстоуна: нужны реальные схемы и руки в мире вне экрана. Сюжет связывает игровой лор с проектами на столе — макетные платы, 3D, сборка и пайка.

@@ -8,6 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { formatRuPhoneInput, normalizePersonName } from "@/lib/lead-form-fields";
+import { trackBookingLeadSubmit } from "@/lib/client-analytics";
 import { submitLeadToYandex } from "@/lib/lead-submit-client";
 import {
   LEGAL_PERSONAL_DATA_CONSENT_PATH,
@@ -121,6 +122,14 @@ export function BookingForm({
       form.setError("root", { message: res.error });
       return;
     }
+    trackBookingLeadSubmit({
+      questSlug: values.questSlug,
+      venueSlug: values.venueSlug,
+      offerId: values.offerId,
+      schoolSlug: values.schoolSlug,
+      leadType: values.leadType,
+      registrationChannel: values.registrationChannel,
+    });
     onSuccess?.(values);
     form.reset({
       leadType: "booking",

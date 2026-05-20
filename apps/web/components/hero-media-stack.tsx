@@ -1,28 +1,59 @@
+"use client";
+
+import { Play } from "lucide-react";
+import { useMemo, useState } from "react";
+
+import { Button } from "@/components/ui/button";
+import {
+  hasHeroVideo,
+  normalizeHeroVideo,
+  type HeroVideoInput,
+} from "@/lib/media/hero-video";
 import { cn } from "@/lib/utils";
 import { getWorldVisualBySlug } from "@/lib/world-visuals";
 
-type Props = {
+type Props = HeroVideoInput & {
   worldSlug: string;
-  heroVideoUrl?: string;
   heroImageUrl?: string;
-  /** iframe title for a11y */
+  /** iframe / video title for a11y */
   embedTitle: string;
   className?: string;
 };
 
 /**
- * Фон Hero: embed-видео (VK/YouTube), опционально постер под видео, иначе изображение или градиент мира.
- * При prefers-reduced-motion iframe скрывается через CSS — остаётся постер или градиент.
+ * Hero: poster first; MP4 (S3) or VK/YouTube embed loads only after Play.
+ * prefers-reduced-motion: no autoplay media (see globals.css).
  */
 export function HeroMediaStack({
   worldSlug,
+  heroVideoFileUrl,
+  heroVideoEmbedUrl,
   heroVideoUrl,
   heroImageUrl,
   embedTitle,
   className,
 }: Props) {
   const v = getWorldVisualBySlug(worldSlug);
-  const hasVideo = Boolean(heroVideoUrl?.trim());
+  const resolved = useMemo(
+    () =>
+      normalizeHeroVideo({
+        heroVideoFileUrl,
+        heroVideoEmbedUrl,
+        heroVideoUrl,
+      }),
+    [heroVideoFileUrl, heroVideoEmbedUrl, heroVideoUrl],
+  );
+  const hasVideo = hasHeroVideo(resolved);
+  const [playingFile, setPlayingFile] = useState(false);
+  const [playingEmbed, setPlayingEmbed] = useState(false);
+
+  const showFilePlayer = Boolean(resolved.fileUrl && playingFile);
+  const showEmbed = Boolean(resolved.embedUrl && playingEmbed);
+  const showPlayFile = Boolean(resolved.fileUrl && !playingFile);
+  const showPlayEmbed = Boolean(resolved.embedUrl && !playingFile && !resolved.fileUrl);
+  const showPlayEmbedSecondary = Boolean(
+    resolved.embedUrl && resolved.fileUrl && !playingEmbed && !playingFile,
+  );
 
   return (
     <div
@@ -40,27 +71,76 @@ export function HeroMediaStack({
         aria-hidden
       />
       {heroImageUrl ? (
-        // eslint-disable-next-line @next/next/no-img-element -- внешние CDN (VK и др.), список доменов не фиксирован
+        // eslint-disable-next-line @next/next/no-img-element -- external CDN URLs
         <img
           src={heroImageUrl}
           alt=""
           className={cn(
-            "absolute inset-0 size-full object-cover opacity-85",
-            hasVideo ? "brightness-[0.65]" : "opacity-90",
+            "absolute inset-0 size-full object-cover",
+            showFilePlayer || showEmbed ? "opacity-40" : "opacity-90",
+            hasVideo && !showFilePlayer && !showEmbed ? "brightness-[0.65]" : "",
           )}
         />
       ) : null}
 
-      {hasVideo ? (
+      {showFilePlayer && resolved.fileUrl ? (
+        <video
+          className="marketing-hero__video absolute inset-0 size-full object-cover"
+          src={resolved.fileUrl}
+          poster={heroImageUrl}
+          controls
+          playsInline
+          preload="metadata"
+          aria-label={embedTitle}
+        />
+      ) : null}
+
+      {showEmbed && resolved.embedUrl ? (
         <iframe
           title={embedTitle}
-          src={heroVideoUrl}
+          src={resolved.embedUrl}
           className="marketing-hero__iframe absolute inset-0 size-full border-0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
           allowFullScreen
-          loading="lazy"
         />
       ) : null}
+
+      {(showPlayFile || showPlayEmbed || showPlayEmbedSecondary) && (
+        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-black/25 px-4">
+          {showPlayFile ? (
+            <Button
+              type="button"
+              size="lg"
+              className="gap-2 shadow-lg"
+              onClick={() => setPlayingFile(true)}
+            >
+              <Play className="size-5" aria-hidden />
+              Смотреть видео
+            </Button>
+          ) : null}
+          {showPlayEmbed ? (
+            <Button
+              type="button"
+              size="lg"
+              variant={showPlayFile ? "secondary" : "default"}
+              className="gap-2 shadow-lg"
+              onClick={() => setPlayingEmbed(true)}
+            >
+              <Play className="size-5" aria-hidden />
+              Смотреть видео
+            </Button>
+          ) : null}
+          {showPlayEmbedSecondary ? (
+            <button
+              type="button"
+              className="text-sm text-white/90 underline-offset-4 hover:underline"
+              onClick={() => setPlayingEmbed(true)}
+            >
+              Полная версия на VK
+            </button>
+          ) : null}
+        </div>
+      )}
 
       {!hasVideo && !heroImageUrl ? (
         <div
@@ -76,7 +156,7 @@ export function HeroMediaStack({
       {hasVideo ? (
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/55 to-transparent"
+          className="pointer-events-none absolute inset-x-0 bottom-0 z-[5] h-24 bg-gradient-to-t from-black/55 to-transparent"
         />
       ) : null}
     </div>

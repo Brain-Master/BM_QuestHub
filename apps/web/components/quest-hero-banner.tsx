@@ -24,6 +24,8 @@ export function QuestHeroBanner({ quest, world }: Props) {
     >
       <HeroMediaStack
         worldSlug={quest.worldSlug}
+        heroVideoFileUrl={quest.heroVideoFileUrl}
+        heroVideoEmbedUrl={quest.heroVideoEmbedUrl}
         heroVideoUrl={quest.heroVideoUrl}
         heroImageUrl={quest.heroImageUrl}
         embedTitle={`Видео: ${quest.title}`}

@@ -50,6 +50,16 @@ make backfill-shift-group-ids        # пересчитать shift_group_id н�
 - `Площадки` — venues (slug, name, type, address, …)
 - `Курсы` — курсы без смен (slug, world_slug, title, story, …)
 
+**Hero-видео (курсы и миры):**
+
+| Колонка | Назначение |
+|---------|------------|
+| `hero_video_file_url` | Путь на S3 после ingest, напр. `media/quests/<slug>/hero.mp4` (см. `make encode-hero-video`) |
+| `hero_video_embed_url` | VK/YouTube embed (`video_ext.php`) — «полная версия», грузится по клику |
+| `hero_video_url` | Устарело: трактуется как embed, если новые колонки пусты |
+
+Кодирование и заливка: [apps/web/media/README.md](../../apps/web/media/README.md), [hero-video-egress.md](../deployment/hero-video-egress.md).
+
 Первый запуск (локально):
 
 ```bash

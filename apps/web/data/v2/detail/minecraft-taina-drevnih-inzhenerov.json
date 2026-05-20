@@ -21,7 +21,8 @@
       "soft skills"
     ],
     "activeInCampaign": true,
-    "heroVideoUrl": "https://vk.com/video_ext.php?oid=-221557445&id=456239026",
+    "heroVideoFileUrl": "media/quests/minecraft-taina-drevnih-inzhenerov/hero.mp4",
+    "heroVideoEmbedUrl": "https://vk.com/video_ext.php?oid=-221557445&id=456239026",
     "heroImageUrl": "/quests/minecraft-taina-drevnih-inzhenerov-cover.png",
     "groupSize": "до 12 человек — уточняется по смене",
     "durationLabel": "Часы смены — по выбранной площадке",
