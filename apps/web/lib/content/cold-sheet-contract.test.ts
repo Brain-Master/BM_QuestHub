@@ -2,10 +2,12 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
 import {
+  isSkippableDataRow,
   normalizeHeaderCell,
   parseVenueRow,
   validateHeaderRow,
   VENUE_HEADERS,
+  WORLD_REQUIRED_HEADERS,
 } from "./cold-sheet-contract";
 
 describe("cold-sheet-contract", () => {
@@ -15,6 +17,31 @@ describe("cold-sheet-contract", () => {
       VENUE_HEADERS,
     );
     assert.equal(r.ok, true);
+  });
+
+  it("accepts legacy world headers without hero_video_file_url columns", () => {
+    const legacy = [
+      "slug",
+      "name",
+      "description",
+      "theme_key",
+      "tagline",
+      "pitch",
+      "highlights",
+      "hero_video_url",
+      "hero_image_url",
+      "card_gradient",
+      "card_glow",
+      "icon_key",
+    ];
+    const r = validateHeaderRow(legacy, WORLD_REQUIRED_HEADERS);
+    assert.equal(r.ok, true);
+  });
+
+  it("skips course rows without slug", () => {
+    const headers = ["slug", "title"];
+    const cells = ["", "черновик"];
+    assert.equal(isSkippableDataRow(cells, headers), true);
   });
 
   it("parses a minimal venue row", () => {

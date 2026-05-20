@@ -1,9 +1,9 @@
 {
   "version": 2,
-  "generatedAt": "2026-05-19T18:30:34.530Z",
+  "generatedAt": "2026-05-20T08:56:04.807Z",
   "source": "google_sheet_cold",
   "integrity": {
-    "contentHash": "sha256:d0c9b93b5552c84832b0e33e6f56f3f2a1a6accf0a3c3967e0431b6bfa7da481"
+    "contentHash": "sha256:8e8faef465a5f77580e099327a77ce1244afcd29ba919290c15e18dd8941d342"
   },
   "course": {
     "slug": "minecraft-taina-drevnih-inzhenerov",
@@ -11,7 +11,7 @@
     "title": "Minecraft: тайна древних инженеров",
     "tagline": "Инженерный квест по мотивам любимой игры: от сюжетных миссий до пайки и 3D-печати.",
     "catalogTagline": "Пять дней: сюжет гильдии, редстоун-кризис и реальные гаджеты своими руками.",
-    "ageLabel": "1–6 классы (задания адаптируются под возраст; финально — по оферте)",
+    "ageLabel": "1-6 классы",
     "format": "intensive",
     "skills": [
       "3D-моделирование (TinkerCAD)",
@@ -21,8 +21,8 @@
       "soft skills"
     ],
     "activeInCampaign": true,
-    "heroVideoFileUrl": "media/quests/minecraft-taina-drevnih-inzhenerov/hero.mp4",
     "heroVideoEmbedUrl": "https://vk.com/video_ext.php?oid=-221557445&id=456239026",
+    "heroVideoUrl": "https://vk.com/video_ext.php?oid=-221557445&id=456239026",
     "heroImageUrl": "/quests/minecraft-taina-drevnih-inzhenerov-cover.png",
     "groupSize": "до 12 человек — уточняется по смене",
     "durationLabel": "Часы смены — по выбранной площадке",

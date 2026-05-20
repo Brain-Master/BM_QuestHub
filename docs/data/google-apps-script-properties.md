@@ -16,7 +16,11 @@
 https://functions.yandexcloud.net/<id-функции>
 ```
 
-Не добавляйте `/sync/hot` в свойство — YCF не принимает путь в URL. Apps Script передаёт `path` в JSON-теле запроса.
+Не добавляйте `/sync/hot` в свойство `CONTENT_ADMIN_URL` — только ID функции.
+
+Apps Script передаёт маршрут в **query string** (`?path=/sync/cold&tier=cold`), потому что Yandex HTTP invoke часто не получает JSON-body от Google `UrlFetchApp`.
+
+После обновления кода в репозитории: **Extensions → Apps Script** в Cold-таблице → вставить актуальный [`google-apps-script-publish.js`](./google-apps-script-publish.js) → сохранить → перезагрузить таблицу.
 
 После локального деплоя смотрите `secret/content-admin.deploy.txt` (генерируется `node scripts/setup-content-admin.mjs`).
 

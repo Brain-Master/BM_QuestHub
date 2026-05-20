@@ -61,7 +61,8 @@ function optionalNumber() {
   }, z.number().optional());
 }
 
-export const WORLD_HEADERS = [
+/** Must exist on the sheet header row. */
+export const WORLD_REQUIRED_HEADERS = [
   "slug",
   "name",
   "description",
@@ -69,6 +70,10 @@ export const WORLD_HEADERS = [
   "tagline",
   "pitch",
   "highlights",
+] as const;
+
+/** Optional columns (seed adds them; legacy sheets may omit). */
+export const WORLD_OPTIONAL_HEADERS = [
   "hero_video_url",
   "hero_video_file_url",
   "hero_video_embed_url",
@@ -76,6 +81,11 @@ export const WORLD_HEADERS = [
   "card_gradient",
   "card_glow",
   "icon_key",
+] as const;
+
+export const WORLD_HEADERS = [
+  ...WORLD_REQUIRED_HEADERS,
+  ...WORLD_OPTIONAL_HEADERS,
 ] as const;
 
 export const VENUE_HEADERS = [
@@ -97,15 +107,22 @@ export const VENUE_HEADERS = [
   "contact_note",
 ] as const;
 
-export const COURSE_HEADERS = [
+export const COURSE_REQUIRED_HEADERS = [
   "slug",
   "world_slug",
   "title",
   "tagline",
-  "catalog_tagline",
   "age_label",
   "format",
   "skills",
+  "story",
+  "skills_parent",
+  "loot",
+  "approach",
+] as const;
+
+export const COURSE_OPTIONAL_HEADERS = [
+  "catalog_tagline",
   "active_in_campaign",
   "hero_image_url",
   "hero_video_url",
@@ -114,10 +131,11 @@ export const COURSE_HEADERS = [
   "group_size",
   "duration_label",
   "price_hint",
-  "story",
-  "skills_parent",
-  "loot",
-  "approach",
+] as const;
+
+export const COURSE_HEADERS = [
+  ...COURSE_REQUIRED_HEADERS,
+  ...COURSE_OPTIONAL_HEADERS,
 ] as const;
 
 const worldRowSchema = z.object({
@@ -196,6 +214,18 @@ export function isBlankRow(cells: string[]): boolean {
   return cells.every((c) => !String(c).trim());
 }
 
+/** Skip empty rows and spacer rows without a slug (common below the data table). */
+export function isSkippableDataRow(
+  cells: string[],
+  headers: string[],
+  slugKey = "slug",
+): boolean {
+  if (isBlankRow(cells)) return true;
+  const slugIdx = headers.indexOf(slugKey);
+  if (slugIdx < 0) return false;
+  return !String(cells[slugIdx] ?? "").trim();
+}
+
 export function parseWorldRow(obj: Record<string, string>) {
   const parsed = worldRowSchema.safeParse(obj);
   if (!parsed.success) return parsed;
@@ -210,7 +240,8 @@ export function parseWorldRow(obj: Record<string, string>) {
     highlights: splitList(r.highlights),
     heroVideoUrl: r.hero_video_url || undefined,
     heroVideoFileUrl: r.hero_video_file_url || undefined,
-    heroVideoEmbedUrl: r.hero_video_embed_url || undefined,
+    heroVideoEmbedUrl:
+      r.hero_video_embed_url || r.hero_video_url || undefined,
     heroImageUrl: r.hero_image_url || undefined,
     presentation:
       r.card_gradient && r.card_glow && r.icon_key
@@ -267,7 +298,8 @@ export function parseCourseRow(obj: Record<string, string>) {
     heroImageUrl: r.hero_image_url || undefined,
     heroVideoUrl: r.hero_video_url || undefined,
     heroVideoFileUrl: r.hero_video_file_url || undefined,
-    heroVideoEmbedUrl: r.hero_video_embed_url || undefined,
+    heroVideoEmbedUrl:
+      r.hero_video_embed_url || r.hero_video_url || undefined,
     groupSize: r.group_size || undefined,
     durationLabel: r.duration_label || undefined,
     priceHint: r.price_hint || undefined,

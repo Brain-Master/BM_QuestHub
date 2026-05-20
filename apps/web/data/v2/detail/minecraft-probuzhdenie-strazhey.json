@@ -1,9 +1,9 @@
 {
   "version": 2,
-  "generatedAt": "2026-05-19T18:30:34.530Z",
+  "generatedAt": "2026-05-20T08:56:04.807Z",
   "source": "google_sheet_cold",
   "integrity": {
-    "contentHash": "sha256:2279d7340e5054f97dbce9efc3b578aa179fc6ac10c7607a73655e8e5c545360"
+    "contentHash": "sha256:d553cb78953d3635e41cbaa842e14d3fa3367ebd108a734b4162bb61e3b7bfbd"
   },
   "course": {
     "slug": "minecraft-probuzhdenie-strazhey",
@@ -11,7 +11,7 @@
     "title": "Minecraft: пробуждение стражей",
     "tagline": "Пять дней: от корпуса Стража и «зрения» на ИК до голоса на аудиомодуле и автономного сердца на печатной плате — с фан-сервисом в стиле Minecraft каждый день.",
     "catalogTagline": "После портала базам гильдий нужна защита — соберите интерактивного Стража своими руками.",
-    "ageLabel": "1–6 классы (ориентир как у части 1; верифицировать по оферте)",
+    "ageLabel": "1-6 классы",
     "format": "intensive",
     "skills": [
       "HDF и лазерная резка",
@@ -23,6 +23,9 @@
       "электроника и логика сигналов"
     ],
     "activeInCampaign": true,
+    "heroVideoEmbedUrl": "https://vk.com/video_ext.php?oid=-221557445&id=456239018",
+    "heroVideoUrl": "https://vk.com/video_ext.php?oid=-221557445&id=456239018",
+    "heroImageUrl": "https://myrusakov.ru/html-placeholder.html",
     "groupSize": "до 12 человек — уточняется по смене",
     "durationLabel": "Полдня или полный день — по карточке выбранной смены",
     "priceHint": "Стоимость и условия — после выбора площадки и смены.",

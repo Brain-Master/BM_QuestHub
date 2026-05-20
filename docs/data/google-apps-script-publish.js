@@ -29,7 +29,13 @@ function publishToSite() {
   }
 
   const path = tier === "cold" ? "/sync/cold" : "/sync/hot";
-  const url = baseUrl.replace(/\/$/, "");
+  // Yandex HTTP invoke often drops JSON body from UrlFetchApp — pass route via query string.
+  const url =
+    baseUrl.replace(/\/$/, "") +
+    "?path=" +
+    encodeURIComponent(path) +
+    "&tier=" +
+    encodeURIComponent(tier);
 
   const response = UrlFetchApp.fetch(url, {
     method: "post",
@@ -37,7 +43,7 @@ function publishToSite() {
       "X-Content-Token": token,
       "Content-Type": "application/json",
     },
-    payload: JSON.stringify({ path }),
+    payload: "{}",
     muteHttpExceptions: true,
   });
 

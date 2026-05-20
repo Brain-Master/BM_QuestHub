@@ -1,9 +1,9 @@
 {
   "version": 2,
-  "generatedAt": "2026-05-19T18:30:34.530Z",
+  "generatedAt": "2026-05-20T08:56:04.807Z",
   "source": "google_sheet_cold",
   "integrity": {
-    "contentHash": "sha256:a7658f6c2e577f13c61e19a710f94d4f7cc937735794958b8f6655e0d1b172f5"
+    "contentHash": "sha256:04380c488473d5bb661055a15252828beab4a71712586402fd4feaf5ba766c14"
   },
   "course": {
     "slug": "mekhvarium-masterskaya-gidravlicheskih-monstrov",
@@ -11,7 +11,7 @@
     "title": "Мехвариум: мастерская гидравлических монстров",
     "tagline": "Отдельная миссия Мехвариума — спроектировать гидравлические узлы и собрать станцию, где энергия воды превращается в движение монстра.",
     "catalogTagline": "Давление, потоки и «органическая станция» — сила воды в управляемом движении.",
-    "ageLabel": "2–6 классы (верифицировать по оферте выбранной смены)",
+    "ageLabel": "1-6 классы",
     "format": "intensive",
     "skills": [
       "гидравлика и давление",
@@ -21,6 +21,9 @@
       "командная отладка"
     ],
     "activeInCampaign": true,
+    "heroVideoEmbedUrl": "https://vk.com/video_ext.php?oid=-221557445&id=456239018",
+    "heroVideoUrl": "https://vk.com/video_ext.php?oid=-221557445&id=456239018",
+    "heroImageUrl": "https://myrusakov.ru/html-placeholder.html",
     "groupSize": "до 12 человек — уточняется по смене",
     "durationLabel": "Часы и питание — по карточке выбранной смены",
     "priceHint": "Стоимость и условия — после выбора площадки и смены; без цифр из черновиков до верификации.",

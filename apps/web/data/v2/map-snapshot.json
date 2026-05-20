@@ -1,9 +1,9 @@
 {
   "version": 2,
-  "generatedAt": "2026-05-19T18:30:34.530Z",
+  "generatedAt": "2026-05-20T08:56:04.807Z",
   "source": "google_sheet_cold",
   "integrity": {
-    "contentHash": "sha256:291c5ead39df14e76e6bb6ef42c9325e87639d7ba060e69f6116305aac19a39f"
+    "contentHash": "sha256:47c3f577a4160c72f6e119a0dcfe0aa509f5117a65705efe1972d63f79ad0931"
   },
   "venues": [
     {
@@ -27,7 +27,7 @@
     {
       "slug": "school-1212-yasenevo",
       "name": "ГБОУ Школа №1212",
-      "displayName": "ГБОУ Школа №1212",
+      "displayName": "Школа №1212",
       "type": "school",
       "address": "Новоясеневский проспект, 24к3",
       "metro": "Ясенево",

@@ -7,15 +7,15 @@ import { coldSheetConfig } from "@/lib/google/sheet-env";
 import type { Quest, Venue, World } from "@/lib/schemas";
 
 import {
-  COURSE_HEADERS,
-  isBlankRow,
+  COURSE_REQUIRED_HEADERS,
+  isSkippableDataRow,
   parseCourseRow,
   parseVenueRow,
   parseWorldRow,
   rowObject,
   validateHeaderRow,
   VENUE_HEADERS,
-  WORLD_HEADERS,
+  WORLD_REQUIRED_HEADERS,
 } from "./cold-sheet-contract";
 
 function sha256Json(value: unknown): string {
@@ -58,7 +58,7 @@ function parseGrid<T>(
 
   for (let r = 1; r < grid.length; r++) {
     const cells = grid[r].map((c) => String(c));
-    if (isBlankRow(cells)) continue;
+    if (isSkippableDataRow(cells, headers)) continue;
     const obj = rowObject(headers, cells);
     const result = parseRow(obj, r + 1);
     if (result.success) {
@@ -117,7 +117,7 @@ export async function syncColdContentFromGoogleSheet(
     fetchSheetValuesGrid({ spreadsheetId, range: ranges.courses }),
   ]);
 
-  const worldsParsed = parseGrid(worldsGrid, WORLD_HEADERS, (obj) => {
+  const worldsParsed = parseGrid(worldsGrid, WORLD_REQUIRED_HEADERS, (obj) => {
     const r = parseWorldRow(obj);
     if (!r.success) {
       return {
@@ -139,7 +139,7 @@ export async function syncColdContentFromGoogleSheet(
     return { success: true, data: r.data };
   }, "Площадки");
 
-  const coursesParsed = parseGrid(coursesGrid, COURSE_HEADERS, (obj) => {
+  const coursesParsed = parseGrid(coursesGrid, COURSE_REQUIRED_HEADERS, (obj) => {
     const r = parseCourseRow(obj);
     if (!r.success) {
       return {

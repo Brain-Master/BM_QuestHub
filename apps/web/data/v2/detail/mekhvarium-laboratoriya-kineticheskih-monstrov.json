@@ -1,9 +1,9 @@
 {
   "version": 2,
-  "generatedAt": "2026-05-19T18:30:34.530Z",
+  "generatedAt": "2026-05-20T08:56:04.807Z",
   "source": "google_sheet_cold",
   "integrity": {
-    "contentHash": "sha256:6388c07723f2f2d67c7e1fc4b45f0ed1a139ea955edf9be980b40522ecb1d812"
+    "contentHash": "sha256:a2e9f2a514a4369c28523dd5dd8232c10a18b87bae9a09b9d30b76660f017c26"
   },
   "course": {
     "slug": "mekhvarium-laboratoriya-kineticheskih-monstrov",
@@ -11,7 +11,7 @@
     "title": "Мехвариум: лаборатория кинетических монстров",
     "tagline": "Вводный STEAM-курс: от секретной шкатулки и протоколов лаборатории до собственного кинетического монстра с «кибер-бронёй».",
     "catalogTagline": "Пять дней лаборатории: механика, шестерни, декор и 3D-ручка — шагающий робо-монстр и цифровой финал.",
-    "ageLabel": "6–13 лет (1–6 класс) — по оферте смены на mos.ru",
+    "ageLabel": "1-6 классы",
     "format": "intensive",
     "skills": [
       "кинетика и шестерни",
@@ -22,6 +22,8 @@
       "презентация проекта"
     ],
     "activeInCampaign": true,
+    "heroVideoEmbedUrl": "https://vk.com/video_ext.php?oid=-221557445&id=456239018",
+    "heroVideoUrl": "https://vk.com/video_ext.php?oid=-221557445&id=456239018",
     "heroImageUrl": "/quests/mekhvarium-laboratoriya-kineticheskih-monstrov-cover.png",
     "groupSize": "в архиве до 12 человек в волне — актуально уточнять по смене",
     "durationLabel": "5 дней · полный день (напр. 08:30–16:30 — по карточке смены)",

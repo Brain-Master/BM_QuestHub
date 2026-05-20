@@ -1,9 +1,9 @@
 {
   "version": 2,
-  "generatedAt": "2026-05-19T18:30:34.530Z",
+  "generatedAt": "2026-05-20T08:56:04.807Z",
   "source": "google_sheet_cold",
   "integrity": {
-    "contentHash": "sha256:6a41cf08445c2f7c45623f66bd0bdffdfeeda91437aedc0f285dfe6e4bf91a3e"
+    "contentHash": "sha256:2a37bd61c45e31cd722945f14fd11ca714a3de74d268fe2974284c160bb14be4"
   },
   "course": {
     "slug": "cyber-rhythm",
@@ -11,7 +11,7 @@
     "title": "КиберРитм",
     "tagline": "Музыка и современные технологии: от первого звука до своей колонки.",
     "catalogTagline": "5 дней — Bluetooth-колонка своими руками!",
-    "ageLabel": "6–10 лет (точный диапазон — по оферте выбранной смены)",
+    "ageLabel": "1-6 классы",
     "format": "intensive",
     "skills": [
       "звук и акустика",
@@ -21,8 +21,8 @@
       "презентация результата"
     ],
     "activeInCampaign": true,
-    "heroVideoFileUrl": "media/quests/cyber-rhythm/hero.mp4",
     "heroVideoEmbedUrl": "https://vk.com/video_ext.php?oid=-221557445&id=456239018",
+    "heroVideoUrl": "https://vk.com/video_ext.php?oid=-221557445&id=456239018",
     "heroImageUrl": "/quests/cyber-rhythm-cover.png",
     "groupSize": "до 12 человек в группе — уточняется по смене",
     "durationLabel": "Часы смены — по выбранной площадке",

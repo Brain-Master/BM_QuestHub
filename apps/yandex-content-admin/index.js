@@ -171,7 +171,26 @@ async function triggerTimewebDeploy() {
   return { ok: true, skipped: false, deploy: body };
 }
 
+function parseEventBody(event) {
+  if (!event.body) return {};
+  let raw = event.body;
+  if (event.isBase64Encoded) {
+    raw = Buffer.from(raw, "base64").toString("utf8");
+  }
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return {};
+  }
+}
+
 function routePath(event) {
+  const qs = event.queryStringParameters ?? {};
+  const qsTier = String(qs.tier ?? "").trim().toLowerCase();
+  if (qsTier === "cold" || qsTier === "hot") {
+    return `/sync/${qsTier}`;
+  }
+
   const httpPath = event.requestContext?.http?.path;
   if (httpPath && httpPath !== "/") return httpPath;
 
@@ -183,19 +202,13 @@ function routePath(event) {
     if (raw.startsWith("/") && raw !== "/") return raw;
   }
 
-  const qsPath = event.queryStringParameters?.path;
+  const qsPath = qs.path;
   if (qsPath) return qsPath.startsWith("/") ? qsPath : `/${qsPath}`;
 
-  if (event.body) {
-    try {
-      const parsed = JSON.parse(event.body);
-      if (typeof parsed.path === "string" && parsed.path.trim()) {
-        const p = parsed.path.trim();
-        return p.startsWith("/") ? p : `/${p}`;
-      }
-    } catch {
-      /* ignore */
-    }
+  const parsed = parseEventBody(event);
+  if (typeof parsed.path === "string" && parsed.path.trim()) {
+    const p = parsed.path.trim();
+    return p.startsWith("/") ? p : `/${p}`;
   }
 
   return "/";
@@ -231,7 +244,7 @@ exports.handler = async function handler(event) {
       if (!key) {
         return response(400, { ok: false, error: "unknown snapshot type" }, origin);
       }
-      const body = JSON.parse(event.body || "{}");
+      const body = parseEventBody(event);
       const payload = body.data ?? body;
       payload.generatedAt = new Date().toISOString();
       payload.source = payload.source || "content-admin";
@@ -270,7 +283,7 @@ exports.handler = async function handler(event) {
     }
 
     if (method === "POST" && path === "/publish") {
-      const parsed = event.body ? JSON.parse(event.body) : {};
+      const parsed = parseEventBody(event);
       const tier = parsed.tier === "hot" ? "hot" : "cold";
       const workflow = await triggerSheetSyncWorkflow(tier);
       return response(200, { ok: true, tier, workflow }, origin);
