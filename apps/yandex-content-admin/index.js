@@ -134,7 +134,13 @@ async function triggerSheetSyncWorkflow(tier) {
 
   if (!res.ok) {
     const text = await res.text();
-    throw new Error(`GitHub sheet-sync ${res.status}: ${text}`);
+    const hint =
+      res.status === 404
+        ? " Проверьте CONTENT_REBUILD_GITHUB_TOKEN (repo + workflow) и CONTENT_REBUILD_REPOSITORY."
+        : "";
+    const err = new Error(`GitHub sheet-sync ${res.status}: ${text}${hint}`);
+    err.statusCode = res.status === 404 ? 502 : 502;
+    throw err;
   }
 
   return { ok: true, skipped: false, tier: safeTier, workflow, repository, ref };
@@ -273,6 +279,7 @@ exports.handler = async function handler(event) {
     return response(404, { ok: false, error: "not found" }, origin);
   } catch (e) {
     console.error(e);
-    return response(500, { ok: false, error: String(e.message || e) }, origin);
+    const status = e.statusCode === 502 ? 502 : 500;
+    return response(status, { ok: false, error: String(e.message || e) }, origin);
   }
 };

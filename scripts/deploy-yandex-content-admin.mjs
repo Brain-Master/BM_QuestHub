@@ -62,6 +62,17 @@ function readToken() {
   return fs.readFileSync(p, "utf8").trim();
 }
 
+function readGithubToken() {
+  for (const key of ["CONTENT_REBUILD_GITHUB_TOKEN", "GITHUB_TOKEN", "GH_TOKEN"]) {
+    if (process.env[key]?.trim()) return process.env[key].trim();
+  }
+  const secretFile = path.join(ROOT, "secret", "github.token");
+  if (fs.existsSync(secretFile)) {
+    return fs.readFileSync(secretFile, "utf8").trim();
+  }
+  return "";
+}
+
 function loadEnvFile(rel) {
   const p = path.join(ROOT, rel);
   if (!fs.existsSync(p)) return {};
@@ -134,10 +145,7 @@ function buildEnvironment() {
     SHEET_SYNC_WORKFLOW: "sheet-sync.yml",
     TIMEWEB_API_TOKEN: process.env.TIMEWEB_API_TOKEN?.trim() || "",
     TIMEWEB_APP_ID: process.env.TIMEWEB_APP_ID?.trim() || "",
-    CONTENT_REBUILD_GITHUB_TOKEN:
-      process.env.CONTENT_REBUILD_GITHUB_TOKEN?.trim() ||
-      process.env.GITHUB_TOKEN?.trim() ||
-      "",
+    CONTENT_REBUILD_GITHUB_TOKEN: readGithubToken(),
   };
 
   const missing = ["S3_BUCKET", "AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "S3_PUBLIC_BASE_URL"].filter(

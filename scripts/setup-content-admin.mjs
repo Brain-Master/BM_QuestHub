@@ -40,8 +40,9 @@ CONTENT_ADMIN_URL=${existingUrl || "https://functions.yandexcloud.net/<DEPLOY_FU
 #   Hot table  → SYNC_TIER=hot
 #   Cold table → SYNC_TIER=cold
 
-# Also add to function env:
-CONTENT_REBUILD_GITHUB_TOKEN=<github_pat with actions:write>
+# GitHub PAT for /sync/* (repo + workflow scopes):
+#   gh auth login && gh auth token > secret/github.token
+#   make deploy-yandex-content-admin
 CONTENT_REBUILD_REPOSITORY=Brain-Master/BM_QuestHub
 S3_* from scripts/s3.env
 TIMEWEB_* from scripts/timeweb.env
