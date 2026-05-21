@@ -20,7 +20,7 @@ import { joinProgramName } from "@/lib/offers/program-name";
 import {
   coalesceScheduleMediaImage,
   questHeroMediaImage,
-} from "@/lib/media/schedule-media-resolve";
+} from "@/lib/media/schedule-media-coalesce";
 
 export type { ScheduleStatusVariant };
 

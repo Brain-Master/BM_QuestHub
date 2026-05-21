@@ -2,15 +2,14 @@ import fs from "node:fs";
 import path from "node:path";
 
 import type { MediaPreset } from "./media-presets";
+import {
+  SHIFT_GROUP_INBOX_DIR_SEP,
+  shiftGroupIdToInboxDir,
+} from "./shift-group-inbox-dir";
+
+export { SHIFT_GROUP_INBOX_DIR_SEP, shiftGroupIdToInboxDir };
 
 const SOURCE_EXT_RE = /\.source\.(jpe?g|png|webp)$/i;
-
-/** Replaces `:` in shift_group_id — illegal in Windows/macOS inbox paths. S3 URLs keep the canonical id. */
-export const SHIFT_GROUP_INBOX_DIR_SEP = "__";
-
-export function shiftGroupIdToInboxDir(shiftGroupId: string): string {
-  return shiftGroupId.replaceAll(":", SHIFT_GROUP_INBOX_DIR_SEP);
-}
 
 /** Map Drive / inbox rel paths to a filesystem-safe schedule segment. */
 export function localizeInboxRelPathForFs(relPath: string): string {

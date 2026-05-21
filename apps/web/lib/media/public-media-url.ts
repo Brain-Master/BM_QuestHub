@@ -1,5 +1,5 @@
 import { publicS3BaseUrl } from "@/lib/data/public-snapshot-url";
-import { shiftGroupIdToInboxDir } from "@/lib/media/inbox-paths";
+import { shiftGroupIdToInboxDir } from "@/lib/media/shift-group-inbox-dir";
 
 /** Legacy static paths before venue media moved to S3 (`public/venues/…` → `media/venues/…`). */
 function legacyVenuePathToMedia(path: string): string | null {
