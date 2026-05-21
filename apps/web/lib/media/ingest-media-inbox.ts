@@ -30,6 +30,14 @@ function sha256Json(value: unknown): string {
   return `sha256:${crypto.createHash("sha256").update(raw, "utf8").digest("hex")}`;
 }
 
+/** Hot sync stores shift group in offer id: `sheet:{shiftGroupId}`. */
+function shiftGroupIdFromOfferId(id: string): string | undefined {
+  const prefix = "sheet:";
+  if (!id.startsWith(prefix)) return undefined;
+  const rest = id.slice(prefix.length);
+  return rest.length > 0 ? rest : undefined;
+}
+
 function ffmpegAvailable(): boolean {
   const r = spawnSync("ffmpeg", ["-version"], { stdio: "ignore" });
   return !r.error && r.status === 0;
@@ -281,7 +289,7 @@ export async function ingestMediaFromInbox(
     for (const questKey of Object.keys(hotSnapshot.offersByQuest)) {
       const offers = hotSnapshot.offersByQuest[questKey] ?? [];
       for (const offer of offers) {
-        const shiftId = offer.shiftGroupId;
+        const shiftId = shiftGroupIdFromOfferId(offer.id);
         if (!shiftId || !context.shiftGroupIds.includes(shiftId)) continue;
 
         let heroUrl: string | undefined;
@@ -313,8 +321,8 @@ export async function ingestMediaFromInbox(
         if (!offer.scheduleCard) continue;
         const alt =
           offer.scheduleCard.displayTitle ??
-          offer.programNameH2 ??
-          offer.programNameH1 ??
+          offer.scheduleCard.programNameH2 ??
+          offer.scheduleCard.programNameH1 ??
           questKey;
         const media: NonNullable<ScheduleCard["media"]> = {
           ...(offer.scheduleCard.media ?? {}),
@@ -369,10 +377,11 @@ export function buildMediaInboxContext(input: {
   }
 
   if (input.hotSnapshot) {
-    for (const offers of Object.values(input.hotSnapshot.offersByQuest)) {
+    for (const [questKey, offers] of Object.entries(input.hotSnapshot.offersByQuest)) {
+      questSlugs.add(questKey);
       for (const o of offers) {
-        if (o.shiftGroupId) shiftGroupIds.add(o.shiftGroupId);
-        questSlugs.add(o.questSlug);
+        const shiftId = shiftGroupIdFromOfferId(o.id);
+        if (shiftId) shiftGroupIds.add(shiftId);
       }
     }
   }

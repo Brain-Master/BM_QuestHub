@@ -61,7 +61,7 @@ function scaffoldEntity(
       );
 
       const preset = MEDIA_PRESETS[slot.presetId];
-      const outputVars =
+      const outputVars: Record<string, string> =
         kind === "schedule"
           ? { shiftGroupId: key }
           : kind === "venue"
@@ -119,7 +119,7 @@ export function ensureMediaInboxScaffold(
       );
       const photoIndex = slot.sourceFilename.match(/photo-(\d+)/)?.[1] ?? "1";
       const preset = MEDIA_PRESETS[slot.presetId];
-      const outputVars =
+      const outputVars: Record<string, string> =
         slot.presetId === "venue_logo"
           ? { slug: venue.scopeSlug }
           : { slug: venue.venueSlug, index: photoIndex };

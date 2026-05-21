@@ -53,6 +53,14 @@ Timeweb build with `SITE_SNAPSHOT_SOURCE=s3` bakes catalog/map into HTML after d
 
 `make publish-sheet-cold` and GitHub Actions call [`scripts/timeweb-deploy.mjs`](../../scripts/timeweb-deploy.mjs). In CI, `GITHUB_SHA` is passed so deploy does not depend on Timeweb’s GitHub VCS API. Locally, commit SHA is resolved from the app’s branch (`TIMEWEB_DEPLOY_BRANCH` in `scripts/timeweb.env`) unless `TIMEWEB_COMMIT_SHA` is set.
 
+Before deploy, `publish-sheet-cold` runs [`scripts/timeweb-build-check.mjs`](../../scripts/timeweb-build-check.mjs) (same as Timeweb: `verify:s3` + `next build` with S3 env). Skip with `SKIP_TIMEWEB_BUILD_CHECK=1`.
+
+### Timeweb deploy failed
+
+1. Run `make timeweb-build-check` locally — reproduces most build failures before waiting on the panel.
+2. Fetch deploy logs: `node scripts/timeweb-deploy.mjs --logs-only --deploy-id=<uuid>` (needs `TIMEWEB_API_TOKEN` in `scripts/timeweb.env`). On failure, `timeweb-deploy` also writes `deploy-logs-<appId>-*.txt` in the repo root when the API returns lines.
+3. Timeweb builds **code from GitHub** (`main`); content comes from S3. Fix TypeScript on `main` and push before redeploying cold content.
+
 ## Code deploy
 
 Git push → Timeweb — React/TS only.
