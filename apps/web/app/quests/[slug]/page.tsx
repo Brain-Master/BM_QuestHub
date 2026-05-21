@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { CommunityConnectPanel } from "@/components/community-connect-panel";
 import { ContentSection } from "@/components/content-section";
 import { QuestHeroBanner } from "@/components/quest-hero-banner";
 import { QuestHeroMeta } from "@/components/quest-hero-meta";
 import { LiveQuestSchedule } from "@/components/live-quest-schedule";
+import { communityConnectCopy } from "@/lib/community-connect-copy";
 import {
   loadQuestBySlug,
   loadQuests,
@@ -115,6 +117,12 @@ export default async function QuestPage({ params }: Props) {
       <ContentSection title="Как проходит работа на интенсиве">
         <p className="whitespace-pre-line">{quest.approach}</p>
       </ContentSection>
+
+      <CommunityConnectPanel
+        variant="card"
+        className="mb-8"
+        {...communityConnectCopy.questBeforeSchedule}
+      />
 
       <section
         id="schedule-offers"

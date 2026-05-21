@@ -1,19 +1,29 @@
 "use client";
 
 import * as React from "react";
-import { ExternalLink, Phone } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 
-import { BRAINMASTER_SUPPORT_PHONE, BRAINMASTER_SUPPORT_PHONE_HREF } from "@/lib/site-contact";
+import { CommunityVkFollowHint } from "@/components/community-vk-follow-hint";
+import { SupportContactStack } from "@/components/support-contact-stack";
 import { cn } from "@/lib/utils";
 
 const MOS_AUTO_OPEN_DELAY_SECONDS = 3;
 
 type Props = {
   mosUrl: string;
+  contactsSaved?: boolean;
+  title?: string;
+  text?: string;
   onOpenMos?: () => void;
 };
 
-export function MosBookingSuccess({ mosUrl, onOpenMos }: Props) {
+export function MosBookingSuccess({
+  mosUrl,
+  contactsSaved = true,
+  title,
+  text,
+  onOpenMos,
+}: Props) {
   const [secondsLeft, setSecondsLeft] = React.useState(MOS_AUTO_OPEN_DELAY_SECONDS);
   const [autoOpenEnabled] = React.useState(() => {
     if (typeof window === "undefined") return false;
@@ -21,6 +31,13 @@ export function MosBookingSuccess({ mosUrl, onOpenMos }: Props) {
   });
   const [hasOpened, setHasOpened] = React.useState(false);
   const openedRef = React.useRef(false);
+
+  const resolvedTitle = title ?? (contactsSaved ? "Контакты получены" : "Продолжите запись на mos.ru");
+  const resolvedText =
+    text ??
+    (contactsSaved
+      ? "Дальше нужно оформить запись и договор на портале mos.ru. Если оформление окажется сложным, мы поможем пройти его до конца."
+      : "Оформите запись на портале mos.ru — кнопка ниже. Если понадобится помощь, свяжитесь с нами.");
 
   const openMos = React.useCallback(() => {
     if (openedRef.current) return;
@@ -30,8 +47,10 @@ export function MosBookingSuccess({ mosUrl, onOpenMos }: Props) {
     window.open(mosUrl, "_blank", "noopener,noreferrer");
   }, [mosUrl, onOpenMos]);
 
+  const shouldAutoOpen = contactsSaved && autoOpenEnabled;
+
   React.useEffect(() => {
-    if (!autoOpenEnabled || openedRef.current) return;
+    if (!shouldAutoOpen || openedRef.current) return;
     if (secondsLeft <= 0) {
       openMos();
       return;
@@ -42,30 +61,23 @@ export function MosBookingSuccess({ mosUrl, onOpenMos }: Props) {
     }, 1000);
 
     return () => window.clearTimeout(timer);
-  }, [autoOpenEnabled, openMos, secondsLeft]);
+  }, [shouldAutoOpen, openMos, secondsLeft]);
 
   return (
-    <div className="grid gap-5 px-5 py-5 text-center" data-testid="mos-success">
+    <div
+      className="grid gap-5 px-5 py-5 text-center"
+      data-testid={contactsSaved ? "mos-success" : "mos-success-fallback"}
+    >
       <div className="mx-auto grid size-12 place-items-center rounded-full border border-cyan-300/30 bg-cyan-400/15 text-cyan-200">
-        ✓
+        {contactsSaved ? "✓" : "→"}
       </div>
       <div className="grid gap-2">
-        <h3 className="font-heading text-xl font-semibold text-white">
-          Контакты получены
-        </h3>
-        <p className="text-slate-300 text-sm leading-relaxed">
-          Дальше нужно оформить запись и договор на портале mos.ru. Если
-          оформление окажется сложным, мы поможем пройти его до конца.
-        </p>
+        <h3 className="font-heading text-xl font-semibold text-white">{resolvedTitle}</h3>
+        <p className="text-slate-300 text-sm leading-relaxed">{resolvedText}</p>
       </div>
 
-      <a
-        href={BRAINMASTER_SUPPORT_PHONE_HREF}
-        className="mx-auto inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 font-semibold text-sm text-white hover:bg-white/10"
-      >
-        <Phone className="size-4 text-cyan-300" aria-hidden />
-        {BRAINMASTER_SUPPORT_PHONE}
-      </a>
+      <SupportContactStack />
+      <CommunityVkFollowHint />
 
       <button
         type="button"
@@ -79,7 +91,7 @@ export function MosBookingSuccess({ mosUrl, onOpenMos }: Props) {
         <ExternalLink className="size-4" aria-hidden />
       </button>
 
-      {autoOpenEnabled && !hasOpened ? (
+      {shouldAutoOpen && !hasOpened ? (
         <p className="text-slate-500 text-xs">
           Автоматически откроем mos.ru через {Math.max(secondsLeft, 0)} сек.
         </p>

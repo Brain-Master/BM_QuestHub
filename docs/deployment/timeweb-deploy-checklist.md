@@ -26,7 +26,7 @@ Complete after merging Timeweb S3 + App Platform docs to `main`.
 
 - [ ] Deploy [`apps/yandex-content-admin`](../../apps/yandex-content-admin/) with env from `.env.example`
 - [ ] Build [`apps/admin`](../../apps/admin/) with `VITE_CONTENT_ADMIN_URL`; host `dist/` or use locally
-- [ ] GitHub repo secrets for `content-rebuild.yml`: `S3_PUBLIC_BASE_URL`, `SITE_URL`, `LEAD_SUBMIT_URL`
+- [ ] GitHub repo secrets for `content-rebuild.yml`: `S3_PUBLIC_BASE_URL`, `SITE_URL`, `LEAD_SUBMIT_URL`, `OPS_REPORT_URL` (optional)
 - [ ] `TIMEWEB_APP_ID` + `TIMEWEB_API_TOKEN` in `scripts/timeweb.env` for cold publish (`make timeweb-deploy`)
 - [ ] Hot schedule: `make content-publish-hot` — **no** redeploy; verify `/agenda` updates within 60s
 - [ ] Cold content: admin or `make content-publish` → Timeweb API deploy ([content-deploy.md](./content-deploy.md))
@@ -46,6 +46,15 @@ Complete after merging Timeweb S3 + App Platform docs to `main`.
 - [ ] After new school venue YAML: `node scripts/generate-host-aliases.mjs` + redeploy; extend `ALLOWED_ORIGINS`
 - [x] Yandex Function `ALLOWED_ORIGINS` — `node scripts/yandex-lead-receiver-env-patch.mjs` (production origins, secrets preserved)
 - [ ] Remove stray subdomain `quest.b-master.pro.b-master.pro` in panel if still listed
+
+## Lead ops reporter
+
+- [x] Deploy Yandex Function `bm-lead-ops-reporter` — `node scripts/deploy-yandex-lead-ops-reporter.mjs` (invoke URL in `secret/ops-reporter.deploy.txt`)
+- [x] `OPS_REPORT_URL` + `OPS_REPORT_TOKEN` on `bm-lead-receiver` (patched via deploy script)
+- [x] `NEXT_PUBLIC_OPS_REPORT_URL` on Timeweb app `195536` (API PATCH, redeploy triggered)
+- [ ] Optional: tab `Ops` in Google Sheet + header row (if Sheet logging desired)
+- [ ] Smoke on prod: block lead URL in DevTools → submit → ops Telegram alert
+- [ ] GitHub repo variable `OPS_REPORT_URL` for `content-rebuild.yml` (optional)
 
 ## Smoke
 

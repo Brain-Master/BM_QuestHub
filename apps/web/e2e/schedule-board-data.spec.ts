@@ -119,6 +119,9 @@ test.describe("Schedule Board data rules", () => {
       submitLabel: "Перейти к записи на mos.ru",
     });
     expect(flow.noticeText).toContain("mos.ru");
+    expect(flow.fallbackTitle).toBe("Продолжите запись на mos.ru");
+    expect(flow.fallbackText).toContain("mos.ru");
+    expect(flow.fallbackText).toContain("+7 (977) 967-88-00");
   });
 
   test("waitlist flow explains that preliminary registration is not a booking", () => {

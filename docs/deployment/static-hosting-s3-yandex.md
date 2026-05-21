@@ -163,6 +163,8 @@ GOOGLE_SHEETS_SPREADSHEET_ID=<spreadsheet id>
 GOOGLE_LEADS_SHEET_RANGE=Leads!A:S
 N8N_WEBHOOK_URL=<optional n8n production webhook>
 N8N_TIMEOUT_MS=2500
+OPS_REPORT_URL=<bm-lead-ops-reporter invoke URL>
+OPS_REPORT_TOKEN=<shared secret; same value on ops function>
 ```
 
 Share the target Google Sheet with the service account `client_email` and give
@@ -204,6 +206,26 @@ For local development, copy the line into `apps/web/.env.local` (gitignored) and
 restart the Next dev server so the public env is baked into the client bundle.
 On Timeweb (or any static host), set the same variable in the project build
 environment before `npm run build`.
+
+## Yandex Lead Ops Reporter
+
+The ops reporter lives in `apps/yandex-lead-ops-reporter` with handler
+`index.handler`. It accepts failure events from the static site and from
+`bm-lead-receiver` (400/502) and sends admin Telegram alerts plus optional
+Google Sheet rows (`GOOGLE_OPS_SHEET_RANGE`, e.g. `Ops!A:K`).
+
+Static site build env:
+
+```text
+NEXT_PUBLIC_OPS_REPORT_URL=<ops function invoke URL>
+```
+
+Ops function env: see [`apps/yandex-lead-ops-reporter/.env.example`](../../apps/yandex-lead-ops-reporter/.env.example).
+Browser reports use CORS + rate limit; server reports use `X-Ops-Token`.
+
+Deploy a zip from `apps/yandex-lead-ops-reporter` as `bm-lead-ops-reporter`,
+then set `OPS_REPORT_URL` / `OPS_REPORT_TOKEN` on the lead receiver and
+`NEXT_PUBLIC_OPS_REPORT_URL` on Timeweb.
 
 ## Offers Update Flow
 

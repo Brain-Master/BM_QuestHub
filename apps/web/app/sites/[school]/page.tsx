@@ -10,13 +10,14 @@ import {
   ExternalLink,
   Grid2X2,
   MapPin,
-  MessageCircle,
   Navigation,
 } from "lucide-react";
 
+import { CommunityConnectPanel } from "@/components/community-connect-panel";
 import { PortalHero } from "@/components/portal-hero";
 import { RememberSchoolOnVisit } from "@/components/remember-school-on-visit";
 import { buttonVariants } from "@/components/ui/button";
+import { communityConnectCopy } from "@/lib/community-connect-copy";
 import { loadQuests, loadVenues, loadWorlds } from "@/lib/content/load";
 import { getSchoolScopes, resolveSchoolScope } from "@/lib/offers/agenda";
 import { buildSiteScopeCards, type SiteCampus } from "@/lib/sites/scope-card";
@@ -424,36 +425,11 @@ export default async function SchoolPage({ params }: Props) {
         </aside>
       </section>
 
-      <section className="mt-6 rounded-[1.5rem] border border-white/10 bg-white/[0.04] p-5 sm:p-6">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-          <div className="flex gap-3">
-            <span className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-white/10 text-cyan-100">
-              <MessageCircle className="size-5" aria-hidden />
-            </span>
-            <div>
-              <h2 className="font-heading text-xl font-semibold tracking-tight">
-                Отзывы
-              </h2>
-              <p className="mt-2 max-w-3xl text-muted-foreground text-sm leading-relaxed">
-                Отзывы не добавляем в базовый MVP страницы площадки: нужен проверенный
-                источник, согласие на публикацию и модерация. Сейчас фокус на адресах,
-                маршрутах, фотографиях и расписании, которые помогают записаться без
-                лишних шагов.
-              </p>
-            </div>
-          </div>
-          <Link
-            href="/legal"
-            className={cn(
-              buttonVariants({ variant: "outline", size: "sm" }),
-              "shrink-0 gap-2 border-white/10 bg-transparent hover:bg-white/5",
-            )}
-          >
-            Правовые документы
-            <ExternalLink className="size-3.5" aria-hidden />
-          </Link>
-        </div>
-      </section>
+      <CommunityConnectPanel
+        variant="card"
+        className="mt-6"
+        {...communityConnectCopy.siteMorePhotos}
+      />
     </main>
   );
 }

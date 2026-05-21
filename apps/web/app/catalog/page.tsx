@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 
+import { CommunityConnectPanel } from "@/components/community-connect-panel";
 import { LiveCatalog } from "@/components/live-catalog";
 import { PreferredSchoolBanner } from "@/components/preferred-school-banner";
+import { communityConnectCopy } from "@/lib/community-connect-copy";
 import { loadQuestsShell, loadVenues, loadWorlds } from "@/lib/content/load";
 
 export const metadata: Metadata = {
@@ -27,6 +29,12 @@ export default async function CatalogPage() {
       >
         <LiveCatalog baseQuests={baseQuests} venues={venues} worlds={worlds} />
       </Suspense>
+
+      <CommunityConnectPanel
+        variant="card"
+        className="mt-12"
+        {...communityConnectCopy.catalogDoubt}
+      />
     </main>
   );
 }

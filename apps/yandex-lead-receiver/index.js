@@ -21,6 +21,21 @@ const REQUIRED_STRING_FIELDS = [
 const LEAD_TYPES = new Set(["booking", "waitlist", "mos_assist"]);
 const REGISTRATION_CHANNELS = new Set(["mos_ru", "brainmaster"]);
 const DEFAULT_N8N_TIMEOUT_MS = 2500;
+const OPS_REPORT_TIMEOUT_MS = 2000;
+
+const LEAD_SNAPSHOT_FIELDS = [
+  "leadType",
+  "registrationChannel",
+  "questSlug",
+  "questTitle",
+  "offerId",
+  "venueSlug",
+  "venueName",
+  "parentName",
+  "contact",
+  "childName",
+  "childAge",
+];
 
 function readEnv(name, options = {}) {
   const value = process.env[name]?.trim();
@@ -468,6 +483,45 @@ async function forwardLeadToN8n(lead) {
   }
 }
 
+function pickLeadSnapshot(raw) {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return undefined;
+  const lead = {};
+  for (const field of LEAD_SNAPSHOT_FIELDS) {
+    if (typeof raw[field] === "string" && raw[field].trim().length > 0) {
+      lead[field] = raw[field].trim();
+    }
+  }
+  return Object.keys(lead).length > 0 ? lead : undefined;
+}
+
+async function reportOpsEvent(details) {
+  const url = readEnv("OPS_REPORT_URL");
+  const token = readEnv("OPS_REPORT_TOKEN");
+  if (!url || !token) return;
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), OPS_REPORT_TIMEOUT_MS);
+  try {
+    await fetch(url, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-ops-token": token,
+      },
+      body: JSON.stringify({
+        source: "bm-lead-receiver",
+        occurredAt: new Date().toISOString(),
+        ...details,
+      }),
+      signal: controller.signal,
+    });
+  } catch (error) {
+    console.warn("ops report failed", error);
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 async function deliverPrimaryLead(lead) {
   await sendTelegramLead(lead);
   await appendLeadToGoogleSheet(lead);
@@ -492,18 +546,36 @@ async function handler(event = {}, context = {}) {
     return response(400, { ok: false, error: "Invalid JSON body" }, origin);
   }
 
+  const requestId = context.requestId || context.awsRequestId || crypto.randomUUID();
+
   const validation = validateLeadPayload(payload);
   if (!validation.ok) {
+    void reportOpsEvent({
+      event: "lead.server_error",
+      requestId,
+      httpStatus: 400,
+      errorCode: "invalid_payload",
+      errorMessage: "Invalid lead payload",
+      issues: validation.issues,
+      lead: pickLeadSnapshot(payload),
+    });
     return response(400, { ok: false, error: "Invalid lead payload", issues: validation.issues }, origin);
   }
 
-  const requestId = context.requestId || context.awsRequestId || crypto.randomUUID();
   const lead = normalizeLead(payload, requestId);
 
   try {
     await deliverPrimaryLead(lead);
   } catch (error) {
     console.error("Primary lead delivery failed", error);
+    void reportOpsEvent({
+      event: "lead.server_error",
+      requestId,
+      httpStatus: 502,
+      errorCode: "delivery_failed",
+      errorMessage: "Primary lead delivery failed",
+      lead: pickLeadSnapshot(lead),
+    });
     return response(502, { ok: false, error: "Primary lead delivery failed" }, origin);
   }
 
@@ -529,7 +601,9 @@ exports._internals = {
   getMethod,
   leadToSheetRow,
   normalizeLead,
+  pickLeadSnapshot,
   parseJsonBody,
+  reportOpsEvent,
   parseSheetOfferId,
   validateLeadPayload,
 };

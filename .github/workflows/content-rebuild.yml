@@ -39,6 +39,7 @@ jobs:
           SITE_SNAPSHOT_SOURCE: s3
           NEXT_PUBLIC_SITE_URL: ${{ vars.SITE_URL }}
           NEXT_PUBLIC_LEAD_SUBMIT_URL: ${{ vars.LEAD_SUBMIT_URL }}
+          NEXT_PUBLIC_OPS_REPORT_URL: ${{ vars.OPS_REPORT_URL }}
         run: npm run build
         working-directory: apps/web
 

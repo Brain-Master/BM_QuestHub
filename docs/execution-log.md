@@ -35,6 +35,41 @@ Use this template for each entry:
 
 ## Entries
 
+### 2026-05-21 - Lead ops reporter (Telegram + logs on submit failures)
+
+**Goal:** Alert admins and retain an audit trail when lead submission fails on the server or in the static-site browser.
+
+**Completed:**
+- Added `apps/yandex-lead-ops-reporter` (Telegram, structured Cloud logs, optional Google Sheet, CORS + `X-Ops-Token`, client rate limit).
+- `bm-lead-receiver` reports `lead.server_error` on 400/502 via `OPS_REPORT_URL`.
+- `lead-submit-client` fire-and-forget `lead.client_submit_failed` via `NEXT_PUBLIC_OPS_REPORT_URL`.
+
+**Changed Files:**
+- `apps/yandex-lead-ops-reporter/*`: new function + tests + README.
+- `apps/yandex-lead-receiver/index.js`, `.env.example`, `index.test.js`: ops reporting.
+- `apps/web/lib/lead-submit-client.ts`, `.env.example`, `timeweb.app.env.example`: client reports.
+- `docs/deployment/static-hosting-s3-yandex.md`, `timeweb-deploy-checklist.md`: deploy notes.
+
+**Validation:**
+- `node --test` in `apps/yandex-lead-ops-reporter` and `apps/yandex-lead-receiver`
+- `npm --prefix apps/web run lint`
+
+**Open Items:**
+- Optional: create Google Sheet tab `Ops` with columns from `apps/yandex-lead-ops-reporter/README.md`.
+
+### 2026-05-21 - Deploy bm-lead-ops-reporter (Yandex + Timeweb)
+
+**Goal:** Production ops alerts for failed lead submissions.
+
+**Completed:**
+- Deployed Yandex Function `bm-lead-ops-reporter` (`https://functions.yandexcloud.net/d4eugco206uh65ivpbtm`).
+- Patched `bm-lead-receiver` with `OPS_REPORT_URL` + `OPS_REPORT_TOKEN` (new version `d4ehiq4u5q79rmc1e5on`).
+- Timeweb app `195536`: `NEXT_PUBLIC_OPS_REPORT_URL` set via API (redeploy triggered).
+- Script: `node scripts/deploy-yandex-lead-ops-reporter.mjs`; notes in `secret/ops-reporter.deploy.txt`.
+
+**Validation:**
+- Smoke POST → `202 {"ok":true}`.
+
 ### 2026-05-19 07:15 UTC+3 - Production domains + lead CORS
 
 **Goal:** Bind `quest.b-master.pro` / `1517.b-master.pro` to App Platform and restrict Yandex lead receiver CORS.

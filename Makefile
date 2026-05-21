@@ -7,7 +7,7 @@
 
 WEB := apps/web
 
-.PHONY: run check dev-host dev-restart brand-assets docs-index validate-snapshots export-yaml-snapshots content-publish content-publish-hot sync-sheet-hot sync-sheet-cold publish-sheet-hot publish-sheet-cold seed-sheet-headers encode-hero-video scripts-s3-deps timeweb-s3-setup timeweb-setup s3-sync-data s3-sync-data-hot s3-sync-data-cold s3-sync-media s3-sync-static s3-sync-all timeweb-deploy
+.PHONY: run check dev-host dev-restart brand-assets docs-index validate-snapshots export-yaml-snapshots content-publish content-publish-hot sync-sheet-hot sync-sheet-cold publish-sheet-hot publish-sheet-cold seed-sheet-headers encode-hero-video media-placeholders media-scaffold design-pack scripts-s3-deps timeweb-s3-setup timeweb-setup s3-sync-data s3-sync-data-hot s3-sync-data-cold s3-sync-media s3-sync-static s3-sync-all timeweb-deploy
 
 # PNG/WebP/ICO из assets/brand/brainmaster-logo.png → assets/brand/generated/ (+ Next app/ + public/brand/)
 brand-assets:
@@ -50,6 +50,19 @@ publish-sheet-cold:
 seed-sheet-headers:
 	node scripts/seed-google-sheet-headers.mjs
 
+media-placeholders:
+	node scripts/generate-media-placeholders.mjs
+
+media-scaffold:
+	node scripts/media-scaffold.mjs
+
+design-pack-psd:
+	node scripts/generate-design-pack-psd.mjs
+
+design-pack: media-placeholders design-pack-psd
+	cd scripts && npm install --omit=dev
+	node scripts/build-design-pack.mjs
+
 # Encode hero MP4 + poster for S3: make encode-hero-video SLUG=cyber-rhythm SOURCE=/path/to/in.mp4
 encode-hero-video:
 	@test -n "$(SLUG)" || (echo "Set SLUG=quest-or-world-slug" && exit 1)
@@ -70,6 +83,9 @@ backfill-shift-group-ids:
 
 deploy-yandex-content-admin:
 	node scripts/deploy-yandex-content-admin.mjs
+
+deploy-yandex-lead-ops-reporter:
+	node scripts/deploy-yandex-lead-ops-reporter.mjs
 
 setup-github-repo:
 	node scripts/setup-github-repo.mjs

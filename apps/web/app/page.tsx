@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 
+import { CommunityConnectPanel } from "@/components/community-connect-panel";
 import { LiveCatalog } from "@/components/live-catalog";
 import { PortalHero } from "@/components/portal-hero";
+import { communityConnectCopy } from "@/lib/community-connect-copy";
 import { loadQuestsShell, loadVenues, loadWorlds } from "@/lib/content/load";
 
 export const metadata: Metadata = {
@@ -22,6 +24,13 @@ export default async function HomePage() {
         eyebrow="BrainMaster Quest Hub"
         title="Вселенная Инженерных Квестов"
         description="Выберите миссию, площадку и смену. Запись часто завершается на mos.ru; если ссылки ещё нет — откроется форма заявки прямо из расписания."
+        aside={
+          <CommunityConnectPanel
+            variant="aside"
+            showPhone={false}
+            {...communityConnectCopy.homeHeroAside}
+          />
+        }
       />
 
       <Suspense

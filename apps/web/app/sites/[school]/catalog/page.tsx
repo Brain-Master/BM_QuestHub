@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
+import { CommunityConnectPanel } from "@/components/community-connect-panel";
 import { LiveCatalog } from "@/components/live-catalog";
 import { RememberSchoolOnVisit } from "@/components/remember-school-on-visit";
+import { communityConnectCopy } from "@/lib/community-connect-copy";
 import { loadQuestsShell, loadVenues, loadWorlds } from "@/lib/content/load";
 import { getSchoolScopes, resolveSchoolScope } from "@/lib/offers/agenda";
 
@@ -57,6 +59,12 @@ export default async function SchoolCatalogPage({ params }: Props) {
           emptyMessage="Для этой площадки пока нет активных миссий."
         />
       </Suspense>
+
+      <CommunityConnectPanel
+        variant="card"
+        className="mt-12"
+        {...communityConnectCopy.catalogDoubt}
+      />
     </main>
   );
 }

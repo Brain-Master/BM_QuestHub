@@ -16,6 +16,8 @@ export type RegistrationFlowContext = {
   submitLabel: string;
   successTitle: string;
   successText: string;
+  fallbackTitle?: string;
+  fallbackText?: string;
   leadType: LeadFormInput["leadType"];
   registrationChannel: RegistrationChannel;
 };
@@ -60,6 +62,8 @@ export function resolveRegistrationFlow({
       submitLabel: copy.submitLabel,
       successTitle: copy.successTitle,
       successText: copy.successText,
+      fallbackTitle: copy.fallbackTitle,
+      fallbackText: applyTemplate(copy.fallbackText, vars),
       leadType: "mos_assist",
       registrationChannel: "mos_ru",
     };

@@ -9,6 +9,11 @@ export const brandProfileSchema = z.object({
   contacts: z.object({
     supportPhone: z.string().min(1),
     supportPhoneHref: z.string().min(1),
+    supportTelegramUrl: z.string().url(),
+    supportTelegramLabel: z.string().min(1),
+    communityVkUrl: z.string().url(),
+    communityVkLabel: z.string().min(1),
+    communityVkLead: z.string().min(1),
     legalEmail: z.string().min(1),
     legalEmailHref: z.string().min(1),
   }),
@@ -91,6 +96,8 @@ export const registrationFlowCopySchema = z.object({
     submitLabel: z.string(),
     successTitle: z.string(),
     successText: z.string(),
+    fallbackTitle: z.string(),
+    fallbackText: z.string(),
   }),
   waitlist: z.object({
     title: z.string(),

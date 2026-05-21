@@ -8,6 +8,11 @@
     "contacts": {
       "supportPhone": "+7 (977) 967-88-00",
       "supportPhoneHref": "tel:+79779678800",
+      "supportTelegramUrl": "https://t.me/BrainMaster_Academy",
+      "supportTelegramLabel": "Написать в Telegram",
+      "communityVkUrl": "https://vk.com/BrainMaster",
+      "communityVkLabel": "Открыть группу ВКонтакте",
+      "communityVkLead": "Фотоальбомы прошлых смен и новости BrainMaster",
       "legalEmail": "ask@b-master.pro",
       "legalEmailHref": "mailto:ask@b-master.pro"
     }
@@ -191,7 +196,9 @@
         "noticeText": "Оставьте контакты, и мы поможем пройти оформление на mos.ru: подскажем по договору, оплате и не дадим заявке потеряться. После отправки откроем портал, а если понадобится помощь, мы на связи: {supportPhone}.",
         "submitLabel": "Перейти к записи на mos.ru",
         "successTitle": "Спасибо за заявку",
-        "successText": "Контакты сохранены. Дальше оформите запись на mos.ru — мы на связи, если понадобится помощь."
+        "successText": "Контакты сохранены. Дальше оформите запись на mos.ru — мы на связи, если понадобится помощь.",
+        "fallbackTitle": "Продолжите запись на mos.ru",
+        "fallbackText": "Не удалось сохранить контакты. Оформите запись на портале mos.ru — кнопка ниже. По вопросам звоните {supportPhone}."
       },
       "waitlist": {
         "title": "Заявка в лист ожидания",

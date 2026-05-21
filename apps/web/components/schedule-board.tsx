@@ -4,6 +4,7 @@ import Link from "next/link";
 import * as React from "react";
 import { flushSync } from "react-dom";
 
+import { CommunityConnectPanel } from "@/components/community-connect-panel";
 import { ScheduleBoardCard, type ScheduleViewMode } from "@/components/schedule-board-card";
 import { ScheduleBoardToolbar } from "@/components/schedule-board-toolbar";
 import { buttonVariants } from "@/components/ui/button";
@@ -20,6 +21,7 @@ import {
 import { PREFERRED_SCHOOL_STORAGE_KEY } from "@/lib/preferred-school";
 import { venueVisibleForSchoolScope } from "@/lib/school-scope";
 import { buildSiteHref } from "@/lib/sites/site-route";
+import { communityConnectCopy } from "@/lib/community-connect-copy";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -568,6 +570,12 @@ export function ScheduleBoard({
           ))}
         </ol>
       )}
+
+      <CommunityConnectPanel
+        variant="card"
+        className="mt-10"
+        {...communityConnectCopy.agendaNoShift}
+      />
     </section>
   );
 }

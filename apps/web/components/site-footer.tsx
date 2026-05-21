@@ -1,16 +1,20 @@
 import Link from "next/link";
 
+import { CommunityConnectPanel } from "@/components/community-connect-panel";
 import {
   LEGAL_COOKIES_ANALYTICS_PATH,
   LEGAL_INDEX_PATH,
   LEGAL_OPERATOR_DETAILS_PATH,
   LEGAL_PERSONAL_DATA_PATH,
 } from "@/lib/legal-routes";
+import { communityConnectCopy } from "@/lib/community-connect-copy";
 
 export function SiteFooter() {
+  const footerCopy = communityConnectCopy.footer;
+
   return (
     <footer className="mt-auto border-t border-white/10 bg-black/25 backdrop-blur-md">
-      <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 md:grid-cols-[1fr_auto_auto] md:items-start">
+      <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 md:grid-cols-[1fr_auto_auto_auto] md:items-start">
         <div className="space-y-3">
           <p className="font-heading text-base font-semibold text-foreground">
             BrainMaster Quest Hub
@@ -20,6 +24,12 @@ export function SiteFooter() {
             ориентир; финальные условия уточняйте при записи и в оферте площадки.
           </p>
         </div>
+        <CommunityConnectPanel
+          variant="footer"
+          title={footerCopy.title}
+          description={footerCopy.description}
+          className="text-sm"
+        />
         <div className="flex flex-col gap-3 text-sm md:text-right">
           <Link className="text-muted-foreground hover:text-foreground" href="/catalog">
             Курсы

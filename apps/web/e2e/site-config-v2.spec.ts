@@ -14,6 +14,15 @@ test.describe("Site config V2", () => {
       true,
     );
     expect(findPrivateFieldViolations(siteConfig)).toEqual([]);
+    expect(siteConfig.brand.contacts.supportTelegramUrl).toBe(
+      "https://t.me/BrainMaster_Academy",
+    );
+    expect(siteConfig.brand.contacts.supportTelegramLabel).toBeTruthy();
+    expect(siteConfig.brand.contacts.communityVkUrl).toBe(
+      "https://vk.com/BrainMaster",
+    );
+    expect(siteConfig.brand.contacts.communityVkLabel).toBeTruthy();
+    expect(siteConfig.brand.contacts.communityVkLead).toBeTruthy();
   });
 
   test("V1 offers snapshot converts to schedule V2 events", () => {

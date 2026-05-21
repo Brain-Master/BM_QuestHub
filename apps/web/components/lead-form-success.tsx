@@ -1,11 +1,7 @@
 "use client";
 
-import { Phone } from "lucide-react";
-
-import {
-  BRAINMASTER_SUPPORT_PHONE,
-  BRAINMASTER_SUPPORT_PHONE_HREF,
-} from "@/lib/site-contact";
+import { CommunityVkFollowHint } from "@/components/community-vk-follow-hint";
+import { SupportContactStack } from "@/components/support-contact-stack";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -25,13 +21,8 @@ export function LeadFormSuccess({ title, text, onClose }: Props) {
         <p className="text-slate-300 text-sm leading-relaxed">{text}</p>
       </div>
 
-      <a
-        href={BRAINMASTER_SUPPORT_PHONE_HREF}
-        className="mx-auto inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 font-semibold text-sm text-white hover:bg-white/10"
-      >
-        <Phone className="size-4 text-cyan-300" aria-hidden />
-        {BRAINMASTER_SUPPORT_PHONE}
-      </a>
+      <SupportContactStack />
+      <CommunityVkFollowHint />
 
       <button
         type="button"

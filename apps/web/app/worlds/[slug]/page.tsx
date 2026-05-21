@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { CommunityConnectPanel } from "@/components/community-connect-panel";
 import { QuestGrid } from "@/components/quest-grid";
 import { WorldHubHero } from "@/components/world-hub-hero";
+import { communityConnectCopy } from "@/lib/community-connect-copy";
 import { loadQuests, loadWorldBySlug, loadWorlds } from "@/lib/content/load";
 
 type Props = {
@@ -94,6 +96,12 @@ export default async function WorldHubPage({ params }: Props) {
           ))}
         </ul>
       </section>
+
+      <CommunityConnectPanel
+        variant="card"
+        className="mt-12"
+        {...communityConnectCopy.worldBehindScenes(world.name)}
+      />
 
       <section className="mt-14 space-y-8">
         <div className="border-b border-white/10 pb-4">

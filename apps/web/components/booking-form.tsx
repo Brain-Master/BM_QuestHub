@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { Controller, useForm } from "react-hook-form";
 
+import { BookingSubmitError } from "@/components/booking-submit-error";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -44,6 +45,7 @@ type Props = {
   flowContext?: RegistrationFlowContext;
   submitLabel?: string;
   onSuccess?: (values: LeadPayload) => void;
+  onSubmitFailed?: () => void;
 };
 
 const fieldLabelClass =
@@ -55,15 +57,6 @@ const fieldInputClass =
 function FieldError({ message }: { message?: string }) {
   if (!message) return null;
   return <p className="text-destructive text-xs">{message}</p>;
-}
-
-function FormAlert({ message }: { message?: string }) {
-  if (!message) return null;
-  return (
-    <p className="rounded-lg border border-red-400/25 bg-red-400/10 px-3 py-2 text-red-200 text-xs leading-relaxed">
-      {message}
-    </p>
-  );
 }
 
 function BookingSummaryCard({ summary }: { summary: BookingFormSummary }) {
@@ -98,6 +91,7 @@ export function BookingForm({
   flowContext,
   submitLabel,
   onSuccess,
+  onSubmitFailed,
 }: Props) {
   const resolvedSubmitLabel =
     submitLabel ?? flowContext?.submitLabel ?? "Забронировать место";
@@ -119,6 +113,10 @@ export function BookingForm({
   async function onSubmit(values: LeadPayload) {
     const res = await submitLeadToYandex(values);
     if (!res.ok) {
+      if (onSubmitFailed) {
+        onSubmitFailed();
+        return;
+      }
       form.setError("root", { message: res.error });
       return;
     }
@@ -304,7 +302,7 @@ export function BookingForm({
           </Label>
         </div>
         <FieldError message={form.formState.errors.consent?.message} />
-        <FormAlert message={form.formState.errors.root?.message} />
+        <BookingSubmitError message={form.formState.errors.root?.message} />
 
         <button
           type="submit"

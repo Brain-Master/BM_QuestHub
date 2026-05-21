@@ -39,6 +39,9 @@ Optional:
 
 - `N8N_WEBHOOK_URL`
 - `N8N_TIMEOUT_MS`
+- `OPS_REPORT_URL` / `OPS_REPORT_TOKEN` — notify [`apps/yandex-lead-ops-reporter`](../yandex-lead-ops-reporter/) on 400/502
+
+On validation or delivery failure the receiver POSTs `lead.server_error` to the ops function (fire-and-forget).
 
 ## Google Sheet Columns
 

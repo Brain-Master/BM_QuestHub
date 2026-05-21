@@ -62,6 +62,7 @@ export function OfferBookingAction({
   const [view, setView] = React.useState<"form" | "mos_success" | "lead_success">(
     "form",
   );
+  const [mosContactsSaved, setMosContactsSaved] = React.useState(true);
   const action: ScheduleBookingMode =
     mode ?? variant?.bookingMode ?? { kind: "form", label: buttonLabel };
   const registrationChannel =
@@ -91,6 +92,7 @@ export function OfferBookingAction({
 
   function openForm() {
     setView("form");
+    setMosContactsSaved(true);
     setOpen(true);
     trackBookingFormOpen({
       questSlug: quest.slug,
@@ -104,6 +106,7 @@ export function OfferBookingAction({
     setOpen(nextOpen);
     if (!nextOpen) {
       setView("form");
+      setMosContactsSaved(true);
     }
   }
 
@@ -148,13 +151,29 @@ export function OfferBookingAction({
               {view === "form"
                 ? flowContext.title
                 : view === "mos_success"
-                  ? "Спасибо за заявку"
+                  ? mosContactsSaved
+                    ? flowContext.successTitle
+                    : (flowContext.fallbackTitle ?? flowContext.title)
                   : flowContext.successTitle}
             </DialogTitle>
           </DialogHeader>
           {view === "mos_success" && action.kind === "mos" ? (
             <div className="bm-scrollbar min-h-0 overflow-y-auto overscroll-contain [scrollbar-gutter:stable] [scrollbar-width:thin]">
-              <MosBookingSuccess mosUrl={action.url} onOpenMos={trackMosOpen} />
+              <MosBookingSuccess
+                mosUrl={action.url}
+                contactsSaved={mosContactsSaved}
+                title={
+                  mosContactsSaved
+                    ? undefined
+                    : flowContext.fallbackTitle
+                }
+                text={
+                  mosContactsSaved
+                    ? undefined
+                    : flowContext.fallbackText
+                }
+                onOpenMos={trackMosOpen}
+              />
             </div>
           ) : view === "lead_success" ? (
             <div className="bm-scrollbar min-h-0 overflow-y-auto overscroll-contain [scrollbar-gutter:stable] [scrollbar-width:thin]">
@@ -189,8 +208,17 @@ export function OfferBookingAction({
                   schoolSlug,
                 }}
                 flowContext={flowContext}
+                onSubmitFailed={
+                  action.kind === "mos"
+                    ? () => {
+                        setMosContactsSaved(false);
+                        setView("mos_success");
+                      }
+                    : undefined
+                }
                 onSuccess={() => {
                   if (action.kind === "mos") {
+                    setMosContactsSaved(true);
                     setView("mos_success");
                     return;
                   }

@@ -30,6 +30,8 @@ function setBaseEnv() {
     GOOGLE_LEADS_SHEET_RANGE: "Leads!A:S",
     N8N_WEBHOOK_URL: "https://n8n.example/webhook/lead",
     N8N_TIMEOUT_MS: "1000",
+    OPS_REPORT_URL: "https://ops.example/report",
+    OPS_REPORT_TOKEN: "ops-secret",
   };
 }
 
@@ -97,11 +99,11 @@ test("valid lead is sent to Telegram, Google Sheets, and n8n", async () => {
   assert.equal(calls[3].url, "https://n8n.example/webhook/lead");
 });
 
-test("invalid payload returns 400 before external calls", async () => {
+test("invalid payload returns 400 and reports to ops only", async () => {
   setBaseEnv();
-  let callCount = 0;
-  global.fetch = async () => {
-    callCount += 1;
+  const urls = [];
+  global.fetch = async (url) => {
+    urls.push(String(url));
     return new Response(JSON.stringify({ ok: true }), { status: 200 });
   };
 
@@ -111,7 +113,7 @@ test("invalid payload returns 400 before external calls", async () => {
   assert.equal(res.statusCode, 400);
   assert.equal(body.ok, false);
   assert.deepEqual(body.issues, ["consent must be true"]);
-  assert.equal(callCount, 0);
+  assert.deepEqual(urls, ["https://ops.example/report"]);
 });
 
 test("primary delivery failure returns 502 and skips n8n", async () => {
@@ -135,6 +137,13 @@ test("primary delivery failure returns 502 and skips n8n", async () => {
   assert.equal(res.statusCode, 502);
   assert.equal(body.ok, false);
   assert.equal(calls.some((call) => call.url === "https://n8n.example/webhook/lead"), false);
+  const opsCall = calls.find((call) => call.url === "https://ops.example/report");
+  assert.ok(opsCall);
+  assert.equal(opsCall.options.headers["x-ops-token"], "ops-secret");
+  const opsBody = JSON.parse(opsCall.options.body);
+  assert.equal(opsBody.event, "lead.server_error");
+  assert.equal(opsBody.errorCode, "delivery_failed");
+  assert.equal(opsBody.httpStatus, 502);
 });
 
 test("n8n failure does not fail accepted lead", async () => {
