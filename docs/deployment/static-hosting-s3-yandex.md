@@ -209,25 +209,17 @@ environment before `npm run build`.
 
 ## Yandex Lead Ops Reporter
 
-The ops reporter lives in `apps/yandex-lead-ops-reporter` with handler
-`index.handler`. It accepts failure events from the static site and from
-`bm-lead-receiver` (400/502) and sends admin Telegram alerts plus optional
-Google Sheet rows (`GOOGLE_OPS_SHEET_RANGE`, e.g. `Ops!A:M` — create tab: `node scripts/setup-ops-sheet.mjs`).
+Ops alerts (Telegram, Google Sheet **Ops**, GitHub uptime cron, booking fallback on the site) are documented in **[ops-alerts-and-monitoring.md](./ops-alerts-and-monitoring.md)**.
 
-**Uptime without VPS:** GitHub Actions [`.github/workflows/site-health.yml`](../../.github/workflows/site-health.yml) runs `scripts/site-health-check.mjs` every 15 minutes and POSTs to the ops reporter on failure. Set repo variable `OPS_REPORT_URL` and secret `OPS_REPORT_TOKEN`.
+Quick deploy:
 
-Static site build env:
-
-```text
-NEXT_PUBLIC_OPS_REPORT_URL=<ops function invoke URL>
+```bash
+make deploy-yandex-lead-ops-reporter
+make setup-ops-sheet
+make setup-github-ops
 ```
 
-Ops function env: see [`apps/yandex-lead-ops-reporter/.env.example`](../../apps/yandex-lead-ops-reporter/.env.example).
-Browser reports use CORS + rate limit; server reports use `X-Ops-Token`.
-
-Deploy a zip from `apps/yandex-lead-ops-reporter` as `bm-lead-ops-reporter`,
-then set `OPS_REPORT_URL` / `OPS_REPORT_TOKEN` on the lead receiver and
-`NEXT_PUBLIC_OPS_REPORT_URL` on Timeweb.
+Static build env: `NEXT_PUBLIC_OPS_REPORT_URL` (and duplicate URLs in `apps/web/data/v2/site-config.json` → `brand.contacts`). See [`apps/yandex-lead-ops-reporter/.env.example`](../../apps/yandex-lead-ops-reporter/.env.example).
 
 ## Offers Update Flow
 

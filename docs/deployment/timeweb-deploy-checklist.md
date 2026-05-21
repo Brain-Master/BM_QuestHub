@@ -49,14 +49,16 @@ Complete after merging Timeweb S3 + App Platform docs to `main`.
 
 ## Lead ops reporter
 
-- [x] Deploy Yandex Function `bm-lead-ops-reporter` — `node scripts/deploy-yandex-lead-ops-reporter.mjs` (invoke URL in `secret/ops-reporter.deploy.txt`)
+See **[ops-alerts-and-monitoring.md](./ops-alerts-and-monitoring.md)** for full setup, tests, and troubleshooting.
+
+- [x] Deploy Yandex Function `bm-lead-ops-reporter` — `make deploy-yandex-lead-ops-reporter` (invoke URL in `secret/ops-reporter.deploy.txt`)
 - [x] `OPS_REPORT_URL` + `OPS_REPORT_TOKEN` on `bm-lead-receiver` (patched via deploy script)
-- [x] `NEXT_PUBLIC_OPS_REPORT_URL` on Timeweb app `195536` (API PATCH, redeploy triggered)
-- [x] Tab `Ops` in leads spreadsheet — `node scripts/setup-ops-sheet.mjs` (`GOOGLE_OPS_SHEET_RANGE=Ops!A:M`)
-- [ ] Smoke on prod: block lead URL in DevTools → submit → ops Telegram alert
-- [ ] GitHub: variable `OPS_REPORT_URL`, secret `OPS_REPORT_TOKEN` (for `site-health.yml` cron, every 15 min, no VPS)
-- [ ] Optional: variable `SITE_HEALTH_URLS` (comma-separated; default main + `/catalog`)
-- [ ] Redeploy `bm-lead-ops-reporter` after ops message / health event changes: `make deploy-yandex-lead-ops-reporter`
+- [x] `NEXT_PUBLIC_OPS_REPORT_URL` on Timeweb app `195536` + `opsReportUrl` in `site-config.json` (redeploy after changes)
+- [x] Tab `Ops` in leads spreadsheet — `make setup-ops-sheet` (`GOOGLE_OPS_SHEET_RANGE=Ops!A:M`)
+- [x] GitHub: `OPS_REPORT_URL`, `OPS_REPORT_TOKEN`, `SITE_HEALTH_URLS` — `make setup-github-ops`
+- [x] `site-health.yml` cron (every 15 min, no VPS)
+- [ ] Smoke on prod: DevTools block lead URL on `/agenda/` → submit → ops Telegram alert
+- [ ] After code changes to ops messages/events: `make deploy-yandex-lead-ops-reporter` + `make ops-verify-all`
 
 ## Smoke
 
