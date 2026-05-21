@@ -1,3 +1,4 @@
+import { publicS3BaseUrl } from "@/lib/data/public-snapshot-url";
 import {
   countOffersInSnapshot,
   emptyOffersSnapshot,
@@ -8,12 +9,11 @@ import type { OffersSnapshotV1 } from "@/lib/offers/snapshot-types";
 const OFFERS_PATH = "data/offers-snapshot.json";
 
 export function isLiveScheduleClientEnabled(): boolean {
-  const base = process.env.NEXT_PUBLIC_S3_PUBLIC_BASE_URL?.trim();
-  return Boolean(base && base.length > 0);
+  return publicS3BaseUrl() !== null;
 }
 
 export function publicOffersSnapshotUrl(): string | null {
-  const base = process.env.NEXT_PUBLIC_S3_PUBLIC_BASE_URL?.trim();
+  const base = publicS3BaseUrl();
   if (!base) return null;
   const normalized = base.endsWith("/") ? base : `${base}/`;
   return new URL(OFFERS_PATH, normalized).toString();

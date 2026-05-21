@@ -3,6 +3,7 @@ import "server-only";
 import fs from "node:fs/promises";
 import path from "node:path";
 
+import { publicS3BaseUrl } from "@/lib/data/public-snapshot-url";
 import { snapshotFetchInit } from "@/lib/data/snapshot-fetch";
 import {
   countOffersInSnapshot,
@@ -24,7 +25,7 @@ function snapshotUrl(): string | null {
 
   if (process.env.OFFERS_SNAPSHOT_SOURCE !== "s3") return null;
 
-  const publicBaseUrl = process.env.NEXT_PUBLIC_S3_PUBLIC_BASE_URL?.trim();
+  const publicBaseUrl = publicS3BaseUrl();
   if (!publicBaseUrl) return null;
 
   const base = publicBaseUrl.endsWith("/") ? publicBaseUrl : `${publicBaseUrl}/`;
