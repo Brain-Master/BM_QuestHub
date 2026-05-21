@@ -8,11 +8,11 @@
 |--------------|------------|
 | `01_Инструкция_дизайнеру.pdf` | Этот документ |
 | `02_Структура_inbox.pdf` | Дерево папок и имена `.source.*` |
-| `presets/vse_sloty.csv` | Все слоты → inbox → WebP на сайте |
+| `presets/vse_sloty.csv` | Все слоты → **Sync/** на Drive → WebP на сайте |
 | `templates-psd/` | PSD с разметкой safe area (слой `SAFE_AREA_GUIDE`) |
 | `templates-svg/` | Те же зоны в SVG |
 | `previews/` | PNG-превью шаблонов |
-| `inbox-README.txt` | Текст для корня папки на Drive |
+| `inbox-README.txt` | Справка: тот же текст, что README в папке **Sync/** на Drive |
 
 ## Workflow
 
@@ -24,8 +24,8 @@
    - `catalog-4x3.source.jpg` — каталог 4:3
    - `compact-4x3.source.jpg` — карточка расписания (три горизонтальные зоны)
    - `logo-256.source.png` — логотип площадки
-5. Загрузите исходники в **BM_QuestHub_Media** на Google Drive (структура как в `02_Структура_inbox.pdf`). Инструкции и PSD-шаблоны лежат в подпапке **`FOR_DESIGNER`** (обновляются командой через `make design-pack`).
-6. Редактор запускает `make publish-sheet-cold` / `make publish-sheet-hot` — сайт получит WebP на CDN.
+5. Откройте на Drive папку **`Sync`** внутри [BM_QuestHub_Media](https://drive.google.com/drive/folders/1mnzEh2-aqkzFaxg2oOtxX1E5KGrj0_1F) (дерево как в `02_Структура_inbox.pdf`). Серые файлы — заглушки: замените файл **с тем же именем** своим экспортом. PSD и PDF — в соседней папке **`FOR_DESIGNER`**.
+6. Сообщите редактору: **`make media-push`** (скачать Sync → обновить сайт). Команда для команды перед правками: **`make media-pull`** (выложить актуальное дерево в Sync).
 
 ## Правила
 
@@ -33,7 +33,7 @@
 - Расписание: **два** файла на смену — hero и compact.
 - Квест: hero 16:9 и catalog 4:3 — **разные** экспорты, если crop отличается.
 - Видео: `hero.mp4` в папке квеста/мира; в таблице только embed VK/YouTube.
-- Форматы: JPG/PNG в inbox → на сайте WebP.
+- Форматы: JPG/PNG в **Sync/** → на сайте WebP.
 
 ## Слоты (кратко)
 

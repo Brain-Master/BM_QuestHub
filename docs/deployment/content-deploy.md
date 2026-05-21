@@ -32,8 +32,10 @@ cp scripts/sheets.env.example scripts/sheets.env
 # GOOGLE_SERVICE_ACCOUNT_JSON + share spreadsheets with client_email
 
 make seed-sheet-headers    # first-time column headers
+make data-push             # hot + cold → S3 (alias)
 make publish-sheet-hot     # schedule → S3
 make publish-sheet-cold    # catalog → S3 + Timeweb
+make data-pull             # snapshot → Google Sheets (for editors)
 
 # Legacy / dev
 make export-yaml-snapshots

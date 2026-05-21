@@ -164,7 +164,7 @@ export function designPackCsvRows(): string[][] {
   for (const slot of INBOX_SLOTS) {
     const keyToken =
       slot.entityKind === "schedule" ? "{shift_group_id}" : "{slug}";
-    const inboxExample = `inbox/${slot.inboxDirPattern}/${slot.sourceFilename}`.replace(
+    const inboxExample = `Sync/${slot.inboxDirPattern}/${slot.sourceFilename}`.replace(
       "{shiftGroupId}",
       keyToken,
     );

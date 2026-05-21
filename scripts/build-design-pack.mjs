@@ -159,8 +159,8 @@ function writeDeliveryNotes() {
 Быстрый старт:
   1. Прочитать 01_Инструкция_дизайнеру.pdf
   2. Открыть templates-psd/ для нужного слота
-  3. Экспортировать файлы по 02_Структура_inbox.pdf → папка BM_QuestHub_Media (Drive)
-  4. Сообщить редактору — он запустит publish на сервере
+  3. Экспортировать файлы по 02_Структура_inbox.pdf → Google Drive: BM_QuestHub_Media/Sync/
+  4. Сообщить редактору — нужны make media-drive-pull и publish на сервере
 
 Сборка пакета (для команды):
   make design-pack

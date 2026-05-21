@@ -7,7 +7,7 @@
 
 WEB := apps/web
 
-.PHONY: run check dev-host dev-restart brand-assets docs-index validate-snapshots export-yaml-snapshots content-publish content-publish-hot sync-sheet-hot sync-sheet-cold publish-sheet-hot publish-sheet-cold seed-sheet-headers encode-hero-video media-placeholders media-scaffold design-pack design-pack-oauth-login design-pack-publish-drive scripts-s3-deps timeweb-s3-setup timeweb-setup s3-sync-data s3-sync-data-hot s3-sync-data-cold s3-sync-media s3-sync-static s3-sync-all timeweb-deploy
+.PHONY: run check dev-host dev-restart brand-assets docs-index validate-snapshots export-yaml-snapshots content-publish content-publish-hot sync-sheet-hot sync-sheet-cold publish-sheet-hot publish-sheet-cold seed-sheet-headers encode-hero-video media-deps media-placeholders media-scaffold media-checkout media-pull media-commit media-push media-publish-site media-drive-push media-drive-pull data-import-sheets data-checkout data-pull data-commit data-push data-publish-site data-docs-push design-pack design-pack-oauth-login design-pack-publish-drive scripts-s3-deps timeweb-s3-setup timeweb-setup s3-sync-data s3-sync-data-hot s3-sync-data-cold s3-sync-media s3-sync-static s3-sync-all timeweb-deploy
 
 # PNG/WebP/ICO из assets/brand/brainmaster-logo.png → assets/brand/generated/ (+ Next app/ + public/brand/)
 brand-assets:
@@ -62,11 +62,65 @@ setup-github-ops:
 ops-verify-all:
 	node scripts/ops-verify-all.mjs
 
+# Медиа ↔ Google Drive Sync/ (см. docs/design/pack/media-inbox-layout.md)
+#   make media-pull     — снимок сайта → папка Sync на Drive (для дизайнера)
+#   make media-push     — Sync → inbox → publish → S3 (обновить сайт)
+# Алиасы: media-checkout = media-pull, media-commit = media-push
+
+media-deps:
+	cd $(WEB) && npm install
+	cd scripts && npm install --omit=dev
+
 media-placeholders:
 	node scripts/generate-media-placeholders.mjs
 
 media-scaffold:
 	node scripts/media-scaffold.mjs
+
+media-drive-push: media-deps
+	node scripts/sync-media-inbox-to-drive.mjs
+
+media-drive-pull: media-deps
+	node scripts/pull-media-inbox-from-drive.mjs
+
+media-checkout: media-drive-push
+
+media-pull: media-drive-push
+
+media-publish-site: media-deps
+	node scripts/pull-media-inbox-from-drive.mjs
+	$(MAKE) publish-sheet-cold
+	$(MAKE) publish-sheet-hot
+	$(MAKE) s3-sync-media
+
+media-commit: media-publish-site
+
+media-push: media-publish-site
+
+# Данные ↔ Google Sheets (см. docs/data/drive/BM_QuestHub_Data-layout.md)
+#   make data-pull   — JSON snapshot → Google Sheets (для редакторов)
+#   make data-push   — Sheets → S3 (+ cold → Timeweb rebuild)
+#   make data-docs-push — FOR_EDITORS → BM_QuestHub_Data (отдельный ID на Drive)
+
+data-import-sheets:
+	node scripts/import-site-data-to-sheets.mjs
+
+data-checkout: data-import-sheets
+
+data-pull: data-import-sheets
+
+data-publish-site:
+	$(MAKE) publish-sheet-cold
+	$(MAKE) publish-sheet-hot
+	$(MAKE) s3-sync-data-cold
+	$(MAKE) s3-sync-data-hot
+
+data-commit: data-publish-site
+
+data-push: data-publish-site
+
+data-docs-push: media-deps
+	node scripts/sync-data-docs-to-drive.mjs
 
 design-pack-psd:
 	node scripts/generate-design-pack-psd.mjs

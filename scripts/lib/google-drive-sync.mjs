@@ -22,10 +22,15 @@ const MIME_BY_EXT = {
   ".txt": "text/plain",
   ".psd": "image/vnd.adobe.photoshop",
   ".png": "image/png",
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
   ".svg": "image/svg+xml",
   ".webp": "image/webp",
+  ".mp4": "video/mp4",
   ".zip": "application/zip",
 };
+
+const FOLDER_MIME = "application/vnd.google-apps.folder";
 
 export function guessMime(filePath) {
   const ext = path.extname(filePath).toLowerCase();
@@ -222,6 +227,93 @@ export async function ensureFolder(token, parentId, name) {
   return created.id;
 }
 
+/** Ensure nested path `quests/cyber-rhythm` under rootId; returns leaf folder id. */
+export async function ensureFolderPath(token, rootId, relativePath) {
+  const parts = relativePath.split("/").filter(Boolean);
+  let parentId = rootId;
+  for (const part of parts) {
+    parentId = await ensureFolder(token, parentId, part);
+  }
+  return parentId;
+}
+
+/** List direct children (files and folders), with pagination. */
+export async function listChildren(token, parentId) {
+  const items = [];
+  let pageToken;
+  do {
+    const params = new URLSearchParams({
+      supportsAllDrives: "true",
+      includeItemsFromAllDrives: "true",
+      q: `'${parentId}' in parents and trashed=false`,
+      fields: "nextPageToken,files(id,name,mimeType)",
+      pageSize: "200",
+    });
+    if (pageToken) params.set("pageToken", pageToken);
+    const data = await driveJson(
+      token,
+      `https://www.googleapis.com/drive/v3/files?${params}`,
+    );
+    if (data.files?.length) items.push(...data.files);
+    pageToken = data.nextPageToken;
+  } while (pageToken);
+  return items;
+}
+
+/**
+ * Walk folder tree; returns files only with POSIX rel paths from root.
+ * @returns {Promise<Array<{ relPath: string, id: string, name: string, mimeType: string }>>}
+ */
+export async function walkDriveFolder(token, rootId, relPrefix = "") {
+  const out = [];
+  const children = await listChildren(token, rootId);
+  for (const item of children) {
+    const relPath = relPrefix ? `${relPrefix}/${item.name}` : item.name;
+    if (item.mimeType === FOLDER_MIME) {
+      const nested = await walkDriveFolder(token, item.id, relPath);
+      out.push(...nested);
+    } else {
+      out.push({
+        relPath,
+        id: item.id,
+        name: item.name,
+        mimeType: item.mimeType,
+      });
+    }
+  }
+  return out;
+}
+
+export async function downloadFile(token, fileId, destPath) {
+  const url = `https://www.googleapis.com/drive/v3/files/${encodeURIComponent(fileId)}?alt=media&supportsAllDrives=true`;
+  const maxAttempts = 4;
+  let lastErr;
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    try {
+      const res = await fetch(url, {
+        headers: { Authorization: `Bearer ${token}` },
+        signal: AbortSignal.timeout(driveFetchTimeoutMs({ body: Buffer.alloc(10_000_000) })),
+      });
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(`Drive download ${res.status}: ${text.slice(0, 400)}`);
+      }
+      const buf = Buffer.from(await res.arrayBuffer());
+      fs.mkdirSync(path.dirname(destPath), { recursive: true });
+      fs.writeFileSync(destPath, buf);
+      return destPath;
+    } catch (err) {
+      lastErr = err;
+      if (!isRetryableNetworkError(err) || attempt === maxAttempts) break;
+      await new Promise((r) => setTimeout(r, 2000 * attempt));
+    }
+  }
+  throw new Error(
+    `Drive download failed: ${lastErr instanceof Error ? lastErr.message : lastErr}`,
+    { cause: lastErr },
+  );
+}
+
 async function uploadMultipart(token, metadata, buffer, mimeType) {
   const boundary = `bmqh_${Date.now()}`;
   const metaPart = JSON.stringify(metadata);
@@ -256,19 +348,30 @@ async function updateFileContent(token, fileId, buffer, mimeType) {
   );
 }
 
-export async function uploadOrUpdateFile(token, parentId, localPath) {
-  const name = path.basename(localPath);
-  console.log(`[design-pack-drive] upload: ${name}`);
-  const mimeType = guessMime(localPath);
+export async function uploadOrUpdateFile(token, parentId, localPath, options = {}) {
+  const driveFileName = options.driveFileName ?? path.basename(localPath);
+  return uploadOrUpdateNamedFile(token, parentId, localPath, driveFileName, options);
+}
+
+export async function uploadOrUpdateNamedFile(
+  token,
+  parentId,
+  localPath,
+  driveFileName,
+  options = {},
+) {
+  const logTag = options.logTag ?? "drive";
+  console.log(`[${logTag}] upload: ${driveFileName}`);
+  const mimeType = guessMime(driveFileName.endsWith(".mp4") ? driveFileName : localPath);
   const buffer = fs.readFileSync(localPath);
-  const existing = await findFileByName(token, parentId, name);
+  const existing = await findFileByName(token, parentId, driveFileName);
   if (existing) {
     await updateFileContent(token, existing.id, buffer, mimeType);
     return { id: existing.id, updated: true };
   }
   const created = await uploadMultipart(
     token,
-    { name, parents: [parentId] },
+    { name: driveFileName, parents: [parentId] },
     buffer,
     mimeType,
   );

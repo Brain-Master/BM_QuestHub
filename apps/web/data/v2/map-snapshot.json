@@ -1,14 +1,49 @@
 {
   "version": 2,
-  "generatedAt": "2026-05-21T07:03:42.185Z",
+  "generatedAt": "2026-05-21T07:49:38.114Z",
   "source": "google_sheet_cold",
   "integrity": {
-    "contentHash": "sha256:78612bb3cb8a65d35c6289d171d4bc040a910d599d8a2888ef983ba80f6d0357"
+    "contentHash": "sha256:1c258325c74dae94d848477eba29718fdc539a091085e2ca4ea0a79402cd9fe8"
   },
   "venues": [
     {
+      "slug": "bm-base-moscow",
+      "name": "База BrainMaster (Москва)",
+      "displayName": "База BrainMaster (Москва)",
+      "type": "bm_base",
+      "address": "Москва, адрес уточняется при записи",
+      "metro": "—",
+      "city": "moscow",
+      "district": "Москва",
+      "directions": [
+        "Выберите смену в расписании и оставьте заявку.\nПосле подтверждения записи мы отправим точный адрес и схему прохода.\nКоординатор подскажет место встречи и порядок допуска."
+      ],
+      "entranceNote": "Адрес базы BrainMaster подтверждаем при записи на конкретную смену.",
+      "contactNote": "Для открытых городских смен детали локации зависят от программы и даты.",
+      "photos": [
+        {
+          "url": "/venues/photos/bm-base-moscow/01.webp",
+          "alt": "База BrainMaster (Москва)"
+        },
+        {
+          "url": "/venues/photos/bm-base-moscow/02.webp",
+          "alt": "База BrainMaster (Москва)"
+        },
+        {
+          "url": "/venues/photos/bm-base-moscow/03.webp",
+          "alt": "База BrainMaster (Москва)"
+        },
+        {
+          "url": "/venues/photos/bm-base-moscow/04.webp",
+          "alt": "База BrainMaster (Москва)"
+        }
+      ],
+      "listedOnSites": true,
+      "logoUrl": "/venues/logos/bm-base-moscow.webp"
+    },
+    {
       "slug": "school-1212-yasenevo",
-      "name": "Школа №1212",
+      "name": "ГБОУ Школа №1212",
       "displayName": "Школа №1212",
       "type": "school",
       "address": "Новоясеневский проспект, 24к3",
@@ -25,7 +60,19 @@
       "photos": [
         {
           "url": "/venues/photos/school-1212-yasenevo/01.webp",
-          "alt": "Школа №1212"
+          "alt": "ГБОУ Школа №1212"
+        },
+        {
+          "url": "/venues/photos/school-1212-yasenevo/02.webp",
+          "alt": "ГБОУ Школа №1212"
+        },
+        {
+          "url": "/venues/photos/school-1212-yasenevo/03.webp",
+          "alt": "ГБОУ Школа №1212"
+        },
+        {
+          "url": "/venues/photos/school-1212-yasenevo/04.webp",
+          "alt": "ГБОУ Школа №1212"
         }
       ],
       "listedOnSites": true,
@@ -51,6 +98,18 @@
       "photos": [
         {
           "url": "/venues/photos/school-1383-verkhnie-likhobory/01.webp",
+          "alt": "Школа №1383"
+        },
+        {
+          "url": "/venues/photos/school-1383-verkhnie-likhobory/02.webp",
+          "alt": "Школа №1383"
+        },
+        {
+          "url": "/venues/photos/school-1383-verkhnie-likhobory/03.webp",
+          "alt": "Школа №1383"
+        },
+        {
+          "url": "/venues/photos/school-1383-verkhnie-likhobory/04.webp",
           "alt": "Школа №1383"
         }
       ],
@@ -78,6 +137,18 @@
         {
           "url": "/venues/photos/school-1517-narodnoe-opolchenie/01.webp",
           "alt": "Школа №1517"
+        },
+        {
+          "url": "/venues/photos/school-1517-narodnoe-opolchenie/02.webp",
+          "alt": "Школа №1517"
+        },
+        {
+          "url": "/venues/photos/school-1517-narodnoe-opolchenie/03.webp",
+          "alt": "Школа №1517"
+        },
+        {
+          "url": "/venues/photos/school-1517-narodnoe-opolchenie/04.webp",
+          "alt": "Школа №1517"
         }
       ],
       "listedOnSites": true,
@@ -104,6 +175,18 @@
         {
           "url": "/venues/photos/school-17-belyaevo/01.webp",
           "alt": "Школа №17"
+        },
+        {
+          "url": "/venues/photos/school-17-belyaevo/02.webp",
+          "alt": "Школа №17"
+        },
+        {
+          "url": "/venues/photos/school-17-belyaevo/03.webp",
+          "alt": "Школа №17"
+        },
+        {
+          "url": "/venues/photos/school-17-belyaevo/04.webp",
+          "alt": "Школа №17"
         }
       ],
       "listedOnSites": true,
@@ -115,10 +198,12 @@
       "name": "Школа №2103",
       "displayName": "Школа №2103",
       "type": "school",
-      "address": "Голубинская ул., 5к4",
+      "address": "Голубинская ул., 13к2",
       "metro": "Ясенево",
       "city": "moscow",
       "district": "Ясенево",
+      "latitude": 55.603,
+      "longitude": 37.5175,
       "directions": [
         "Постройте маршрут до Голубинской ул., 13к2 и ориентируйтесь на главный вход школы.\nНа входе скажите, что вы на занятия BrainMaster.\nДождитесь координатора BrainMaster в согласованной зоне встречи."
       ],
@@ -127,6 +212,18 @@
       "photos": [
         {
           "url": "/venues/photos/school-2103-yasenevo/01.webp",
+          "alt": "Школа №2103"
+        },
+        {
+          "url": "/venues/photos/school-2103-yasenevo/02.webp",
+          "alt": "Школа №2103"
+        },
+        {
+          "url": "/venues/photos/school-2103-yasenevo/03.webp",
+          "alt": "Школа №2103"
+        },
+        {
+          "url": "/venues/photos/school-2103-yasenevo/04.webp",
           "alt": "Школа №2103"
         }
       ],
@@ -154,6 +251,18 @@
         {
           "url": "/venues/photos/school-875-yugo-zapadnaya/01.webp",
           "alt": "Школа №875"
+        },
+        {
+          "url": "/venues/photos/school-875-yugo-zapadnaya/02.webp",
+          "alt": "Школа №875"
+        },
+        {
+          "url": "/venues/photos/school-875-yugo-zapadnaya/03.webp",
+          "alt": "Школа №875"
+        },
+        {
+          "url": "/venues/photos/school-875-yugo-zapadnaya/04.webp",
+          "alt": "Школа №875"
         }
       ],
       "listedOnSites": true,
@@ -179,6 +288,18 @@
       "photos": [
         {
           "url": "/venues/photos/school-937-orekhovo/01.webp",
+          "alt": "Школа №937"
+        },
+        {
+          "url": "/venues/photos/school-937-orekhovo/02.webp",
+          "alt": "Школа №937"
+        },
+        {
+          "url": "/venues/photos/school-937-orekhovo/03.webp",
+          "alt": "Школа №937"
+        },
+        {
+          "url": "/venues/photos/school-937-orekhovo/04.webp",
           "alt": "Школа №937"
         }
       ],

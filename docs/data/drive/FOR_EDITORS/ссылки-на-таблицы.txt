@@ -1,0 +1,10 @@
+Google Sheets — редактирование контента сайта
+============================================
+
+Hot (расписание, смены, тарифы):
+https://docs.google.com/spreadsheets/d/1ut5AhfJqx9wrJE3tTCzrkrQdCmWsCPB8cueHH3QsLy8/edit
+
+Cold (миры, площадки, курсы):
+https://docs.google.com/spreadsheets/d/1fqeVC8BhjGWtOR20NhCUQuhwgchkCCzYsmiudpGE4jc/edit
+
+Сервисному аккаунту проекта нужен доступ Editor (настраивает команда).

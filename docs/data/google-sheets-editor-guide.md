@@ -67,7 +67,7 @@ make backfill-shift-group-ids        # пересчитать shift_group_id н�
 Если `icon_key` содержит CSS или `theme_key`, cold publish упадёт с ошибкой валидации. После массового импорта из репозитория: `node scripts/import-site-data-to-sheets.mjs --cold-only`.
 
 **Медиа (фото, логотипы, кадры расписания) — не в таблице.**  
-Кладите исходники в `media/inbox/` (или папку Drive `BM_QuestHub_Media` с тем же деревом). После `make publish-sheet-cold` / `hot` ingest сам соберёт WebP и заполнит snapshot.
+Дизайнер: исходники в Drive **`BM_QuestHub_Media/Sync/`** (то же дерево, что `media/inbox/`). Разработчик: `make media-drive-pull`, затем `make publish-sheet-cold` / `hot` — ingest соберёт WebP и snapshot.
 
 Структура имён: [media-inbox-layout.md](../design/pack/media-inbox-layout.md), Design Pack: `make design-pack`.
 
@@ -98,6 +98,10 @@ node scripts/setup-content-admin.mjs   # токен для Apps Script → secre
 1. Отредактировать таблицу.
 2. Меню **BrainMaster → Опубликовать** (Apps Script — см. [`google-apps-script-publish.js`](./google-apps-script-publish.js)).
 3. Дождаться ответа (запускается GitHub Actions `sheet-sync.yml`).
+
+Локально (разработчик): **`make data-push`** = cold + hot publish + S3.  
+Обновить таблицы из прод-снимка в git: **`make data-pull`**.  
+Инструкции на Drive: [`drive/BM_QuestHub_Data-layout.md`](./drive/BM_QuestHub_Data-layout.md) → `make data-docs-push`.
 
 | Кнопка | Эффект на сайте |
 |--------|-----------------|

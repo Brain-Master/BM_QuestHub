@@ -1,0 +1,25 @@
+Краткая инструкция: кто что правит
+=================================
+
+МЕНЕДЖЕР / РАСПИСАНИЕ
+  Таблица Hot → листы «Группы» и «Форматы»
+  Одна смена = строка в «Группы» + строки тарифов в «Форматы» с тем же shift_group_id
+  Публикация: BrainMaster → Опубликовать (Hot) или попросить make data-push
+
+МАРКЕТОЛОГ / КАТАЛОГ
+  Таблица Cold → листы «Миры», «Площадки», «Курсы»
+  Не путать theme_key и icon_key на листе «Миры»
+  Публикация: BrainMaster → Опубликовать (Cold) или make data-push
+  Порядок: сначала Cold (новая площадка/курс), потом Hot (смены)
+
+ДИЗАЙНЕР
+  Картинки НЕ в таблице — соседняя папка BM_QuestHub_Media / Sync / (не внутри BM_QuestHub_Data)
+  Имена файлов: hero-16x9.source.jpg, catalog-4x3.source.jpg, …
+  После замены файлов: попросить make media-push
+
+ОБЩЕЕ
+  URL картинок в Google Sheets не вносить
+  Видео VK/YouTube — только колонка hero_video_embed_url
+  Файл hero.mp4 — только в Sync/quests/{slug}/ или worlds/{slug}/
+
+Подробно в репозитории: docs/data/google-sheets-editor-guide.md

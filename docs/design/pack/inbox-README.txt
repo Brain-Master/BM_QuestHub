@@ -1,16 +1,16 @@
-BM Quest Hub — Media Inbox (Google Drive: BM_QuestHub_Media)
-===========================================================
+BM Quest Hub — Media Sync (Google Drive: BM_QuestHub_Media/Sync)
+================================================================
 
-Положите исходники с именами из 02_Структура_inbox.pdf и presets/vse_sloty.csv.
+Здесь лежат ВСЕ исходники для сайта. Имена файлов не менять — только заменить содержимое.
 
 Пример:
   quests/cyber-rhythm/hero-16x9.source.jpg
   quests/cyber-rhythm/catalog-4x3.source.jpg
   schedule/SHIFT-001/hero-16x9.source.jpg
-  schedule/SHIFT-001/compact-4x3.source.jpg
-  venues/school-slug/logo-256.source.png
+  venues/school-17/logo-256.source.png
 
-Не храните URL картинок в Google Sheets.
-После загрузки файлов редактор запускает publish-sheet-cold / hot на сервере.
+Серые файлы с подписями — заглушки: замените своим экспортом из PSD (FOR_DESIGNER).
+Инструкции и шаблоны: папка FOR_DESIGNER на уровень выше.
 
-_templates/ — копия PSD из Design Pack (templates-psd).
+После замены напишите редактору: нужен make media-drive-pull на сервере.
+Не вносите URL картинок в Google Sheets.
