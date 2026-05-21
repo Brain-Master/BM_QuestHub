@@ -56,6 +56,12 @@ setup-ops-sheet:
 site-health-check:
 	node scripts/site-health-check.mjs
 
+setup-github-ops:
+	node scripts/github-ops-setup.mjs
+
+ops-verify-all:
+	node scripts/ops-verify-all.mjs
+
 media-placeholders:
 	node scripts/generate-media-placeholders.mjs
 

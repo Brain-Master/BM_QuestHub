@@ -1,11 +1,18 @@
+import siteConfig from "@/data/v2/site-config.json";
 import type { LeadPayload } from "@/lib/schemas";
 
 export type SubmitLeadResult =
   | { ok: true }
   | { ok: false; error: string };
 
-const leadSubmitUrl = process.env.NEXT_PUBLIC_LEAD_SUBMIT_URL?.trim() ?? "";
-const opsReportUrl = process.env.NEXT_PUBLIC_OPS_REPORT_URL?.trim() ?? "";
+const leadSubmitUrl =
+  process.env.NEXT_PUBLIC_LEAD_SUBMIT_URL?.trim() ||
+  siteConfig.brand.contacts.leadSubmitUrl?.trim() ||
+  "";
+const opsReportUrl =
+  process.env.NEXT_PUBLIC_OPS_REPORT_URL?.trim() ||
+  siteConfig.brand.contacts.opsReportUrl?.trim() ||
+  "";
 
 const LEAD_SNAPSHOT_FIELDS = [
   "leadType",

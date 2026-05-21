@@ -11,6 +11,8 @@ export const brandProfileSchema = z.object({
     supportPhoneHref: z.string().min(1),
     supportTelegramUrl: z.string().url(),
     supportTelegramLabel: z.string().min(1),
+    leadSubmitUrl: z.string().url().optional(),
+    opsReportUrl: z.string().url().optional(),
     communityVkUrl: z.string().url(),
     communityVkLabel: z.string().min(1),
     communityVkLead: z.string().min(1),
