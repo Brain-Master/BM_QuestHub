@@ -8,6 +8,7 @@ import { QuestHeroBanner } from "@/components/quest-hero-banner";
 import { QuestHeroMeta } from "@/components/quest-hero-meta";
 import { LiveQuestSchedule } from "@/components/live-quest-schedule";
 import { communityConnectCopy } from "@/lib/community-connect-copy";
+import { resolvePublicMediaUrl } from "@/lib/media/public-media-url";
 import {
   loadQuestBySlug,
   loadQuests,
@@ -31,9 +32,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const quest = await loadQuestBySlug(slug);
   if (!quest) return { title: "Квест не найден" };
   const desc = quest.catalogTagline ?? quest.tagline;
+  const heroOg = resolvePublicMediaUrl(quest.heroImageUrl);
   const ogImages =
-    quest.heroImageUrl?.startsWith("http") && quest.heroImageUrl.length > 8
-      ? [{ url: quest.heroImageUrl, alt: quest.title }]
+    heroOg?.startsWith("http") && heroOg.length > 8
+      ? [{ url: heroOg, alt: quest.title }]
       : undefined;
   return {
     title: quest.title,

@@ -1,4 +1,4 @@
-import { publicS3BaseUrl } from "@/lib/data/public-snapshot-url";
+import { resolvePublicMediaUrl } from "@/lib/media/public-media-url";
 
 export type HeroVideoInput = {
   heroVideoFileUrl?: string;
@@ -34,19 +34,7 @@ export function isVideoFileUrl(url: string): boolean {
 
 /** Resolve `media/quests/...` or site-relative paths to public S3/CDN URL when configured. */
 export function resolveHeroVideoFileUrl(pathOrUrl: string): string {
-  const raw = pathOrUrl.trim();
-  if (!raw) return raw;
-  if (raw.startsWith("http://") || raw.startsWith("https://")) return raw;
-
-  const base = publicS3BaseUrl();
-  if (!base) return raw.startsWith("/") ? raw : `/${raw}`;
-
-  const path = raw.replace(/^\//, "");
-  try {
-    return new URL(path, base.endsWith("/") ? base : `${base}/`).toString();
-  } catch {
-    return raw;
-  }
+  return resolvePublicMediaUrl(pathOrUrl) ?? pathOrUrl.trim();
 }
 
 export function normalizeHeroVideo(input: HeroVideoInput): ResolvedHeroVideo {

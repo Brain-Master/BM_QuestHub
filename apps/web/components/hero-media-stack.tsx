@@ -9,6 +9,7 @@ import {
   normalizeHeroVideo,
   type HeroVideoInput,
 } from "@/lib/media/hero-video";
+import { resolvePublicMediaUrl } from "@/lib/media/public-media-url";
 import { cn } from "@/lib/utils";
 import { getWorldVisualBySlug } from "@/lib/world-visuals";
 
@@ -34,6 +35,7 @@ export function HeroMediaStack({
   className,
 }: Props) {
   const v = getWorldVisualBySlug(worldSlug);
+  const heroImageSrc = resolvePublicMediaUrl(heroImageUrl);
   const resolved = useMemo(
     () =>
       normalizeHeroVideo({
@@ -70,10 +72,10 @@ export function HeroMediaStack({
         )}
         aria-hidden
       />
-      {heroImageUrl ? (
+      {heroImageSrc ? (
         // eslint-disable-next-line @next/next/no-img-element -- external CDN URLs
         <img
-          src={heroImageUrl}
+          src={heroImageSrc}
           alt=""
           className={cn(
             "absolute inset-0 size-full object-cover",
@@ -87,7 +89,7 @@ export function HeroMediaStack({
         <video
           className="marketing-hero__video absolute inset-0 size-full object-cover"
           src={resolved.fileUrl}
-          poster={heroImageUrl}
+          poster={heroImageSrc}
           controls
           playsInline
           preload="metadata"
@@ -142,7 +144,7 @@ export function HeroMediaStack({
         </div>
       )}
 
-      {!hasVideo && !heroImageUrl ? (
+      {!hasVideo && !heroImageSrc ? (
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 opacity-[0.14] mix-blend-overlay"

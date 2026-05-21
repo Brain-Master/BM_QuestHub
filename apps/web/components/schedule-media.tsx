@@ -1,3 +1,4 @@
+import { resolvePublicMediaUrl } from "@/lib/media/public-media-url";
 import type { ScheduleMediaImage } from "@/lib/schemas";
 import { cn } from "@/lib/utils";
 
@@ -11,7 +12,8 @@ type Props = {
 export function ScheduleMedia({ image, title, mode, className }: Props) {
   const focal = image?.focalPoint;
   const position = focal ? `${focal.x}% ${focal.y}%` : "50% 50%";
-  const imageUrl = image?.url.replace(/"/g, '\\"');
+  const resolved = resolvePublicMediaUrl(image?.url);
+  const imageUrl = resolved?.replace(/"/g, '\\"');
 
   return (
     <div

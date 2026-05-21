@@ -6,6 +6,7 @@ import { Building2, CalendarDays, ChevronDown, Clock, Users } from "lucide-react
 import { OfferBookingAction } from "@/components/offer-booking-action";
 import { ScheduleStatusBadge } from "@/components/schedule-status-badge";
 import { Badge } from "@/components/ui/badge";
+import { resolvePublicMediaUrl } from "@/lib/media/public-media-url";
 import type {
   ScheduleBoardItem,
   ScheduleBoardVariant,
@@ -74,6 +75,7 @@ export function ScheduleBoardCardMobile({
         },
       ];
   const image = item.media.compact ?? item.media.hero;
+  const imageSrc = resolvePublicMediaUrl(image?.url);
   const price = priceSummary(variants);
   const showSchool = !schoolSlug;
 
@@ -93,11 +95,11 @@ export function ScheduleBoardCardMobile({
           className="relative min-h-32 overflow-hidden rounded-xl bg-gradient-to-br from-primary/25 via-card to-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           onClick={onNavigate}
         >
-          {image ? (
+          {imageSrc ? (
             <div
               className="absolute inset-0 bg-cover bg-center"
               style={{
-                backgroundImage: `url("${image.url.replace(/"/g, '\\"')}")`,
+                backgroundImage: `url("${imageSrc.replace(/"/g, '\\"')}")`,
                 backgroundPosition: image.focalPoint
                   ? `${image.focalPoint.x}% ${image.focalPoint.y}%`
                   : "50% 50%",

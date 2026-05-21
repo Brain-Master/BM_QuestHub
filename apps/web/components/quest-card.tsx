@@ -10,6 +10,7 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
+import { resolvePublicMediaUrl } from "@/lib/media/public-media-url";
 import { difficultyToLevel } from "@/lib/quest-difficulty-level";
 import type { Quest, World } from "@/lib/schemas";
 import { cn } from "@/lib/utils";
@@ -72,7 +73,9 @@ export function QuestCard({ quest, worldName, world, schoolSlug }: Props) {
     : `/quests/${quest.slug}`;
 
   const previewLine = quest.catalogTagline ?? quest.tagline;
-  const heroImg = (quest.catalogImageUrl ?? quest.heroImageUrl)?.trim();
+  const heroImg = resolvePublicMediaUrl(
+    (quest.catalogImageUrl ?? quest.heroImageUrl)?.trim(),
+  );
   const metaLine = buildMetaLine(quest);
   const difficultyLevel = difficultyToLevel(quest.difficulty);
   const difficultyAnnouncement =

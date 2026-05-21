@@ -7,6 +7,7 @@ import { QuestGrid } from "@/components/quest-grid";
 import { WorldHubHero } from "@/components/world-hub-hero";
 import { communityConnectCopy } from "@/lib/community-connect-copy";
 import { loadQuests, loadWorldBySlug, loadWorlds } from "@/lib/content/load";
+import { resolvePublicMediaUrl } from "@/lib/media/public-media-url";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -21,9 +22,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const world = await loadWorldBySlug(slug);
   if (!world) return { title: "Мир не найден" };
+  const heroOg = resolvePublicMediaUrl(world.heroImageUrl);
   const ogImages =
-    world.heroImageUrl?.startsWith("http") && world.heroImageUrl.length > 8
-      ? [{ url: world.heroImageUrl, alt: world.name }]
+    heroOg?.startsWith("http") && heroOg.length > 8
+      ? [{ url: heroOg, alt: world.name }]
       : undefined;
   return {
     title: world.name,
