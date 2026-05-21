@@ -5,6 +5,22 @@ import type { MediaPreset } from "./media-presets";
 
 const SOURCE_EXT_RE = /\.source\.(jpe?g|png|webp)$/i;
 
+/** Replaces `:` in shift_group_id — illegal in Windows/macOS inbox paths. S3 URLs keep the canonical id. */
+export const SHIFT_GROUP_INBOX_DIR_SEP = "__";
+
+export function shiftGroupIdToInboxDir(shiftGroupId: string): string {
+  return shiftGroupId.replaceAll(":", SHIFT_GROUP_INBOX_DIR_SEP);
+}
+
+/** Map Drive / inbox rel paths to a filesystem-safe schedule segment. */
+export function localizeInboxRelPathForFs(relPath: string): string {
+  const parts = relPath.replace(/\\/g, "/").split("/");
+  if (parts[0] === "schedule" && parts[1]) {
+    parts[1] = shiftGroupIdToInboxDir(parts[1]);
+  }
+  return parts.join(path.sep);
+}
+
 export function mediaInboxRoot(webRoot: string): string {
   return path.join(webRoot, "media", "inbox");
 }

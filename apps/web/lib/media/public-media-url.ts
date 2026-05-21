@@ -1,9 +1,19 @@
 import { publicS3BaseUrl } from "@/lib/data/public-snapshot-url";
+import { shiftGroupIdToInboxDir } from "@/lib/media/inbox-paths";
 
 /** Legacy static paths before venue media moved to S3 (`public/venues/…` → `media/venues/…`). */
 function legacyVenuePathToMedia(path: string): string | null {
   if (path.startsWith("/venues/")) return `media${path}`;
   return null;
+}
+
+/** Colon shift_group_id paths → `__` storage keys (Windows-safe media tree). */
+function normalizeScheduleMediaPath(path: string): string {
+  const m = path.match(/^(media\/schedule\/)([^/]+)(\/.*)?$/);
+  if (!m) return path;
+  const segment = m[2];
+  if (!segment.includes(":")) return path;
+  return `${m[1]}${shiftGroupIdToInboxDir(segment)}${m[3] ?? ""}`;
 }
 
 function resolveMediaPathOnS3(relativePath: string, base: string): string {
@@ -23,8 +33,10 @@ function resolveMediaPathOnS3(relativePath: string, base: string): string {
  */
 export function resolvePublicMediaUrl(pathOrUrl: string | undefined): string | undefined {
   if (!pathOrUrl?.trim()) return undefined;
-  const raw = pathOrUrl.trim();
+  let raw = pathOrUrl.trim();
   if (raw.startsWith("http://") || raw.startsWith("https://")) return raw;
+
+  raw = normalizeScheduleMediaPath(raw);
 
   const base = publicS3BaseUrl();
   const legacyMedia = legacyVenuePathToMedia(raw);

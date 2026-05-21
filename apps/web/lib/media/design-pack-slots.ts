@@ -1,4 +1,5 @@
 import type { MediaPresetId } from "./media-presets";
+import { shiftGroupIdToInboxDir } from "./inbox-paths";
 
 export type InboxEntityKind = "quest" | "world" | "venue" | "schedule";
 
@@ -99,6 +100,7 @@ export const INBOX_SLOTS: InboxSlotDef[] = [
     sourceFilename: "hero-16x9.source.jpg",
     placeholderFile: "schedule-hero-16x9.placeholder.webp",
     presetId: "schedule_card_hero",
+    optional: true,
   },
   {
     id: "schedule_compact",
@@ -107,6 +109,7 @@ export const INBOX_SLOTS: InboxSlotDef[] = [
     sourceFilename: "compact-4x3.source.jpg",
     placeholderFile: "schedule-compact-4x3.placeholder.webp",
     presetId: "schedule_card_compact",
+    optional: true,
   },
 ];
 
@@ -139,7 +142,7 @@ export function slotsForEntity(
   key: string,
 ): Array<InboxSlotDef & { inboxDir: string; inboxSourcePath: string }> {
   const token = kind === "schedule" ? "{shiftGroupId}" : "{slug}";
-  const value = key;
+  const value = kind === "schedule" ? shiftGroupIdToInboxDir(key) : key;
   return INBOX_SLOTS.filter((s) => s.entityKind === kind).map((slot) => {
     const inboxDir = slot.inboxDirPattern.replace(token, value);
     return {

@@ -84,10 +84,26 @@ export type World = z.infer<typeof worldSchema>;
 export const productFormatSchema = z.enum(["intensive", "year"]);
 export const registrationChannelSchema = z.enum(["mos_ru", "brainmaster"]);
 
-const urlStringSchema = z.string().url();
+/** Absolute URL or S3-relative path resolved via `resolvePublicMediaUrl`. */
+export const publicMediaUrlSchema = z
+  .string()
+  .min(1)
+  .refine(
+    (value) => {
+      if (value.startsWith("media/")) return true;
+      if (value.startsWith("/venues/")) return true;
+      try {
+        z.string().url().parse(value);
+        return true;
+      } catch {
+        return false;
+      }
+    },
+    { message: "Expected https URL or media/ path" },
+  );
 
 export const scheduleMediaImageSchema = z.object({
-  url: urlStringSchema,
+  url: publicMediaUrlSchema,
   alt: z.string().optional(),
   /** Проценты 0..100 для CSS object-position. */
   focalPoint: z

@@ -17,6 +17,10 @@ import type {
 } from "@/lib/schemas";
 import { formatVariantTimeLabel } from "@/lib/offers/sheet-field-parsers";
 import { joinProgramName } from "@/lib/offers/program-name";
+import {
+  coalesceScheduleMediaImage,
+  questHeroMediaImage,
+} from "@/lib/media/schedule-media-resolve";
 
 export type { ScheduleStatusVariant };
 
@@ -384,8 +388,15 @@ export function buildScheduleBoardItem(
   const capacity = getScheduleCapacity(offer);
   const variants = normalizeVariants(offer, statusKey, statusLabel);
   const commonAgeLabel = getCommonAgeLabel(variants, card?.ageLabel ?? quest.ageLabel);
-  const hero = card?.media?.hero ?? card?.media?.fallback ?? null;
-  const compact = card?.media?.compact ?? hero;
+  const questHeroFallback = questHeroMediaImage(quest);
+  const hero = coalesceScheduleMediaImage(
+    card?.media?.hero ?? card?.media?.fallback ?? null,
+    questHeroFallback,
+  );
+  const compact = coalesceScheduleMediaImage(
+    card?.media?.compact ?? null,
+    hero ?? questHeroFallback,
+  );
   const fallbackFromQuest = quest.catalogTagline ?? quest.tagline;
   const questHref = buildQuestHref(quest.slug, offer.id, schoolSlug);
   const dateLabel = card?.shortDate ?? formatScheduleDateRange(offer.startDate, offer.endDate);
@@ -422,16 +433,8 @@ export function buildScheduleBoardItem(
     allowWaitlistWhenSoldOut: offer.scheduleCard?.allowWaitlistWhenSoldOut ?? false,
     variants,
     media: {
-      hero:
-        hero ??
-        (quest.heroImageUrl
-          ? { url: quest.heroImageUrl, alt: quest.title }
-          : null),
-      compact:
-        compact ??
-        (quest.heroImageUrl
-          ? { url: quest.heroImageUrl, alt: quest.title }
-          : null),
+      hero,
+      compact,
     },
     status: {
       label: statusLabel,

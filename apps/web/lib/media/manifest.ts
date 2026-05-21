@@ -52,6 +52,7 @@ export function shouldSkipIngest(
   sourceKey: string,
   sha256: string,
 ): boolean {
+  if (process.env.MEDIA_INGEST_FORCE === "1") return false;
   const entry = manifest.entries[key];
   return (
     entry?.sourceUrl === sourceKey &&

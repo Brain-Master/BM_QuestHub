@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generatedAt": "2026-05-21T07:49:38.114Z",
+  "generatedAt": "2026-05-21T10:49:32.557Z",
   "source": "google_sheet_cold",
   "snapshots": {
     "site": {
@@ -15,7 +15,7 @@
     },
     "map": {
       "path": "data/v2/map-snapshot.json",
-      "contentHash": "sha256:1c258325c74dae94d848477eba29718fdc539a091085e2ca4ea0a79402cd9fe8"
+      "contentHash": "sha256:2337dccbb7ebf78b4b007279402fb24dec320ebe8e44f187842a3466fccac60e"
     }
   }
 }

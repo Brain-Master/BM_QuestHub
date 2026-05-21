@@ -7,7 +7,9 @@ import {
   mediaInboxRoot,
   mediaPlaceholdersRoot,
   outputExists,
+  shiftGroupIdToInboxDir,
 } from "./inbox-paths";
+import { isPlaceholderInboxFile } from "./inbox-placeholder";
 import { MEDIA_PRESETS } from "./media-presets";
 
 export type ScaffoldStatus = "placeholder" | "ready" | "missing";
@@ -54,16 +56,21 @@ function scaffoldEntity(
   for (const key of keys) {
     for (const slot of slotsForEntity(kind, key)) {
       const fullInboxPath = path.join(mediaInboxRoot(webRoot), slot.inboxSourcePath);
-      const existing = findInboxSourceFile(
+      const existingPath = findInboxSourceFile(
         webRoot,
         slot.inboxDir,
         slot.sourceFilename,
       );
+      const existing =
+        existingPath &&
+        !isPlaceholderInboxFile(webRoot, existingPath, slot.placeholderFile)
+          ? existingPath
+          : null;
 
       const preset = MEDIA_PRESETS[slot.presetId];
       const outputVars: Record<string, string> =
         kind === "schedule"
-          ? { shiftGroupId: key }
+          ? { shiftGroupId: shiftGroupIdToInboxDir(key) }
           : kind === "venue"
             ? { slug: key, index: slot.sourceFilename.match(/photo-(\d+)/)?.[1] ?? "1" }
             : { slug: key };
@@ -112,11 +119,16 @@ export function ensureMediaInboxScaffold(
   for (const venue of context.venues) {
     for (const slot of slotsForEntity("venue", venue.scopeSlug)) {
       const fullInboxPath = path.join(mediaInboxRoot(webRoot), slot.inboxSourcePath);
-      const existing = findInboxSourceFile(
+      const existingPath = findInboxSourceFile(
         webRoot,
         slot.inboxDir,
         slot.sourceFilename,
       );
+      const existing =
+        existingPath &&
+        !isPlaceholderInboxFile(webRoot, existingPath, slot.placeholderFile)
+          ? existingPath
+          : null;
       const photoIndex = slot.sourceFilename.match(/photo-(\d+)/)?.[1] ?? "1";
       const preset = MEDIA_PRESETS[slot.presetId];
       const outputVars: Record<string, string> =

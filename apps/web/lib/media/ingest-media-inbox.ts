@@ -7,13 +7,20 @@ import type { ColdSnapshotBundle } from "@/lib/content/sync-cold-core";
 import type { OffersSnapshotV1 } from "@/lib/offers/snapshot-types";
 import type { ScheduleCard } from "@/lib/schemas";
 
-import { QUEST_VIDEO_INBOX, slotsForEntity, type MediaInboxContext } from "./design-pack-slots";
+import {
+  INBOX_SLOTS,
+  QUEST_VIDEO_INBOX,
+  slotsForEntity,
+  type MediaInboxContext,
+} from "./design-pack-slots";
+import { isPlaceholderInboxBytes } from "./inbox-placeholder";
 import {
   canonicalMediaUrl,
   diskPathFromPattern,
   findInboxSourceFile,
   mediaInboxRoot,
   mediaOutputRoot,
+  shiftGroupIdToInboxDir,
 } from "./inbox-paths";
 import {
   readMediaIngestManifest,
@@ -31,6 +38,17 @@ function sha256Json(value: unknown): string {
 }
 
 /** Hot sync stores shift group in offer id: `sheet:{shiftGroupId}`. */
+function loadQuestHeroBySlug(webRoot: string): Map<string, string | undefined> {
+  const catalogPath = path.join(webRoot, "data/v2/catalog-snapshot.json");
+  if (!fs.existsSync(catalogPath)) return new Map();
+  const catalog = JSON.parse(fs.readFileSync(catalogPath, "utf8")) as {
+    courses?: Array<{ slug: string; heroImageUrl?: string }>;
+  };
+  return new Map(
+    (catalog.courses ?? []).map((c) => [c.slug, c.heroImageUrl?.trim() || undefined]),
+  );
+}
+
 function shiftGroupIdFromOfferId(id: string): string | undefined {
   const prefix = "sheet:";
   if (!id.startsWith(prefix)) return undefined;
@@ -50,7 +68,8 @@ async function ingestImageFromFile(options: {
   webRoot: string;
   presetId: MediaPresetId;
   outputVars: Record<string, string>;
-}): Promise<{ publicUrl: string; skipped: boolean }> {
+  placeholderFile?: string;
+}): Promise<{ publicUrl?: string; skipped: boolean }> {
   const preset = MEDIA_PRESETS[options.presetId];
   const diskPath = diskPathFromPattern(
     options.webRoot,
@@ -61,6 +80,14 @@ async function ingestImageFromFile(options: {
   const buffer = fs.readFileSync(options.sourcePath);
   const hash = sha256Buffer(buffer);
   const sourceKey = path.relative(mediaInboxRoot(options.webRoot), options.sourcePath);
+
+  if (
+    options.placeholderFile &&
+    isPlaceholderInboxBytes(options.webRoot, buffer, options.placeholderFile)
+  ) {
+    console.warn(`[ingest-inbox] skip placeholder source: ${sourceKey}`);
+    return { skipped: true };
+  }
 
   if (shouldSkipIngest(options.manifest, options.manifestKey, sourceKey, hash) && fs.existsSync(diskPath)) {
     return { publicUrl, skipped: true };
@@ -152,10 +179,32 @@ export type IngestMediaFromInboxResult = {
   errors: string[];
 };
 
+function pruneManifestPlaceholderHashes(webRoot: string, manifest: MediaIngestManifest): number {
+  const placeholderHashes = new Set<string>();
+  for (const slot of INBOX_SLOTS) {
+    if (!slot.placeholderFile) continue;
+    const phPath = path.join(webRoot, "media", "placeholders", slot.placeholderFile);
+    if (!fs.existsSync(phPath)) continue;
+    placeholderHashes.add(sha256Buffer(fs.readFileSync(phPath)));
+  }
+  let removed = 0;
+  for (const [key, entry] of Object.entries(manifest.entries)) {
+    if (entry.sha256 && placeholderHashes.has(entry.sha256)) {
+      delete manifest.entries[key];
+      removed += 1;
+    }
+  }
+  return removed;
+}
+
 export async function ingestMediaFromInbox(
   options: IngestMediaFromInboxOptions,
 ): Promise<IngestMediaFromInboxResult> {
   const manifest = readMediaIngestManifest(options.webRoot);
+  const pruned = pruneManifestPlaceholderHashes(options.webRoot, manifest);
+  if (pruned > 0) {
+    console.log(`[ingest-inbox] pruned ${pruned} placeholder manifest entry(ies)`);
+  }
   const result: IngestMediaFromInboxResult = {
     imagesProcessed: 0,
     imagesSkipped: 0,
@@ -185,6 +234,7 @@ export async function ingestMediaFromInbox(
             webRoot,
             presetId: slot.presetId,
             outputVars: { slug },
+            placeholderFile: slot.placeholderFile,
           });
           world.heroImageUrl = publicUrl;
           if (skipped) result.imagesSkipped += 1;
@@ -209,6 +259,7 @@ export async function ingestMediaFromInbox(
             webRoot,
             presetId: slot.presetId,
             outputVars: { slug },
+            placeholderFile: slot.placeholderFile,
           });
           if (slot.presetId === "course_catalog_image") {
             course.catalogImageUrl = publicUrl;
@@ -245,8 +296,11 @@ export async function ingestMediaFromInbox(
               webRoot,
               presetId: "venue_logo",
               outputVars: { slug: ref.scopeSlug },
+              placeholderFile: slot.placeholderFile,
             });
-            venue.logoUrl = publicUrl;
+            if (publicUrl) {
+              venue.logoUrl = publicUrl;
+            }
             if (skipped) result.imagesSkipped += 1;
             else result.imagesProcessed += 1;
           } else {
@@ -257,7 +311,12 @@ export async function ingestMediaFromInbox(
               webRoot,
               presetId: "venue_photo",
               outputVars: { slug: ref.venueSlug, index: photoIndex },
+              placeholderFile: slot.placeholderFile,
             });
+            if (!publicUrl) {
+              if (skipped) result.imagesSkipped += 1;
+              continue;
+            }
             const photos = [...(venue.photos ?? [])];
             const idx = Number(photoIndex) - 1;
             while (photos.length <= idx) photos.push({ url: publicUrl });
@@ -286,8 +345,12 @@ export async function ingestMediaFromInbox(
   }
 
   if (hotSnapshot) {
+    const questHeroBySlug = loadQuestHeroBySlug(webRoot);
+
     for (const questKey of Object.keys(hotSnapshot.offersByQuest)) {
       const offers = hotSnapshot.offersByQuest[questKey] ?? [];
+      const questHeroUrl = questHeroBySlug.get(questKey);
+
       for (const offer of offers) {
         const shiftId = shiftGroupIdFromOfferId(offer.id);
         if (!shiftId || !context.shiftGroupIds.includes(shiftId)) continue;
@@ -299,16 +362,20 @@ export async function ingestMediaFromInbox(
           const source = findInboxSourceFile(webRoot, slot.inboxDir, slot.sourceFilename);
           if (!source) continue;
           try {
+            const mediaShiftKey = shiftGroupIdToInboxDir(shiftId);
             const { publicUrl, skipped } = await ingestImageFromFile({
               manifest,
               manifestKey: `schedule:${shiftId}:${slot.id}`,
               sourcePath: source,
               webRoot,
               presetId: slot.presetId,
-              outputVars: { shiftGroupId: shiftId },
+              outputVars: { shiftGroupId: mediaShiftKey },
+              placeholderFile: slot.placeholderFile,
             });
-            if (slot.presetId === "schedule_card_hero") heroUrl = publicUrl;
-            if (slot.presetId === "schedule_card_compact") compactUrl = publicUrl;
+            if (publicUrl) {
+              if (slot.presetId === "schedule_card_hero") heroUrl = publicUrl;
+              if (slot.presetId === "schedule_card_compact") compactUrl = publicUrl;
+            }
             if (skipped) result.imagesSkipped += 1;
             else result.imagesProcessed += 1;
           } catch (e) {
@@ -316,19 +383,24 @@ export async function ingestMediaFromInbox(
           }
         }
 
-        if (!heroUrl && !compactUrl) continue;
-
         if (!offer.scheduleCard) continue;
         const alt =
           offer.scheduleCard.displayTitle ??
           offer.scheduleCard.programNameH2 ??
           offer.scheduleCard.programNameH1 ??
           questKey;
+        const questImage = questHeroUrl ? { url: questHeroUrl, alt } : undefined;
+        const hero = heroUrl ? { url: heroUrl, alt } : questImage;
+        const compact = compactUrl
+          ? { url: compactUrl, alt }
+          : hero ?? questImage;
+        if (!hero && !compact) continue;
+
         const media: NonNullable<ScheduleCard["media"]> = {
           ...(offer.scheduleCard.media ?? {}),
         };
-        if (heroUrl) media.hero = { url: heroUrl, alt };
-        if (compactUrl) media.compact = { url: compactUrl, alt };
+        if (hero) media.hero = hero;
+        if (compact) media.compact = compact;
         offer.scheduleCard = { ...offer.scheduleCard, media };
       }
     }

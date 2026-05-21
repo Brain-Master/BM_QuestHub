@@ -39,6 +39,17 @@ describe("resolvePublicMediaUrl", () => {
     );
   });
 
+  it("maps legacy schedule paths with colons to __ storage keys", () => {
+    process.env.NEXT_PUBLIC_S3_PUBLIC_BASE_URL =
+      "https://bm-questhub.s3.twcstorage.ru";
+    assert.equal(
+      resolvePublicMediaUrl(
+        "media/schedule/cyber-rhythm:school-17:2026-06-22:2026-06-26/hero.webp",
+      ),
+      "https://bm-questhub.s3.twcstorage.ru/media/schedule/cyber-rhythm__school-17__2026-06-22__2026-06-26/hero.webp",
+    );
+  });
+
   it("leaves absolute URLs unchanged", () => {
     assert.equal(
       resolvePublicMediaUrl("https://cdn.example/x.webp"),

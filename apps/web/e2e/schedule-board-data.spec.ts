@@ -165,6 +165,39 @@ test.describe("Schedule Board data rules", () => {
     );
   });
 
+  test("schedule card uses quest hero when shift media url is a placeholder ingest", () => {
+    const boardItem = buildScheduleBoardItem({
+      offer: offer({
+        scheduleCard: {
+          isArchived: false,
+          tags: [],
+          media: {
+            hero: { url: "media/venues/photos/bm-base-moscow/01.webp", alt: "stub" },
+            compact: { url: "media/venues/photos/bm-base-moscow/01.webp", alt: "stub" },
+          },
+        },
+      }),
+      quest: {
+        slug: "cyber-rhythm",
+        title: "Киберритм",
+        worldSlug: "cyber-rhythm",
+        ageLabel: "10–14",
+        tagline: "Тест",
+        heroImageUrl: "media/quests/cyber-rhythm/hero.webp",
+      },
+      venue: {
+        slug: "test-venue",
+        name: "Тестовая площадка",
+        type: "school",
+        address: "Тестовый адрес",
+      },
+      world: null,
+    });
+
+    expect(boardItem.media.hero?.url).toBe("media/quests/cyber-rhythm/hero.webp");
+    expect(boardItem.media.compact?.url).toBe("media/quests/cyber-rhythm/hero.webp");
+  });
+
   test("schedule card variants are normalized into one board item", () => {
     const item = offer({
       scheduleCard: {

@@ -5,7 +5,10 @@
 import path from "node:path";
 
 import { isInboxPullPath } from "../../apps/web/lib/media/media-inbox-manifest.ts";
-import { mediaInboxRoot } from "../../apps/web/lib/media/inbox-paths.ts";
+import {
+  localizeInboxRelPathForFs,
+  mediaInboxRoot,
+} from "../../apps/web/lib/media/inbox-paths.ts";
 import {
   driveSyncSubfolder,
   repoRootFromScriptsTs,
@@ -50,7 +53,7 @@ async function main() {
       skipped += 1;
       continue;
     }
-    const dest = path.join(inboxRoot, file.relPath.split("/").join(path.sep));
+    const dest = path.join(inboxRoot, localizeInboxRelPathForFs(file.relPath));
     console.log(`[media-drive-pull] download: ${file.relPath}`);
     await downloadFile(token, file.id, dest);
     downloaded += 1;

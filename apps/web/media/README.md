@@ -8,6 +8,7 @@ Upload-ready assets for Timeweb Object Storage. **Исходники дизай�
 | **`make media-push`** | **Sync/** → `media/inbox/` → publish → S3 (обновить сайт; то же `media-commit`) |
 | `make media-drive-push` / `media-drive-pull` | То же, старые имена |
 | `make media-scaffold` | Только локальные заглушки в `media/inbox/` |
+| `MEDIA_INGEST_FORCE=1` | При publish: пересобрать все WebP, игнорируя manifest (если inbox обновился) |
 
 Layout: [docs/design/pack/media-inbox-layout.md](../../docs/design/pack/media-inbox-layout.md).
 

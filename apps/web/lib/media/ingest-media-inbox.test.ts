@@ -89,7 +89,7 @@ function minimalBundle(): ColdSnapshotBundle {
 }
 
 describe("media inbox pipeline", () => {
-  it("scaffold copies placeholder then ingest writes webp", async () => {
+  it("scaffold copies placeholder; ingest writes webp only for real sources", async () => {
     const webRoot = tmpWebRoot();
     const bundle = minimalBundle();
     const context = {
@@ -107,6 +107,10 @@ describe("media inbox pipeline", () => {
       "media/inbox/quests/demo-quest/hero-16x9.source.jpg",
     );
     assert.ok(fs.existsSync(sourcePath));
+    const ph = fs.readFileSync(
+      path.join(webRoot, "media/placeholders/quest-hero-16x9.placeholder.webp"),
+    );
+    fs.writeFileSync(sourcePath, Buffer.concat([ph, Buffer.from([0x00])]));
 
     const result = await ingestMediaFromInbox({
       webRoot,

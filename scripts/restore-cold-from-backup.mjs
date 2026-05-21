@@ -1,10 +1,15 @@
 #!/usr/bin/env node
 /**
- * Copy Cold tab data from backup spreadsheet into current Cold,
- * mapping columns by header name and keeping destination header row.
+ * Copy Cold tab data from backup spreadsheet into current Cold.
+ *
+ * Modes:
+ *   (default)       Replace data rows; map columns by header; keep destination header row.
+ *   --merge-design  Keep Cold text/structure; overlay presentation columns from backup by slug.
+ *   --tabs=a,b      Limit to tab names (comma-separated), e.g. --tabs=Курсы,Миры
+ *   --dry-run       Print plan only
  *
  * Usage:
- *   node scripts/restore-cold-from-backup.mjs [--dry-run]
+ *   node scripts/restore-cold-from-backup.mjs [--merge-design] [--tabs=Курсы] [--dry-run]
  */
 import { GoogleAuth } from "google-auth-library";
 
@@ -18,13 +23,63 @@ const DEST_ID =
   process.env.GOOGLE_SHEETS_COLD_SPREADSHEET_ID?.trim() ||
   "1fqeVC8BhjGWtOR20NhCUQuhwgchkCCzYsmiudpGE4jc";
 
-const TABS = ["Миры", "Площадки", "Курсы"];
+const ALL_TABS = ["Миры", "Площадки", "Курсы"];
+
+/** Columns merged from backup (by slug). */
+const DESIGN_COLUMNS = {
+  Миры: [
+    "theme_key",
+    "tagline",
+    "pitch",
+    "highlights",
+    "hero_video_embed_url",
+    "card_gradient",
+    "card_glow",
+    "icon_key",
+  ],
+  Площадки: [],
+  Курсы: [
+    "tagline",
+    "catalog_tagline",
+    "hero_video_embed_url",
+    "group_size",
+    "duration_label",
+    "price_hint",
+  ],
+};
+
+/** Always take backup value when set (legacy hero_video_url maps here). */
+const DESIGN_OVERWRITE = new Set([
+  "theme_key",
+  "hero_video_embed_url",
+  "card_gradient",
+  "card_glow",
+  "icon_key",
+]);
 
 /** Legacy backup headers → current cold contract columns. */
 const LEGACY_HEADER_ALIASES = {
   hero_video_url: "hero_video_embed_url",
   hero_video_file_url: "hero_video_embed_url",
 };
+
+function parseArgs(argv) {
+  const dryRun = argv.includes("--dry-run");
+  const mergeDesign = argv.includes("--merge-design");
+  const tabsArg = argv.find((a) => a.startsWith("--tabs="));
+  const tabs = tabsArg
+    ? tabsArg
+        .slice("--tabs=".length)
+        .split(",")
+        .map((t) => t.trim())
+        .filter(Boolean)
+    : ALL_TABS;
+  const unknown = tabs.filter((t) => !ALL_TABS.includes(t));
+  if (unknown.length) {
+    throw new Error(`Unknown tabs: ${unknown.join(", ")}. Use: ${ALL_TABS.join(", ")}`);
+  }
+  return { dryRun, mergeDesign, tabs };
+}
 
 function norm(h) {
   return String(h)
@@ -53,6 +108,31 @@ function isSkippableRow(cells, slugIdx) {
   if (isBlankRow(cells)) return true;
   if (slugIdx < 0) return false;
   return !String(cells[slugIdx] ?? "").trim();
+}
+
+function buildSourceIndex(sourceHeaders) {
+  const srcNorm = sourceHeaders.map(norm);
+  /** canonical column → all source indices (legacy aliases may duplicate a target). */
+  const indicesByNorm = new Map();
+  for (let i = 0; i < srcNorm.length; i++) {
+    const key = srcNorm[i];
+    if (!key) continue;
+    const canonical = LEGACY_HEADER_ALIASES[key] ?? key;
+    const list = indicesByNorm.get(canonical) ?? [];
+    list.push(i);
+    indicesByNorm.set(canonical, list);
+  }
+  return { srcNorm, indicesByNorm };
+}
+
+function readSourceCell(srcRow, col, indicesByNorm) {
+  const indices = indicesByNorm.get(col) ?? [];
+  for (const idx of indices) {
+    const v = srcRow[idx];
+    const s = v === undefined || v === null ? "" : String(v).trim();
+    if (s) return s;
+  }
+  return "";
 }
 
 async function getToken() {
@@ -117,30 +197,59 @@ async function fetchSheetValues(spreadsheetId, tab, token) {
 }
 
 function mapRowsToDestHeaders(sourceRows, sourceHeaders, destHeaders) {
-  const srcNorm = sourceHeaders.map(norm);
+  const { indicesByNorm } = buildSourceIndex(sourceHeaders);
   const destNorm = destHeaders.map(norm);
-  const slugIdx = srcNorm.indexOf("slug");
-
-  const indexByNorm = new Map();
-  for (let i = 0; i < srcNorm.length; i++) {
-    const key = srcNorm[i];
-    if (!key) continue;
-    const canonical = LEGACY_HEADER_ALIASES[key] ?? key;
-    if (!indexByNorm.has(canonical)) indexByNorm.set(canonical, i);
-  }
+  const slugIdx = sourceHeaders.map(norm).indexOf("slug");
 
   const mapped = [];
   for (const srcRow of sourceRows) {
     if (isSkippableRow(srcRow, slugIdx)) continue;
     const out = destNorm.map((col) => {
       if (!col) return "";
-      const idx = indexByNorm.get(col);
-      if (idx === undefined) return "";
-      return srcRow[idx] === undefined || srcRow[idx] === null ? "" : String(srcRow[idx]);
+      return readSourceCell(srcRow, col, indicesByNorm);
     });
     mapped.push(out);
   }
   return mapped;
+}
+
+function mergeDesignRows(destRows, destHeaders, sourceRows, sourceHeaders, designCols) {
+  const destNorm = destHeaders.map(norm);
+  const { indicesByNorm } = buildSourceIndex(sourceHeaders);
+  const slugIdx = destNorm.indexOf("slug");
+
+  const srcBySlug = new Map();
+  const srcSlugIdx = sourceHeaders.map(norm).indexOf("slug");
+  for (const row of sourceRows) {
+    if (isSkippableRow(row, srcSlugIdx)) continue;
+    srcBySlug.set(String(row[srcSlugIdx] ?? "").trim(), row);
+  }
+
+  let patched = 0;
+  const merged = destRows.map((destRow) => {
+    if (isSkippableRow(destRow, slugIdx)) return [...destRow];
+    const slug = String(destRow[slugIdx] ?? "").trim();
+    const srcRow = srcBySlug.get(slug);
+    if (!srcRow) return [...destRow];
+
+    const out = [...destRow];
+    let rowChanged = false;
+    for (const col of designCols) {
+      const colIdx = destNorm.indexOf(col);
+      if (colIdx < 0) continue;
+      const fromBackup = readSourceCell(srcRow, col, indicesByNorm);
+      if (!fromBackup) continue;
+      const before = String(out[colIdx] ?? "").trim();
+      const useBackup = DESIGN_OVERWRITE.has(col) ? true : !before;
+      if (!useBackup || before === fromBackup) continue;
+      out[colIdx] = fromBackup;
+      rowChanged = true;
+    }
+    if (rowChanged) patched += 1;
+    return out;
+  });
+
+  return { merged, patched };
 }
 
 async function clearDataRange(spreadsheetId, tab, lastCol, token) {
@@ -173,37 +282,60 @@ async function writeData(spreadsheetId, tab, headers, dataRows, token) {
 }
 
 async function main() {
-  const dryRun = process.argv.includes("--dry-run");
+  const { dryRun, mergeDesign, tabs } = parseArgs(process.argv.slice(2));
   const token = await getToken();
 
   console.log(`Backup: ${BACKUP_ID}`);
   console.log(`Target: ${DEST_ID}`);
+  console.log(`Mode: ${mergeDesign ? "merge-design (by slug)" : "full replace"}`);
+  console.log(`Tabs: ${tabs.join(", ")}`);
   if (dryRun) console.log("(dry-run — no writes)\n");
 
-  for (const tab of TABS) {
+  for (const tab of tabs) {
     const [src, dest] = await Promise.all([
       fetchSheetValues(BACKUP_ID, tab, token),
       fetchSheetValues(DEST_ID, tab, token),
     ]);
 
     const destHeaders = dest.rawHeaders.length ? dest.rawHeaders : src.rawHeaders;
-    const mapped = mapRowsToDestHeaders(src.dataRows, src.rawHeaders, destHeaders);
-
-    const srcNorm = src.rawHeaders.map(norm).filter(Boolean);
     const destNorm = destHeaders.map(norm).filter(Boolean);
+    const srcNorm = src.rawHeaders.map(norm).filter(Boolean);
+
+    let outRows;
+    let patched = 0;
+    if (mergeDesign) {
+      const designCols = (DESIGN_COLUMNS[tab] ?? []).filter((c) => destNorm.includes(c));
+      const result = mergeDesignRows(
+        dest.dataRows,
+        destHeaders,
+        src.dataRows,
+        src.rawHeaders,
+        designCols,
+      );
+      outRows = result.merged;
+      patched = result.patched;
+    } else {
+      outRows = mapRowsToDestHeaders(src.dataRows, src.rawHeaders, destHeaders);
+    }
+
     const onlyInSrc = srcNorm.filter((h) => !destNorm.includes(h));
     const onlyInDest = destNorm.filter((h) => !srcNorm.includes(h));
 
     console.log(`\n=== ${tab} ===`);
     console.log(`  backup rows: ${src.dataRows.length}`);
+    console.log(`  target rows: ${dest.dataRows.length}`);
     console.log(`  target headers (${destNorm.length}): ${destNorm.join(", ")}`);
     if (onlyInSrc.length) console.log(`  backup-only columns (dropped): ${onlyInSrc.join(", ")}`);
-    if (onlyInDest.length) console.log(`  target-only columns (empty): ${onlyInDest.join(", ")}`);
+    if (onlyInDest.length) console.log(`  target-only columns (kept from Cold): ${onlyInDest.join(", ")}`);
+    if (mergeDesign) {
+      console.log(`  design columns: ${(DESIGN_COLUMNS[tab] ?? []).join(", ") || "(none)"}`);
+      console.log(`  rows to patch: ${patched}`);
+    }
 
     if (!dryRun) {
-      await writeData(DEST_ID, tab, destHeaders, mapped, token);
+      await writeData(DEST_ID, tab, destHeaders, outRows, token);
     } else {
-      console.log(`  would write ${mapped.length} rows`);
+      console.log(`  would write ${outRows.length} rows`);
     }
   }
 

@@ -7,7 +7,7 @@
 
 WEB := apps/web
 
-.PHONY: run check dev-host dev-restart brand-assets docs-index validate-snapshots export-yaml-snapshots content-publish content-publish-hot sync-sheet-hot sync-sheet-cold publish-sheet-hot publish-sheet-cold seed-sheet-headers encode-hero-video media-deps media-placeholders media-scaffold media-checkout media-pull media-commit media-push media-publish-site media-drive-push media-drive-pull data-import-sheets data-checkout data-pull data-commit data-push data-publish-site data-docs-push design-pack design-pack-oauth-login design-pack-publish-drive scripts-s3-deps timeweb-s3-setup timeweb-setup s3-sync-data s3-sync-data-hot s3-sync-data-cold s3-sync-media s3-sync-static s3-sync-all timeweb-build-check timeweb-deploy
+.PHONY: run check dev-host dev-restart brand-assets docs-index validate-snapshots export-yaml-snapshots content-publish content-publish-hot sync-sheet-hot sync-sheet-cold publish-sheet-hot publish-sheet-cold seed-sheet-headers restore-cold-design-from-backup encode-hero-video media-deps media-placeholders media-scaffold media-checkout media-pull media-commit media-push media-publish-site media-drive-push media-drive-pull data-import-sheets data-checkout data-pull data-commit data-push data-publish-site data-docs-push design-pack design-pack-oauth-login design-pack-publish-drive scripts-s3-deps timeweb-s3-setup timeweb-setup s3-sync-data s3-sync-data-hot s3-sync-data-cold s3-sync-media s3-sync-static s3-sync-all timeweb-build-check timeweb-deploy
 
 # PNG/WebP/ICO из assets/brand/brainmaster-logo.png → assets/brand/generated/ (+ Next app/ + public/brand/)
 brand-assets:
@@ -49,6 +49,10 @@ publish-sheet-cold:
 
 seed-sheet-headers:
 	node scripts/seed-google-sheet-headers.mjs
+
+# Дизайн-презентация из бэкапа Cold → текущая Cold (шапки и тексты на Cold не трогаем)
+restore-cold-design-from-backup:
+	node scripts/restore-cold-from-backup.mjs --merge-design
 
 setup-ops-sheet:
 	node scripts/setup-ops-sheet.mjs

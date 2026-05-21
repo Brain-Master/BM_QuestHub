@@ -32,9 +32,13 @@ BM_QuestHub_Media/
     ├── venues/{school-scope-slug}/
     │   ├── logo-256.source.png
     │   └── photo-01-16x10.source.jpg … photo-04
-    └── schedule/{shift_group_id}/
+    └── schedule/{shift_group_id}/     ← опционально; без своих фото — на сайте hero квеста
         ├── hero-16x9.source.jpg
         └── compact-4x3.source.jpg
+
+`shift_group_id` в таблице может содержать `:` (например `quest:venue:2026-06-22:2026-06-26`).
+В **Sync/** и `media/inbox/` папка называется с `__` вместо `:` (требование Windows).
+На S3 путь остаётся с каноническим id: `media/schedule/{shift_group_id}/hero.webp`.
 ```
 
 ## Форматы

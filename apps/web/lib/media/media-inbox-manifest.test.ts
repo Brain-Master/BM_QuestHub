@@ -12,7 +12,7 @@ const miniContext: MediaInboxContext = {
   questSlugs: ["demo-quest"],
   worldSlugs: ["demo-world"],
   venues: [{ scopeSlug: "school-1", venueSlug: "school-1-campus" }],
-  shiftGroupIds: ["SHIFT-001"],
+  shiftGroupIds: ["cyber-rhythm:school-1517:2026-06-22:2026-06-26"],
 };
 
 describe("enumerateInboxSlots", () => {
@@ -22,7 +22,11 @@ describe("enumerateInboxSlots", () => {
     assert.ok(slots.some((s) => s.inboxRelPath === "worlds/demo-world/hero-16x9.source.jpg"));
     assert.ok(slots.some((s) => s.inboxRelPath.includes("venues/school-1/logo-256.source.png")));
     assert.ok(
-      slots.some((s) => s.inboxRelPath === "schedule/SHIFT-001/compact-4x3.source.jpg"),
+      slots.some(
+        (s) =>
+          s.inboxRelPath ===
+          "schedule/cyber-rhythm__school-1517__2026-06-22__2026-06-26/compact-4x3.source.jpg",
+      ),
     );
     assert.ok(slots.some((s) => s.isVideo && s.inboxRelPath === "quests/demo-quest/hero.mp4"));
   });
