@@ -23,6 +23,8 @@ Deploy the static export from [`apps/web`](../../apps/web) (`output: "export"` �
 | Root directory | repository root |
 | Build command | `npm run build` |
 | Output directory | `apps/web/out` |
+| Run command (static, SSR off) | **leave empty** / platform default — do **not** use `npm start` |
+| Run command (only if SSR is on — not this project) | `npm exec --prefix apps/web -- next start --hostname 0.0.0.0` |
 
 Alternative if the UI only allows app subfolder:
 
@@ -31,8 +33,21 @@ Alternative if the UI only allows app subfolder:
 | Root directory | `apps/web` |
 | Build command | `npm run build` |
 | Output directory | `out` |
+| Run command | `next start --hostname 0.0.0.0` (only when SSR is on — not for Quest Hub static export) |
 
 Connect GitHub OAuth, enable deploy on push if desired.
+
+## Troubleshooting: «npm start не подходит, нужен next start»
+
+Quest Hub builds with `output: "export"` ([`apps/web/next.config.ts`](../../apps/web/next.config.ts)) — production is **static HTML in `apps/web/out`**, not a Node server. `next start` is incompatible with static export.
+
+| Symptom | Likely cause | Fix |
+|---------|--------------|-----|
+| Timeweb rejects `npm start`, asks for `next start` | **SSR enabled** on the app (backend mode) | Create a **new** app with **SSR off** (cannot disable SSR after create). Set output `apps/web/out`, build `npm run build`. |
+| Same error with SSR already off | Run command in panel set to `npm start` | Clear run command or use Timeweb default for static frontend. |
+| Build OK, runtime 404 / empty site | Wrong output path | Output must be `apps/web/out` (repo root) or `out` (root = `apps/web`). |
+
+Root [`package.json`](../../package.json) `start` runs `next start` in `apps/web` for platforms that insist on a `next start` script — use only if you deliberately run SSR; normal Quest Hub deploy does not call it.
 
 ## Build environment variables
 

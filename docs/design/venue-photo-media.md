@@ -25,9 +25,9 @@ Slot ID: `venue_photo`. Индекс: [image-templates-index.md](image-templates
 
 `venue.photos[]` — массив `{ url, alt? }` в Cold snapshot.
 
-**Ingest (Cold Sheet):** колонка `photos_source_urls` (до 4 URL через `;`), опционально `photos_alt`. Если `photos_urls` пусто — при `make publish-sheet-cold` скачиваются исходники, обрабатываются пресетом `venue_photo`, пишутся в `public/venues/photos/{venue-slug}/1.webp` … `4.webp`, в snapshot подставляются пути `/venues/photos/{slug}/N.webp`. Если `photos_urls` уже заполнены — ingest фото пропускается (override). Источники: HTTPS или Google Drive; VK — нет.
+**Ingest (Cold Sheet):** inbox `venues/{scope}/photo-01-16x10.source.jpg` … → пресет `venue_photo` → `media/venues/photos/{venue-slug}/01.webp` … `04.webp` на S3; в snapshot — `media/venues/photos/…` (старые `/venues/photos/…` тоже резолвятся в S3 через `resolvePublicMediaUrl`).
 
-Ручная заливка без Sheet: положить WebP в `public/venues/photos/{slug}/` и указать пути в `photos_urls`.
+Ручная заливка: исходники в `media/inbox/venues/{scope}/`, затем `make publish-sheet-cold` или `make media-push`.
 
 ## Правила приёмки
 

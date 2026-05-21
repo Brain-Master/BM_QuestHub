@@ -23,6 +23,7 @@ import { positionSitesOnMap, siteHasMapLocation } from "@/lib/sites/map-projecti
 import { PREFERRED_SCHOOL_STORAGE_KEY } from "@/lib/preferred-school";
 import type { CityCard } from "@/lib/sites/city-card";
 import { toCityOptions } from "@/lib/sites/city-card";
+import { resolvePublicMediaUrl } from "@/lib/media/public-media-url";
 import type { SiteScopeCard } from "@/lib/sites/scope-card";
 import { buildSiteHref } from "@/lib/sites/site-route";
 import { cn } from "@/lib/utils";
@@ -155,7 +156,7 @@ function siteMatchesQuery(site: SiteScopeCard, query: string): boolean {
 }
 
 function LogoMark({ site, compact = false }: { site: SiteScopeCard; compact?: boolean }) {
-  const showImage = site.logoUrl?.startsWith("/");
+  const logoSrc = resolvePublicMediaUrl(site.logoUrl);
 
   return (
     <div
@@ -166,9 +167,9 @@ function LogoMark({ site, compact = false }: { site: SiteScopeCard; compact?: bo
           : "size-12 rounded-2xl p-1.5 shadow-lg sm:size-16 sm:p-2",
       )}
     >
-      {showImage && site.logoUrl ? (
+      {logoSrc ? (
         <Image
-          src={site.logoUrl}
+          src={logoSrc}
           alt=""
           width={56}
           height={56}

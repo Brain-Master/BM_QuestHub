@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "build": "npm --prefix apps/web ci --include=dev && npm --prefix apps/web run build",
-    "start": "npm --prefix apps/web run start",
+    "start": "npm exec --prefix apps/web -- next start --hostname 0.0.0.0",
     "dev": "npm --prefix apps/web run dev:host",
     "dev:restart": "node scripts/restart-next-dev.mjs",
     "lint": "npm --prefix apps/web run lint",

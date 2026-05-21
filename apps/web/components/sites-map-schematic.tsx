@@ -40,6 +40,7 @@ import {
   type MapRenderRect,
 } from "@/lib/sites/map-render";
 import { PREFERRED_SCHOOL_STORAGE_KEY } from "@/lib/preferred-school";
+import { resolvePublicMediaUrl } from "@/lib/media/public-media-url";
 import type { SiteScopeCard } from "@/lib/sites/scope-card";
 import { buildSiteHref } from "@/lib/sites/site-route";
 import { cn } from "@/lib/utils";
@@ -1178,10 +1179,11 @@ function OutsideUserLocationMarker({
 }
 
 function SiteLogo({ site }: { site: SiteScopeCard }) {
-  if (site.logoUrl?.startsWith("/")) {
+  const logoSrc = resolvePublicMediaUrl(site.logoUrl);
+  if (logoSrc) {
     return (
       <Image
-        src={site.logoUrl}
+        src={logoSrc}
         alt=""
         width={56}
         height={56}

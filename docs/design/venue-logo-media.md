@@ -21,7 +21,7 @@ Slot ID: `venue_logo`.
 
 ## Данные
 
-Inbox `venues/{school-scope-slug}/logo-256.source.png` → `public/venues/logos/{school-scope-slug}.webp`, поле `logo_url` в snapshot после publish.
+Inbox `venues/{school-scope-slug}/logo-256.source.png` → `media/venues/logos/{school-scope-slug}.webp` (S3), поле `logoUrl` в map snapshot после publish.
 
 Ingest-пресет: `venue_logo`.
 

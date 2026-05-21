@@ -98,7 +98,7 @@ export const MEDIA_PRESETS: Record<MediaPresetId, MediaPreset> = {
     format: "webp",
     fit: "contain",
     quality: 80,
-    outputPattern: "public/venues/logos/{slug}.webp",
+    outputPattern: "media/venues/logos/{slug}.webp",
   },
   venue_photo: {
     id: "venue_photo",
@@ -109,7 +109,7 @@ export const MEDIA_PRESETS: Record<MediaPresetId, MediaPreset> = {
     format: "webp",
     fit: "cover",
     quality: 82,
-    outputPattern: "public/venues/photos/{slug}/{index}.webp",
+    outputPattern: "media/venues/photos/{slug}/{index}.webp",
   },
   schedule_card_hero: {
     id: "schedule_card_hero",

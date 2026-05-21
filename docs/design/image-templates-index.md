@@ -22,8 +22,8 @@
 | `world_hero` | Хаб мира | как quest_hero | как quest_hero | `worlds/{slug}/hero-16x9.source.jpg` | `media/worlds/{slug}/hero.webp` | [world-hero-media.md](world-hero-media.md) | alias quest |
 | `quest_catalog` | Карточка в каталоге | 4:3 | 1200×900 / 1600×1200 | `catalog-4x3.source.jpg` | `media/quests/{slug}/catalog.webp` | [quest-catalog-media.md](quest-catalog-media.md) | да |
 | `city_card` | Выбор города | 16:10 | 1280×800 | (вне inbox v1) | `public/cities/…` | [city-card-media.md](city-card-media.md) | да |
-| `venue_logo` | Логотип площадки | 1:1 contain | 256×256 → 128×128 | `venues/{scope}/logo-256.source.png` | `public/venues/logos/{scope}.webp` | [venue-logo-media.md](venue-logo-media.md) | да |
-| `venue_photo` | Фото площадки | 16:10 | 1280×800 | `photo-01-16x10.source.jpg` … | `public/venues/photos/{slug}/N.webp` | [venue-photo-media.md](venue-photo-media.md) | да |
+| `venue_logo` | Логотип площадки | 1:1 contain | 256×256 → 128×128 | `venues/{scope}/logo-256.source.png` | `media/venues/logos/{scope}.webp` | [venue-logo-media.md](venue-logo-media.md) | да |
+| `venue_photo` | Фото площадки | 16:10 | 1280×800 | `photo-01-16x10.source.jpg` … | `media/venues/photos/{slug}/NN.webp` | [venue-photo-media.md](venue-photo-media.md) | да |
 | `og_social` | Open Graph | 1.91:1 | 1200×630 | `og-1200x630.source.jpg` | `media/quests/{slug}/og.webp` | [og-share-media.md](og-share-media.md) | да |
 
 ## Маппинг ingest → design slot

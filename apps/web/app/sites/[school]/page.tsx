@@ -19,6 +19,7 @@ import { RememberSchoolOnVisit } from "@/components/remember-school-on-visit";
 import { buttonVariants } from "@/components/ui/button";
 import { communityConnectCopy } from "@/lib/community-connect-copy";
 import { loadQuests, loadVenues, loadWorlds } from "@/lib/content/load";
+import { resolvePublicMediaUrl } from "@/lib/media/public-media-url";
 import { getSchoolScopes, resolveSchoolScope } from "@/lib/offers/agenda";
 import { buildSiteScopeCards, type SiteCampus } from "@/lib/sites/scope-card";
 import { filterQuestsForSchool } from "@/lib/school-scope";
@@ -395,21 +396,24 @@ export default async function SchoolPage({ params }: Props) {
                   key={photo.url}
                   className="overflow-hidden rounded-2xl border border-white/10 bg-black/20"
                 >
-                  {photo.url.startsWith("/") ? (
-                    <div className="relative aspect-[16/10]">
-                      <Image
-                        src={photo.url}
-                        alt={photo.alt ?? `Фото площадки ${site.name}`}
-                        fill
-                        sizes="(min-width: 1024px) 24rem, 100vw"
-                        className="object-cover"
-                      />
-                    </div>
-                  ) : (
-                    <div className="flex aspect-[16/10] items-center justify-center bg-white/[0.04] p-6 text-center text-muted-foreground text-sm">
-                      Фото доступно по внешней ссылке после настройки домена изображений.
-                    </div>
-                  )}
+                  {(() => {
+                    const photoSrc = resolvePublicMediaUrl(photo.url);
+                    return photoSrc ? (
+                      <div className="relative aspect-[16/10]">
+                        <Image
+                          src={photoSrc}
+                          alt={photo.alt ?? `Фото площадки ${site.name}`}
+                          fill
+                          sizes="(min-width: 1024px) 24rem, 100vw"
+                          className="object-cover"
+                        />
+                      </div>
+                    ) : (
+                      <div className="flex aspect-[16/10] items-center justify-center bg-white/[0.04] p-6 text-center text-muted-foreground text-sm">
+                        Фото площадки пока не загружены.
+                      </div>
+                    );
+                  })()}
                   <figcaption className="px-3 py-2 text-muted-foreground text-xs">
                     {photo.alt ?? photo.campusName}
                   </figcaption>
