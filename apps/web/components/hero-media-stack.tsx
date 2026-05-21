@@ -52,7 +52,9 @@ export function HeroMediaStack({
   const showFilePlayer = Boolean(resolved.fileUrl && playingFile);
   const showEmbed = Boolean(resolved.embedUrl && playingEmbed);
   const showPlayFile = Boolean(resolved.fileUrl && !playingFile);
-  const showPlayEmbed = Boolean(resolved.embedUrl && !playingFile && !resolved.fileUrl);
+  const showPlayEmbed = Boolean(
+    resolved.embedUrl && !playingEmbed && !playingFile && !resolved.fileUrl,
+  );
   const showPlayEmbedSecondary = Boolean(
     resolved.embedUrl && resolved.fileUrl && !playingEmbed && !playingFile,
   );
