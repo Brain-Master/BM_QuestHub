@@ -2,7 +2,6 @@ import {
   type RegistrationChannel,
   venueOfferSchema,
   type ScheduleCard,
-  type ScheduleMediaImage,
   type ScheduleVariant,
   type VenueOffer,
 } from "@/lib/schemas";
@@ -37,11 +36,6 @@ function parseMosUrl(raw: string | undefined): string | null {
   } catch {
     return null;
   }
-}
-
-function parseOptionalUrl(raw: string | undefined): string | undefined {
-  const parsed = parseMosUrl(raw);
-  return parsed ?? undefined;
 }
 
 function splitTags(raw: string | undefined): string[] {
@@ -96,24 +90,6 @@ function inferAllowPreliminaryRegistration(row: SheetRow): boolean {
   );
 }
 
-function buildImage(
-  url: string | undefined,
-  alt: string | undefined,
-  focalX: number | undefined,
-  focalY: number | undefined,
-): ScheduleMediaImage | undefined {
-  const parsedUrl = parseOptionalUrl(url);
-  if (!parsedUrl) return undefined;
-
-  const hasFocalPoint =
-    typeof focalX === "number" && typeof focalY === "number";
-  return {
-    url: parsedUrl,
-    ...(alt?.trim() ? { alt: alt.trim() } : {}),
-    ...(hasFocalPoint ? { focalPoint: { x: focalX, y: focalY } } : {}),
-  };
-}
-
 function slugifyFormatKey(raw: string): string {
   const slug = raw
     .trim()
@@ -154,21 +130,6 @@ function buildVariantFromRow(row: SheetRow, formatType: string): ScheduleVariant
 
 function buildScheduleCard(row: SheetRow): ScheduleCard {
   const programFull = joinProgramName(row.program_name_h1, row.program_name_h2);
-  const imageAlt =
-    row.image_alt?.trim() || `${programFull} · ${row.school_name}`;
-  const hero = buildImage(
-    row.hero_image_url,
-    imageAlt,
-    row.image_focal_x,
-    row.image_focal_y,
-  );
-  const compact = buildImage(
-    row.compact_image_url,
-    imageAlt,
-    row.image_focal_x,
-    row.image_focal_y,
-  );
-  const fallback = buildImage(row.fallback_image_url, imageAlt, undefined, undefined);
   const formatType = row.format_type?.trim() || inferFormatType(row);
   const variant = buildVariantFromRow(row, formatType);
   const mosBookingUrl = parseMosUrl(row.mos_ru_link);
@@ -198,14 +159,6 @@ function buildScheduleCard(row: SheetRow): ScheduleCard {
     registrationChannel: variant.registrationChannel,
     allowPreliminaryRegistration: variant.allowPreliminaryRegistration ?? false,
     variants: [variant],
-    media:
-      hero || compact || fallback
-        ? {
-            ...(hero ? { hero } : {}),
-            ...(compact ? { compact } : {}),
-            ...(fallback ? { fallback } : {}),
-          }
-        : undefined,
   };
 }
 

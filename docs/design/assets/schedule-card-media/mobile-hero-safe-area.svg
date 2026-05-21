@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="900" height="900" viewBox="0 0 900 900" role="img" aria-labelledby="title desc">
-  <title id="title">Schedule card mobile hero safe area</title>
-  <desc id="desc">Template showing square mobile crop, central safe area, badge zone, and bottom gradient zone.</desc>
+  <title id="title">Миниатюра в списке смен (~1:1)</title>
+  <desc id="desc">Концептуальный квадратный кроп для slot schedule_mobile_thumb: safe area, бейдж, градиент. Точный wireframe — mobile-list-thumb-safe-area.svg.</desc>
   <rect width="900" height="900" fill="#111827"/>
   <rect x="0" y="0" width="900" height="900" fill="none" stroke="#ffffff" stroke-width="8"/>
   <rect x="180" y="180" width="540" height="540" fill="none" stroke="#22d3ee" stroke-width="6" stroke-dasharray="24 18"/>
@@ -8,7 +8,7 @@
   <rect x="0" y="610" width="900" height="290" fill="#000000" opacity="0.45"/>
   <line x1="450" y1="0" x2="450" y2="900" stroke="#ffffff" stroke-width="2" stroke-dasharray="12 12" opacity="0.55"/>
   <line x1="0" y1="450" x2="900" y2="450" stroke="#ffffff" stroke-width="2" stroke-dasharray="12 12" opacity="0.55"/>
-  <text x="34" y="78" fill="#ffffff" font-family="Arial, sans-serif" font-size="32" font-weight="700">Badge zone</text>
-  <text x="220" y="245" fill="#67e8f9" font-family="Arial, sans-serif" font-size="36" font-weight="700">Mobile safe area</text>
-  <text x="34" y="830" fill="#ffffff" font-family="Arial, sans-serif" font-size="32" font-weight="700">Gradient zone</text>
+  <text x="34" y="78" fill="#ffffff" font-family="Arial, sans-serif" font-size="32" font-weight="700">Скрытая: бейдж статуса</text>
+  <text x="220" y="245" fill="#67e8f9" font-family="Arial, sans-serif" font-size="36" font-weight="700">Видимая: главный объект</text>
+  <text x="34" y="830" fill="#ffffff" font-family="Arial, sans-serif" font-size="32" font-weight="700">Градиент снизу</text>
 </svg>

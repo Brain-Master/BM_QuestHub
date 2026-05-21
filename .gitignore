@@ -33,6 +33,9 @@ venv/
 # Локальные ключи выкладки в Object Storage
 scripts/s3.env
 scripts/sheets.env
+scripts/design-pack.env
+scripts/design-pack-oauth.env
+scripts/design-pack-oauth-token.json
 scripts/timeweb.env
 scripts/node_modules/
 
@@ -41,6 +44,9 @@ scripts/node_modules/
 
 # Node (если появятся пакеты вне apps/web)
 node_modules/
+
+# Design pack build output
+dist/design-pack/
 
 # Локальные бекапы контента/данных (см. backups/README.md)
 /backups/data-pre-v2-migration-*/

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="800" viewBox="0 0 1280 800" role="img" aria-labelledby="title desc">
+  <title id="title">0@B>G:0 3>@>40 16:10  safe area</title>
+  <desc id="desc">(01;>= 2K1>@0 3>@>40: ?>;=K9 :04@, safe area 60%, 7>=0 3@0485=B0 ?>4 B5:AB UI.</desc>
+  <rect width="1280" height="800" fill="#111827"/>
+  <rect x="0" y="0" width="1280" height="800" fill="none" stroke="#ffffff" stroke-width="8"/>
+  <rect x="256" y="160" width="768" height="480" fill="none" stroke="#22d3ee" stroke-width="6" stroke-dasharray="24 18"/>
+  <rect x="0" y="520" width="1280" height="280" fill="#000000" opacity="0.45"/>
+  <line x1="640" y1="0" x2="640" y2="800" stroke="#ffffff" stroke-width="2" stroke-dasharray="12 12" opacity="0.45"/>
+  <line x1="0" y1="400" x2="1280" y2="400" stroke="#ffffff" stroke-width="2" stroke-dasharray="12 12" opacity="0.45"/>
+  <text x="280" y="220" fill="#67e8f9" font-family="Arial, sans-serif" font-size="40" font-weight="700">848<0O: 3;02=K9 >1J5:B</text>
+  <text x="44" y="760" fill="#e2e8f0" font-family="Arial, sans-serif" font-size="32" font-weight="700">@0485=B: =0720=85 3>@>40 2 UI</text>
+  <text x="44" y="792" fill="#94a3b8" font-family="Arial, sans-serif" font-size="22">1280×800 · hover scale ~1.03</text>
+</svg>

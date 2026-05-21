@@ -213,6 +213,8 @@ export const questSchema = z.object({
    */
   heroVideoUrl: z.string().optional(),
   heroImageUrl: z.string().optional(),
+  /** 4:3 кадр для каталога (`media/quests/{slug}/catalog.webp`). */
+  catalogImageUrl: z.string().optional(),
   groupSize: z.string().optional(),
   /** Строка инфопанели: длительность и формат */
   durationLabel: z.string().optional(),

@@ -32,6 +32,59 @@ const COLD_ID =
   process.env.GOOGLE_SHEETS_COLD_SPREADSHEET_ID?.trim() ||
   "1fqeVC8BhjGWtOR20NhCUQuhwgchkCCzYsmiudpGE4jc";
 
+/** Must match seed-google-sheet-headers.mjs and cold-sheet-contract WORLD_HEADERS. */
+const WORLD_HEADERS = [
+  "slug",
+  "name",
+  "description",
+  "theme_key",
+  "tagline",
+  "pitch",
+  "highlights",
+  "hero_video_embed_url",
+  "card_gradient",
+  "card_glow",
+  "icon_key",
+];
+
+const VENUE_HEADERS = [
+  "slug",
+  "name",
+  "display_name",
+  "type",
+  "address",
+  "metro",
+  "city",
+  "district",
+  "latitude",
+  "longitude",
+  "school_scope_slug",
+  "listed_on_sites",
+  "directions",
+  "entrance_note",
+  "contact_note",
+];
+
+const COURSE_HEADERS = [
+  "slug",
+  "world_slug",
+  "title",
+  "tagline",
+  "catalog_tagline",
+  "age_label",
+  "format",
+  "skills",
+  "active_in_campaign",
+  "hero_video_embed_url",
+  "group_size",
+  "duration_label",
+  "price_hint",
+  "story",
+  "skills_parent",
+  "loot",
+  "approach",
+];
+
 const HOT_GROUP_HEADERS = [
   "shift_group_id",
   "program_name_h1",
@@ -274,12 +327,23 @@ function worldToRow(w) {
     w.tagline ?? "",
     typeof w.pitch === "string" ? w.pitch.trim() : "",
     joinList(w.highlights),
-    w.heroVideoUrl ?? "",
-    w.heroImageUrl ?? "",
+    w.heroVideoEmbedUrl ?? w.heroVideoUrl ?? "",
     w.presentation?.cardGradient ?? "",
     w.presentation?.cardGlow ?? "",
     w.presentation?.iconKey ?? "",
   ];
+}
+
+function assertRowWidths(sheetTitle, headers, dataRows) {
+  const n = headers.length;
+  for (let i = 0; i < dataRows.length; i++) {
+    const len = dataRows[i].length;
+    if (len !== n) {
+      throw new Error(
+        `${sheetTitle} row ${i + 1}: expected ${n} cells, got ${len} (headers: ${headers.join(", ")})`,
+      );
+    }
+  }
 }
 
 function venueToRow(v) {
@@ -296,7 +360,6 @@ function venueToRow(v) {
     v.longitude === undefined ? "" : String(v.longitude),
     v.schoolScopeSlug ?? "",
     boolCell(v.listedOnSites),
-    v.logoUrl ?? "",
     joinLines(v.directions),
     v.entranceNote ?? "",
     v.contactNote ?? "",
@@ -314,8 +377,7 @@ function questToRow(q) {
     q.format ?? "",
     joinList(q.skills),
     boolCell(q.activeInCampaign ?? true),
-    q.heroImageUrl ?? "",
-    q.heroVideoUrl ?? "",
+    q.heroVideoEmbedUrl ?? q.heroVideoUrl ?? "",
     q.groupSize ?? "",
     q.durationLabel ?? "",
     q.priceHint ?? "",
@@ -334,8 +396,21 @@ function buildColdRows() {
   };
 }
 
+async function clearSheetRange(spreadsheetId, range, token) {
+  const clearUrl = `https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(spreadsheetId)}/values/${encodeURIComponent(range)}:clear`;
+  const clearRes = await fetch(clearUrl, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!clearRes.ok) {
+    throw new Error(`clear ${range} ${clearRes.status}: ${await clearRes.text()}`);
+  }
+}
+
 async function clearAndWrite(spreadsheetId, sheetTitle, headers, dataRows, token) {
   const lastCol = columnLetter(headers.length);
+  // Wipe stale cells beyond current headers (legacy hero_image_url column, etc.)
+  await clearSheetRange(spreadsheetId, `'${sheetTitle}'!A2:Z`, token);
   const clearRange = `'${sheetTitle}'!A2:${lastCol}`;
   const clearUrl = `https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(spreadsheetId)}/values/${encodeURIComponent(clearRange)}:clear`;
   const clearRes = await fetch(clearUrl, {
@@ -380,6 +455,10 @@ function columnLetter(n) {
 }
 
 async function writeHeadersIfNeeded(spreadsheetId, range, headers, token) {
+  const sheetTitle = range.match(/'([^']+)'/)?.[1];
+  if (sheetTitle) {
+    await clearSheetRange(spreadsheetId, `'${sheetTitle}'!A1:Z1`, token);
+  }
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(spreadsheetId)}/values/${encodeURIComponent(range)}?valueInputOption=RAW`;
   await fetch(url, {
     method: "PUT",
@@ -413,59 +492,11 @@ async function main() {
     for (const [title, rows] of Object.entries(cold)) {
       const headers =
         title === "Миры"
-          ? [
-              "slug",
-              "name",
-              "description",
-              "theme_key",
-              "tagline",
-              "pitch",
-              "highlights",
-              "hero_video_url",
-              "hero_image_url",
-              "card_gradient",
-              "card_glow",
-              "icon_key",
-            ]
+          ? WORLD_HEADERS
           : title === "Площадки"
-            ? [
-                "slug",
-                "name",
-                "display_name",
-                "type",
-                "address",
-                "metro",
-                "city",
-                "district",
-                "latitude",
-                "longitude",
-                "school_scope_slug",
-                "listed_on_sites",
-                "logo_url",
-                "directions",
-                "entrance_note",
-                "contact_note",
-              ]
-            : [
-                "slug",
-                "world_slug",
-                "title",
-                "tagline",
-                "catalog_tagline",
-                "age_label",
-                "format",
-                "skills",
-                "active_in_campaign",
-                "hero_image_url",
-                "hero_video_url",
-                "group_size",
-                "duration_label",
-                "price_hint",
-                "story",
-                "skills_parent",
-                "loot",
-                "approach",
-              ];
+            ? VENUE_HEADERS
+            : COURSE_HEADERS;
+      assertRowWidths(title, headers, rows);
       await writeHeadersIfNeeded(COLD_ID, `'${title}'!A1`, headers, token);
       await clearAndWrite(COLD_ID, title, headers, rows, token);
     }

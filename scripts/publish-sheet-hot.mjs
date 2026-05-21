@@ -24,4 +24,5 @@ function run(cmd, args) {
 run(process.execPath, [path.join(__dirname, "run-sheet-sync.mjs"), "hot"]);
 run(process.execPath, [path.join(__dirname, "validate-public-snapshot.mjs")]);
 run(process.execPath, [path.join(__dirname, "run-s3-sync.mjs"), "data-hot"]);
+run(process.execPath, [path.join(__dirname, "run-s3-sync.mjs"), "media"]);
 console.log("[publish-sheet-hot] done — site updates in ~1 min");

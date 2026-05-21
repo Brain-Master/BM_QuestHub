@@ -72,7 +72,7 @@ export function QuestCard({ quest, worldName, world, schoolSlug }: Props) {
     : `/quests/${quest.slug}`;
 
   const previewLine = quest.catalogTagline ?? quest.tagline;
-  const heroImg = quest.heroImageUrl?.trim();
+  const heroImg = (quest.catalogImageUrl ?? quest.heroImageUrl)?.trim();
   const metaLine = buildMetaLine(quest);
   const difficultyLevel = difficultyToLevel(quest.difficulty);
   const difficultyAnnouncement =

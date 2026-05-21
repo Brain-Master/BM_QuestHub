@@ -7,7 +7,7 @@
 
 WEB := apps/web
 
-.PHONY: run check dev-host dev-restart brand-assets docs-index validate-snapshots export-yaml-snapshots content-publish content-publish-hot sync-sheet-hot sync-sheet-cold publish-sheet-hot publish-sheet-cold seed-sheet-headers encode-hero-video media-placeholders media-scaffold design-pack design-pack-publish-drive scripts-s3-deps timeweb-s3-setup timeweb-setup s3-sync-data s3-sync-data-hot s3-sync-data-cold s3-sync-media s3-sync-static s3-sync-all timeweb-deploy
+.PHONY: run check dev-host dev-restart brand-assets docs-index validate-snapshots export-yaml-snapshots content-publish content-publish-hot sync-sheet-hot sync-sheet-cold publish-sheet-hot publish-sheet-cold seed-sheet-headers encode-hero-video media-placeholders media-scaffold design-pack design-pack-oauth-login design-pack-publish-drive scripts-s3-deps timeweb-s3-setup timeweb-setup s3-sync-data s3-sync-data-hot s3-sync-data-cold s3-sync-media s3-sync-static s3-sync-all timeweb-deploy
 
 # PNG/WebP/ICO из assets/brand/brainmaster-logo.png → assets/brand/generated/ (+ Next app/ + public/brand/)
 brand-assets:
@@ -74,6 +74,10 @@ design-pack-psd:
 design-pack: media-placeholders design-pack-psd
 	cd scripts && npm install --omit=dev
 	node scripts/build-design-pack.mjs
+
+design-pack-oauth-login:
+	cd scripts && npm install --omit=dev
+	node scripts/google-drive-oauth-login.mjs
 
 design-pack-publish-drive:
 	node scripts/publish-design-pack-to-drive.mjs

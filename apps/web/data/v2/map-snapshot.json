@@ -1,39 +1,20 @@
 {
   "version": 2,
-  "generatedAt": "2026-05-20T08:56:04.807Z",
+  "generatedAt": "2026-05-21T07:03:42.185Z",
   "source": "google_sheet_cold",
   "integrity": {
-    "contentHash": "sha256:47c3f577a4160c72f6e119a0dcfe0aa509f5117a65705efe1972d63f79ad0931"
+    "contentHash": "sha256:78612bb3cb8a65d35c6289d171d4bc040a910d599d8a2888ef983ba80f6d0357"
   },
   "venues": [
     {
-      "slug": "bm-base-moscow",
-      "name": "База BrainMaster (Москва)",
-      "displayName": "База BrainMaster (Москва)",
-      "type": "bm_base",
-      "address": "Москва, адрес уточняется при записи",
-      "metro": "—",
-      "city": "moscow",
-      "district": "Москва",
-      "logoUrl": "/brand/brainmaster-mark.png",
-      "directions": [
-        "Выберите смену в расписании и оставьте заявку.\nПосле подтверждения записи мы отправим точный адрес и схему прохода.\nКоординатор подскажет место встречи и порядок допуска."
-      ],
-      "entranceNote": "Адрес базы BrainMaster подтверждаем при записи на конкретную смену.",
-      "contactNote": "Для открытых городских смен детали локации зависят от программы и даты.",
-      "photos": [],
-      "listedOnSites": true
-    },
-    {
       "slug": "school-1212-yasenevo",
-      "name": "ГБОУ Школа №1212",
+      "name": "Школа №1212",
       "displayName": "Школа №1212",
       "type": "school",
       "address": "Новоясеневский проспект, 24к3",
       "metro": "Ясенево",
       "city": "moscow",
       "district": "Ясенево",
-      "logoUrl": "/venues/logos/school-1212-placeholder.png",
       "latitude": 55.6039,
       "longitude": 37.5287,
       "directions": [
@@ -41,9 +22,15 @@
       ],
       "entranceNote": "Перед стартом смены подтвердим вход, место встречи и кабинет в корпусе.",
       "contactNote": "Точный кабинет и порядок прохода отправляем родителям перед началом смены.",
-      "photos": [],
+      "photos": [
+        {
+          "url": "/venues/photos/school-1212-yasenevo/01.webp",
+          "alt": "Школа №1212"
+        }
+      ],
       "listedOnSites": true,
-      "schoolScopeSlug": "school-1212"
+      "schoolScopeSlug": "school-1212",
+      "logoUrl": "/venues/logos/school-1212.webp"
     },
     {
       "slug": "school-1383-verkhnie-likhobory",
@@ -54,7 +41,6 @@
       "metro": "Верхние Лихоборы",
       "city": "moscow",
       "district": "Бескудниковский",
-      "logoUrl": "/venues/logos/school-1383-placeholder.png",
       "latitude": 55.85788,
       "longitude": 37.56627,
       "directions": [
@@ -62,9 +48,15 @@
       ],
       "entranceNote": "Перед стартом смены подтвердим вход, место встречи и кабинет в корпусе.",
       "contactNote": "Точный кабинет и порядок прохода отправляем родителям перед началом смены.",
-      "photos": [],
+      "photos": [
+        {
+          "url": "/venues/photos/school-1383-verkhnie-likhobory/01.webp",
+          "alt": "Школа №1383"
+        }
+      ],
       "listedOnSites": true,
-      "schoolScopeSlug": "school-1383"
+      "schoolScopeSlug": "school-1383",
+      "logoUrl": "/venues/logos/school-1383.webp"
     },
     {
       "slug": "school-1517-narodnoe-opolchenie",
@@ -75,7 +67,6 @@
       "metro": "Народное Ополчение",
       "city": "moscow",
       "district": "Хорошёво-Мнёвники",
-      "logoUrl": "/venues/logos/school-1517-placeholder.png",
       "latitude": 55.7856,
       "longitude": 37.4576,
       "directions": [
@@ -83,9 +74,15 @@
       ],
       "entranceNote": "Перед стартом смены подтвердим вход, место встречи и кабинет в корпусе.",
       "contactNote": "Точный кабинет и порядок прохода отправляем родителям перед началом смены.",
-      "photos": [],
+      "photos": [
+        {
+          "url": "/venues/photos/school-1517-narodnoe-opolchenie/01.webp",
+          "alt": "Школа №1517"
+        }
+      ],
       "listedOnSites": true,
-      "schoolScopeSlug": "school-1517"
+      "schoolScopeSlug": "school-1517",
+      "logoUrl": "/venues/logos/school-1517.webp"
     },
     {
       "slug": "school-17-belyaevo",
@@ -96,7 +93,6 @@
       "metro": "Беляево",
       "city": "moscow",
       "district": "Коньково",
-      "logoUrl": "/venues/logos/school-17-placeholder.png",
       "latitude": 55.6364,
       "longitude": 37.5323,
       "directions": [
@@ -104,30 +100,39 @@
       ],
       "entranceNote": "Перед стартом смены подтвердим вход, место встречи и кабинет в корпусе.",
       "contactNote": "Точный кабинет и порядок прохода отправляем родителям перед началом смены.",
-      "photos": [],
+      "photos": [
+        {
+          "url": "/venues/photos/school-17-belyaevo/01.webp",
+          "alt": "Школа №17"
+        }
+      ],
       "listedOnSites": true,
-      "schoolScopeSlug": "school-17"
+      "schoolScopeSlug": "school-17",
+      "logoUrl": "/venues/logos/school-17.webp"
     },
     {
       "slug": "school-2103-yasenevo",
       "name": "Школа №2103",
       "displayName": "Школа №2103",
       "type": "school",
-      "address": "Голубинская ул., 13к2",
+      "address": "Голубинская ул., 5к4",
       "metro": "Ясенево",
       "city": "moscow",
       "district": "Ясенево",
-      "logoUrl": "/venues/logos/school-2103-placeholder.png",
-      "latitude": 55.603,
-      "longitude": 37.5175,
       "directions": [
         "Постройте маршрут до Голубинской ул., 13к2 и ориентируйтесь на главный вход школы.\nНа входе скажите, что вы на занятия BrainMaster.\nДождитесь координатора BrainMaster в согласованной зоне встречи."
       ],
       "entranceNote": "Перед стартом смены подтвердим вход, место встречи и кабинет в корпусе.",
       "contactNote": "Точный кабинет и порядок прохода отправляем родителям перед началом смены.",
-      "photos": [],
+      "photos": [
+        {
+          "url": "/venues/photos/school-2103-yasenevo/01.webp",
+          "alt": "Школа №2103"
+        }
+      ],
       "listedOnSites": true,
-      "schoolScopeSlug": "school-2103"
+      "schoolScopeSlug": "school-2103",
+      "logoUrl": "/venues/logos/school-2103.webp"
     },
     {
       "slug": "school-875-yugo-zapadnaya",
@@ -138,7 +143,6 @@
       "metro": "Юго-Западная",
       "city": "moscow",
       "district": "Проспект Вернадского",
-      "logoUrl": "/venues/logos/school-875-placeholder.png",
       "latitude": 55.6632,
       "longitude": 37.4904,
       "directions": [
@@ -146,9 +150,15 @@
       ],
       "entranceNote": "Перед стартом смены подтвердим вход, место встречи и кабинет в корпусе.",
       "contactNote": "Точный кабинет и порядок прохода отправляем родителям перед началом смены.",
-      "photos": [],
+      "photos": [
+        {
+          "url": "/venues/photos/school-875-yugo-zapadnaya/01.webp",
+          "alt": "Школа №875"
+        }
+      ],
       "listedOnSites": true,
-      "schoolScopeSlug": "school-875"
+      "schoolScopeSlug": "school-875",
+      "logoUrl": "/venues/logos/school-875.webp"
     },
     {
       "slug": "school-937-orekhovo",
@@ -159,7 +169,6 @@
       "metro": "Орехово",
       "city": "moscow",
       "district": "Орехово-Борисово",
-      "logoUrl": "/venues/logos/school-937-placeholder.png",
       "latitude": 55.619,
       "longitude": 37.6996,
       "directions": [
@@ -167,9 +176,15 @@
       ],
       "entranceNote": "Перед стартом смены подтвердим вход, место встречи и кабинет в корпусе.",
       "contactNote": "Точный кабинет и порядок прохода отправляем родителям перед началом смены.",
-      "photos": [],
+      "photos": [
+        {
+          "url": "/venues/photos/school-937-orekhovo/01.webp",
+          "alt": "Школа №937"
+        }
+      ],
       "listedOnSites": true,
-      "schoolScopeSlug": "school-937"
+      "schoolScopeSlug": "school-937",
+      "logoUrl": "/venues/logos/school-937.webp"
     }
   ]
 }

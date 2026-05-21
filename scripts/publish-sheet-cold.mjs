@@ -24,5 +24,6 @@ function run(cmd, args) {
 run(process.execPath, [path.join(__dirname, "run-sheet-sync.mjs"), "cold"]);
 run(process.execPath, [path.join(__dirname, "validate-public-snapshot.mjs")]);
 run(process.execPath, [path.join(__dirname, "run-s3-sync.mjs"), "data-cold"]);
+run(process.execPath, [path.join(__dirname, "run-s3-sync.mjs"), "media"]);
 run(process.execPath, [path.join(__dirname, "timeweb-deploy.mjs")]);
 console.log("[publish-sheet-cold] done — Timeweb rebuild 2–5 min");

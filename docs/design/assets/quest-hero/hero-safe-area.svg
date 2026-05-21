@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080" role="img" aria-labelledby="title desc">
+  <title id="title">Quest hero safe area 16:9</title>
+  <desc id="desc">Hero banner: safe area, Play zone, world gradient bottom, max height crop.</desc>
+  <rect width="1920" height="1080" fill="#111827"/>
+  <rect x="0" y="0" width="1920" height="1080" fill="none" stroke="#ffffff" stroke-width="8"/>
+  <rect x="384" y="216" width="1152" height="648" fill="none" stroke="#22d3ee" stroke-width="6" stroke-dasharray="24 18"/>
+  <rect x="760" y="380" width="400" height="320" fill="#ef4444" opacity="0.22"/>
+  <rect x="0" y="720" width="1920" height="360" fill="#000000" opacity="0.4"/>
+  <circle cx="960" cy="540" r="56" fill="none" stroke="#ef4444" stroke-width="4" opacity="0.6"/>
+  <line x1="960" y1="0" x2="960" y2="1080" stroke="#ffffff" stroke-width="2" stroke-dasharray="12 12" opacity="0.45"/>
+  <line x1="0" y1="540" x2="1920" y2="540" stroke="#ffffff" stroke-width="2" stroke-dasharray="12 12" opacity="0.45"/>
+  <text x="44" y="64" fill="#fca5a5" font-family="Arial, sans-serif" font-size="32" font-weight="700">!:@KB0O: :=>?:0 Play</text>
+  <text x="420" y="280" fill="#67e8f9" font-family="Arial, sans-serif" font-size="40" font-weight="700">848<0O: 3;02=K9 >1J5:B</text>
+  <text x="44" y="1000" fill="#e2e8f0" font-family="Arial, sans-serif" font-size="32" font-weight="700">@0485=B <8@0 + 70B5<=5=85 ?>4 2845></text>
+  <text x="44" y="1040" fill="#94a3b8" font-family="Arial, sans-serif" font-size="22">03>;>2>: :25AB0  =865 10==5@0 (2=5 :04@0)</text>
+</svg>

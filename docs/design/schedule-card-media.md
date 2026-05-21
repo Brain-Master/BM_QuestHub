@@ -2,6 +2,8 @@
 
 Этот гайд фиксирует требования к изображениям для карточек расписания. Цель — чтобы дизайнеры заранее готовили кадры, которые стабильно работают в detailed, compact и mobile режимах без случайного обрезания важного объекта.
 
+Сводка всех слотов: [image-templates-index.md](image-templates-index.md). Slot ID: `schedule_hero`, `schedule_compact`, `schedule_mobile_thumb`.
+
 ## Набор Изображений
 
 Для каждой смены желательно подготовить два отдельных изображения:
@@ -26,9 +28,14 @@
 
 Шаблоны лежат в `docs/design/assets/schedule-card-media/`:
 
-- `hero-detailed-safe-area.svg` — detailed-карточка на desktop.
-- `compact-safe-area.svg` — compact-карточка.
-- `mobile-hero-safe-area.svg` — мобильный стек.
+| Файл | Слот | Назначение |
+|------|------|------------|
+| `hero-detailed-safe-area.svg` | `schedule_hero` | Detailed-карточка на desktop (16:9) |
+| `compact-safe-area.svg` | `schedule_compact` | Compact-карточка (4:3, fade справа) |
+| `mobile-hero-safe-area.svg` | `schedule_mobile_thumb` | Концептуальный квадрат ~1:1 (safe area, бейдж, градиент) |
+| `mobile-list-thumb-safe-area.svg` | `schedule_mobile_thumb` | Точный wireframe миниатюры в списке (**116×128** px, viewBox ×2) |
+
+На мобильном списке смен ([`schedule-board-card-mobile.tsx`](../../apps/web/components/schedule-board-card-mobile.tsx)) используется колонка **7.25rem × min-h-32** (~116×128): картинка `compact ?? hero`. Для приёмки макета удобнее `mobile-list-thumb-safe-area.svg`; `mobile-hero-safe-area.svg` — тот же слот в упрощённом квадратном виде.
 
 Обозначения в шаблонах:
 

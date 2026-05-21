@@ -1,0 +1,14 @@
+pdf-engine: xelatex
+variables:
+  geometry: margin=2.2cm
+  fontsize: 11pt
+  lang: ru
+header-includes:
+  - \usepackage{fontspec}
+  - \usepackage{polyglossia}
+  - \setdefaultlanguage{russian}
+  - \setmainfont{Arial}
+  - \setsansfont{Arial}
+  - \setmonofont{Consolas}
+  - \usepackage{hyperref}
+  - \hypersetup{colorlinks=true, linkcolor=blue, urlcolor=blue}

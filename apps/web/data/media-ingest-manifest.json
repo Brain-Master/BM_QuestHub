@@ -1,0 +1,179 @@
+{
+  "version": 1,
+  "entries": {
+    "world:cyber-rhythm:world_hero": {
+      "sourceUrl": "worlds\\cyber-rhythm\\hero-16x9.source.jpg",
+      "sha256": "7b957384dbbaff4a8fce8b311e7cb38e8376ec07708f96ddabe2cc43bcad005a",
+      "output": "media/worlds/cyber-rhythm/hero.webp",
+      "updatedAt": "2026-05-21T01:06:53.022Z"
+    },
+    "world:mekhvarium:world_hero": {
+      "sourceUrl": "worlds\\mekhvarium\\hero-16x9.source.jpg",
+      "sha256": "7b957384dbbaff4a8fce8b311e7cb38e8376ec07708f96ddabe2cc43bcad005a",
+      "output": "media/worlds/mekhvarium/hero.webp",
+      "updatedAt": "2026-05-21T01:06:53.217Z"
+    },
+    "world:minecraft:world_hero": {
+      "sourceUrl": "worlds\\minecraft\\hero-16x9.source.jpg",
+      "sha256": "7b957384dbbaff4a8fce8b311e7cb38e8376ec07708f96ddabe2cc43bcad005a",
+      "output": "media/worlds/minecraft/hero.webp",
+      "updatedAt": "2026-05-21T01:06:53.409Z"
+    },
+    "quest:cyber-rhythm:quest_hero": {
+      "sourceUrl": "quests\\cyber-rhythm\\hero-16x9.source.jpg",
+      "sha256": "11322848692dc67ef6e364c79fcb7fb2cde5ce3a69a6735642ca864dfbe2089b",
+      "output": "media/quests/cyber-rhythm/hero.webp",
+      "updatedAt": "2026-05-21T01:06:53.655Z"
+    },
+    "quest:cyber-rhythm:quest_catalog": {
+      "sourceUrl": "quests\\cyber-rhythm\\catalog-4x3.source.jpg",
+      "sha256": "747e1e75b029efbc38b2e154deaee4c2dd2b66117ee3cd6b9b985f414719b3ac",
+      "output": "media/quests/cyber-rhythm/catalog.webp",
+      "updatedAt": "2026-05-21T01:06:53.788Z"
+    },
+    "quest:mekhvarium-laboratoriya-kineticheskih-monstrov:quest_hero": {
+      "sourceUrl": "quests\\mekhvarium-laboratoriya-kineticheskih-monstrov\\hero-16x9.source.jpg",
+      "sha256": "11322848692dc67ef6e364c79fcb7fb2cde5ce3a69a6735642ca864dfbe2089b",
+      "output": "media/quests/mekhvarium-laboratoriya-kineticheskih-monstrov/hero.webp",
+      "updatedAt": "2026-05-21T01:06:53.994Z"
+    },
+    "quest:mekhvarium-laboratoriya-kineticheskih-monstrov:quest_catalog": {
+      "sourceUrl": "quests\\mekhvarium-laboratoriya-kineticheskih-monstrov\\catalog-4x3.source.jpg",
+      "sha256": "747e1e75b029efbc38b2e154deaee4c2dd2b66117ee3cd6b9b985f414719b3ac",
+      "output": "media/quests/mekhvarium-laboratoriya-kineticheskih-monstrov/catalog.webp",
+      "updatedAt": "2026-05-21T01:06:54.118Z"
+    },
+    "quest:mekhvarium-masterskaya-gidravlicheskih-monstrov:quest_hero": {
+      "sourceUrl": "quests\\mekhvarium-masterskaya-gidravlicheskih-monstrov\\hero-16x9.source.jpg",
+      "sha256": "11322848692dc67ef6e364c79fcb7fb2cde5ce3a69a6735642ca864dfbe2089b",
+      "output": "media/quests/mekhvarium-masterskaya-gidravlicheskih-monstrov/hero.webp",
+      "updatedAt": "2026-05-21T01:06:54.310Z"
+    },
+    "quest:mekhvarium-masterskaya-gidravlicheskih-monstrov:quest_catalog": {
+      "sourceUrl": "quests\\mekhvarium-masterskaya-gidravlicheskih-monstrov\\catalog-4x3.source.jpg",
+      "sha256": "747e1e75b029efbc38b2e154deaee4c2dd2b66117ee3cd6b9b985f414719b3ac",
+      "output": "media/quests/mekhvarium-masterskaya-gidravlicheskih-monstrov/catalog.webp",
+      "updatedAt": "2026-05-21T01:06:54.430Z"
+    },
+    "quest:minecraft-probuzhdenie-strazhey:quest_hero": {
+      "sourceUrl": "quests\\minecraft-probuzhdenie-strazhey\\hero-16x9.source.jpg",
+      "sha256": "11322848692dc67ef6e364c79fcb7fb2cde5ce3a69a6735642ca864dfbe2089b",
+      "output": "media/quests/minecraft-probuzhdenie-strazhey/hero.webp",
+      "updatedAt": "2026-05-21T01:06:54.639Z"
+    },
+    "quest:minecraft-probuzhdenie-strazhey:quest_catalog": {
+      "sourceUrl": "quests\\minecraft-probuzhdenie-strazhey\\catalog-4x3.source.jpg",
+      "sha256": "747e1e75b029efbc38b2e154deaee4c2dd2b66117ee3cd6b9b985f414719b3ac",
+      "output": "media/quests/minecraft-probuzhdenie-strazhey/catalog.webp",
+      "updatedAt": "2026-05-21T01:06:54.755Z"
+    },
+    "quest:minecraft-taina-drevnih-inzhenerov:quest_hero": {
+      "sourceUrl": "quests\\minecraft-taina-drevnih-inzhenerov\\hero-16x9.source.jpg",
+      "sha256": "11322848692dc67ef6e364c79fcb7fb2cde5ce3a69a6735642ca864dfbe2089b",
+      "output": "media/quests/minecraft-taina-drevnih-inzhenerov/hero.webp",
+      "updatedAt": "2026-05-21T01:06:54.945Z"
+    },
+    "quest:minecraft-taina-drevnih-inzhenerov:quest_catalog": {
+      "sourceUrl": "quests\\minecraft-taina-drevnih-inzhenerov\\catalog-4x3.source.jpg",
+      "sha256": "747e1e75b029efbc38b2e154deaee4c2dd2b66117ee3cd6b9b985f414719b3ac",
+      "output": "media/quests/minecraft-taina-drevnih-inzhenerov/catalog.webp",
+      "updatedAt": "2026-05-21T01:06:55.062Z"
+    },
+    "venue:bm-base-moscow:logo": {
+      "sourceUrl": "venues\\bm-base-moscow\\logo-256.source.png",
+      "sha256": "2f1fe3d14538b2a0ded59cb06a34c1571df428270cd75fac0f9f79552ee9234c",
+      "output": "/venues/logos/bm-base-moscow.webp",
+      "updatedAt": "2026-05-21T01:06:55.071Z"
+    },
+    "venue:bm-base-moscow:photo:01": {
+      "sourceUrl": "venues\\bm-base-moscow\\photo-01-16x10.source.jpg",
+      "sha256": "e7ffa027ae40167239ed7cbd14033adcb129d4a2871cc6ab1089a6ac25d51cba",
+      "output": "/venues/photos/bm-base-moscow/01.webp",
+      "updatedAt": "2026-05-21T01:06:55.135Z"
+    },
+    "venue:school-1212:logo": {
+      "sourceUrl": "venues\\school-1212\\logo-256.source.png",
+      "sha256": "2f1fe3d14538b2a0ded59cb06a34c1571df428270cd75fac0f9f79552ee9234c",
+      "output": "/venues/logos/school-1212.webp",
+      "updatedAt": "2026-05-21T01:06:55.142Z"
+    },
+    "venue:school-1212-yasenevo:photo:01": {
+      "sourceUrl": "venues\\school-1212\\photo-01-16x10.source.jpg",
+      "sha256": "e7ffa027ae40167239ed7cbd14033adcb129d4a2871cc6ab1089a6ac25d51cba",
+      "output": "/venues/photos/school-1212-yasenevo/01.webp",
+      "updatedAt": "2026-05-21T01:06:55.203Z"
+    },
+    "venue:school-1383:logo": {
+      "sourceUrl": "venues\\school-1383\\logo-256.source.png",
+      "sha256": "2f1fe3d14538b2a0ded59cb06a34c1571df428270cd75fac0f9f79552ee9234c",
+      "output": "/venues/logos/school-1383.webp",
+      "updatedAt": "2026-05-21T01:06:55.209Z"
+    },
+    "venue:school-1383-verkhnie-likhobory:photo:01": {
+      "sourceUrl": "venues\\school-1383\\photo-01-16x10.source.jpg",
+      "sha256": "e7ffa027ae40167239ed7cbd14033adcb129d4a2871cc6ab1089a6ac25d51cba",
+      "output": "/venues/photos/school-1383-verkhnie-likhobory/01.webp",
+      "updatedAt": "2026-05-21T01:06:55.273Z"
+    },
+    "venue:school-1517:logo": {
+      "sourceUrl": "venues\\school-1517\\logo-256.source.png",
+      "sha256": "2f1fe3d14538b2a0ded59cb06a34c1571df428270cd75fac0f9f79552ee9234c",
+      "output": "/venues/logos/school-1517.webp",
+      "updatedAt": "2026-05-21T01:06:55.279Z"
+    },
+    "venue:school-1517-narodnoe-opolchenie:photo:01": {
+      "sourceUrl": "venues\\school-1517\\photo-01-16x10.source.jpg",
+      "sha256": "e7ffa027ae40167239ed7cbd14033adcb129d4a2871cc6ab1089a6ac25d51cba",
+      "output": "/venues/photos/school-1517-narodnoe-opolchenie/01.webp",
+      "updatedAt": "2026-05-21T01:06:55.342Z"
+    },
+    "venue:school-17:logo": {
+      "sourceUrl": "venues\\school-17\\logo-256.source.png",
+      "sha256": "2f1fe3d14538b2a0ded59cb06a34c1571df428270cd75fac0f9f79552ee9234c",
+      "output": "/venues/logos/school-17.webp",
+      "updatedAt": "2026-05-21T01:06:55.349Z"
+    },
+    "venue:school-17-belyaevo:photo:01": {
+      "sourceUrl": "venues\\school-17\\photo-01-16x10.source.jpg",
+      "sha256": "e7ffa027ae40167239ed7cbd14033adcb129d4a2871cc6ab1089a6ac25d51cba",
+      "output": "/venues/photos/school-17-belyaevo/01.webp",
+      "updatedAt": "2026-05-21T01:06:55.411Z"
+    },
+    "venue:school-2103:logo": {
+      "sourceUrl": "venues\\school-2103\\logo-256.source.png",
+      "sha256": "2f1fe3d14538b2a0ded59cb06a34c1571df428270cd75fac0f9f79552ee9234c",
+      "output": "/venues/logos/school-2103.webp",
+      "updatedAt": "2026-05-21T01:06:55.419Z"
+    },
+    "venue:school-2103-yasenevo:photo:01": {
+      "sourceUrl": "venues\\school-2103\\photo-01-16x10.source.jpg",
+      "sha256": "e7ffa027ae40167239ed7cbd14033adcb129d4a2871cc6ab1089a6ac25d51cba",
+      "output": "/venues/photos/school-2103-yasenevo/01.webp",
+      "updatedAt": "2026-05-21T01:06:55.478Z"
+    },
+    "venue:school-875:logo": {
+      "sourceUrl": "venues\\school-875\\logo-256.source.png",
+      "sha256": "2f1fe3d14538b2a0ded59cb06a34c1571df428270cd75fac0f9f79552ee9234c",
+      "output": "/venues/logos/school-875.webp",
+      "updatedAt": "2026-05-21T01:06:55.486Z"
+    },
+    "venue:school-875-yugo-zapadnaya:photo:01": {
+      "sourceUrl": "venues\\school-875\\photo-01-16x10.source.jpg",
+      "sha256": "e7ffa027ae40167239ed7cbd14033adcb129d4a2871cc6ab1089a6ac25d51cba",
+      "output": "/venues/photos/school-875-yugo-zapadnaya/01.webp",
+      "updatedAt": "2026-05-21T01:06:55.548Z"
+    },
+    "venue:school-937:logo": {
+      "sourceUrl": "venues\\school-937\\logo-256.source.png",
+      "sha256": "2f1fe3d14538b2a0ded59cb06a34c1571df428270cd75fac0f9f79552ee9234c",
+      "output": "/venues/logos/school-937.webp",
+      "updatedAt": "2026-05-21T01:06:55.554Z"
+    },
+    "venue:school-937-orekhovo:photo:01": {
+      "sourceUrl": "venues\\school-937\\photo-01-16x10.source.jpg",
+      "sha256": "e7ffa027ae40167239ed7cbd14033adcb129d4a2871cc6ab1089a6ac25d51cba",
+      "output": "/venues/photos/school-937-orekhovo/01.webp",
+      "updatedAt": "2026-05-21T01:06:55.614Z"
+    }
+  }
+}

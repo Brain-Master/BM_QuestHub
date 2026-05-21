@@ -50,15 +50,37 @@ make backfill-shift-group-ids        # пересчитать shift_group_id н�
 - `Площадки` — venues (slug, name, type, address, …)
 - `Курсы` — курсы без смен (slug, world_slug, title, story, …)
 
-**Hero-видео (курсы и миры):**
+#### Лист «Миры» — порядок колонок
+
+Шапка (ровно 11 колонок, без `hero_image_url` — картинки только через media inbox):
+
+`slug`, `name`, `description`, `theme_key`, `tagline`, `pitch`, `highlights`, `hero_video_embed_url`, `card_gradient`, `card_glow`, `icon_key`
+
+| Колонка | Что писать |
+|---------|------------|
+| `theme_key` | Ключ темы CSS (`cyber-rhythm`, `mekhvarium`, `minecraft`, …) — **не** путать с `icon_key` |
+| `hero_video_embed_url` | VK/YouTube embed URL |
+| `card_gradient` | Tailwind-классы градиента карточки (`from-fuchsia-500/35 via-…`) |
+| `card_glow` | Tailwind-классы тени (`shadow-[0_0_60px_-12px] shadow-fuchsia-500/35`) |
+| `icon_key` | Только одно из: `blocks`, `cpu`, `waves`, `orbit` (иконка на карточке мира) |
+
+Если `icon_key` содержит CSS или `theme_key`, cold publish упадёт с ошибкой валидации. После массового импорта из репозитория: `node scripts/import-site-data-to-sheets.mjs --cold-only`.
+
+**Медиа (фото, логотипы, кадры расписания) — не в таблице.**  
+Кладите исходники в `media/inbox/` (или папку Drive `BM_QuestHub_Media` с тем же деревом). После `make publish-sheet-cold` / `hot` ingest сам соберёт WebP и заполнит snapshot.
+
+Структура имён: [media-inbox-layout.md](../design/pack/media-inbox-layout.md), Design Pack: `make design-pack`.
+
+**Видео (курсы и миры) — только embed в Sheet:**
 
 | Колонка | Назначение |
 |---------|------------|
-| `hero_video_file_url` | Путь на S3 после ingest, напр. `media/quests/<slug>/hero.mp4` (см. `make encode-hero-video`) |
-| `hero_video_embed_url` | VK/YouTube embed (`video_ext.php`) — «полная версия», грузится по клику |
-| `hero_video_url` | Устарело: трактуется как embed, если новые колонки пусты |
+| `hero_video_embed_url` | VK/YouTube embed — «полная версия», грузится по клику |
+| Файл `hero.mp4` | Только в inbox: `media/inbox/quests/{slug}/hero.mp4` → S3 после publish |
 
-Кодирование и заливка: [apps/web/media/README.md](../../apps/web/media/README.md), [hero-video-egress.md](../deployment/hero-video-egress.md).
+Кодирование вручную: [apps/web/media/README.md](../../apps/web/media/README.md), [hero-video-egress.md](../deployment/hero-video-egress.md).
+
+Спецификации изображений (соотношения, safe area, шаблоны SVG): [docs/design/README.md](../design/README.md), индекс слотов — [image-templates-index.md](../design/image-templates-index.md).
 
 Первый запуск (локально):
 

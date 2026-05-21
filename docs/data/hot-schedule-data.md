@@ -116,7 +116,7 @@
 
 Колонки **`format_time` в таблице нет** — подпись времени на сайте строится из дат группы и `start_time`/`end_time` формата.
 
-**Медиа** (если есть в шапке листа): `hero_image_url`, `compact_image_url`, `fallback_image_url`, `image_alt`, `image_focal_x`, `image_focal_y` — попадают в merged row и `scheduleCard.media`.
+**Медиа расписания** — не в Sheet. Кадры кладутся в `media/inbox/schedule/{shift_group_id}/` (`hero-16x9.source.jpg`, `compact-4x3.source.jpg`); после `make publish-sheet-hot` попадают в `scheduleCard.media`. См. [media-inbox-layout.md](../design/pack/media-inbox-layout.md) и [schedule-card-media.md](../design/schedule-card-media.md).
 
 Полный список ключей для join: [`HOT_GROUP_FIELD_KEYS`](../../apps/web/lib/offers/sheet-hot-join.ts), [`HOT_FORMAT_FIELD_KEYS`](../../apps/web/lib/offers/sheet-hot-join.ts).
 

@@ -6,7 +6,6 @@ import {
   parseSheetDate,
   parseSheetMosRuCode,
   parseSheetNonNegativeInt,
-  parseSheetPercent,
   parseSheetPositiveInt,
   parseSheetPrice,
   parseSheetRegistrationChannel,
@@ -98,10 +97,6 @@ function optionalRegistrationChannel() {
   );
 }
 
-function optionalPercent() {
-  return z.preprocess((v) => parseSheetPercent(v), z.number().min(0).max(100).optional());
-}
-
 function optionalTrimmedText() {
   return z.preprocess((v) => normalizeSheetText(v), z.string().optional());
 }
@@ -176,14 +171,8 @@ export const sheetFormatRowSchema = z.object({
 
 export type SheetFormatRow = z.infer<typeof sheetFormatRowSchema>;
 
-const sheetRowFields = sheetGroupFields.merge(sheetFormatRowSchema).extend({
-  hero_image_url: z.preprocess((v) => parseSheetUrl(v), z.string().optional()),
-  compact_image_url: z.preprocess((v) => parseSheetUrl(v), z.string().optional()),
-  fallback_image_url: z.preprocess((v) => parseSheetUrl(v), z.string().optional()),
-  image_alt: optionalTrimmedText(),
-  image_focal_x: optionalPercent(),
-  image_focal_y: optionalPercent(),
-});
+/** Медиа расписания — только из `media/inbox/schedule/{shift_group_id}/` после ingest. */
+const sheetRowFields = sheetGroupFields.merge(sheetFormatRowSchema);
 
 /** Объединённая строка после join группы + формата (для map-rows-to-offers). */
 export const sheetRowSchema = z.preprocess(

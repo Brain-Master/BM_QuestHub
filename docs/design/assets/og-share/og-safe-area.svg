@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Open Graph 1200x630 safe area</title>
+  <desc id="desc">Social share preview crop zones.</desc>
+  <rect width="1200" height="630" fill="#111827"/>
+  <rect x="0" y="0" width="1200" height="630" fill="none" stroke="#ffffff" stroke-width="6"/>
+  <rect x="48" y="24" width="1104" height="582" fill="none" stroke="#fbbf24" stroke-width="3" stroke-dasharray="14 10" opacity="0.7"/>
+  <rect x="210" y="95" width="780" height="440" fill="none" stroke="#22d3ee" stroke-width="5" stroke-dasharray="20 16"/>
+  <rect x="0" y="0" width="120" height="630" fill="#ef4444" opacity="0.15"/>
+  <rect x="1080" y="0" width="120" height="630" fill="#ef4444" opacity="0.15"/>
+  <text x="36" y="52" fill="#fbbf24" font-family="Arial, sans-serif" font-size="24"> 8A: >1@57:8 ?;0BD>@<>9 (6Q;BK9)</text>
+  <text x="240" y="140" fill="#67e8f9" font-family="Arial, sans-serif" font-size="32" font-weight="700">848<0O: 3;02=K9 >1J5:B</text>
+  <text x="36" y="600" fill="#94a3b8" font-family="Arial, sans-serif" font-size="20">1200×630  og:image</text>
+</svg>

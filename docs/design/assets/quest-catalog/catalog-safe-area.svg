@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1200" viewBox="0 0 1600 1200" role="img" aria-labelledby="title desc">
+  <title id="title">Quest catalog card 4:3</title>
+  <desc id="desc">Catalog card with bottom gradient zone.</desc>
+  <rect width="1600" height="1200" fill="#111827"/>
+  <rect x="0" y="0" width="1600" height="1200" fill="none" stroke="#ffffff" stroke-width="8"/>
+  <rect x="320" y="240" width="960" height="720" fill="none" stroke="#22d3ee" stroke-width="6" stroke-dasharray="24 18"/>
+  <rect x="0" y="780" width="1600" height="420" fill="#000000" opacity="0.5"/>
+  <rect x="0" y="0" width="1600" height="200" fill="#000000" opacity="0.12"/>
+  <line x1="800" y1="0" x2="800" y2="1200" stroke="#ffffff" stroke-width="2" stroke-dasharray="12 12" opacity="0.45"/>
+  <line x1="0" y1="600" x2="1600" y2="600" stroke="#ffffff" stroke-width="2" stroke-dasharray="12 12" opacity="0.45"/>
+  <text x="360" y="320" fill="#67e8f9" font-family="Arial, sans-serif" font-size="42" font-weight="700">848<0O: 3;02=K9 >1J5:B</text>
+  <text x="44" y="1120" fill="#e2e8f0" font-family="Arial, sans-serif" font-size="36" font-weight="700">@0485=B: =86=85 ~35%</text>
+  <text x="44" y="1160" fill="#94a3b8" font-family="Arial, sans-serif" font-size="22">03>;>2>: :0@B>G:8  ?>4 D>B></text>
+</svg>
