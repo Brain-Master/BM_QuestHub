@@ -50,7 +50,7 @@ export async function triggerTimewebDeploy(options = {}) {
   );
 
   const pollMs = options.pollMs ?? 15_000;
-  const timeoutMs = options.timeoutMs ?? 15 * 60_000;
+  const timeoutMs = options.timeoutMs ?? 25 * 60_000;
 
   const created = await timewebApi(token, `/api/v1/apps/${appId}/deploy`, {
     method: "POST",

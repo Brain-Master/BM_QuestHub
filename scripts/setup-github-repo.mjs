@@ -132,6 +132,19 @@ function main() {
   );
   setSecretFromStdin(ghBin, "CONTENT_REBUILD_GITHUB_TOKEN", token, token);
 
+  const telegramToken =
+    process.env.TELEGRAM_BOT_TOKEN?.trim() ||
+    readSecretLine("secret/lead-receiver.deploy.txt", "TELEGRAM_BOT_TOKEN");
+  const telegramChat =
+    process.env.TELEGRAM_CHAT_ID?.trim() ||
+    readSecretLine("secret/lead-receiver.deploy.txt", "TELEGRAM_CHAT_ID");
+  if (telegramToken) {
+    setSecretFromStdin(ghBin, "TELEGRAM_BOT_TOKEN", telegramToken, token);
+  }
+  if (telegramChat) {
+    setSecretFromStdin(ghBin, "TELEGRAM_CHAT_ID", telegramChat, token);
+  }
+
   const opsUrl =
     process.env.OPS_REPORT_URL?.trim() ||
     readSecretLine("secret/ops-reporter.deploy.txt", "OPS_REPORT_URL");

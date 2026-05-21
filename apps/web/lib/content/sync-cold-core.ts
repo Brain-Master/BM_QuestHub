@@ -14,7 +14,7 @@ import {
   parseWorldRow,
   rowObject,
   validateHeaderRow,
-  VENUE_HEADERS,
+  VENUE_REQUIRED_HEADERS,
   WORLD_REQUIRED_HEADERS,
 } from "./cold-sheet-contract";
 
@@ -128,7 +128,7 @@ export async function syncColdContentFromGoogleSheet(
     return { success: true, data: r.data };
   }, "Миры");
 
-  const venuesParsed = parseGrid(venuesGrid, VENUE_HEADERS, (obj) => {
+  const venuesParsed = parseGrid(venuesGrid, VENUE_REQUIRED_HEADERS, (obj) => {
     const r = parseVenueRow(obj);
     if (!r.success) {
       return {

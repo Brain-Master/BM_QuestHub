@@ -39,6 +39,9 @@ jobs:
           GOOGLE_SHEETS_HOT_RANGE_GROUPS: "'Группы'!A:AZ"
           GOOGLE_SHEETS_HOT_RANGE_FORMATS: "'Форматы'!A:AZ"
           GOOGLE_SHEETS_COLD_SPREADSHEET_ID: ${{ vars.GOOGLE_SHEETS_COLD_SPREADSHEET_ID }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          SKIP_MEDIA_INGEST: "1"
         run: node scripts/run-sheet-sync.mjs ${{ inputs.tier }}
 
       - name: Validate snapshots
@@ -64,6 +67,16 @@ jobs:
           AWS_DEFAULT_REGION: ru-1
         run: node scripts/run-s3-sync.mjs data-cold
 
+      - name: Upload media to S3 (cold only)
+        if: inputs.tier == 'cold'
+        env:
+          S3_BUCKET: ${{ secrets.S3_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          S3_ENDPOINT: ${{ vars.S3_ENDPOINT }}
+          AWS_DEFAULT_REGION: ru-1
+        run: node scripts/run-s3-sync.mjs media
+
       - name: Timeweb deploy (cold only)
         if: inputs.tier == 'cold'
         env:
@@ -71,3 +84,15 @@ jobs:
           TIMEWEB_APP_ID: ${{ vars.TIMEWEB_APP_ID }}
           GITHUB_SHA: ${{ github.sha }}
         run: node scripts/timeweb-deploy.mjs
+
+      - name: Notify Telegram on failure
+        if: failure()
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          INPUT_TIER: ${{ inputs.tier }}
+          GITHUB_SERVER_URL: ${{ github.server_url }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          GITHUB_WORKFLOW: ${{ github.workflow }}
+        run: node scripts/notify-sheet-sync-failure.mjs
