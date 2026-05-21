@@ -1,9 +1,9 @@
 {
   "version": 2,
-  "generatedAt": "2026-05-21T10:49:32.557Z",
+  "generatedAt": "2026-05-21T13:03:36.661Z",
   "source": "google_sheet_cold",
   "integrity": {
-    "contentHash": "sha256:a68fc61785ed3294798eb85c48facca1975947a45b1d52e6cd5e061edde6296a"
+    "contentHash": "sha256:2a56ab90c854a3632e7fbd857e989ace7b302088be93574ae1d7cbbfe0841904"
   },
   "course": {
     "slug": "cyber-rhythm",
@@ -21,6 +21,7 @@
       "презентация результата"
     ],
     "activeInCampaign": true,
+    "heroVideoEmbedUrl": "https://vk.com/video_ext.php?oid=-221557445&id=456239018",
     "groupSize": "до 12 человек в группе — уточняется по смене",
     "durationLabel": "Часы смены — по выбранной площадке",
     "priceHint": "Стоимость и условия — только из карточки смены / оферты после выбора площадки.",

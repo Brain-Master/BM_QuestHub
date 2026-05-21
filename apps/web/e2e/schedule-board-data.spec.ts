@@ -71,6 +71,53 @@ test.describe("Schedule Board data rules", () => {
     });
   });
 
+  test("mistaken CRM ids in enrolled do not force sold-out", () => {
+    const item = offer({
+      sheetStatus: "Идёт набор",
+      enrolled: 2445957,
+      maxCapacity: 12,
+      scheduleCard: {
+        status: "Идёт набор",
+        isArchived: false,
+        tags: [],
+        variants: [
+          {
+            id: "v1",
+            type: "Интенсив",
+            time: "9:00–12:00",
+            priceLabel: "8 500 ₽",
+            enrolled: 2445957,
+          },
+        ],
+      },
+    });
+    expect(getScheduleDisplayStatus(item, now)).toBe("Идёт набор");
+    expect(getScheduleCapacity(item)).toMatchObject({
+      total: 12,
+      booked: 0,
+      left: 12,
+      isSoldOut: false,
+      label: "Осталось 12 мест",
+    });
+  });
+
+  test("shows full capacity bar when maxCapacity is known but enrolled is missing", () => {
+    expect(
+      getScheduleCapacity(
+        offer({
+          maxCapacity: 20,
+          scheduleCard: { isArchived: false, tags: [], variants: [] },
+        }),
+      ),
+    ).toMatchObject({
+      total: 20,
+      booked: 0,
+      left: 20,
+      percent: 0,
+      isSoldOut: false,
+    });
+  });
+
   test("completed events cannot be sold-out CTAs", () => {
     const item = offer({
       endDate: "2026-05-10",

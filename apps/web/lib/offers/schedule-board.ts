@@ -15,7 +15,11 @@ import type {
   ScheduleVariant,
   VenueOffer,
 } from "@/lib/schemas";
-import { formatVariantTimeLabel } from "@/lib/offers/sheet-field-parsers";
+import {
+  aggregateVariantEnrolled,
+  formatVariantTimeLabel,
+  normalizeEnrolledHeadcount,
+} from "@/lib/offers/sheet-field-parsers";
 import { joinProgramName } from "@/lib/offers/program-name";
 import {
   coalesceScheduleMediaImage,
@@ -127,26 +131,41 @@ export function isOfferAutoArchived(
 }
 
 export function getOfferEnrolledTotal(
-  offer: Pick<VenueOffer, "enrolled" | "scheduleCard">,
+  offer: Pick<VenueOffer, "enrolled" | "maxCapacity" | "scheduleCard">,
 ): number | undefined {
-  const fromVariants = (offer.scheduleCard?.variants ?? [])
-    .map((variant) => variant.enrolled)
-    .filter((n): n is number => typeof n === "number");
-  if (fromVariants.length > 0) {
-    return fromVariants.reduce((sum, n) => sum + n, 0);
+  const maxCapacity = offer.maxCapacity;
+  const fromVariants = aggregateVariantEnrolled(
+    offer.scheduleCard?.variants ?? [],
+    maxCapacity,
+  );
+  if (fromVariants !== undefined) {
+    return fromVariants;
   }
-  return offer.enrolled;
+  return normalizeEnrolledHeadcount(offer.enrolled, maxCapacity);
 }
 
 export function getScheduleCapacity(
   offer: Pick<VenueOffer, "enrolled" | "maxCapacity" | "scheduleCard">,
 ): ScheduleCapacityView {
-  const enrolled = getOfferEnrolledTotal(offer);
-  if (typeof enrolled !== "number" || typeof offer.maxCapacity !== "number") {
+  if (typeof offer.maxCapacity !== "number") {
     return null;
   }
 
   const total = offer.maxCapacity;
+  const enrolled = getOfferEnrolledTotal(offer);
+
+  if (typeof enrolled !== "number") {
+    return {
+      total,
+      booked: 0,
+      left: total,
+      percent: 0,
+      isLow: false,
+      isSoldOut: false,
+      label: `${CAPACITY_LABELS.remainingPrefix} ${formatPlaces(total)}`,
+    };
+  }
+
   const booked = Math.min(enrolled, total);
   const left = Math.max(total - booked, 0);
   const percent = Math.min(Math.round((booked / total) * 100), 100);
@@ -181,9 +200,10 @@ export function resolveScheduleStatusKey(
     offer.scheduleCard?.isArchived === true ||
     isOfferAutoArchived(offer, now) ||
     isCancelled;
+  const enrolled = getOfferEnrolledTotal(offer);
   const capacity = getScheduleCapacity(offer);
   const isSoldOut =
-    capacity?.isSoldOut === true ||
+    (typeof enrolled === "number" && capacity?.isSoldOut === true) ||
     mapped === "sold_out" ||
     rawStatus === soldOutLabel ||
     rawStatus === "Мест нет";

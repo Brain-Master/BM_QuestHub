@@ -7,33 +7,141 @@
 
 WEB := apps/web
 
-.PHONY: run check dev-host dev-restart brand-assets docs-index validate-snapshots export-yaml-snapshots content-publish content-publish-hot sync-sheet-hot sync-sheet-cold publish-sheet-hot publish-sheet-cold seed-sheet-headers restore-cold-design-from-backup encode-hero-video media-deps media-placeholders media-scaffold media-checkout media-pull media-commit media-push media-publish-site media-drive-push media-drive-pull data-import-sheets data-checkout data-pull data-commit data-push data-publish-site data-docs-push design-pack design-pack-oauth-login design-pack-publish-drive scripts-s3-deps timeweb-s3-setup timeweb-setup s3-sync-data s3-sync-data-hot s3-sync-data-cold s3-sync-media s3-sync-static s3-sync-all timeweb-build-check timeweb-deploy
+.PHONY: help run check dev-host dev-restart brand-assets docs-index validate-snapshots export-yaml-snapshots content-publish content-publish-hot sync-sheet-hot sync-sheet-cold publish-sheet-hot publish-sheet-cold seed-sheet-headers restore-cold-design-from-backup encode-hero-video media-deps media-placeholders media-scaffold media-checkout media-pull media-commit media-push media-publish-site media-drive-push media-drive-pull data-import-sheets data-checkout data-pull data-commit data-push data-publish-site data-docs-push design-pack design-pack-oauth-login design-pack-publish-drive scripts-s3-deps timeweb-s3-setup timeweb-setup s3-sync-data s3-sync-data-hot s3-sync-data-cold s3-sync-media s3-sync-static s3-sync-all timeweb-build-check timeweb-deploy setup-ops-sheet site-health-check setup-github-ops ops-verify-all design-pack-psd setup-sheets-env setup-content-admin import-site-data-to-sheets backfill-shift-group-ids deploy-yandex-content-admin deploy-yandex-lead-ops-reporter setup-github-repo
 
-# PNG/WebP/ICO из assets/brand/brainmaster-logo.png → assets/brand/generated/ (+ Next app/ + public/brand/)
+# Печать целей с суффиксом «## @раздел …» (см. make help)
+help: ## @meta Список целей make
+	node scripts/print-make-help.mjs
+
+# --- Dev & проверки ---
+
+## @Dev & проверки
+run: check ## run              check + Next dev на 0.0.0.0:3000 (LAN)
+dev-host: ## dev-host          Next dev на 0.0.0.0:3000 без check
+dev-restart: ## dev-restart    Освободить :3000 и перезапустить dev
+check: ## check                Линтер + production build (apps/web)
+brand-assets: ## brand-assets  PNG/WebP/ICO из brainmaster-logo → generated + Next
+docs-index: ## docs-index      docs/indexes/* из исходников и DocAsCode-тегов
+
+# --- Контент и снимки ---
+
+## @Контент и снимки
+validate-snapshots: ## validate-snapshots  Публичные JSON без denylist (перед S3)
+export-yaml-snapshots: ## export-yaml-snapshots  YAML → JSON snapshots
+content-publish: export-yaml-snapshots validate-snapshots scripts-s3-deps ## content-publish  YAML export + validate + producer publish
+content-publish-hot: validate-snapshots scripts-s3-deps ## content-publish-hot  Hot-only publish (без export)
+encode-hero-video: ## encode-hero-video  MP4+poster для S3 (SLUG=, SOURCE=, опц. KIND=)
+
+# --- Google Sheets ---
+
+## @Google Sheets
+sync-sheet-hot: ## sync-sheet-hot    Синхронизация Hot-таблицы из Sheets
+sync-sheet-cold: ## sync-sheet-cold   Синхронизация Cold-таблицы из Sheets
+publish-sheet-hot: ## publish-sheet-hot   Hot snapshot → S3
+publish-sheet-cold: ## publish-sheet-cold  Cold snapshot → S3
+seed-sheet-headers: ## seed-sheet-headers  Заголовки колонок в Google Sheets
+restore-cold-design-from-backup: ## restore-cold-design-from-backup  Дизайн Cold из бэкапа (--merge-design)
+setup-sheets-env: ## setup-sheets-env  Настройка .env для Sheets API
+import-site-data-to-sheets: ## import-site-data-to-sheets  JSON snapshot → Sheets (то же что data-pull)
+backfill-shift-group-ids: ## backfill-shift-group-ids  Проставить shift group id в данных
+
+# --- Медиа ↔ Drive ---
+
+## @Медиа ↔ Google Drive (docs/design/pack/media-inbox-layout.md)
+media-deps: ## media-deps        npm install в apps/web и scripts/
+media-placeholders: ## media-placeholders  Заглушки медиа по манифесту
+media-scaffold: ## media-scaffold  Каркас inbox по манифесту
+media-drive-push: media-deps ## media-drive-push  Сайт → Sync/ на Drive (media-pull)
+media-drive-pull: media-deps ## media-drive-pull  Sync/ → локальный inbox
+media-pull: media-drive-push ## media-pull         Алиас media-drive-push (для дизайнера)
+media-checkout: media-drive-push ## media-checkout  Алиас media-pull
+media-publish-site: media-deps ## media-publish-site  Drive → sheets publish → s3-sync-media (media-push)
+media-push: media-publish-site ## media-push         Алиас media-publish-site
+media-commit: media-publish-site ## media-commit     Алиас media-push
+
+# --- Данные ↔ Sheets ---
+
+## @Данные ↔ Google Sheets (docs/data/drive/BM_QuestHub_Data-layout.md)
+data-import-sheets: ## data-import-sheets  JSON snapshot → Google Sheets
+data-pull: data-import-sheets ## data-pull           Алиас data-import-sheets
+data-checkout: data-import-sheets ## data-checkout       Алиас data-import-sheets
+data-publish-site: ## data-publish-site   Sheets → publish cold/hot → S3 (data-push)
+data-push: data-publish-site ## data-push            Алиас data-publish-site
+data-commit: data-publish-site ## data-commit          Алиас data-push
+data-docs-push: media-deps ## data-docs-push      FOR_EDITORS → BM_QuestHub_Data на Drive
+
+# --- Design pack ---
+
+## @Design pack
+design-pack-psd: ## design-pack-psd   PSD-заготовки для дизайн-пака
+design-pack: media-placeholders design-pack-psd ## design-pack  Плейсхолдеры + PSD + сборка пака
+design-pack-oauth-login: ## design-pack-oauth-login  OAuth для Google Drive (скрипты)
+design-pack-publish-drive: ## design-pack-publish-drive  Опубликовать design pack на Drive
+
+# --- Ops & setup ---
+
+## @Ops & одноразовый setup
+setup-ops-sheet: ## setup-ops-sheet   Ops-таблица в Google Sheets
+site-health-check: ## site-health-check  Проверка доступности сайта/API
+setup-github-ops: ## setup-github-ops  GitHub Actions / ops для репозитория
+ops-verify-all: ## ops-verify-all    Сводная проверка ops-скриптов
+setup-content-admin: ## setup-content-admin  Настройка content admin
+setup-github-repo: ## setup-github-repo  Первичная настройка GitHub repo
+deploy-yandex-content-admin: ## deploy-yandex-content-admin  Деплой Yandex content admin
+deploy-yandex-lead-ops-reporter: ## deploy-yandex-lead-ops-reporter  Деплой lead ops reporter
+
+# --- Timeweb & S3 ---
+
+## @Timeweb & S3
+scripts-s3-deps: ## scripts-s3-deps   npm install в scripts/ (S3 sync)
+timeweb-s3-setup: ## timeweb-s3-setup  Создать bucket + scripts/s3.env (TIMEWEB_API_TOKEN)
+timeweb-setup: scripts-s3-deps ## timeweb-setup       Полная настройка Timeweb
+timeweb-build-check: ## timeweb-build-check  Проверка сборки перед деплоем
+timeweb-deploy: timeweb-build-check ## timeweb-deploy       Деплой на Timeweb
+s3-sync-data: scripts-s3-deps ## s3-sync-data      Всё дерево data/ (bootstrap, legacy YAML)
+s3-sync-data-hot: scripts-s3-deps ## s3-sync-data-hot  Hot JSON → S3
+s3-sync-data-cold: scripts-s3-deps ## s3-sync-data-cold Cold JSON → S3
+s3-sync-media: scripts-s3-deps ## s3-sync-media     Медиа → S3
+s3-sync-static: scripts-s3-deps ## s3-sync-static    Статика → S3
+s3-sync-all: scripts-s3-deps ## s3-sync-all       data + media + static → S3
+
+# --- Recipes (без ## в help: только зависимости выше) ---
+
+run:
+	cd $(WEB) && npm run dev:host
+
+dev-host:
+	cd $(WEB) && npm run dev:host
+
+dev-restart:
+	npm run dev:restart
+
+check:
+	cd $(WEB) && npm run check
+
 brand-assets:
 	python -m pip install -q -r scripts/requirements-brand-assets.txt
 	python scripts/generate_brainmaster_assets.py --sync-next
 
-# Индексы кода: docs/indexes/* из исходников и DocAsCode-тегов
 docs-index:
 	python scripts/generate_indexes.py
 
-# Проверки: линтер + production build
-check:
-	cd $(WEB) && npm run check
-
-# Публичные JSON без denylisted полей (перед s3-sync-data)
 validate-snapshots:
 	node scripts/validate-public-snapshot.mjs
 
 export-yaml-snapshots:
 	node scripts/export-yaml-to-snapshots.mjs
 
-content-publish: export-yaml-snapshots validate-snapshots scripts-s3-deps
+content-publish:
 	node apps/producer/publish.mjs
 
-content-publish-hot: validate-snapshots scripts-s3-deps
+content-publish-hot:
 	node apps/producer/publish.mjs --hot-only --skip-export
+
+encode-hero-video:
+	@test -n "$(SLUG)" || (echo "Set SLUG=quest-or-world-slug" && exit 1)
+	@test -n "$(SOURCE)" || (echo "Set SOURCE=/path/to/source.mp4" && exit 1)
+	node scripts/encode-hero-video.mjs --slug "$(SLUG)" --source "$(SOURCE)" $(if $(KIND),--kind $(KIND),)
 
 sync-sheet-hot:
 	node scripts/run-sheet-sync.mjs hot
@@ -50,7 +158,6 @@ publish-sheet-cold:
 seed-sheet-headers:
 	node scripts/seed-google-sheet-headers.mjs
 
-# Дизайн-презентация из бэкапа Cold → текущая Cold (шапки и тексты на Cold не трогаем)
 restore-cold-design-from-backup:
 	node scripts/restore-cold-from-backup.mjs --merge-design
 
@@ -66,11 +173,6 @@ setup-github-ops:
 ops-verify-all:
 	node scripts/ops-verify-all.mjs
 
-# Медиа ↔ Google Drive Sync/ (см. docs/design/pack/media-inbox-layout.md)
-#   make media-pull     — снимок сайта → папка Sync на Drive (для дизайнера)
-#   make media-push     — Sync → inbox → publish → S3 (обновить сайт)
-# Алиасы: media-checkout = media-pull, media-commit = media-push
-
 media-deps:
 	cd $(WEB) && npm install
 	cd scripts && npm install --omit=dev
@@ -81,37 +183,20 @@ media-placeholders:
 media-scaffold:
 	node scripts/media-scaffold.mjs
 
-media-drive-push: media-deps
+media-drive-push:
 	node scripts/sync-media-inbox-to-drive.mjs
 
-media-drive-pull: media-deps
+media-drive-pull:
 	node scripts/pull-media-inbox-from-drive.mjs
 
-media-checkout: media-drive-push
-
-media-pull: media-drive-push
-
-media-publish-site: media-deps
+media-publish-site:
 	node scripts/pull-media-inbox-from-drive.mjs
 	$(MAKE) publish-sheet-cold
 	$(MAKE) publish-sheet-hot
 	$(MAKE) s3-sync-media
 
-media-commit: media-publish-site
-
-media-push: media-publish-site
-
-# Данные ↔ Google Sheets (см. docs/data/drive/BM_QuestHub_Data-layout.md)
-#   make data-pull   — JSON snapshot → Google Sheets (для редакторов)
-#   make data-push   — Sheets → S3 (+ cold → Timeweb rebuild)
-#   make data-docs-push — FOR_EDITORS → BM_QuestHub_Data (отдельный ID на Drive)
-
 data-import-sheets:
 	node scripts/import-site-data-to-sheets.mjs
-
-data-checkout: data-import-sheets
-
-data-pull: data-import-sheets
 
 data-publish-site:
 	$(MAKE) publish-sheet-cold
@@ -119,17 +204,13 @@ data-publish-site:
 	$(MAKE) s3-sync-data-cold
 	$(MAKE) s3-sync-data-hot
 
-data-commit: data-publish-site
-
-data-push: data-publish-site
-
-data-docs-push: media-deps
+data-docs-push:
 	node scripts/sync-data-docs-to-drive.mjs
 
 design-pack-psd:
 	node scripts/generate-design-pack-psd.mjs
 
-design-pack: media-placeholders design-pack-psd
+design-pack:
 	cd scripts && npm install --omit=dev
 	node scripts/build-design-pack.mjs
 
@@ -139,12 +220,6 @@ design-pack-oauth-login:
 
 design-pack-publish-drive:
 	node scripts/publish-design-pack-to-drive.mjs
-
-# Encode hero MP4 + poster for S3: make encode-hero-video SLUG=cyber-rhythm SOURCE=/path/to/in.mp4
-encode-hero-video:
-	@test -n "$(SLUG)" || (echo "Set SLUG=quest-or-world-slug" && exit 1)
-	@test -n "$(SOURCE)" || (echo "Set SOURCE=/path/to/source.mp4" && exit 1)
-	node scripts/encode-hero-video.mjs --slug "$(SLUG)" --source "$(SOURCE)" $(if $(KIND),--kind $(KIND),)
 
 setup-sheets-env:
 	node scripts/setup-sheets-env.mjs
@@ -170,49 +245,34 @@ setup-github-repo:
 timeweb-build-check:
 	node scripts/timeweb-build-check.mjs
 
-timeweb-deploy: timeweb-build-check
+timeweb-deploy:
 	node scripts/timeweb-deploy.mjs
 
-# Loads scripts/s3.env + scripts/timeweb.env via Node (Windows-friendly)
 S3_SYNC = node scripts/run-s3-sync.mjs
 
 scripts-s3-deps:
 	cd scripts && npm install --omit=dev
 
-# TIMEWEB_API_TOKEN in scripts/timeweb.env → create bucket + scripts/s3.env
 timeweb-s3-setup:
 	node scripts/timeweb-provision-s3.mjs --setup bm-questhub
 
-timeweb-setup: scripts-s3-deps
+timeweb-setup:
 	node scripts/timeweb-setup.mjs
 
-# Full data/ tree — bootstrap and legacy YAML publish only
-s3-sync-data: scripts-s3-deps
+s3-sync-data:
 	$(S3_SYNC) data
 
-s3-sync-data-hot: scripts-s3-deps
+s3-sync-data-hot:
 	$(S3_SYNC) data-hot
 
-s3-sync-data-cold: scripts-s3-deps
+s3-sync-data-cold:
 	$(S3_SYNC) data-cold
 
-s3-sync-media: scripts-s3-deps
+s3-sync-media:
 	$(S3_SYNC) media
 
-s3-sync-static: scripts-s3-deps
+s3-sync-static:
 	$(S3_SYNC) static
 
-s3-sync-all: scripts-s3-deps
+s3-sync-all:
 	$(S3_SYNC) all
-
-# Сначала проверки, затем dev-сервер, доступный в LAN (0.0.0.0)
-run: check
-	cd $(WEB) && npm run dev:host
-
-# Только dev по сети, без проверок (быстрый старт)
-dev-host:
-	cd $(WEB) && npm run dev:host
-
-# Освободить порт 3000 и поднять dev-сервер заново на том же порту
-dev-restart:
-	npm run dev:restart

@@ -1,9 +1,9 @@
 {
   "version": 2,
-  "generatedAt": "2026-05-21T10:49:32.557Z",
+  "generatedAt": "2026-05-21T13:03:36.661Z",
   "source": "google_sheet_cold",
   "integrity": {
-    "contentHash": "sha256:fd3a3fd5805421cac495c24cbecb54ed57b4420b6f29f35304196c5b43d578b1"
+    "contentHash": "sha256:498afac18e2f1f554e86d32648261b1b17545cb23c327a20196489cbae8fadae"
   },
   "course": {
     "slug": "mekhvarium-masterskaya-gidravlicheskih-monstrov",
@@ -22,6 +22,7 @@
       "презентация проекта"
     ],
     "activeInCampaign": true,
+    "heroVideoEmbedUrl": "https://vk.com/video_ext.php?oid=-221557445&id=456239018",
     "groupSize": "до 12 человек в группе — уточняется по смене",
     "durationLabel": "Часы и питание — по карточке выбранной смены",
     "priceHint": "Стоимость и условия — после выбора площадки и смены; без цифр из черновиков до верификации.",

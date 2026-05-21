@@ -105,6 +105,39 @@ export function parseSheetPositiveInt(raw: unknown): number | undefined {
   return n;
 }
 
+/**
+ * Headcount from Hot Sheet. Values far above capacity are usually CRM/mos IDs
+ * pasted into the enrolled column by mistake.
+ */
+export function normalizeEnrolledHeadcount(
+  enrolled: number | undefined,
+  maxCapacity?: number,
+): number | undefined {
+  if (typeof enrolled !== "number" || !Number.isFinite(enrolled) || enrolled < 0) {
+    return undefined;
+  }
+  const cap =
+    typeof maxCapacity === "number" && maxCapacity > 0 ? maxCapacity : 200;
+  const ceiling = Math.max(cap * 5, 500);
+  if (enrolled > ceiling) return undefined;
+  return Math.round(enrolled);
+}
+
+/** Sum per-format enrollments; identical values are one group total, not N×duplicate. */
+export function aggregateVariantEnrolled(
+  variants: readonly { enrolled?: number }[],
+  maxCapacity?: number,
+): number | undefined {
+  const values = variants
+    .map((v) => normalizeEnrolledHeadcount(v.enrolled, maxCapacity))
+    .filter((n): n is number => typeof n === "number");
+  if (values.length === 0) return undefined;
+  if (values.length === 1) return values[0];
+  const first = values[0];
+  if (values.every((n) => n === first)) return first;
+  return values.reduce((a, b) => a + b, 0);
+}
+
 const ISO_DATE_RE = /^(\d{4})-(\d{2})-(\d{2})$/;
 const RU_DATE_RE = /^(\d{1,2})[./](\d{1,2})[./](\d{4})$/;
 

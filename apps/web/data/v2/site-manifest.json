@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generatedAt": "2026-05-21T10:49:32.557Z",
+  "generatedAt": "2026-05-21T13:03:36.661Z",
   "source": "google_sheet_cold",
   "snapshots": {
     "site": {
@@ -11,11 +11,11 @@
     },
     "catalog": {
       "path": "data/v2/catalog-snapshot.json",
-      "contentHash": "sha256:d2d80bbf89d76e58df7766355e1625e37f49dde240968e78c0810c66a5bd817a"
+      "contentHash": "sha256:3c5287458b38ef7ec8112adb7d61003c1fbe1314a38707268f79f099076abfe8"
     },
     "map": {
       "path": "data/v2/map-snapshot.json",
-      "contentHash": "sha256:2337dccbb7ebf78b4b007279402fb24dec320ebe8e44f187842a3466fccac60e"
+      "contentHash": "sha256:b3796a22b3b340fcfc235f52db0247ffbeef36070d6c3bd920e179d9a82f85ec"
     }
   }
 }

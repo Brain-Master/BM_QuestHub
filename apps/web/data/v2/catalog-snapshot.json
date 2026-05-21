@@ -1,9 +1,9 @@
 {
   "version": 2,
-  "generatedAt": "2026-05-21T10:49:32.557Z",
+  "generatedAt": "2026-05-21T13:03:36.661Z",
   "source": "google_sheet_cold",
   "integrity": {
-    "contentHash": "sha256:d2d80bbf89d76e58df7766355e1625e37f49dde240968e78c0810c66a5bd817a"
+    "contentHash": "sha256:3c5287458b38ef7ec8112adb7d61003c1fbe1314a38707268f79f099076abfe8"
   },
   "worlds": [
     {
@@ -83,6 +83,7 @@
         "презентация результата"
       ],
       "activeInCampaign": true,
+      "heroVideoEmbedUrl": "https://vk.com/video_ext.php?oid=-221557445&id=456239018",
       "groupSize": "до 12 человек в группе — уточняется по смене",
       "durationLabel": "Часы смены — по выбранной площадке",
       "priceHint": "Стоимость и условия — только из карточки смены / оферты после выбора площадки.",
@@ -111,6 +112,7 @@
         "командная работа"
       ],
       "activeInCampaign": true,
+      "heroVideoEmbedUrl": "https://vk.com/video_ext.php?oid=-221557445&id=456239018",
       "groupSize": "до 12 человек в группе — уточняется по смене",
       "durationLabel": "5 дней · полный день (напр. 08:30–16:30 — по карточке смены)",
       "priceHint": "Смена 1–5 июня 2026, школа №1212 — 15 300 ₽ по карточке mos.ru; другие даты и площадки — по их офертам.",
@@ -139,6 +141,7 @@
         "презентация проекта"
       ],
       "activeInCampaign": true,
+      "heroVideoEmbedUrl": "https://vk.com/video_ext.php?oid=-221557445&id=456239018",
       "groupSize": "до 12 человек в группе — уточняется по смене",
       "durationLabel": "Часы и питание — по карточке выбранной смены",
       "priceHint": "Стоимость и условия — после выбора площадки и смены; без цифр из черновиков до верификации.",
@@ -167,6 +170,7 @@
         "3D-ручка и оформление проекта"
       ],
       "activeInCampaign": true,
+      "heroVideoEmbedUrl": "https://vk.com/video_ext.php?oid=-221557445&id=456239018",
       "groupSize": "до 12 человек в группе — уточняется по смене",
       "durationLabel": "Полдня или полный день — по карточке выбранной смены",
       "priceHint": "Стоимость и условия — после выбора площадки и смены.",
@@ -195,6 +199,7 @@
         "инженерные миссии"
       ],
       "activeInCampaign": true,
+      "heroVideoEmbedUrl": "https://vk.com/video_ext.php?oid=-221557445&id=456239026",
       "groupSize": "до 12 человек в группе — уточняется по смене",
       "durationLabel": "Часы смены — по выбранной площадке",
       "priceHint": "Стоимость и условия — после выбора площадки и смены (без цифр из архивных макетов).",

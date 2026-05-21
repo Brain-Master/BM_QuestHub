@@ -1,9 +1,9 @@
 {
   "version": 2,
-  "generatedAt": "2026-05-21T10:49:32.557Z",
+  "generatedAt": "2026-05-21T13:03:36.661Z",
   "source": "google_sheet_cold",
   "integrity": {
-    "contentHash": "sha256:c075e220de090b55def2296089fbd2b70d4c27d6e387e9888526abe793561b7b"
+    "contentHash": "sha256:5d23059759a1c79f5a110056c447ea93caf7217c737c6f33816b5c9ef6fa1df2"
   },
   "course": {
     "slug": "minecraft-probuzhdenie-strazhey",
@@ -22,6 +22,7 @@
       "3D-ручка и оформление проекта"
     ],
     "activeInCampaign": true,
+    "heroVideoEmbedUrl": "https://vk.com/video_ext.php?oid=-221557445&id=456239018",
     "groupSize": "до 12 человек в группе — уточняется по смене",
     "durationLabel": "Полдня или полный день — по карточке выбранной смены",
     "priceHint": "Стоимость и условия — после выбора площадки и смены.",

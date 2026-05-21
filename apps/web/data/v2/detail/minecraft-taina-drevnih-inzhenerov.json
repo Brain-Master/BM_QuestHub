@@ -1,9 +1,9 @@
 {
   "version": 2,
-  "generatedAt": "2026-05-21T10:49:32.557Z",
+  "generatedAt": "2026-05-21T13:03:36.661Z",
   "source": "google_sheet_cold",
   "integrity": {
-    "contentHash": "sha256:e12ba602789a3c09e36b989f5d6c270ca7e6396bdc61a80e61f51a5a10d084d5"
+    "contentHash": "sha256:a9078cf0a4ce637f673a427ab353bb58d9ebd6ef45c787f1bc31932e8272fb69"
   },
   "course": {
     "slug": "minecraft-taina-drevnih-inzhenerov",
@@ -22,6 +22,7 @@
       "инженерные миссии"
     ],
     "activeInCampaign": true,
+    "heroVideoEmbedUrl": "https://vk.com/video_ext.php?oid=-221557445&id=456239026",
     "groupSize": "до 12 человек в группе — уточняется по смене",
     "durationLabel": "Часы смены — по выбранной площадке",
     "priceHint": "Стоимость и условия — после выбора площадки и смены (без цифр из архивных макетов).",

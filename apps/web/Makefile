@@ -3,7 +3,10 @@
 
 ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST)))/../..)
 
-.PHONY: default
+.PHONY: default help
+
+help:
+	@$(MAKE) -C "$(ROOT)" help
 
 default:
 	@$(MAKE) -C "$(ROOT)" run

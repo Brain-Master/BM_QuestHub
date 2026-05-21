@@ -1,9 +1,9 @@
 {
   "version": 2,
-  "generatedAt": "2026-05-21T10:49:32.557Z",
+  "generatedAt": "2026-05-21T13:03:36.661Z",
   "source": "google_sheet_cold",
   "integrity": {
-    "contentHash": "sha256:37b0b4b73018ae7e011a3282435ff02a5d8a99baf1d7c1c718b8ea39166c746a"
+    "contentHash": "sha256:0f1bb4d10c04feba24389599a55a31b757466ed2a9984590c3cd02d79dedf16a"
   },
   "course": {
     "slug": "mekhvarium-laboratoriya-kineticheskih-monstrov",
@@ -22,6 +22,7 @@
       "командная работа"
     ],
     "activeInCampaign": true,
+    "heroVideoEmbedUrl": "https://vk.com/video_ext.php?oid=-221557445&id=456239018",
     "groupSize": "до 12 человек в группе — уточняется по смене",
     "durationLabel": "5 дней · полный день (напр. 08:30–16:30 — по карточке смены)",
     "priceHint": "Смена 1–5 июня 2026, школа №1212 — 15 300 ₽ по карточке mos.ru; другие даты и площадки — по их офертам.",

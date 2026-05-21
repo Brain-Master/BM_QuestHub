@@ -8,9 +8,11 @@ import {
 
 import type { SheetRow } from "./sheet-contract";
 import {
+  aggregateVariantEnrolled,
   buildShiftGroupId,
   compareTimes,
   formatVariantTimeLabel,
+  normalizeEnrolledHeadcount,
   parseSheetTeachers,
 } from "./sheet-field-parsers";
 import { joinProgramName } from "./program-name";
@@ -122,7 +124,7 @@ function buildVariantFromRow(row: SheetRow, formatType: string): ScheduleVariant
     ageLabel: row.age_group?.trim() || undefined,
     mosRuCode: row.mos_ru_code?.trim() || undefined,
     mosBookingUrl: mosBookingUrl ?? undefined,
-    enrolled: row.enrolled,
+    enrolled: normalizeEnrolledHeadcount(row.enrolled),
     registrationChannel: inferRegistrationChannel(row, mosBookingUrl),
     allowPreliminaryRegistration: inferAllowPreliminaryRegistration(row),
   };
@@ -209,7 +211,7 @@ export function mapSheetRowToVenueOffer(
     mosBookingUrl,
     includedNote,
     sheetStatus: row.status,
-    enrolled: row.enrolled,
+    enrolled: normalizeEnrolledHeadcount(row.enrolled),
     maxCapacity: row.max_capacity,
     scheduleCard: buildScheduleCard(row),
   };
@@ -318,12 +320,11 @@ function computeGroupTimeSpan(offers: MappedOffer[]): {
   return { startTime, endTime };
 }
 
-function sumVariantEnrolled(variants: ScheduleVariant[]): number | undefined {
-  const values = variants
-    .map((v) => v.enrolled)
-    .filter((n): n is number => typeof n === "number");
-  if (values.length === 0) return undefined;
-  return values.reduce((a, b) => a + b, 0);
+function sumVariantEnrolled(
+  variants: ScheduleVariant[],
+  maxCapacity?: number,
+): number | undefined {
+  return aggregateVariantEnrolled(variants, maxCapacity);
 }
 
 function mergeShiftGroupOffers(offers: MappedOffer[]): MappedOffer {
@@ -331,7 +332,7 @@ function mergeShiftGroupOffers(offers: MappedOffer[]): MappedOffer {
   const variants = mergeScheduleVariants(offers);
   const { startTime, endTime } = computeGroupTimeSpan(offers);
   const card = primary.scheduleCard;
-  const enrolled = sumVariantEnrolled(variants);
+  const enrolled = sumVariantEnrolled(variants, primary.maxCapacity);
 
   const mergedCard: ScheduleCard | undefined = card
     ? {
@@ -390,7 +391,9 @@ export function consolidateOffersByShiftGroup(
       const variants = single.scheduleCard?.variants ?? [];
       consolidated.push({
         ...single,
-        enrolled: sumVariantEnrolled(variants) ?? single.enrolled,
+        enrolled:
+          sumVariantEnrolled(variants, single.maxCapacity) ??
+          normalizeEnrolledHeadcount(single.enrolled, single.maxCapacity),
       });
       continue;
     }

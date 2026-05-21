@@ -2,8 +2,10 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
 import {
+  aggregateVariantEnrolled,
   buildShiftGroupId,
   isZeroPrice,
+  normalizeEnrolledHeadcount,
   parseSheetBool,
   parseSheetDate,
   parseSheetNonNegativeInt,
@@ -113,5 +115,37 @@ describe("parseSheetUrl", () => {
 describe("parseSheetNonNegativeInt", () => {
   it("parses enrolled with apostrophe thousands", () => {
     assert.equal(parseSheetNonNegativeInt("1'234"), 1234);
+  });
+});
+
+describe("normalizeEnrolledHeadcount", () => {
+  it("keeps plausible counts", () => {
+    assert.equal(normalizeEnrolledHeadcount(8, 20), 8);
+  });
+
+  it("drops CRM-scale IDs mistaken for enrolled", () => {
+    assert.equal(normalizeEnrolledHeadcount(2445957, 12), undefined);
+  });
+});
+
+describe("aggregateVariantEnrolled", () => {
+  it("does not double-count identical variant totals", () => {
+    assert.equal(
+      aggregateVariantEnrolled(
+        [{ enrolled: 5 }, { enrolled: 5 }],
+        20,
+      ),
+      5,
+    );
+  });
+
+  it("sums distinct per-format enrollments", () => {
+    assert.equal(
+      aggregateVariantEnrolled(
+        [{ enrolled: 3 }, { enrolled: 5 }],
+        20,
+      ),
+      8,
+    );
   });
 });
