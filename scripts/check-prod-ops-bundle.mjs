@@ -3,7 +3,7 @@ const opsId = process.argv[2] || "d4eugco206uh65ivpbtm";
 const paths = process.argv.slice(3);
 const pages = paths.length
   ? paths
-  : ["/", "/catalog/", "/worlds/minecraft/"];
+  : ["/agenda/", "/catalog/", "/"];
 
 const needles = [
   opsId,
