@@ -117,8 +117,8 @@ function buildOpsEnv(leadEnv, opsToken) {
     TELEGRAM_BOT_TOKEN: leadEnv.TELEGRAM_BOT_TOKEN,
     OPS_TELEGRAM_CHAT_ID: leadEnv.TELEGRAM_CHAT_ID,
     GOOGLE_SHEETS_SPREADSHEET_ID: leadEnv.GOOGLE_SHEETS_SPREADSHEET_ID,
-    // Leave empty until the Ops tab exists in the spreadsheet (see README).
-    GOOGLE_OPS_SHEET_RANGE: leadEnv.GOOGLE_OPS_SHEET_RANGE || "",
+    // Ops tab: node scripts/setup-ops-sheet.mjs
+    GOOGLE_OPS_SHEET_RANGE: leadEnv.GOOGLE_OPS_SHEET_RANGE || "Ops!A:M",
     OPS_RATE_LIMIT_WINDOW_MS: leadEnv.OPS_RATE_LIMIT_WINDOW_MS || "60000",
   };
 
@@ -163,7 +163,7 @@ NEXT_PUBLIC_OPS_REPORT_URL=${opsUrl}
 
 # bm-lead-receiver patched from version ${leadVersionId}
 # Smoke: DevTools block lead URL → submit form → ops Telegram alert
-# Optional: create Google Sheet tab "Ops" with header row (see apps/yandex-lead-ops-reporter/README.md)
+# Ops log tab: node scripts/setup-ops-sheet.mjs (GOOGLE_OPS_SHEET_RANGE=Ops!A:M)
 `;
   fs.mkdirSync(path.dirname(out), { recursive: true });
   fs.writeFileSync(out, body, "utf8");

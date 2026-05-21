@@ -1,0 +1,21 @@
+# Production uptime checks — no VPS; runs on GitHub-hosted runners.
+name: Site health
+
+on:
+  schedule:
+    # Every 15 minutes (UTC). Adjust cron as needed.
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: HTTP smoke + ops alert on failure
+        env:
+          OPS_REPORT_URL: ${{ vars.OPS_REPORT_URL }}
+          OPS_REPORT_TOKEN: ${{ secrets.OPS_REPORT_TOKEN }}
+          SITE_HEALTH_URLS: ${{ vars.SITE_HEALTH_URLS }}
+        run: node scripts/site-health-check.mjs

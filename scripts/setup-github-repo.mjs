@@ -74,6 +74,19 @@ function readSaJson() {
   throw new Error("GOOGLE_SERVICE_ACCOUNT_JSON missing — run make setup-sheets-env");
 }
 
+function readSecretLine(fileRel, keyPrefix) {
+  const filePath = path.join(ROOT, fileRel);
+  if (!fs.existsSync(filePath)) return "";
+  const text = fs.readFileSync(filePath, "utf8");
+  if (!keyPrefix) return text.trim();
+  for (const line of text.split(/\r?\n/)) {
+    if (line.startsWith(`${keyPrefix}=`)) {
+      return line.slice(keyPrefix.length + 1).trim();
+    }
+  }
+  return "";
+}
+
 function setSecretFromStdin(bin, name, value, token) {
   const r = spawnSync(bin, ["secret", "set", name, "--repo", REPO], {
     input: value,
@@ -119,6 +132,17 @@ function main() {
   );
   setSecretFromStdin(ghBin, "CONTENT_REBUILD_GITHUB_TOKEN", token, token);
 
+  const opsUrl =
+    process.env.OPS_REPORT_URL?.trim() ||
+    readSecretLine("secret/ops-reporter.deploy.txt", "OPS_REPORT_URL");
+  const opsToken =
+    process.env.OPS_REPORT_TOKEN?.trim() ||
+    readSecretLine("secret/ops-reporter.token");
+
+  if (opsToken) {
+    setSecretFromStdin(ghBin, "OPS_REPORT_TOKEN", opsToken, token);
+  }
+
   const vars = {
     GOOGLE_SHEETS_HOT_SPREADSHEET_ID:
       process.env.GOOGLE_SHEETS_HOT_SPREADSHEET_ID?.trim() ||
@@ -128,6 +152,10 @@ function main() {
       "1fqeVC8BhjGWtOR20NhCUQuhwgchkCCzYsmiudpGE4jc",
     S3_ENDPOINT: process.env.S3_ENDPOINT?.trim() || "https://s3.twcstorage.ru",
     TIMEWEB_APP_ID: process.env.TIMEWEB_APP_ID?.trim() || "195536",
+    ...(opsUrl ? { OPS_REPORT_URL: opsUrl } : {}),
+    SITE_HEALTH_URLS:
+      process.env.SITE_HEALTH_URLS?.trim() ||
+      "https://quest.b-master.pro/,https://quest.b-master.pro/catalog",
   };
 
   for (const [name, value] of Object.entries(vars)) {

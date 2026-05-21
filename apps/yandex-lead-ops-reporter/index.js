@@ -9,14 +9,43 @@ const JSON_HEADERS = {
 const MAX_BODY_BYTES = 8192;
 const DEFAULT_RATE_LIMIT_MS = 60_000;
 
-const EVENT_TYPES = new Set(["lead.server_error", "lead.client_submit_failed"]);
-const SOURCES = new Set(["bm-lead-receiver", "bm-questhub-static"]);
+const EVENT_TYPES = new Set([
+  "lead.server_error",
+  "lead.client_submit_failed",
+  "site.health_check_failed",
+]);
+const SOURCES = new Set(["bm-lead-receiver", "bm-questhub-static", "bm-site-health"]);
 const ERROR_CODES = new Set([
   "invalid_payload",
   "delivery_failed",
   "network",
   "not_configured",
+  "site_unreachable",
+  "site_slow",
+  "site_bad_response",
 ]);
+
+const EVENT_TITLES = {
+  "lead.server_error": "Ошибка приёма заявки (сервер)",
+  "lead.client_submit_failed": "Заявка не отправилась с сайта",
+  "site.health_check_failed": "Проблема с доступностью сайта",
+};
+
+const SOURCE_LABELS = {
+  "bm-lead-receiver": "Yandex Function · приём заявок",
+  "bm-questhub-static": "Сайт Quest Hub · форма заявки",
+  "bm-site-health": "Автопроверка · GitHub Actions",
+};
+
+const ERROR_LABELS = {
+  invalid_payload: "Некорректные данные",
+  delivery_failed: "Сервис заявок не ответил",
+  network: "Сеть или таймаут",
+  not_configured: "Приём заявок не настроен",
+  site_unreachable: "Страница не открывается",
+  site_slow: "Страница отвечает слишком долго",
+  site_bad_response: "Страница открылась, но ответ подозрительный",
+};
 
 const LEAD_SNAPSHOT_FIELDS = [
   "leadType",
@@ -233,6 +262,17 @@ function isAuthorized(event, origin) {
 }
 
 function shouldRateLimit(event, clientIp) {
+  if (event.event === "site.health_check_failed") {
+    const target = event.issues[0] ?? event.errorMessage;
+    const key = `health|${target}`;
+    const windowMs = readRateLimitWindowMs();
+    const now = Date.now();
+    const last = rateLimitStore.get(key);
+    if (last && now - last < windowMs) return true;
+    rateLimitStore.set(key, now);
+    return false;
+  }
+
   if (event.event !== "lead.client_submit_failed") return false;
   const contact = event.lead?.contact ?? "";
   const offerId = event.lead?.offerId ?? "";
@@ -250,29 +290,50 @@ function shouldRateLimit(event, clientIp) {
   return false;
 }
 
+function formatOccurredAt(iso) {
+  try {
+    return new Date(iso).toLocaleString("ru-RU", {
+      timeZone: "Europe/Moscow",
+      dateStyle: "short",
+      timeStyle: "medium",
+    });
+  } catch {
+    return iso;
+  }
+}
+
 function formatTelegramMessage(event) {
-  const lines = [
-    `⚠️ <b>${escapeHtml(event.event)}</b>`,
-    `📡 ${escapeHtml(event.source)}`,
-    `🕒 ${escapeHtml(event.occurredAt)}`,
-    `❗ ${escapeHtml(event.errorCode)}: ${escapeHtml(event.errorMessage)}`,
-  ];
+  const title = EVENT_TITLES[event.event] ?? event.event;
+  const sourceLabel = SOURCE_LABELS[event.source] ?? event.source;
+  const errorLabel = ERROR_LABELS[event.errorCode] ?? event.errorCode;
 
-  if (event.httpStatus) lines.push(`HTTP ${event.httpStatus}`);
-  if (event.requestId) lines.push(`ID: ${escapeHtml(event.requestId)}`);
+  const lines = [`⚠️ <b>${escapeHtml(title)}</b>`, "", escapeHtml(event.errorMessage)];
 
-  if (event.lead?.parentName) lines.push(`👤 ${escapeHtml(event.lead.parentName)}`);
+  if (errorLabel !== event.errorMessage) {
+    lines.push("", `<i>${escapeHtml(errorLabel)}</i>`);
+  }
+
+  if (event.lead?.parentName) lines.push("", `👤 ${escapeHtml(event.lead.parentName)}`);
   if (event.lead?.contact) lines.push(`📞 ${escapeHtml(event.lead.contact)}`);
   if (event.lead?.questTitle) lines.push(`🎯 ${escapeHtml(event.lead.questTitle)}`);
 
   if (event.issues.length > 0) {
-    lines.push("", escapeHtml(event.issues.join("; ")));
+    lines.push("", "📋", ...event.issues.map((item) => `• ${escapeHtml(item)}`));
   }
 
+  const meta = [
+    `🕒 ${escapeHtml(formatOccurredAt(event.occurredAt))} (МСК)`,
+    `📡 ${escapeHtml(sourceLabel)}`,
+  ];
+  if (event.httpStatus > 0) meta.push(`HTTP ${event.httpStatus}`);
+  if (event.requestId) meta.push(`ID ${escapeHtml(event.requestId)}`);
+
+  lines.push("", meta.join("\n"));
+
   const spoilerLines = [];
-  if (event.lead?.questSlug) spoilerLines.push(`quest: ${event.lead.questSlug}`);
-  if (event.lead?.venueSlug) spoilerLines.push(`venue: ${event.lead.venueSlug}`);
-  if (event.lead?.offerId) spoilerLines.push(`offer: ${event.lead.offerId}`);
+  if (event.lead?.questSlug) spoilerLines.push(`квест: ${event.lead.questSlug}`);
+  if (event.lead?.venueSlug) spoilerLines.push(`площадка: ${event.lead.venueSlug}`);
+  if (event.lead?.offerId) spoilerLines.push(`смена: ${event.lead.offerId}`);
   if (spoilerLines.length > 0) {
     lines.push(
       "",

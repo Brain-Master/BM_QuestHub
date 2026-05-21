@@ -212,7 +212,9 @@ environment before `npm run build`.
 The ops reporter lives in `apps/yandex-lead-ops-reporter` with handler
 `index.handler`. It accepts failure events from the static site and from
 `bm-lead-receiver` (400/502) and sends admin Telegram alerts plus optional
-Google Sheet rows (`GOOGLE_OPS_SHEET_RANGE`, e.g. `Ops!A:K`).
+Google Sheet rows (`GOOGLE_OPS_SHEET_RANGE`, e.g. `Ops!A:M` — create tab: `node scripts/setup-ops-sheet.mjs`).
+
+**Uptime without VPS:** GitHub Actions [`.github/workflows/site-health.yml`](../../.github/workflows/site-health.yml) runs `scripts/site-health-check.mjs` every 15 minutes and POSTs to the ops reporter on failure. Set repo variable `OPS_REPORT_URL` and secret `OPS_REPORT_TOKEN`.
 
 Static site build env:
 

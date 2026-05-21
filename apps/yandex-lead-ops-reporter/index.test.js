@@ -27,7 +27,7 @@ function setBaseEnv() {
     OPS_TELEGRAM_CHAT_ID: "ops-chat",
     GOOGLE_SERVICE_ACCOUNT_JSON: serviceAccountJson(),
     GOOGLE_SHEETS_SPREADSHEET_ID: "spreadsheet-id",
-    GOOGLE_OPS_SHEET_RANGE: "Ops!A:K",
+    GOOGLE_OPS_SHEET_RANGE: "Ops!A:M",
     OPS_RATE_LIMIT_WINDOW_MS: "60000",
   };
 }
@@ -185,7 +185,7 @@ test("telegram failure still returns 202", async () => {
   assert.equal(body.ok, true);
 });
 
-test("formatTelegramMessage escapes HTML", () => {
+test("formatTelegramMessage escapes HTML and uses human titles", () => {
   const text = _internals.formatTelegramMessage(
     _internals.normalizeOpsEvent(
       opsPayload({
@@ -195,6 +195,53 @@ test("formatTelegramMessage escapes HTML", () => {
       "req-x",
     ),
   );
+  assert.ok(text.includes("Заявка не отправилась с сайта"));
+  assert.ok(text.includes("Сайт Quest Hub"));
   assert.ok(text.includes("&lt;script&gt;"));
   assert.ok(text.includes("A &amp; B"));
+});
+
+test("site health event is accepted with token", async () => {
+  setBaseEnv();
+  let telegramCalled = false;
+  global.fetch = async (url) => {
+    if (String(url).includes("api.telegram.org")) telegramCalled = true;
+    if (String(url).includes("oauth2.googleapis.com")) {
+      return new Response(JSON.stringify({ access_token: "google-token" }), { status: 200 });
+    }
+    return new Response(JSON.stringify({ ok: true }), { status: 200 });
+  };
+
+  const res = await handler(
+    event(
+      {
+        event: "site.health_check_failed",
+        source: "bm-site-health",
+        occurredAt: "2026-05-21T12:00:00.000Z",
+        errorCode: "site_unreachable",
+        errorMessage: "Страница не открывается: https://quest.b-master.pro/ (HTTP 502)",
+        httpStatus: 502,
+        issues: ["URL: https://quest.b-master.pro/"],
+      },
+      { origin: "", token: "ops-secret" },
+    ),
+    { requestId: "ops-health-1" },
+  );
+
+  assert.equal(res.statusCode, 202);
+  assert.equal(telegramCalled, true);
+  const text = _internals.formatTelegramMessage(
+    _internals.normalizeOpsEvent(
+      {
+        event: "site.health_check_failed",
+        source: "bm-site-health",
+        occurredAt: "2026-05-21T12:00:00.000Z",
+        errorCode: "site_unreachable",
+        errorMessage: "Страница не открывается",
+        issues: ["URL: https://quest.b-master.pro/"],
+      },
+      "ops-health-1",
+    ),
+  );
+  assert.ok(text.includes("Проблема с доступностью сайта"));
 });
