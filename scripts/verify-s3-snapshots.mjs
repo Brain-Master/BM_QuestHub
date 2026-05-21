@@ -3,8 +3,16 @@
  * Pre-build check: public S3 snapshot URLs respond and contain schedule data.
  * No-op when SITE_SNAPSHOT_SOURCE and OFFERS_SNAPSHOT_SOURCE are not "s3".
  *
+ * When S3 is unreachable from the build network (timeout), falls back to
+ * committed files under apps/web/data so Timeweb deploy is not blocked by CDN blips.
+ *
  *   node scripts/verify-s3-snapshots.mjs
  */
+import fs from "node:fs";
+import path from "node:path";
+
+const FETCH_TIMEOUT_MS = 12_000;
+
 function normalizeBase(base) {
   return base.endsWith("/") ? base : `${base}/`;
 }
@@ -14,11 +22,23 @@ function publicBaseUrl() {
   return base && base.length > 0 ? base : null;
 }
 
+function webDataDir() {
+  const cwd = process.cwd();
+  const candidates = [
+    path.join(cwd, "data"),
+    path.join(cwd, "apps", "web", "data"),
+  ];
+  for (const dir of candidates) {
+    if (fs.existsSync(path.join(dir, "offers-snapshot.json"))) return dir;
+  }
+  return candidates[0];
+}
+
 function resolveUrl(relativePath, manifestUrl) {
-  const path = relativePath.replace(/^\//, "");
+  const rel = relativePath.replace(/^\//, "");
   if (manifestUrl) {
     try {
-      return new URL(path, normalizeBase(manifestUrl)).toString();
+      return new URL(rel, normalizeBase(manifestUrl)).toString();
     } catch {
       /* fall through */
     }
@@ -26,18 +46,61 @@ function resolveUrl(relativePath, manifestUrl) {
   const base = publicBaseUrl();
   if (!base) return null;
   try {
-    return new URL(path, normalizeBase(base)).toString();
+    return new URL(rel, normalizeBase(base)).toString();
   } catch {
     return null;
   }
 }
 
-async function fetchJson(url, label) {
-  const res = await fetch(url, { cache: "no-store" });
+function isNetworkError(err) {
+  const code = err?.cause?.code || err?.code;
+  if (
+    code === "UND_ERR_CONNECT_TIMEOUT" ||
+    code === "ECONNREFUSED" ||
+    code === "ENOTFOUND" ||
+    code === "ETIMEDOUT" ||
+    code === "EAI_AGAIN"
+  ) {
+    return true;
+  }
+  if (err?.name === "AbortError" || err?.name === "TimeoutError") return true;
+  return /fetch failed/i.test(String(err?.message ?? ""));
+}
+
+function readLocalJson(relPath, label) {
+  const file = path.join(webDataDir(), relPath.replace(/^\//, ""));
+  if (!fs.existsSync(file)) {
+    throw new Error(`${label}: local file missing (${file})`);
+  }
+  return JSON.parse(fs.readFileSync(file, "utf8"));
+}
+
+async function fetchJsonRemote(url, label) {
+  const res = await fetch(url, {
+    cache: "no-store",
+    signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+  });
   if (!res.ok) {
     throw new Error(`${label}: HTTP ${res.status} for ${url}`);
   }
   return res.json();
+}
+
+async function loadJson({ url, localRel, label }) {
+  if (!url) {
+    return { data: readLocalJson(localRel, label), source: `local:${localRel}` };
+  }
+  try {
+    const data = await fetchJsonRemote(url, label);
+    return { data, source: url };
+  } catch (err) {
+    if (!isNetworkError(err)) throw err;
+    const data = readLocalJson(localRel, label);
+    console.warn(
+      `[verify-s3] ${label}: remote unreachable (${err.message}), using local ${localRel}`,
+    );
+    return { data, source: `local:${localRel}` };
+  }
 }
 
 function countV1Offers(snapshot) {
@@ -50,7 +113,9 @@ function countV1Offers(snapshot) {
 }
 
 function countV2Events(snapshot) {
-  if (!snapshot || snapshot.version !== 2 || !Array.isArray(snapshot.events)) return 0;
+  if (!snapshot || snapshot.version !== 2 || !Array.isArray(snapshot.events)) {
+    return 0;
+  }
   return snapshot.events.length;
 }
 
@@ -78,12 +143,16 @@ async function main() {
     (siteSource === "s3" ? resolveUrl("data/v2/site-manifest.json", null) : null);
 
   let schedulePath = "data/offers-snapshot.json";
-  if (manifestUrl) {
-    const manifest = await fetchJson(manifestUrl, "manifest");
+  if (manifestUrl || siteSource === "s3") {
+    const { data: manifest, source: manifestSource } = await loadJson({
+      url: manifestUrl,
+      localRel: "v2/site-manifest.json",
+      label: "manifest",
+    });
     if (manifest?.snapshots?.schedule?.path) {
       schedulePath = manifest.snapshots.schedule.path;
     }
-    console.log(`[verify-s3] manifest OK: ${manifestUrl}`);
+    console.log(`[verify-s3] manifest OK: ${manifestSource}`);
   } else if (siteSource === "s3") {
     console.error("[verify-s3] SITE_SNAPSHOT_SOURCE=s3 but manifest URL missing");
     process.exit(1);
@@ -97,24 +166,33 @@ async function main() {
     const scheduleUrl =
       resolveUrl(schedulePath, manifestUrl) ??
       new URL(schedulePath.replace(/^\//, ""), normalizeBase(base)).toString();
-    const schedule = await fetchJson(scheduleUrl, "schedule-snapshot");
+    const localRel = schedulePath.replace(/^data\//, "");
+    const { data: schedule, source } = await loadJson({
+      url: scheduleUrl,
+      localRel,
+      label: "schedule-snapshot",
+    });
     offerCount = countV2Events(schedule);
-    scheduleLabel = `${offerCount} events from ${scheduleUrl}`;
+    scheduleLabel = `${offerCount} events from ${source}`;
   } else {
     const offersUrl =
       offersExplicit ||
       (offersSource === "s3"
         ? new URL("data/offers-snapshot.json", normalizeBase(base)).toString()
         : null);
-    if (!offersUrl) {
+    if (!offersUrl && offersSource === "s3") {
       console.error(
         "[verify-s3] OFFERS_SNAPSHOT_SOURCE=s3 but offers URL could not be resolved",
       );
       process.exit(1);
     }
-    const offers = await fetchJson(offersUrl, "offers-snapshot");
+    const { data: offers, source } = await loadJson({
+      url: offersUrl,
+      localRel: "offers-snapshot.json",
+      label: "offers-snapshot",
+    });
     offerCount = countV1Offers(offers);
-    scheduleLabel = `${offerCount} offers from ${offersUrl}`;
+    scheduleLabel = `${offerCount} offers from ${source}`;
   }
 
   if (offerCount === 0) {
@@ -130,12 +208,16 @@ async function main() {
       console.error("[verify-s3] site-config URL missing");
       process.exit(1);
     }
-    const config = await fetchJson(configUrl, "site-config");
+    const { data: config, source } = await loadJson({
+      url: configUrl,
+      localRel: "v2/site-config.json",
+      label: "site-config",
+    });
     if (!config?.navigation?.worldGroups?.length) {
       console.error("[verify-s3] site-config missing navigation.worldGroups");
       process.exit(1);
     }
-    console.log(`[verify-s3] OK site-config from ${configUrl}`);
+    console.log(`[verify-s3] OK site-config from ${source}`);
   }
 
   console.log("[verify-s3] all checks passed");

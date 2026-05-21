@@ -63,7 +63,7 @@ SITE_SNAPSHOT_SOURCE=s3
 SITE_SNAPSHOT_STRICT=1
 ```
 
-Build runs `verify:s3` before `next build` when snapshot sources are `s3`; empty or missing S3 data fails the build instead of shipping an empty schedule.
+Build runs `verify:s3` before `next build` when snapshot sources are `s3`; empty or missing schedule data fails the build. If S3 is unreachable from the build network (timeout), `verify:s3` falls back to committed files under `apps/web/data/` so deploy is not blocked by a CDN blip — still run `make s3-sync-data` before release so production CDN matches git.
 
 Do not set `AWS_*` or `GOOGLE_*` here.
 
