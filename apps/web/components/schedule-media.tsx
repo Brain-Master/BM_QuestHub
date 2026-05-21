@@ -28,7 +28,7 @@ export function ScheduleMedia({ image, title, mode, className }: Props) {
         className,
       )}
     >
-      {image ? (
+      {image && imageUrl ? (
         <div
           className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover/schedule-card:scale-[1.03]"
           style={{

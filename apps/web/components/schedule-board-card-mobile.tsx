@@ -95,7 +95,7 @@ export function ScheduleBoardCardMobile({
           className="relative min-h-32 overflow-hidden rounded-xl bg-gradient-to-br from-primary/25 via-card to-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           onClick={onNavigate}
         >
-          {imageSrc ? (
+          {imageSrc && image ? (
             <div
               className="absolute inset-0 bg-cover bg-center"
               style={{
