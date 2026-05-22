@@ -112,6 +112,7 @@ flowchart TB
 | Несколько форматов на смену | **Dev/прод** | Нужны N строк на «Форматы» + `consolidateOffersByShiftGroup` (см. [hot-schedule-data.md](../data/hot-schedule-data.md)); данные могут быть ещё не восстановлены в Sheet |
 | Cold из Sheets HTTP 500 | **Sheets** | `GitHub sheet-sync 404` — PAT / `CONTENT_REBUILD_REPOSITORY` на Yandex Function |
 | Cold откатывает hot на проде | **Прод** | **Исправлено:** cold больше не делает `s3 sync` всего `data/` — только `data-cold` → `data/v2/` |
+| S3 map верный, на сайте старый адрес школы | **Прод** | Timeweb build: HTTP **403** на `map-snapshot.json` → тихий fallback на git/YAML; `verify:s3` раньше не проверял map/catalog — **исправлено в коде:** strict loader + расширенный verify |
 
 ---
 

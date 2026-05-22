@@ -5,6 +5,7 @@
  *
  * When S3 is unreachable from the build network (timeout), falls back to
  * committed files under apps/web/data so Timeweb deploy is not blocked by CDN blips.
+ * HTTP 403/401/404 never fall back — build must fail so stale git is not baked in.
  *
  *   node scripts/verify-s3-snapshots.mjs
  */
@@ -143,12 +144,15 @@ async function main() {
     (siteSource === "s3" ? resolveUrl("data/v2/site-manifest.json", null) : null);
 
   let schedulePath = "data/offers-snapshot.json";
+  /** @type {Record<string, unknown> | null} */
+  let manifest = null;
   if (manifestUrl || siteSource === "s3") {
-    const { data: manifest, source: manifestSource } = await loadJson({
+    const { data: manifestData, source: manifestSource } = await loadJson({
       url: manifestUrl,
       localRel: "v2/site-manifest.json",
       label: "manifest",
     });
+    manifest = manifestData;
     if (manifest?.snapshots?.schedule?.path) {
       schedulePath = manifest.snapshots.schedule.path;
     }
@@ -218,6 +222,46 @@ async function main() {
       process.exit(1);
     }
     console.log(`[verify-s3] OK site-config from ${source}`);
+
+    const mapPath =
+      manifest?.snapshots?.map?.path ?? "data/v2/map-snapshot.json";
+    const catalogPath =
+      manifest?.snapshots?.catalog?.path ?? "data/v2/catalog-snapshot.json";
+    const mapUrl = resolveUrl(mapPath, manifestUrl);
+    const catalogUrl = resolveUrl(catalogPath, manifestUrl);
+    if (!mapUrl || !catalogUrl) {
+      console.error("[verify-s3] map or catalog snapshot URL missing");
+      process.exit(1);
+    }
+
+    const { data: map, source: mapSource } = await loadJson({
+      url: mapUrl,
+      localRel: mapPath.replace(/^data\//, ""),
+      label: "map-snapshot",
+    });
+    const venueCount = Array.isArray(map?.venues) ? map.venues.length : 0;
+    if (venueCount < 1) {
+      console.error("[verify-s3] map-snapshot has no venues");
+      process.exit(1);
+    }
+    console.log(`[verify-s3] OK map: ${venueCount} venues from ${mapSource}`);
+
+    const { data: catalog, source: catalogSource } = await loadJson({
+      url: catalogUrl,
+      localRel: catalogPath.replace(/^data\//, ""),
+      label: "catalog-snapshot",
+    });
+    const worldCount = Array.isArray(catalog?.worlds) ? catalog.worlds.length : 0;
+    const courseCount = Array.isArray(catalog?.courses) ? catalog.courses.length : 0;
+    if (worldCount < 1 || courseCount < 1) {
+      console.error(
+        `[verify-s3] catalog-snapshot empty (worlds=${worldCount}, courses=${courseCount})`,
+      );
+      process.exit(1);
+    }
+    console.log(
+      `[verify-s3] OK catalog: ${worldCount} worlds, ${courseCount} courses from ${catalogSource}`,
+    );
   }
 
   console.log("[verify-s3] all checks passed");

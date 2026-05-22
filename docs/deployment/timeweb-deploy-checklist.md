@@ -20,6 +20,7 @@ Complete after merging Timeweb S3 + App Platform docs to `main`.
 - [ ] `curl -sI https://bm-questhub.s3.twcstorage.ru/data/v2/site-config.json` → 200
 - [ ] `curl -sI https://bm-questhub.s3.twcstorage.ru/data/v2/catalog-snapshot.json` → 200
 - [ ] `curl -sI https://bm-questhub.s3.twcstorage.ru/data/v2/map-snapshot.json` → 200
+- [ ] If site shows stale venue text but S3 JSON is correct: compare `site-config` vs `map-snapshot` curl from the same network; fix object ACL/policy, then `make publish-sheet-cold` (re-upload `data/v2/`).
 - [ ] CORS on bucket for **hot schedule** — [`scripts/timeweb-s3-cors.example.json`](../../scripts/timeweb-s3-cors.example.json)
 
 ## Content admin (optional)
@@ -36,7 +37,7 @@ Complete after merging Timeweb S3 + App Platform docs to `main`.
 - [ ] [Create app](https://timeweb.cloud/my/apps/create) — Next.js, **SSR off**, repo `Brain-Master/BM_QuestHub`.
 - [ ] Build: `npm run build`, output `apps/web/out` (see [timeweb-app-platform.md](./timeweb-app-platform.md)).
 - [ ] Env from [`apps/web/timeweb.app.env.example`](../../apps/web/timeweb.app.env.example) (include `SITE_SNAPSHOT_STRICT=1`).
-- [ ] Build log shows `[verify-s3] OK loaded …` and `[offers-snapshot]` / `[site-manifest]` info lines (not `remote read error`).
+- [ ] Build log shows `[verify-s3] OK map: … venues`, `[verify-s3] OK catalog: …`, `[catalog-loader] loaded N venues` (no `map read failed … HTTP 403`).
 - [ ] Deploy succeeds; note public `*.twc1.net` URL in execution log.
 
 ## Domains

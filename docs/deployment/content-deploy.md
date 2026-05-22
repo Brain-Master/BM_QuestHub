@@ -51,6 +51,8 @@ Browser fetches `${NEXT_PUBLIC_S3_PUBLIC_BASE_URL}/data/offers-snapshot.json` (S
 
 Timeweb build with `SITE_SNAPSHOT_SOURCE=s3` bakes catalog/map into HTML after deploy.
 
+`npm run verify:s3` ( [`verify-s3-snapshots.mjs`](../../scripts/verify-s3-snapshots.mjs) ) must return HTTP 200 for **manifest, offers, site-config, map-snapshot, catalog-snapshot**. With `SITE_SNAPSHOT_STRICT=1`, `next build` **fails** if map/catalog cannot be loaded from S3 (no silent fallback to committed `apps/web/data/`). Build log must include `[verify-s3] OK map: …` and `[catalog-loader] loaded N venues` — not `map read failed … HTTP 403`.
+
 `make publish-sheet-cold` and GitHub Actions call [`scripts/timeweb-deploy.mjs`](../../scripts/timeweb-deploy.mjs). In CI, `GITHUB_SHA` is passed so deploy does not depend on Timeweb’s GitHub VCS API. Locally, commit SHA is resolved from the app’s branch (`TIMEWEB_DEPLOY_BRANCH` in `scripts/timeweb.env`) unless `TIMEWEB_COMMIT_SHA` is set.
 
 Before deploy, `publish-sheet-cold` runs [`scripts/timeweb-build-check.mjs`](../../scripts/timeweb-build-check.mjs) (same as Timeweb: `verify:s3` + `next build` with S3 env). Skip with `SKIP_TIMEWEB_BUILD_CHECK=1`.

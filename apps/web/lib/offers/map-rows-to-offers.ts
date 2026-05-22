@@ -147,6 +147,7 @@ function buildScheduleCard(row: SheetRow): ScheduleCard {
     shortDate: undefined,
     shiftNumber: undefined,
     locationNote: inferLocationNote(row),
+    addressOverride: row.address?.trim() || undefined,
     programNameH1: row.program_name_h1?.trim() || undefined,
     programNameH2: row.program_name_h2.trim(),
     programFilterLabel: programFull,

@@ -6,6 +6,7 @@ import path from "node:path";
 import { parse as parseYaml } from "yaml";
 
 import {
+  isStrictRemoteCatalogLoad,
   loadCourseDetailSnapshot,
   loadCoursesFromSnapshot,
   loadMapSnapshot,
@@ -77,18 +78,33 @@ async function loadQuestsFromYaml(): Promise<Quest[]> {
 export async function loadWorlds(): Promise<World[]> {
   const fromSnapshot = await loadWorldsFromSnapshot();
   if (fromSnapshot && fromSnapshot.length > 0) return fromSnapshot;
+  if (isStrictRemoteCatalogLoad()) {
+    throw new Error(
+      "[loadWorlds] SITE_SNAPSHOT_STRICT: catalog snapshot missing or empty",
+    );
+  }
   return loadWorldsFromYaml();
 }
 
 export async function loadVenues(): Promise<Venue[]> {
   const map = await loadMapSnapshot();
   if (map?.venues.length) return map.venues;
+  if (isStrictRemoteCatalogLoad()) {
+    throw new Error(
+      "[loadVenues] SITE_SNAPSHOT_STRICT: map snapshot missing or empty",
+    );
+  }
   return loadVenuesFromYaml();
 }
 
 async function loadQuestBodies(): Promise<Omit<Quest, "offers">[]> {
   const fromCatalog = await loadCoursesFromSnapshot();
   if (fromCatalog && fromCatalog.length > 0) return fromCatalog;
+  if (isStrictRemoteCatalogLoad()) {
+    throw new Error(
+      "[loadQuestBodies] SITE_SNAPSHOT_STRICT: catalog snapshot missing or empty",
+    );
+  }
   const yamlQuests = await loadQuestsFromYaml();
   return yamlQuests.map(({ offers, ...rest }) => {
     void offers;

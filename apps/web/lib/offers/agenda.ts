@@ -1,4 +1,5 @@
 import type { Quest, Venue, VenueOffer, World } from "@/lib/schemas";
+import { venueWithScheduleAddress } from "@/lib/offers/schedule-location";
 import { venueVisibleForSchoolScope } from "@/lib/school-scope";
 
 export type AgendaOfferItem = {
@@ -112,7 +113,7 @@ export function buildAgendaItems(params: {
           tagline: quest.tagline,
           heroImageUrl: quest.heroImageUrl,
         },
-        venue,
+        venue: venueWithScheduleAddress(venue, offer.scheduleCard),
         world: worldBySlug.get(quest.worldSlug) ?? null,
       });
     }

@@ -122,3 +122,14 @@ describe("consolidateOffersByShiftGroup", () => {
     assert.equal(merged.length, 2);
   });
 });
+
+describe("mapSheetRowToVenueOffer", () => {
+  it("maps group address into scheduleCard.addressOverride", () => {
+    const result = mapSheetRowToVenueOffer(
+      baseRow({ address: "ул. Введенского, 27А" }),
+      venueSlugs,
+    );
+    assert.ok("ok" in result);
+    assert.equal(result.ok.scheduleCard?.addressOverride, "ул. Введенского, 27А");
+  });
+});

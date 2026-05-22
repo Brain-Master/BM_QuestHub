@@ -68,7 +68,7 @@
 | `venue_slug` | Slug площадки из Cold / `content/venues` |
 | `start_date` | Начало смены, `YYYY-MM-DD` |
 | `end_date` | Конец смены, `YYYY-MM-DD` |
-| `address` | Адрес проведения |
+| `address` | Адрес проведения на **карточке расписания**; перебивает адрес площадки из Cold, если отличается (страница школы `/sites/…` — только Cold) |
 | `status` | Статус набора (напр. «Идёт набор», «Мест нет») |
 
 **Рекомендуемые:** `program_name_h1`, `school_name`.
@@ -119,6 +119,8 @@
 **Медиа расписания** — не в Sheet. Кадры кладутся в `media/inbox/schedule/{shift_group_id}/` (`hero-16x9.source.jpg`, `compact-4x3.source.jpg`); после `make publish-sheet-hot` попадают в `scheduleCard.media`. См. [media-inbox-layout.md](../design/pack/media-inbox-layout.md) и [schedule-card-media.md](../design/schedule-card-media.md).
 
 Полный список ключей для join: [`HOT_GROUP_FIELD_KEYS`](../../apps/web/lib/offers/sheet-hot-join.ts), [`HOT_FORMAT_FIELD_KEYS`](../../apps/web/lib/offers/sheet-hot-join.ts).
+
+**Автообновление `enrolled` с mos.ru:** см. [mos-enrolled-sync.md](./mos-enrolled-sync.md) (`make mos-enrolled-sync-on`, цикл 15 мин).
 
 ### Join группы и формата
 

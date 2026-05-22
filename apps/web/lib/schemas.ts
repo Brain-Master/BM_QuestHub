@@ -153,6 +153,8 @@ export const scheduleCardSchema = z.object({
   shortDate: nullableOptionalString,
   shiftNumber: nullableOptionalString,
   locationNote: nullableOptionalString,
+  /** Hot «Группы» address — overrides venue address on schedule cards when set. */
+  addressOverride: nullableOptionalString,
   /** Вселенная / бренд (заголовок h1). */
   programNameH1: nullableOptionalString,
   /** Название курса (заголовок h2). */

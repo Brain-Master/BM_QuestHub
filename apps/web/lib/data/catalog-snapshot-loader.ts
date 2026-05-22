@@ -12,9 +12,21 @@ import {
 } from "@/lib/data/v2/catalog-snapshot";
 import { assertNoPrivateFields } from "@/lib/data/v2/private-field-denylist";
 import { resolvePublicSnapshotUrl } from "@/lib/data/public-snapshot-url";
+import {
+  allowLocalSnapshotFallback,
+  isRemoteCatalogSnapshotSource,
+  isRetriableFetchError,
+  isStrictRemoteCatalogLoad,
+  strictSnapshotLoadError,
+} from "@/lib/data/snapshot-load-policy";
 import { siteManifestV2Schema } from "@/lib/data/v2/site-snapshot";
 import { snapshotFetchInit } from "@/lib/data/snapshot-fetch";
 import type { Quest, Venue, World } from "@/lib/schemas";
+
+export {
+  isRemoteCatalogSnapshotSource,
+  isStrictRemoteCatalogLoad,
+} from "@/lib/data/snapshot-load-policy";
 
 function dataRoot(): string {
   return path.join(/*turbopackIgnore: true*/ process.cwd(), "data");
@@ -40,7 +52,9 @@ async function readJsonFile(filePath: string): Promise<unknown> {
 
 async function readJsonFromUrl(url: string): Promise<unknown> {
   const res = await fetch(url, snapshotFetchInit());
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  if (!res.ok) {
+    throw new Error(`HTTP ${res.status} for ${url}`);
+  }
   return res.json() as Promise<unknown>;
 }
 
@@ -58,6 +72,13 @@ async function readManifest() {
   }
 }
 
+function shouldFallbackToLocalAfterRemoteFailure(err: unknown): boolean {
+  if (!isRemoteCatalogSnapshotSource()) return true;
+  if (isStrictRemoteCatalogLoad() && !allowLocalSnapshotFallback()) return false;
+  if (!isRetriableFetchError(err)) return false;
+  return allowLocalSnapshotFallback();
+}
+
 async function readSnapshotByManifestKey(
   key: string,
   defaultRelativePath: string,
@@ -68,27 +89,47 @@ async function readSnapshotByManifestKey(
     manifestUrl: manifestUrl(),
   });
 
-  try {
-    if (remoteUrl) {
+  if (remoteUrl) {
+    try {
       return await readJsonFromUrl(remoteUrl);
+    } catch (e) {
+      if (isStrictRemoteCatalogLoad() && !shouldFallbackToLocalAfterRemoteFailure(e)) {
+        throw strictSnapshotLoadError(key, remoteUrl, e);
+      }
+      const err = e as Error;
+      console.warn(
+        `[catalog-loader] ${key} read failed (${relativePath}): ${err.message}`,
+      );
+      if (!shouldFallbackToLocalAfterRemoteFailure(e)) {
+        return null;
+      }
     }
-    const localPath = path.join(/*turbopackIgnore: true*/ process.cwd(), relativePath);
+  }
+
+  const localPath = path.join(/*turbopackIgnore: true*/ process.cwd(), relativePath);
+  try {
     return await readJsonFile(localPath);
   } catch (e) {
-    const err = e as Error;
-    console.warn(`[catalog-loader] ${key} read failed (${relativePath}): ${err.message}`);
+    if (isStrictRemoteCatalogLoad()) {
+      const target = remoteUrl ?? localPath;
+      throw strictSnapshotLoadError(key, target, e);
+    }
     return null;
+  }
+}
+
+function assertStrictSnapshotPresent(
+  key: string,
+  data: unknown | null,
+): asserts data is unknown {
+  if (data != null) return;
+  if (isStrictRemoteCatalogLoad()) {
+    throw new Error(`[catalog-loader] strict: ${key} snapshot missing or unreadable`);
   }
 }
 
 let cachedCatalog: CatalogSnapshot | null = null;
 let cachedMap: MapSnapshot | null = null;
-
-export function isRemoteCatalogSnapshotSource(): boolean {
-  if (process.env.CATALOG_SNAPSHOT_SOURCE === "local") return false;
-  if (process.env.CATALOG_SNAPSHOT_SOURCE === "s3") return true;
-  return process.env.SITE_SNAPSHOT_SOURCE === "s3";
-}
 
 async function readLocalCatalog(): Promise<CatalogSnapshot | null> {
   const localPath = path.join(dataRoot(), "v2", "catalog-snapshot.json");
@@ -122,14 +163,17 @@ export async function loadCatalogSnapshot(): Promise<CatalogSnapshot | null> {
   );
   if (!data) {
     const local = await readLocalCatalog();
+    assertStrictSnapshotPresent("catalog", local);
     if (local) cachedCatalog = local;
     return cachedCatalog;
   }
 
   const parsed = catalogSnapshotSchema.safeParse(data);
   if (!parsed.success) {
-    console.warn(`[catalog-loader] invalid catalog snapshot: ${parsed.error.message}`);
-    return null;
+    const msg = `[catalog-loader] invalid catalog snapshot: ${parsed.error.message}`;
+    if (isStrictRemoteCatalogLoad()) throw new Error(msg);
+    console.warn(msg);
+    return readLocalCatalog();
   }
   assertNoPrivateFields(parsed.data);
   cachedCatalog = parsed.data;
@@ -168,13 +212,16 @@ export async function loadMapSnapshot(): Promise<MapSnapshot | null> {
   const data = await readSnapshotByManifestKey("map", "data/v2/map-snapshot.json");
   if (!data) {
     const local = await readLocalMap();
+    assertStrictSnapshotPresent("map", local);
     if (local) cachedMap = local;
     return cachedMap;
   }
 
   const parsed = mapSnapshotSchema.safeParse(data);
   if (!parsed.success) {
-    console.warn(`[catalog-loader] invalid map snapshot: ${parsed.error.message}`);
+    const msg = `[catalog-loader] invalid map snapshot: ${parsed.error.message}`;
+    if (isStrictRemoteCatalogLoad()) throw new Error(msg);
+    console.warn(msg);
     return readLocalMap();
   }
   assertNoPrivateFields(parsed.data);
@@ -198,10 +245,20 @@ export async function loadCourseDetailSnapshot(
           path.join(/*turbopackIgnore: true*/ process.cwd(), relativePath),
         );
     const parsed = courseDetailSnapshotSchema.safeParse(data);
-    if (!parsed.success) return null;
+    if (!parsed.success) {
+      if (isStrictRemoteCatalogLoad()) {
+        throw new Error(
+          `[catalog-loader] strict: invalid detail snapshot for ${slug}: ${parsed.error.message}`,
+        );
+      }
+      return null;
+    }
     assertNoPrivateFields(parsed.data);
     return { ...parsed.data.course, offers: [] };
-  } catch {
+  } catch (e) {
+    if (isStrictRemoteCatalogLoad() && remoteUrl) {
+      throw strictSnapshotLoadError(`detail/${slug}`, remoteUrl, e);
+    }
     return null;
   }
 }
