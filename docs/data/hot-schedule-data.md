@@ -120,7 +120,7 @@
 
 Полный список ключей для join: [`HOT_GROUP_FIELD_KEYS`](../../apps/web/lib/offers/sheet-hot-join.ts), [`HOT_FORMAT_FIELD_KEYS`](../../apps/web/lib/offers/sheet-hot-join.ts).
 
-**Автообновление `enrolled` с mos.ru:** см. [mos-enrolled-sync.md](./mos-enrolled-sync.md) (`make mos-enrolled-sync-on`, цикл 15 мин).
+**Автообновление `enrolled` с mos.ru:** см. [mos-enrolled-sync.md](./mos-enrolled-sync.md) — production: YCF adaptive (`make deploy-yandex-mos-sync-adaptive`); локально: `make mos-enrolled-sync-on`. Сводка всех YCF: [yandex-cloud-functions.md](../deployment/yandex-cloud-functions.md).
 
 ### Join группы и формата
 

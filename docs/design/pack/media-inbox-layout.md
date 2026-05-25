@@ -31,7 +31,17 @@ BM_QuestHub_Media/
     │   └── hero.mp4            # опционально
     ├── venues/{school-scope-slug}/
     │   ├── logo-256.source.png
-    │   └── photo-01-16x10.source.jpg … photo-04
+    │   ├── photo-01-16x10.source.jpg … photo-04
+    │   ├── landing-30s.mp4              # опционально, school agenda
+    │   ├── landing-poster.source.jpg    # опционально
+    │   └── activity-gallery/
+    │       ├── gallery-01.source.jpg … gallery-12
+    │       └── gallery-01.caption.txt   # опционально
+    ├── venues/_default/                 # универсальный альбом / видео по умолчанию
+    │   ├── landing-30s.mp4
+    │   ├── landing-poster.source.jpg
+    │   └── activity-gallery/
+    │       └── gallery-01.source.jpg …
     └── schedule/{shift_group_id}/     ← опционально; без своих фото — на сайте hero квеста
         ├── hero-16x9.source.jpg
         └── compact-4x3.source.jpg
@@ -61,8 +71,23 @@ BM_QuestHub_Media/
 
 Текст и структура (slug, даты, цены, описания) — только в Sheet.
 
+## School agenda landing (видео + галерея)
+
+Медиа для `/sites/{school}/agenda/` **не** задаются в Cold Sheet. Только файлы в **Sync/** → `make media-push` → S3 + [`media-ingest-manifest.json`](../../../apps/web/data/media-ingest-manifest.json).
+
+| Ситуация | Галерея | Видео | Постер |
+|----------|---------|-------|--------|
+| Альбом площадки пуст | только `_default/activity-gallery/` | venue mp4 → `_default` mp4 → нет блока | venue → default → 1-е фото галереи |
+| Альбом площадки есть | сначала площадка, потом `_default` | то же | то же |
+| `_default` и площадка пусты | блок скрыт | нет default mp4 → нет блока | — |
+
+Подробнее: [school-agenda-landing-media.md](../school-agenda-landing-media.md).
+
 ## Связанные документы
 
+
+
 - [handbook.ru.md](handbook.ru.md) — workflow для дизайнера
+- [school-agenda-landing-media.md](../school-agenda-landing-media.md) — видео и галерея school agenda (в Design Pack: `03_School_agenda_media.pdf`)
 - [image-templates-index.md](../image-templates-index.md) — safe area по слотам
 - [apps/web/media/README.md](../../../apps/web/media/README.md) — пути после ingest

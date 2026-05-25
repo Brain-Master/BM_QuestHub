@@ -3,6 +3,8 @@
 HTTP receiver for Quest Hub lead forms. It is designed for Yandex Cloud
 Functions and keeps private integrations outside the static Next.js bundle.
 
+**Документация:** [static-hosting-s3-yandex.md](../../docs/deployment/static-hosting-s3-yandex.md) · [все YCF](../../docs/deployment/yandex-cloud-functions.md).
+
 ## Handler
 
 Use `index.handler` as the function entry point.

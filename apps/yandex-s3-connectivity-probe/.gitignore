@@ -1,0 +1,5 @@
+function.zip
+node_modules/
+mos-ops-s3.mjs
+s3-connectivity-probe.mjs
+telegram-alert.mjs

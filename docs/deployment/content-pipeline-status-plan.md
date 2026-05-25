@@ -231,6 +231,8 @@ UI рассчитан на **несколько тарифов в одной к�
 
 ## Команды (шпаргалка)
 
+Полная таблица YCF и make-целей: [yandex-cloud-functions.md](./yandex-cloud-functions.md).
+
 ```bash
 # Локально (разработчик)
 make publish-sheet-hot      # Sheet → data → S3 (без Timeweb)

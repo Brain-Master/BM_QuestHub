@@ -123,6 +123,31 @@ export const WORLD_VIDEO_INBOX = {
   sourceFilename: "hero.mp4",
 } as const;
 
+export const VENUE_LANDING_VIDEO_INBOX = {
+  inboxDirPattern: "venues/{scope}",
+  sourceFilename: "landing-30s.mp4",
+} as const;
+
+export const VENUE_LANDING_POSTER_SLOT: InboxSlotDef = {
+  id: "venue_landing_poster",
+  entityKind: "venue",
+  inboxDirPattern: "venues/{scope}",
+  sourceFilename: "landing-poster.source.jpg",
+  placeholderFile: "venue-photo-16x10.placeholder.webp",
+  presetId: "venue_landing_poster",
+  optional: true,
+};
+
+export const ACTIVITY_GALLERY_COUNT = 12;
+
+export const DEFAULT_SCHOOL_LANDING_SCOPE = "_default";
+
+export type SchoolLandingInboxSlot = InboxSlotDef & {
+  inboxDir: string;
+  inboxSourcePath: string;
+  galleryIndex?: string;
+};
+
 export type VenueInboxRef = {
   /** Inbox folder key (school_scope_slug or slug) */
   scopeSlug: string;
@@ -136,6 +161,43 @@ export type MediaInboxContext = {
   venues: VenueInboxRef[];
   shiftGroupIds: string[];
 };
+
+export function schoolLandingScopeSlugs(context: MediaInboxContext): string[] {
+  const scopes = new Set<string>([DEFAULT_SCHOOL_LANDING_SCOPE]);
+  for (const venue of context.venues) {
+    if (venue.scopeSlug) scopes.add(venue.scopeSlug);
+  }
+  return [...scopes];
+}
+
+export function slotsForSchoolLandingScope(scope: string): SchoolLandingInboxSlot[] {
+  const posterDir = VENUE_LANDING_POSTER_SLOT.inboxDirPattern.replace("{scope}", scope);
+  const slots: SchoolLandingInboxSlot[] = [
+    {
+      ...VENUE_LANDING_POSTER_SLOT,
+      inboxDir: posterDir,
+      inboxSourcePath: `${posterDir}/${VENUE_LANDING_POSTER_SLOT.sourceFilename}`,
+    },
+  ];
+  const galleryDir = `venues/${scope}/activity-gallery`;
+  for (let i = 1; i <= ACTIVITY_GALLERY_COUNT; i += 1) {
+    const index = String(i).padStart(2, "0");
+    const sourceFilename = `gallery-${index}.source.jpg`;
+    slots.push({
+      id: `venue_activity_gallery_${index}`,
+      entityKind: "venue",
+      inboxDirPattern: "venues/{scope}/activity-gallery",
+      sourceFilename,
+      placeholderFile: "venue-photo-16x10.placeholder.webp",
+      presetId: "venue_activity_gallery",
+      optional: true,
+      inboxDir: galleryDir,
+      inboxSourcePath: `${galleryDir}/${sourceFilename}`,
+      galleryIndex: index,
+    });
+  }
+  return slots;
+}
 
 export function slotsForEntity(
   kind: InboxEntityKind,
@@ -180,5 +242,50 @@ export function designPackCsvRows(): string[][] {
       slot.presetId,
     ]);
   }
+
+  const scopeKey = "{scope}";
+  rows.push([
+    "venue",
+    scopeKey,
+    "venue_landing_video",
+    `Sync/${VENUE_LANDING_VIDEO_INBOX.inboxDirPattern}/${VENUE_LANDING_VIDEO_INBOX.sourceFilename}`.replace(
+      "{scope}",
+      scopeKey,
+    ),
+    VENUE_LANDING_VIDEO_INBOX.sourceFilename,
+    "ffmpeg_h264_30s",
+  ]);
+  rows.push([
+    "venue",
+    scopeKey,
+    VENUE_LANDING_POSTER_SLOT.id,
+    `Sync/${VENUE_LANDING_POSTER_SLOT.inboxDirPattern}/${VENUE_LANDING_POSTER_SLOT.sourceFilename}`.replace(
+      "{scope}",
+      scopeKey,
+    ),
+    VENUE_LANDING_POSTER_SLOT.sourceFilename,
+    VENUE_LANDING_POSTER_SLOT.presetId,
+  ]);
+  for (let i = 1; i <= ACTIVITY_GALLERY_COUNT; i += 1) {
+    const index = String(i).padStart(2, "0");
+    const sourceFilename = `gallery-${index}.source.jpg`;
+    rows.push([
+      "venue",
+      scopeKey,
+      `venue_activity_gallery_${index}`,
+      `Sync/venues/${scopeKey}/activity-gallery/${sourceFilename}`,
+      sourceFilename,
+      "venue_activity_gallery",
+    ]);
+  }
+  rows.push([
+    "venue",
+    scopeKey,
+    "venue_activity_caption",
+    `Sync/venues/${scopeKey}/activity-gallery/gallery-01.caption.txt`,
+    "gallery-NN.caption.txt",
+    "(metadata only)",
+  ]);
+
   return rows;
 }

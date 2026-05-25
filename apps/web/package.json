@@ -12,6 +12,7 @@
     "lint": "eslint",
     "test:host-scope": "node --test ../../scripts/host-alias-core.test.mjs",
     "test:hero-video": "node --import tsx --test lib/media/hero-video.test.ts",
+    "test:school-landing": "node --import tsx --test lib/school-landing-media.test.ts",
     "test:e2e": "playwright test",
     "validate:snapshots": "node ../../scripts/validate-public-snapshot.mjs",
     "audit:hardcoded-data": "node ../../scripts/audit-hardcoded-data.mjs",

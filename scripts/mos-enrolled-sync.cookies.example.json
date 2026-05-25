@@ -1,0 +1,6 @@
+{
+  "_comment": "Optional. Copy to secret/mos-enrolled-sync.cookies.json — only if public API fails from YCF (403). From DevTools on mos.ru card page.",
+  "session-cookie": "<paste>",
+  "ACS-SESSID": "<paste>",
+  "laravel_session": "<paste>"
+}

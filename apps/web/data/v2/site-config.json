@@ -157,6 +157,13 @@
       "soldOut": "Мест нет",
       "remainingPrefix": "Осталось"
     },
+    "mosCapacityNotice": {
+      "enabled": true,
+      "title": "Свободные места — ориентир, не гарантия",
+      "body": "Данные подтягиваются с mos.ru и могут отставать. Точное число мест и запись — на карточке смены на mos.ru (кнопки «Запись» ведут на портал).",
+      "linkLabel": "Портал mos.ru",
+      "linkHref": "https://www.mos.ru"
+    },
     "sheetPlanningStatuses": ["Планируется", "Согласование"],
     "programSlugFragments": [],
     "metroLines": {

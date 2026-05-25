@@ -1,0 +1,13 @@
+{
+  "status": "success",
+  "data": {
+    "item": {
+      "group": {
+        "placeCount": 15,
+        "freeSpace": 12,
+        "id": 848078
+      }
+    },
+    "otherItems": []
+  }
+}

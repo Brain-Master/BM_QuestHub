@@ -1,0 +1,12 @@
+[
+  {
+    "id": 1,
+    "title": "Группа 1",
+    "capacity": { "total": 15, "booked": 3, "free": 12 }
+  },
+  {
+    "id": 2,
+    "title": "Группа 2",
+    "capacity": { "total": 10, "booked": 2, "free": 8 }
+  }
+]

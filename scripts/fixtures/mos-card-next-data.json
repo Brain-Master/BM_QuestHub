@@ -1,0 +1,15 @@
+{
+  "props": {
+    "pageProps": {
+      "activity": {
+        "id": 842871,
+        "title": "Test camp",
+        "capacity": {
+          "total": 15,
+          "booked": 7,
+          "free": 8
+        }
+      }
+    }
+  }
+}

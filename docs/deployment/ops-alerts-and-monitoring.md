@@ -4,6 +4,7 @@
 
 Связанные материалы:
 
+- Все YCF одной таблицей: [yandex-cloud-functions.md](./yandex-cloud-functions.md)
 - Приём заявок: [static-hosting-s3-yandex.md](./static-hosting-s3-yandex.md) (раздел Yandex Lead Receiver)
 - Чеклист продакшена: [timeweb-deploy-checklist.md](./timeweb-deploy-checklist.md)
 - Код функции: [`apps/yandex-lead-ops-reporter/README.md`](../../apps/yandex-lead-ops-reporter/README.md)

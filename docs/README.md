@@ -11,6 +11,8 @@
 | [Рекламная-кампания-лагерей-контекст.md](Рекламная-кампания-лагерей-контекст.md) | Временной горизонт, площадки, каналы, что должно быть на сайте к старту |
 | [Управление-заявками-и-источник-данных.md](Управление-заявками-и-источник-данных.md) | Единая модель данных, заявки, интеграция с mos.ru и будущим CRM |
 | [execution-log.md](execution-log.md) | Журнал выполненных работ, изменённых файлов, решений, проверок и открытых вопросов |
+| [deployment/yandex-cloud-functions.md](deployment/yandex-cloud-functions.md) | **Шпаргалка:** все YCF (заявки, ops, content-admin, mos sync) — триггеры, make, конфликты |
+| [deployment/README.md](deployment/README.md) | Индекс deployment-доков (Timeweb, S3, ops, контент) |
 | [deployment/ops-alerts-and-monitoring.md](deployment/ops-alerts-and-monitoring.md) | Ops-алерты: Telegram, Google Sheet Ops, мониторинг сайта (GitHub cron), настройка и тесты |
 | [design/README.md](design/README.md) | Шаблоны изображений для дизайнеров: соотношения, safe area, SVG-заготовки по всем слотам UI |
 | [Шаблон-карточки-квеста-скелет.md](Шаблон-карточки-квеста-скелет.md) | Фиксированный порядок секций для любого квеста (интенсив / год) |

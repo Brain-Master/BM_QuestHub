@@ -5,6 +5,7 @@ import { useMemo } from "react";
 import { ScheduleBoard } from "@/components/schedule-board";
 import { buildAgendaItems, groupAgendaItems } from "@/lib/offers/agenda";
 import { useLiveSchedule } from "@/lib/offers/use-live-schedule";
+import { useScheduleTrafficPulse } from "@/lib/schedule/use-schedule-traffic-pulse";
 import type { Quest, Venue, World } from "@/lib/schemas";
 
 type Props = {
@@ -15,9 +16,14 @@ type Props = {
 };
 
 export function LiveQuestSchedule({ baseQuests, venues, worlds, questSlug }: Props) {
-  const { quests, status, liveEnabled } = useLiveSchedule(baseQuests, {
-    refreshInterval: 60_000,
-  });
+  const { quests, status, liveEnabled, snapshotGeneratedAt } = useLiveSchedule(
+    baseQuests,
+    {
+      refreshInterval: 60_000,
+    },
+  );
+
+  useScheduleTrafficPulse({ page: "quest_schedule", enabled: liveEnabled });
 
   const groups = useMemo(() => {
     const quest = quests.find((q) => q.slug === questSlug);
@@ -44,6 +50,7 @@ export function LiveQuestSchedule({ baseQuests, venues, worlds, questSlug }: Pro
         description="Если для смены ещё нет карточки mos.ru, кнопка открывает форму заявки в модальном окне."
         showProgramFilter={false}
         displayMode="quest"
+        snapshotGeneratedAt={snapshotGeneratedAt}
       />
     </>
   );

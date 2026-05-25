@@ -158,9 +158,10 @@ function writeDeliveryNotes() {
 
 Быстрый старт:
   1. Прочитать 01_Инструкция_дизайнеру.pdf
-  2. Открыть templates-psd/ для нужного слота
-  3. Экспортировать файлы по 02_Структура_inbox.pdf → Google Drive: BM_QuestHub_Media/Sync/
-  4. Сообщить редактору — нужны make media-drive-pull и publish на сервере
+  2. School agenda (видео + галерея): 03_School_agenda_media.pdf
+  3. Открыть templates-psd/ для нужного слота
+  4. Экспортировать файлы по 02_Структура_inbox.pdf → Google Drive: BM_QuestHub_Media/Sync/
+  5. Сообщить редактору — нужен make media-push
 
 Сборка пакета (для команды):
   make design-pack
@@ -206,6 +207,10 @@ function main() {
   pandocPdf(
     path.join(PACK_SRC, "media-inbox-layout.md"),
     path.join(DIST, "02_Структура_inbox"),
+  );
+  pandocPdf(
+    path.join(ROOT, "docs", "design", "school-agenda-landing-media.md"),
+    path.join(DIST, "03_School_agenda_media"),
   );
 
   writeCsv();

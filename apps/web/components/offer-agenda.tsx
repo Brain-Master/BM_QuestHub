@@ -9,6 +9,9 @@ type Props = {
   schoolName?: string;
   allAgendaHref?: string;
   sitesHref?: string;
+  snapshotGeneratedAt?: string | null;
+  hideTitle?: boolean;
+  hideCommunityPanel?: boolean;
 };
 
 export function OfferAgenda({
@@ -17,6 +20,9 @@ export function OfferAgenda({
   schoolName,
   allAgendaHref,
   sitesHref = "/sites",
+  snapshotGeneratedAt = null,
+  hideTitle = false,
+  hideCommunityPanel = false,
 }: Props) {
   return (
     <ScheduleBoard
@@ -25,6 +31,9 @@ export function OfferAgenda({
       schoolName={schoolName}
       allAgendaHref={allAgendaHref}
       sitesHref={sitesHref}
+      snapshotGeneratedAt={snapshotGeneratedAt}
+      hideTitle={hideTitle}
+      hideCommunityPanel={hideCommunityPanel}
     />
   );
 }

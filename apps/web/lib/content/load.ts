@@ -112,6 +112,13 @@ async function loadQuestBodies(): Promise<Omit<Quest, "offers">[]> {
   });
 }
 
+/**
+ * School agenda landing: bake offers into static HTML at build, then refresh in browser.
+ */
+export async function loadQuestsForSchoolAgenda(): Promise<Quest[]> {
+  return loadQuests();
+}
+
 /** Quest bodies for static shell when live schedule loads offers in the browser. */
 export async function loadQuestsShell(): Promise<Quest[]> {
   const bodies = await loadQuestBodies();

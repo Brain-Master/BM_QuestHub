@@ -5,6 +5,7 @@ import { useMemo } from "react";
 import { OfferAgenda } from "@/components/offer-agenda";
 import { buildAgendaItems, groupAgendaItems } from "@/lib/offers/agenda";
 import { useLiveSchedule } from "@/lib/offers/use-live-schedule";
+import { useScheduleTrafficPulse } from "@/lib/schedule/use-schedule-traffic-pulse";
 import type { Quest, Venue, World } from "@/lib/schemas";
 
 type Props = {
@@ -15,6 +16,8 @@ type Props = {
   schoolName?: string;
   allAgendaHref?: string;
   sitesHref?: string;
+  hideScheduleTitle?: boolean;
+  hideCommunityPanel?: boolean;
 };
 
 export function LiveAgenda({
@@ -25,10 +28,15 @@ export function LiveAgenda({
   schoolName,
   allAgendaHref,
   sitesHref,
+  hideScheduleTitle = false,
+  hideCommunityPanel = false,
 }: Props) {
-  const { quests, status, isValidating, liveEnabled } = useLiveSchedule(baseQuests, {
-    refreshInterval: 60_000,
-  });
+  const { quests, status, isValidating, liveEnabled, snapshotGeneratedAt } =
+    useLiveSchedule(baseQuests, {
+      refreshInterval: 60_000,
+    });
+
+  useScheduleTrafficPulse({ page: "agenda", enabled: liveEnabled });
 
   const groups = useMemo(
     () =>
@@ -55,7 +63,7 @@ export function LiveAgenda({
               ? "Расписание временно недоступно — попробуйте обновить страницу."
               : isValidating
                 ? "Обновляем расписание…"
-                : "Расписание обновляется автоматически каждую минуту."}
+                : "Снимок на сайте обновляется каждую минуту; места на mos.ru могут отличаться."}
         </p>
       ) : null}
       {showSkeleton ? (
@@ -74,6 +82,9 @@ export function LiveAgenda({
           schoolName={schoolName}
           allAgendaHref={allAgendaHref}
           sitesHref={sitesHref}
+          snapshotGeneratedAt={snapshotGeneratedAt}
+          hideTitle={hideScheduleTitle}
+          hideCommunityPanel={hideCommunityPanel}
         />
       )}
     </div>

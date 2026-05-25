@@ -103,7 +103,10 @@
       ],
       "entranceNote": "Перед стартом смены подтвердим вход, место встречи и кабинет в корпусе.",
       "contactNote": "Точный кабинет и порядок прохода отправляем родителям перед началом смены.",
-      "photos": [],
+      "photos": [
+        { "url": "/venues/photos/school-17-belyaevo/01.webp", "alt": "Вход и учебные пространства · Школа №17" },
+        { "url": "/venues/photos/school-17-belyaevo/02.webp", "alt": "Кабинет BrainMaster · Школа №17" }
+      ],
       "listedOnSites": true,
       "schoolScopeSlug": "school-17",
       "logoUrl": "media/venues/logos/school-17.webp"

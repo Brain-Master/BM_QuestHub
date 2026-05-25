@@ -4,6 +4,8 @@
 
 Slot ID: `venue_photo`. Индекс: [image-templates-index.md](image-templates-index.md).
 
+> **Не путать** с галереей school agenda (`activity-gallery/gallery-01…` на `/sites/{school}/agenda/`). Там отдельные слоты — см. [school-agenda-landing-media.md](school-agenda-landing-media.md).
+
 ## Назначение
 
 Блок «Фото площадки»: до четырёх кадров с подписью (`figcaption`). Изображение в `aspect-[16/10]`, `object-cover`, ширина колонки до ~24rem на desktop.

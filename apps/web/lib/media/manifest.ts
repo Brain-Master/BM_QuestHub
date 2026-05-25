@@ -7,6 +7,7 @@ export type MediaIngestManifestEntry = {
   sha256: string;
   output: string;
   updatedAt: string;
+  caption?: string;
 };
 
 export type MediaIngestManifest = {

@@ -1,0 +1,28 @@
+# Optional manual tick for bm-mos-sync-controller.
+# Production uses YCF timer bm-mos-sync-controller-timer (0/2 * * * ? *).
+# Do not enable schedule cron while YCF timer is ACTIVE — double ticks.
+name: Mos sync controller tick
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: mos-sync-controller
+  cancel-in-progress: false
+
+jobs:
+  tick:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Invoke controller
+        env:
+          MOS_CONTROLLER_URL: ${{ vars.MOS_CONTROLLER_URL }}
+          MOS_CONTROLLER_CRON_SECRET: ${{ secrets.MOS_CONTROLLER_CRON_SECRET }}
+        run: |
+          if [ -z "$MOS_CONTROLLER_URL" ] || [ -z "$MOS_CONTROLLER_CRON_SECRET" ]; then
+            echo "Set repo Variables MOS_CONTROLLER_URL and secret MOS_CONTROLLER_CRON_SECRET"
+            exit 1
+          fi
+          curl -fsS -X POST "${MOS_CONTROLLER_URL}?cronSecret=${MOS_CONTROLLER_CRON_SECRET}" \
+            -H "Content-Type: application/json" \
+            -d '{"source":"github-actions"}'

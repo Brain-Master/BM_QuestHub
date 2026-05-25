@@ -1,6 +1,7 @@
 # Content deploy vs code deploy (hybrid)
 
-**Статус, диагностика и план работ:** [content-pipeline-status-plan.md](./content-pipeline-status-plan.md) (актуальный сводный документ).
+**Статус, диагностика и план работ:** [content-pipeline-status-plan.md](./content-pipeline-status-plan.md) (актуальный сводный документ).  
+**Все YCF (включая content-admin):** [yandex-cloud-functions.md](./yandex-cloud-functions.md).
 
 Static Timeweb App with **Google Sheets** as editor UI (этап 1) and optional CMS later (этап 2).
 

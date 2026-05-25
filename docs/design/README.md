@@ -7,8 +7,9 @@
 1. [image-templates-index.md](image-templates-index.md) — все слоты, соотношения, пути inbox/S3.
 2. [pack/handbook.ru.md](pack/handbook.ru.md) — workflow дизайнера; **`make design-pack`** → `dist/design-pack/BM_QuestHub_Design_Pack_v1.zip` (PDF, PSD, CSV, previews).
 3. [pack/media-inbox-layout.md](pack/media-inbox-layout.md) — дерево `media/inbox` (не колонки Sheet).
-4. [assets/_legend.svg](assets/_legend.svg) — общая легенда зон (видимая / градиент / скрытая).
-5. Гайд по конкретному слоту из таблицы ниже.
+4. [school-agenda-landing-media.md](school-agenda-landing-media.md) — видео и галерея на `/sites/{school}/agenda/` (Sync, не Sheet).
+5. [assets/_legend.svg](assets/_legend.svg) — общая легенда зон (видимая / градиент / скрытая).
+6. Гайд по конкретному слоту из таблицы ниже.
 
 ## Гайды по слотам
 
@@ -21,6 +22,7 @@
 | Карточка города | [city-card-media.md](city-card-media.md) | [assets/city-card/](assets/city-card/) |
 | Логотип площадки | [venue-logo-media.md](venue-logo-media.md) | [assets/venue-logo/](assets/venue-logo/) |
 | Фото площадки | [venue-photo-media.md](venue-photo-media.md) | [assets/venue-photo/](assets/venue-photo/) |
+| School agenda: landing video / галерея | [school-agenda-landing-media.md](school-agenda-landing-media.md) | reuse venue-photo 16:10 / 16:9 |
 | Open Graph / соцсети | [og-share-media.md](og-share-media.md) | [assets/og-share/](assets/og-share/) |
 
 ## Связанные документы

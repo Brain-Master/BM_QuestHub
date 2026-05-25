@@ -1,0 +1,82 @@
+# Sync enrolled from mos.ru API → Hot Google Sheet «Форматы». Optional S3 publish.
+name: Mos enrolled sync
+
+on:
+  # Cron disabled: production sync is driven by YCF bm-mos-sync-controller (adaptive PID).
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Do not write to Google Sheet
+        type: boolean
+        default: false
+      publish:
+        description: After sheet update, publish-sheet-hot → S3
+        type: boolean
+        default: false
+
+concurrency:
+  group: mos-enrolled-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: |
+            scripts/package-lock.json
+            apps/web/package-lock.json
+
+      - name: Install scripts dependencies
+        run: npm ci --omit=dev
+        working-directory: scripts
+
+      - name: Install web dependencies (for publish-sheet-hot)
+        if: inputs.publish == true || vars.MOS_ENROLLED_AUTO_PUBLISH == '1'
+        run: npm ci
+        working-directory: apps/web
+
+      - name: Sync enrolled (mos.ru → Hot Sheet)
+        env:
+          MOS_ENROLLED_SYNC: "1"
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          GOOGLE_SHEETS_HOT_SPREADSHEET_ID: ${{ vars.GOOGLE_SHEETS_HOT_SPREADSHEET_ID }}
+          GOOGLE_SHEETS_HOT_RANGE_GROUPS: "'Группы'!A:AZ"
+          GOOGLE_SHEETS_HOT_RANGE_FORMATS: "'Форматы'!A:AZ"
+          MOS_ENROLLED_COOKIES_JSON: ${{ secrets.MOS_ENROLLED_COOKIES_JSON }}
+          MOS_ENROLLED_COOKIES_S3_KEY: ops/mos-enrolled-sync.cookies.json
+          MOS_ENROLLED_SKIP_LOCAL_COOKIE_WRITE: "1"
+          S3_BUCKET: ${{ secrets.S3_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          S3_ENDPOINT: ${{ vars.S3_ENDPOINT }}
+          MOS_ENROLLED_INTERVAL_MINUTES: ${{ vars.MOS_ENROLLED_INTERVAL_MINUTES }}
+          MOS_ENROLLED_URL_DELAY_MS: ${{ vars.MOS_ENROLLED_URL_DELAY_MS }}
+          MOS_ENROLLED_FETCH_TIMEOUT_MS: ${{ vars.MOS_ENROLLED_FETCH_TIMEOUT_MS }}
+          MOS_ENROLLED_AUTO_PUBLISH: ${{ inputs.publish && '1' || vars.MOS_ENROLLED_AUTO_PUBLISH }}
+          S3_BUCKET: ${{ secrets.S3_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          S3_ENDPOINT: ${{ vars.S3_ENDPOINT }}
+          AWS_DEFAULT_REGION: ru-1
+        run: |
+          ARGS="--once"
+          if [ "${{ inputs.dry_run }}" = "true" ]; then ARGS="$ARGS --dry-run"; fi
+          if [ "${{ inputs.publish }}" = "true" ] || [ "$MOS_ENROLLED_AUTO_PUBLISH" = "1" ]; then ARGS="$ARGS --publish"; fi
+          node scripts/sync-mos-enrolled.mjs $ARGS
+
+      - name: Notify Telegram on failure
+        if: failure()
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GITHUB_SERVER_URL: ${{ github.server_url }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          GITHUB_WORKFLOW: ${{ github.workflow }}
+        run: node scripts/notify-mos-enrolled-failure.mjs

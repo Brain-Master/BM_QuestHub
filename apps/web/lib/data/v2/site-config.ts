@@ -69,6 +69,14 @@ export const capacityLabelsSchema = z.object({
   remainingPrefix: z.string(),
 });
 
+export const mosCapacityNoticeSchema = z.object({
+  enabled: z.boolean().optional(),
+  title: z.string().min(1),
+  body: z.string().min(1),
+  linkLabel: z.string().min(1),
+  linkHref: z.string().url(),
+});
+
 export const programSlugFragmentSchema = z.object({
   needle: z.string(),
   slug: z.string(),
@@ -148,6 +156,7 @@ export const publicDictionariesSchema = z.object({
   registrationFlow: registrationFlowCopySchema,
   scheduleCta: scheduleCtaSchema,
   capacity: capacityLabelsSchema,
+  mosCapacityNotice: mosCapacityNoticeSchema.optional(),
   sheetPlanningStatuses: z.array(z.string()),
   programSlugFragments: z.array(programSlugFragmentSchema).optional(),
 });

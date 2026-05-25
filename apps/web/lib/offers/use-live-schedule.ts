@@ -54,5 +54,6 @@ export function useLiveSchedule(
     isValidating,
     refresh: () => void mutate(),
     liveEnabled: enabled,
+    snapshotGeneratedAt: data?.generatedAt ?? null,
   };
 }

@@ -5,6 +5,7 @@ import * as React from "react";
 import { flushSync } from "react-dom";
 
 import { CommunityConnectPanel } from "@/components/community-connect-panel";
+import { MosCapacityDataNotice } from "@/components/mos-capacity-data-notice";
 import { ScheduleBoardCard, type ScheduleViewMode } from "@/components/schedule-board-card";
 import { ScheduleBoardToolbar } from "@/components/schedule-board-toolbar";
 import { buttonVariants } from "@/components/ui/button";
@@ -34,6 +35,9 @@ type Props = {
   description?: string;
   showProgramFilter?: boolean;
   displayMode?: "agenda" | "quest";
+  snapshotGeneratedAt?: string | null;
+  hideTitle?: boolean;
+  hideCommunityPanel?: boolean;
 };
 
 const ALL_STATUSES = "Все статусы";
@@ -161,6 +165,9 @@ export function ScheduleBoard({
   description,
   showProgramFilter = true,
   displayMode = "agenda",
+  snapshotGeneratedAt = null,
+  hideTitle = false,
+  hideCommunityPanel = false,
 }: Props) {
   const [viewMode, setViewMode] = React.useState<ScheduleViewMode>("compact");
   const [query, setQuery] = React.useState("");
@@ -431,7 +438,9 @@ export function ScheduleBoard({
 
   return (
     <section className="schedule-board space-y-8 [overflow-anchor:none]">
-      <div className="flex flex-col items-start justify-between gap-3 border-b border-white/10 pb-4 sm:flex-row sm:items-center">
+      <MosCapacityDataNotice snapshotGeneratedAt={snapshotGeneratedAt} />
+      {hideTitle ? null : (
+        <div className="flex flex-col items-start justify-between gap-3 border-b border-white/10 pb-4 sm:flex-row sm:items-center">
         <div>
           <h2 className="font-heading text-2xl font-semibold tracking-tight">
             {title ?? (
@@ -470,7 +479,23 @@ export function ScheduleBoard({
             Посмотреть смены всех площадок
           </Link>
         ) : null}
-      </div>
+        </div>
+      )}
+
+      {hideTitle && allAgendaHref ? (
+        <div className="flex justify-end border-b border-white/10 pb-4">
+          <Link
+            href={allAgendaHref}
+            onClick={() => localStorage.removeItem(PREFERRED_SCHOOL_STORAGE_KEY)}
+            className={cn(
+              buttonVariants({ variant: "outline", size: "sm" }),
+              "border-white/10 bg-transparent hover:bg-white/5",
+            )}
+          >
+            Посмотреть смены всех площадок
+          </Link>
+        </div>
+      ) : null}
 
       <ScheduleBoardToolbar
         viewMode={viewMode}
@@ -571,11 +596,13 @@ export function ScheduleBoard({
         </ol>
       )}
 
+      {hideCommunityPanel ? null : (
       <CommunityConnectPanel
         variant="card"
         className="mt-10"
         {...communityConnectCopy.agendaNoShift}
       />
+      )}
     </section>
   );
 }

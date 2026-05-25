@@ -14,5 +14,9 @@ directions:
   - На входе скажите, что вы на занятия BrainMaster.
   - Дождитесь координатора BrainMaster в согласованной зоне встречи.
 contactNote: Точный кабинет и порядок прохода отправляем родителям перед началом смены.
-photos: []
+photos:
+  - url: /venues/photos/school-17-belyaevo/01.webp
+    alt: Вход и учебные пространства · Школа №17
+  - url: /venues/photos/school-17-belyaevo/02.webp
+    alt: Кабинет BrainMaster · Школа №17
 schoolScopeSlug: school-17

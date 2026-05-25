@@ -17,6 +17,12 @@ export const venuePhotoSchema = z.object({
   alt: z.string().optional(),
 });
 
+export const activityGalleryPhotoSchema = venuePhotoSchema.extend({
+  caption: z.string().optional(),
+});
+
+export type ActivityGalleryPhoto = z.infer<typeof activityGalleryPhotoSchema>;
+
 export const venueSchema = z.object({
   slug: z.string(),
   name: z.string(),

@@ -25,6 +25,13 @@ export const communityConnectCopy = {
       "Напишите в Telegram или позвоните — подскажем по датам и записи. А во ВКонтакте можно заранее посмотреть, как проходили прошлые смены.",
     emphasis: "support" as const,
   },
+  schoolAgendaGallery: {
+    title: "Ещё больше фото и впечатлений",
+    description:
+      "В группе BrainMaster во ВКонтакте — альбомы с прошлых смен, отчёты с интенсивов и новости. Присоединяйтесь, чтобы ничего не пропустить.",
+    emphasis: "community" as const,
+    supportNote: "Вопросы по записи на эту площадку",
+  },
   catalogDoubt: {
     title: "Сомневаетесь, подойдёт ли ребёнку?",
     description:

@@ -2,6 +2,8 @@
 
 Complete after merging Timeweb S3 + App Platform docs to `main`.
 
+Сводка Yandex Cloud Functions: [yandex-cloud-functions.md](./yandex-cloud-functions.md). Индекс deployment: [README.md](./README.md).
+
 ## Security
 
 - [ ] Revoke any API key that was pasted in chat; create a new one.

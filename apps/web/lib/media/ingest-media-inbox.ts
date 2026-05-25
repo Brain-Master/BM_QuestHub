@@ -10,7 +10,10 @@ import type { ScheduleCard } from "@/lib/schemas";
 import {
   INBOX_SLOTS,
   QUEST_VIDEO_INBOX,
+  VENUE_LANDING_VIDEO_INBOX,
+  schoolLandingScopeSlugs,
   slotsForEntity,
+  slotsForSchoolLandingScope,
   type MediaInboxContext,
 } from "./design-pack-slots";
 import { isPlaceholderInboxBytes } from "./inbox-placeholder";
@@ -69,6 +72,7 @@ async function ingestImageFromFile(options: {
   presetId: MediaPresetId;
   outputVars: Record<string, string>;
   placeholderFile?: string;
+  caption?: string;
 }): Promise<{ publicUrl?: string; skipped: boolean }> {
   const preset = MEDIA_PRESETS[options.presetId];
   const diskPath = diskPathFromPattern(
@@ -102,6 +106,7 @@ async function ingestImageFromFile(options: {
     sha256: hash,
     output: publicUrl,
     updatedAt: new Date().toISOString(),
+    ...(options.caption ? { caption: options.caption } : {}),
   };
 
   return { publicUrl, skipped: false };
@@ -164,6 +169,135 @@ function ingestQuestVideo(
   };
 
   return { fileUrl, posterUrl };
+}
+
+function readGalleryCaption(sourcePath: string): string | undefined {
+  const dir = path.dirname(sourcePath);
+  const base = path.basename(sourcePath).replace(/\.source\.(jpe?g|png|webp)$/i, "");
+  const captionPath = path.join(dir, `${base}.caption.txt`);
+  if (!fs.existsSync(captionPath)) return undefined;
+  const text = fs.readFileSync(captionPath, "utf8").trim();
+  return text || undefined;
+}
+
+function ingestVenueLandingVideo(
+  webRoot: string,
+  scope: string,
+  manifest: MediaIngestManifest,
+): string | undefined {
+  const inboxDir = path.join(mediaInboxRoot(webRoot), "venues", scope);
+  const sourceMp4 = path.join(inboxDir, VENUE_LANDING_VIDEO_INBOX.sourceFilename);
+  if (!fs.existsSync(sourceMp4)) return undefined;
+
+  const manifestKey = `venue-landing:${scope}:video`;
+  const fileUrl = canonicalMediaUrl("media/venues/{scope}/landing-30s.mp4", { scope });
+  const outDir = path.join(mediaOutputRoot(webRoot), "venues", scope);
+  const landingMp4 = path.join(outDir, "landing-30s.mp4");
+  const hash = sha256Buffer(fs.readFileSync(sourceMp4));
+  const sourceKey = path.relative(mediaInboxRoot(webRoot), sourceMp4);
+
+  if (
+    shouldSkipIngest(manifest, manifestKey, sourceKey, hash) &&
+    fs.existsSync(landingMp4)
+  ) {
+    return fileUrl;
+  }
+
+  if (!ffmpegAvailable()) {
+    console.warn(`[ingest-inbox] ffmpeg missing — skip venue landing video ${scope}`);
+    return undefined;
+  }
+
+  fs.mkdirSync(outDir, { recursive: true });
+  const run = (args: string[]) => {
+    const r = spawnSync("ffmpeg", args, { stdio: "pipe" });
+    if (r.status !== 0) {
+      throw new Error(r.stderr?.toString() || "ffmpeg failed");
+    }
+  };
+
+  run([
+    "-y",
+    "-i",
+    sourceMp4,
+    "-t",
+    "30",
+    "-vf",
+    "scale=-2:720:force_original_aspect_ratio=decrease",
+    "-c:v",
+    "libx264",
+    "-crf",
+    "28",
+    "-preset",
+    "slow",
+    "-an",
+    "-movflags",
+    "+faststart",
+    landingMp4,
+  ]);
+
+  manifest.entries[manifestKey] = {
+    sourceUrl: sourceKey,
+    sha256: hash,
+    output: fileUrl,
+    updatedAt: new Date().toISOString(),
+  };
+
+  return fileUrl;
+}
+
+export async function ingestVenueSchoolLandingMedia(
+  webRoot: string,
+  context: MediaInboxContext,
+  manifest: MediaIngestManifest,
+  result: IngestMediaFromInboxResult,
+): Promise<void> {
+  for (const scope of schoolLandingScopeSlugs(context)) {
+    try {
+      ingestVenueLandingVideo(webRoot, scope, manifest);
+    } catch (e) {
+      result.errors.push(`venue-landing ${scope}/video: ${formatErr(e)}`);
+    }
+
+    for (const slot of slotsForSchoolLandingScope(scope)) {
+      const source = findInboxSourceFile(webRoot, slot.inboxDir, slot.sourceFilename);
+      if (!source) continue;
+
+      try {
+        if (slot.presetId === "venue_landing_poster") {
+          const { skipped } = await ingestImageFromFile({
+            manifest,
+            manifestKey: `venue-landing:${scope}:poster`,
+            sourcePath: source,
+            webRoot,
+            presetId: slot.presetId,
+            outputVars: { scope },
+            placeholderFile: slot.placeholderFile,
+          });
+          if (skipped) result.imagesSkipped += 1;
+          else result.imagesProcessed += 1;
+          continue;
+        }
+
+        const index = slot.galleryIndex ?? "01";
+        const caption = readGalleryCaption(source);
+        const { skipped } = await ingestImageFromFile({
+          manifest,
+          manifestKey: `venue-activity:${scope}:${index}`,
+          sourcePath: source,
+          webRoot,
+          presetId: "venue_activity_gallery",
+          outputVars: { scope, index },
+          placeholderFile: slot.placeholderFile,
+          caption,
+        });
+        if (skipped) result.imagesSkipped += 1;
+        else result.imagesProcessed += 1;
+      } catch (e) {
+        result.errors.push(`venue-landing ${scope}/${slot.id}: ${formatErr(e)}`);
+      }
+    }
+  }
 }
 
 export type IngestMediaFromInboxOptions = {
@@ -405,6 +539,8 @@ export async function ingestMediaFromInbox(
       }
     }
   }
+
+  await ingestVenueSchoolLandingMedia(webRoot, context, manifest, result);
 
   writeMediaIngestManifest(webRoot, manifest);
 

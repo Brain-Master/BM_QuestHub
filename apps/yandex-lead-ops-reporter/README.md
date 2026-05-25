@@ -2,7 +2,7 @@
 
 Serverless ops endpoint for Quest Hub lead submission failures. Sends admin Telegram alerts, structured Cloud logs, and optional Google Sheet rows.
 
-**Полная документация (настройка, мониторинг, тесты):** [`docs/deployment/ops-alerts-and-monitoring.md`](../../docs/deployment/ops-alerts-and-monitoring.md).
+**Документация:** [ops-alerts-and-monitoring.md](../../docs/deployment/ops-alerts-and-monitoring.md) · [все YCF](../../docs/deployment/yandex-cloud-functions.md).
 
 ## Events
 

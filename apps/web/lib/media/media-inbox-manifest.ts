@@ -4,8 +4,11 @@ import path from "node:path";
 import {
   INBOX_SLOTS,
   QUEST_VIDEO_INBOX,
+  VENUE_LANDING_VIDEO_INBOX,
   WORLD_VIDEO_INBOX,
+  schoolLandingScopeSlugs,
   slotsForEntity,
+  slotsForSchoolLandingScope,
   type InboxSlotDef,
   type MediaInboxContext,
 } from "./design-pack-slots";
@@ -35,7 +38,8 @@ export type SlotUploadPayload =
     }
   | { action: "skip"; reason: "drive_exists" | "optional_video_missing" };
 
-const VIDEO_MP4_RE = /^hero\.mp4$/i;
+const VIDEO_MP4_RE = /^(hero|landing-30s)\.mp4$/i;
+const CAPTION_TXT_RE = /^gallery-\d+\.caption\.txt$/i;
 
 /** All inbox files to mirror under Drive `Sync/`. */
 export function enumerateInboxSlots(context: MediaInboxContext): InboxSlotEntry[] {
@@ -64,6 +68,13 @@ export function enumerateInboxSlots(context: MediaInboxContext): InboxSlotEntry[
   for (const shiftGroupId of context.shiftGroupIds) {
     for (const slot of slotsForEntity("schedule", shiftGroupId)) {
       entries.push(slotToEntry(slot));
+    }
+  }
+
+  for (const scope of schoolLandingScopeSlugs(context)) {
+    entries.push(venueLandingVideoEntry(scope));
+    for (const slot of slotsForSchoolLandingScope(scope)) {
+      entries.push(schoolLandingSlotToEntry(slot));
     }
   }
 
@@ -103,9 +114,39 @@ function videoEntry(
   };
 }
 
+function venueLandingVideoEntry(scope: string): InboxSlotEntry {
+  const inboxDir = VENUE_LANDING_VIDEO_INBOX.inboxDirPattern.replace("{scope}", scope);
+  const inboxRelPath = `${inboxDir}/${VENUE_LANDING_VIDEO_INBOX.sourceFilename}`;
+  return {
+    slotId: "venue_landing_video",
+    entityKind: "venue",
+    inboxRelPath,
+    inboxDir,
+    driveFileName: VENUE_LANDING_VIDEO_INBOX.sourceFilename,
+    placeholderFile: "",
+    optional: true,
+    isVideo: true,
+  };
+}
+
+function schoolLandingSlotToEntry(
+  slot: ReturnType<typeof slotsForSchoolLandingScope>[number],
+): InboxSlotEntry {
+  return {
+    slotId: slot.id,
+    entityKind: slot.entityKind,
+    inboxRelPath: slot.inboxSourcePath,
+    inboxDir: slot.inboxDir,
+    driveFileName: slot.sourceFilename,
+    placeholderFile: slot.placeholderFile,
+    optional: slot.optional,
+  };
+}
+
 export function isInboxPullPath(relPath: string): boolean {
   const base = path.basename(relPath);
   if (VIDEO_MP4_RE.test(base)) return true;
+  if (CAPTION_TXT_RE.test(base)) return true;
   return /\.source\.(jpe?g|png|webp)$/i.test(base);
 }
 

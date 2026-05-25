@@ -23,7 +23,10 @@
 | `quest_catalog` | Карточка в каталоге | 4:3 | 1200×900 / 1600×1200 | `catalog-4x3.source.jpg` | `media/quests/{slug}/catalog.webp` | [quest-catalog-media.md](quest-catalog-media.md) | да |
 | `city_card` | Выбор города | 16:10 | 1280×800 | (вне inbox v1) | `public/cities/…` | [city-card-media.md](city-card-media.md) | да |
 | `venue_logo` | Логотип площадки | 1:1 contain | 256×256 → 128×128 | `venues/{scope}/logo-256.source.png` | `media/venues/logos/{scope}.webp` | [venue-logo-media.md](venue-logo-media.md) | да |
-| `venue_photo` | Фото площадки | 16:10 | 1280×800 | `photo-01-16x10.source.jpg` … | `media/venues/photos/{slug}/NN.webp` | [venue-photo-media.md](venue-photo-media.md) | да |
+| `venue_photo` | Фото площадки (сайдбар) | 16:10 | 1280×800 | `photo-01-16x10.source.jpg` … | `media/venues/photos/{slug}/NN.webp` | [venue-photo-media.md](venue-photo-media.md) | да |
+| `venue_landing_poster` | School agenda: постер видео | 16:9 | 1920×1080 | `venues/{scope}/landing-poster.source.jpg` | `media/venues/{scope}/landing-poster.webp` | [school-agenda-landing-media.md](school-agenda-landing-media.md) | reuse venue-photo |
+| `venue_activity_gallery` | School agenda: галерея | 16:10 | 1600×1000 | `…/activity-gallery/gallery-01.source.jpg` … `12` | `…/activity-gallery/NN.webp` | school-agenda-landing-media | reuse venue-photo |
+| `venue_landing_video` | School agenda: ~30 с MP4 | 16:9 | 1280×720 | `…/landing-30s.mp4` | `…/landing-30s.mp4` (H.264) | school-agenda-landing-media | — |
 | `og_social` | Open Graph | 1.91:1 | 1200×630 | `og-1200x630.source.jpg` | `media/quests/{slug}/og.webp` | [og-share-media.md](og-share-media.md) | да |
 
 ## Маппинг ingest → design slot
@@ -36,6 +39,8 @@
 | `world_hero_image` | `world_hero` |
 | `venue_logo` | `venue_logo` |
 | `venue_photo` | `venue_photo` |
+| `venue_landing_poster` | `venue_photo` (reuse safe area) |
+| `venue_activity_gallery` | `venue_photo` (reuse 16:10) |
 | `schedule_card_hero` | `schedule_hero` |
 | `schedule_card_compact` | `schedule_compact` |
 | `og_share` | `og_social` |
@@ -58,3 +63,4 @@
 | city_card | `apps/web/components/city-selection-grid.tsx` |
 | venue_logo | `apps/web/components/site-selection-grid.tsx` (`LogoMark`) |
 | venue_photo | `apps/web/app/sites/[school]/page.tsx` |
+| venue_landing_poster, venue_activity_gallery | `apps/web/app/sites/[school]/agenda/page.tsx`, `school-landing-video.tsx`, `activity-photo-gallery.tsx` |

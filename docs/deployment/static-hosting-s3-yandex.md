@@ -207,6 +207,10 @@ restart the Next dev server so the public env is baked into the client bundle.
 On Timeweb (or any static host), set the same variable in the project build
 environment before `npm run build`.
 
+## Yandex Cloud Functions
+
+Сводная шпаргалка по всем функциям: **[yandex-cloud-functions.md](./yandex-cloud-functions.md)**.
+
 ## Yandex Lead Ops Reporter
 
 Ops alerts (Telegram, Google Sheet **Ops**, GitHub uptime cron, booking fallback on the site) are documented in **[ops-alerts-and-monitoring.md](./ops-alerts-and-monitoring.md)**.

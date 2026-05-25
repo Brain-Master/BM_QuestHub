@@ -23,6 +23,8 @@ export type MediaPresetId =
   | "world_hero_image"
   | "venue_logo"
   | "venue_photo"
+  | "venue_landing_poster"
+  | "venue_activity_gallery"
   | "schedule_card_hero"
   | "schedule_card_compact"
   | "og_share";
@@ -110,6 +112,28 @@ export const MEDIA_PRESETS: Record<MediaPresetId, MediaPreset> = {
     fit: "cover",
     quality: 82,
     outputPattern: "media/venues/photos/{slug}/{index}.webp",
+  },
+  venue_landing_poster: {
+    id: "venue_landing_poster",
+    designSlotIds: ["venue_photo"],
+    aspectRatio: { w: 16, h: 9 },
+    maxWidth: 1920,
+    maxHeight: 1080,
+    format: "webp",
+    fit: "cover",
+    quality: 82,
+    outputPattern: "media/venues/{scope}/landing-poster.webp",
+  },
+  venue_activity_gallery: {
+    id: "venue_activity_gallery",
+    designSlotIds: ["venue_photo"],
+    aspectRatio: { w: 16, h: 10 },
+    maxWidth: 1600,
+    maxHeight: 1000,
+    format: "webp",
+    fit: "cover",
+    quality: 82,
+    outputPattern: "media/venues/{scope}/activity-gallery/{index}.webp",
   },
   schedule_card_hero: {
     id: "schedule_card_hero",

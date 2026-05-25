@@ -36,6 +36,10 @@ media/schedule/<shift_group_id>/hero.webp
 media/schedule/<shift_group_id>/compact.webp
 media/venues/logos/<school-scope-slug>.webp  (S3, не в static `out/`)
 media/venues/photos/<venue-slug>/01.webp … 04.webp
+media/venues/<school-scope-slug>/landing-30s.mp4
+media/venues/<school-scope-slug>/landing-poster.webp
+media/venues/<school-scope-slug>/activity-gallery/01.webp … 12.webp
+media/venues/_default/…                      # универсальный fallback
 ```
 
 | Путь | Гайд |
@@ -43,7 +47,7 @@ media/venues/photos/<venue-slug>/01.webp … 04.webp
 | `media/quests/{slug}/hero.webp`, `catalog.webp`, `hero.mp4` | [quest-hero-media.md](../../docs/design/quest-hero-media.md), [quest-catalog-media.md](../../docs/design/quest-catalog-media.md) |
 | `media/worlds/{slug}/hero.webp` | [world-hero-media.md](../../docs/design/world-hero-media.md) |
 | `media/schedule/…` | [schedule-card-media.md](../../docs/design/schedule-card-media.md) |
-| `media/venues/…` | [venue-logo-media.md](../../docs/design/venue-logo-media.md), [venue-photo-media.md](../../docs/design/venue-photo-media.md) |
+| `media/venues/…` | [venue-logo-media.md](../../docs/design/venue-logo-media.md), [venue-photo-media.md](../../docs/design/venue-photo-media.md), [school-agenda-landing-media.md](../../docs/design/school-agenda-landing-media.md) |
 
 Миграция с `public/venues/`: `node scripts/migrate-venue-public-to-media.mjs` → `make s3-sync-media`.
 

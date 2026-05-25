@@ -2,6 +2,8 @@
 
 Proxies snapshot reads from public S3, writes updates with S3 credentials, triggers GitHub `content-rebuild` workflow.
 
+**Документация:** [content-deploy.md](../../docs/deployment/content-deploy.md) · [все YCF](../../docs/deployment/yandex-cloud-functions.md).
+
 ## Routes
 
 | Method | Path | Description |
