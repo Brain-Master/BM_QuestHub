@@ -11,10 +11,12 @@ import { fileURLToPath } from "node:url";
 
 import { loadDotEnv } from "./load-dotenv.mjs";
 import { readOpsJson, withS3Timeout } from "./lib/mos-ops-s3.mjs";
+import { publicBaseUrlForBucket, resolveS3Bucket } from "./lib/s3-storage.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const BUCKET = "bm-questhub";
-const PUBLIC_BASE = `https://${BUCKET}.s3.twcstorage.ru`;
+
+const BUCKET = resolveS3Bucket("hot");
+const PUBLIC_BASE = publicBaseUrlForBucket("hot");
 
 const KEYS = [
   { key: "ops/mos-enrolled-snapshot.json", label: "ops snapshot" },

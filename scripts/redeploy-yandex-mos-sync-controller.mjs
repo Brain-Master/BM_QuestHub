@@ -6,7 +6,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { loadDotEnv, loadRepoEnv } from "./load-dotenv.mjs";
+import { loadDotEnv, loadRepoEnv, loadS3Env } from "./load-dotenv.mjs";
 
 const ROOT = loadRepoEnv();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -47,7 +47,7 @@ function copyLibs() {
 }
 
 function main() {
-  loadDotEnv(path.join(ROOT, "scripts", "s3.env"));
+  loadS3Env();
   const secretPath = path.join(ROOT, "secret", "mos-controller-cron.secret.txt");
   let cronSecret = process.env.MOS_CONTROLLER_CRON_SECRET?.trim();
   if (!cronSecret && fs.existsSync(secretPath)) {

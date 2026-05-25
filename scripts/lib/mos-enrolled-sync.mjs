@@ -7,7 +7,7 @@ import {
 } from "./mos-enrolled-cookie-store.mjs";
 import {
   appendEnrolledEvent,
-  loadEnrolledSnapshot,
+  loadEnrolledSnapshotWithMeta,
   maybeSendEnrolledDigest,
   newSyncRunId,
   recordEnrolledEvents,
@@ -270,7 +270,14 @@ export async function syncMosEnrolledFromPortal(options) {
   const changes = [];
 
   const runId = newSyncRunId();
-  const prevSnapshot = await loadEnrolledSnapshot();
+  const loadedSnapshot = await loadEnrolledSnapshotWithMeta();
+  const prevSnapshot = loadedSnapshot.snapshot;
+  const snapshotReadOk = loadedSnapshot.readOk;
+  if (!snapshotReadOk) {
+    onProgress?.(
+      "[mos-enrolled] WARN enrolled snapshot S3 read failed (timeout?) — deltas may be wrong",
+    );
+  }
   /** @type {Record<string, { enrolled: number, shiftGroupId: string, formatType: string }>} */
   const nextSnapshot = { ...prevSnapshot };
   const syncState = await loadSyncState();
@@ -496,6 +503,7 @@ export async function syncMosEnrolledFromPortal(options) {
     changes,
     stateOk,
     snapshotOk,
+    snapshotReadOk,
     cookieSave,
     enrolledDeltaSum: eventSummary?.deltaSum ?? 0,
   };

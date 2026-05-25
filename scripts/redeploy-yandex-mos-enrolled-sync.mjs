@@ -6,7 +6,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { loadDotEnv, loadRepoEnv } from "./load-dotenv.mjs";
+import { loadDotEnv, loadRepoEnv, loadS3Env } from "./load-dotenv.mjs";
 import { readTelegramEnv } from "./lib/read-ycf-telegram-env.mjs";
 
 const ROOT = loadRepoEnv();
@@ -133,7 +133,7 @@ SHA256: ${sha256}
 }
 
 function main() {
-  loadDotEnv(path.join(ROOT, "scripts", "s3.env"));
+  loadS3Env();
   loadDotEnv(path.join(ROOT, "scripts", "sheets.env"));
 
   let bucket = "";
@@ -183,9 +183,10 @@ function deployVersionBody({ bucket, object, sha256, sa }) {
     "GOOGLE_SHEETS_HOT_RANGE_FORMATS='Форматы'!A:AZ",
     `MOS_ENROLLED_COOKIES_S3_KEY=${DEFAULT_COOKIES_S3_KEY}`,
     "MOS_ENROLLED_SKIP_LOCAL_COOKIE_WRITE=1",
-    "MOS_ENROLLED_URL_DELAY_MS=200",
-    "MOS_ENROLLED_FETCH_CONCURRENCY=4",
-    "MOS_ENROLLED_FETCH_TIMEOUT_MS=15000",
+    "MOS_ENROLLED_URL_DELAY_MS=1500",
+    "MOS_ENROLLED_FETCH_CONCURRENCY=2",
+    "MOS_ENROLLED_FETCH_TIMEOUT_MS=25000",
+    "MOS_ENROLLED_SNAPSHOT_S3_ATTEMPTS=4",
     "MOS_ENROLLED_SKIP_S3_COOKIES=1",
     `MOS_ENROLLED_AUTO_PUBLISH=${process.env.MOS_ENROLLED_AUTO_PUBLISH?.trim() || "1"}`,
     `MOS_ENROLLED_TG_ENABLED=${process.env.MOS_ENROLLED_TG_ENABLED?.trim() || "1"}`,
@@ -195,7 +196,7 @@ function deployVersionBody({ bucket, object, sha256, sa }) {
     `AWS_ACCESS_KEY_ID=${process.env.AWS_ACCESS_KEY_ID}`,
     `AWS_SECRET_ACCESS_KEY=${process.env.AWS_SECRET_ACCESS_KEY}`,
     "MOS_SYNC_USE_PID=1",
-    "MOS_OPS_S3_TIMEOUT_MS=15000",
+    "MOS_OPS_S3_TIMEOUT_MS=30000",
   ];
 
   const tg = readTelegramEnv({ root: ROOT, ycBin: YC });

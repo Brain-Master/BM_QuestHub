@@ -8,6 +8,7 @@ import {
   readOpsJson,
   withS3Timeout,
 } from "./mos-ops-s3.mjs";
+import { resolveS3Bucket } from "./s3-storage.mjs";
 import { sendTelegramAlert } from "./telegram-alert.mjs";
 
 const DEFAULT_KEYS = [
@@ -174,8 +175,13 @@ async function probeReadOpsJson(log, rounds) {
     }
   }
   const s = timingStats(ms);
-  log(`  readOpsJson(${key}): ${lastError ? `FAIL ${lastError}` : "ok"} ${fmtStats(s)}`);
-  return { ok: !lastError, stats: s, error: lastError };
+  const slowMs = Number(process.env.S3_PROBE_READOPS_SLOW_MS || 10_000);
+  const timedOut = ms.some((n) => n >= Number(process.env.MOS_OPS_S3_TIMEOUT_MS || 15_000) - 500);
+  const ok = !lastError && !timedOut && s.p50 < slowMs;
+  log(
+    `  readOpsJson(${key}): ${ok ? "ok" : "FAIL"} ${fmtStats(s)}${timedOut ? " (hit S3 timeout)" : ""}`,
+  );
+  return { ok, stats: s, error: lastError || (timedOut ? "s3_timeout" : null) };
 }
 
 /**
@@ -247,7 +253,7 @@ export async function runS3ConnectivityProbe(opts = {}) {
   const rounds = Math.max(1, Number(process.env.S3_PROBE_ROUNDS || opts.rounds || 3));
   const sendTg = opts.sendTelegram !== false && process.env.S3_PROBE_TG?.trim() !== "0";
   const source = opts.source?.trim() || "ycf";
-  const bucket = process.env.S3_BUCKET?.trim() || "bm-questhub";
+  const bucket = resolveS3Bucket("hot");
   const publicBase =
     process.env.S3_PUBLIC_BASE_URL?.trim() || `https://${bucket}.s3.twcstorage.ru`;
 

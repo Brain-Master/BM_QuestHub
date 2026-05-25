@@ -28,9 +28,27 @@ export function loadDotEnv(filePath) {
   return true;
 }
 
+/**
+ * Load S3 env: hot profile file first, then active s3.env (see docs/deployment/s3-storage-migration.md).
+ * @param {{ preferHot?: boolean }} [opts]
+ */
+export function loadS3Env(opts = {}) {
+  const preferHot =
+    opts.preferHot !== false &&
+    (process.env.S3_USE_HOT?.trim() === "1" ||
+      process.env.S3_STORAGE_PROFILE?.trim().toLowerCase() !== "legacy");
+  if (preferHot) {
+    loadDotEnv(path.join(ROOT, "scripts", "s3-hot.env"));
+  }
+  loadDotEnv(path.join(ROOT, "scripts", "s3.env"));
+  if (!preferHot) {
+    loadDotEnv(path.join(ROOT, "scripts", "s3-hot.env"));
+  }
+}
+
 export function loadRepoEnv() {
   loadDotEnv(path.join(ROOT, "scripts", "timeweb.env"));
-  loadDotEnv(path.join(ROOT, "scripts", "s3.env"));
+  loadS3Env();
   loadDotEnv(path.join(ROOT, "scripts", "sheets.env"));
   loadDotEnv(path.join(ROOT, "scripts", "design-pack.env"));
   return ROOT;

@@ -33,6 +33,7 @@ venv/
 
 # Локальные ключи выкладки в Object Storage
 scripts/s3.env
+scripts/s3-hot.env
 scripts/sheets.env
 scripts/design-pack.env
 scripts/design-pack-oauth.env

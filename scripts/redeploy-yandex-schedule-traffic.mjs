@@ -6,7 +6,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { loadDotEnv, loadRepoEnv } from "./load-dotenv.mjs";
+import { loadDotEnv, loadRepoEnv, loadS3Env } from "./load-dotenv.mjs";
 
 const ROOT = loadRepoEnv();
 const LIB = path.join(ROOT, "scripts", "lib");
@@ -27,7 +27,7 @@ function yc(args) {
 }
 
 function main() {
-  loadDotEnv(path.join(ROOT, "scripts", "s3.env"));
+  loadS3Env();
   for (const name of fs.readdirSync(APP)) {
     if (name.endsWith(".mjs") && name !== "index.js") fs.unlinkSync(path.join(APP, name));
   }
@@ -56,7 +56,7 @@ function main() {
     `AWS_DEFAULT_REGION=${process.env.AWS_DEFAULT_REGION || "ru-1"}`,
     `AWS_ACCESS_KEY_ID=${process.env.AWS_ACCESS_KEY_ID}`,
     `AWS_SECRET_ACCESS_KEY=${process.env.AWS_SECRET_ACCESS_KEY}`,
-    "MOS_OPS_S3_TIMEOUT_MS=8000",
+    "MOS_OPS_S3_TIMEOUT_MS=30000",
     "SCHEDULE_PULSE_S3_TIMEOUT_MS=12000",
   ].flatMap((e) => ["--environment", e]);
   ycText([

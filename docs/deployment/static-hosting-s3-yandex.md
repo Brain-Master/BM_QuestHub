@@ -96,7 +96,7 @@ For files that are replaced in place, use conservative cache headers or version 
 Set **before** `npm run build` on Timeweb or CI (public vars + build-time flags):
 
 ```text
-NEXT_PUBLIC_S3_PUBLIC_BASE_URL=https://bm-questhub.s3.twcstorage.ru
+NEXT_PUBLIC_S3_PUBLIC_BASE_URL=https://bm-quest-s3-hot.s3.twcstorage.ru
 OFFERS_SNAPSHOT_SOURCE=s3
 SITE_SNAPSHOT_SOURCE=s3
 ```

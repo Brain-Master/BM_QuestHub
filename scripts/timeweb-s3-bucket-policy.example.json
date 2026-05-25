@@ -7,8 +7,8 @@
       "Principal": "*",
       "Action": ["s3:GetObject"],
       "Resource": [
-        "arn:aws:s3:::bm-questhub/data/*",
-        "arn:aws:s3:::bm-questhub/media/*"
+        "arn:aws:s3:::bm-quest-s3-hot/data/*",
+        "arn:aws:s3:::bm-quest-s3-hot/media/*"
       ]
     }
   ]

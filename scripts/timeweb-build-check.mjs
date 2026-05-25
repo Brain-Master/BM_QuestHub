@@ -19,7 +19,7 @@ function timewebBuildEnv() {
     ...process.env,
     NEXT_PUBLIC_S3_PUBLIC_BASE_URL:
       process.env.NEXT_PUBLIC_S3_PUBLIC_BASE_URL?.trim() ||
-      "https://bm-questhub.s3.twcstorage.ru",
+      "https://bm-quest-s3-hot.s3.twcstorage.ru",
     OFFERS_SNAPSHOT_SOURCE: "s3",
     SITE_SNAPSHOT_SOURCE: "s3",
     SITE_SNAPSHOT_STRICT: process.env.SITE_SNAPSHOT_STRICT?.trim() || "1",

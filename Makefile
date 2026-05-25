@@ -102,6 +102,10 @@ redeploy-yandex-mos-sync-controller: ## redeploy-yandex-mos-sync-controller  Т�
 redeploy-yandex-mos-enrolled-sync: ## redeploy-yandex-mos-enrolled-sync  Только sync после правок lib
 deploy-yandex-s3-connectivity-probe: ## deploy-yandex-s3-connectivity-probe  YCF probe S3 Timeweb + TG
 invoke-s3-connectivity-probe: ## invoke-s3-connectivity-probe  Запуск bm-s3-connectivity-probe
+setup-s3-hot-env: ## setup-s3-hot-env  scripts/s3.env из secret/bm-questhub-s3-hot.txt
+migrate-s3-to-hot: ## migrate-s3-to-hot  Копировать bm-questhub → bm-quest-s3-hot
+setup-s3-hot-dev: ## setup-s3-hot-dev  s3.env + apps/web/.env.local для dev:host
+verify-s3-docs: ## verify-s3-docs  Нет активных URL bm-questhub.s3 в docs/apps
 export-mos-enrolled-stats: ## export-mos-enrolled-stats  CSV из ops/mos-enrolled-stats.json
 upload-mos-enrolled-cookies: ## upload-mos-enrolled-cookies  Cookies → S3 для YCF
 setup-github-mos-enrolled-sync: ## setup-github-mos-enrolled-sync  GitHub secret для Actions workflow
@@ -296,6 +300,18 @@ deploy-yandex-s3-connectivity-probe:
 
 invoke-s3-connectivity-probe:
 	node scripts/invoke-s3-connectivity-probe.mjs
+
+setup-s3-hot-env:
+	node scripts/setup-s3-hot-env.mjs
+
+setup-s3-hot-dev:
+	node scripts/setup-s3-hot-env.mjs --write-web-env
+
+verify-s3-docs:
+	node scripts/verify-s3-docs.mjs
+
+migrate-s3-to-hot:
+	node scripts/migrate-s3-bucket.mjs
 
 export-mos-enrolled-stats:
 	node scripts/export-mos-enrolled-stats.mjs

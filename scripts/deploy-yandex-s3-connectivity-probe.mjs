@@ -6,7 +6,8 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { loadDotEnv, loadRepoEnv } from "./load-dotenv.mjs";
+import { loadDotEnv, loadRepoEnv, loadS3Env } from "./load-dotenv.mjs";
+import { publicBaseUrlForBucket } from "./lib/s3-storage.mjs";
 import { readTelegramEnv } from "./lib/read-ycf-telegram-env.mjs";
 
 const ROOT = loadRepoEnv();
@@ -20,6 +21,7 @@ const COPY_LIBS = [
   "mos-ops-s3.mjs",
   "mos-sync-debug.mjs",
   "s3-connectivity-probe.mjs",
+  "s3-storage.mjs",
   "telegram-alert.mjs",
 ];
 
@@ -79,11 +81,14 @@ function stageApp() {
 }
 
 function main() {
-  loadDotEnv(path.join(ROOT, "scripts", "s3.env"));
+  loadS3Env();
 
   const zip = stageApp();
   const stamp = new Date().toISOString().replace(/[:.]/g, "-");
-  const bucket = process.env.YCF_PACKAGE_BUCKET?.trim() || process.env.S3_BUCKET?.trim() || "bm-questhub";
+  const bucket =
+    process.env.YCF_PACKAGE_BUCKET?.trim() ||
+    process.env.S3_LEGACY_BUCKET?.trim() ||
+    "bm-questhub";
   const object = `ycf/${NAME}/function-${stamp}.zip`;
   ycText(["storage", "s3", "cp", zip, `s3://${bucket}/${object}`]);
   const sha256 = crypto.createHash("sha256").update(fs.readFileSync(zip)).digest("hex");
@@ -101,8 +106,8 @@ function main() {
     `AWS_DEFAULT_REGION=${process.env.AWS_DEFAULT_REGION || "ru-1"}`,
     `AWS_ACCESS_KEY_ID=${process.env.AWS_ACCESS_KEY_ID}`,
     `AWS_SECRET_ACCESS_KEY=${process.env.AWS_SECRET_ACCESS_KEY}`,
-    `S3_PUBLIC_BASE_URL=${process.env.S3_PUBLIC_BASE_URL || `https://${process.env.S3_BUCKET || "bm-questhub"}.s3.twcstorage.ru`}`,
-    "MOS_OPS_S3_TIMEOUT_MS=15000",
+    `S3_PUBLIC_BASE_URL=${publicBaseUrlForBucket("hot")}`,
+    "MOS_OPS_S3_TIMEOUT_MS=30000",
     "S3_PROBE_ROUNDS=3",
     "S3_PROBE_TG=1",
   ];

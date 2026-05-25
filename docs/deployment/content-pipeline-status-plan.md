@@ -1,6 +1,6 @@
 # Content pipeline: текущая ситуация и план работ
 
-**Актуальный документ** (2026-05-19). Объединяет диагностику hot/cold publish, runtime S3, Timeweb и восстановление расписания.
+**Исторический документ** (2026-05-19). Актуальный Object Storage: [s3-storage-migration.md](./s3-storage-migration.md) (бакет **`bm-quest-s3-hot`**).
 
 **Краткая эксплуатация:** [content-deploy.md](./content-deploy.md)  
 **Редактор (Sheets):** [google-sheets-editor-guide.md](../data/google-sheets-editor-guide.md)  
@@ -13,8 +13,8 @@
 | Вопрос | Ответ |
 |--------|--------|
 | Старый код на Timeweb? | Маловероятно. CSR hot path и Timeweb deploy API **уже в репозитории**. |
-| S3 подключён неправильно? | Нет: `s3://bm-questhub/data/` ↔ `https://bm-questhub.s3.twcstorage.ru/data/…`. |
-| Почему на проде пусто? | Комбинация: hot sync падает / snapshot урезан, **CORS на бакете не настроен** (подтверждено), env App Platform уточнить, UI скрывает школы без offers, cold из Sheets → GitHub 404. |
+| S3 подключён неправильно? | См. [s3-storage-migration.md](./s3-storage-migration.md): `s3://bm-quest-s3-hot/…` ↔ `https://bm-quest-s3-hot.s3.twcstorage.ru/…`. |
+| Почему на проде пусто? | (2026-05) CORS / env / sync — после миграции на hot проверить CORS `https://*.b-master.pro` на **`bm-quest-s3-hot`**. |
 | Почему пропали форматы? | Первичный импорт брал только `variants[0]`; восстановление — см. [hot-schedule-data.md](../data/hot-schedule-data.md) §10 и § «Потеря нескольких форматов» ниже. |
 | Dev cold после `dev-restart`? | Да: локальные `apps/web/data/v2/*`. |
 | Dev hot после `dev-restart`? | **Частично:** смены видны, но **одна датовая группа = один формат** (нет тариф-листа 2+); multi-variant не восстановлен. |
@@ -161,19 +161,19 @@ make dev-restart
 
 | Настройка | Где в Timeweb | Зачем | Статус |
 |----------|---------------|--------|--------|
-| Публичное чтение JSON | **Object Storage** → бакет `bm-questhub` → policy | `curl`/build fetch по HTTPS | Сверить (объекты открываются по URL?) |
+| Публичное чтение JSON | **Object Storage** → бакет `bm-quest-s3-hot` → policy | `curl`/build fetch по HTTPS | Сверить (объекты открываются по URL?) |
 | **CORS** | **Object Storage** → бакет → CORS | Браузер на проде читает `offers-snapshot.json` ([`use-live-schedule.ts`](../../apps/web/lib/offers/use-live-schedule.ts)) | **Не настроено** — вероятный блокер hot на проде |
 | `NEXT_PUBLIC_S3_PUBLIC_BASE_URL` и др. | **App Platform** → приложение → Environment | Build + client URL | Сверить вручную |
 | `AWS_*` в App | Не нужны | Upload идёт с локали/CI через `scripts/s3.env` | — |
 
-Без CORS запрос с `https://quest.b-master.pro` к `https://bm-questhub.s3.twcstorage.ru/data/offers-snapshot.json` в DevTools будет **blocked by CORS**; [`snapshot-client.ts`](../../apps/web/lib/offers/snapshot-client.ts) вернёт пустой snapshot → на `/sites` нет школ, на `/agenda` нет смен (даже если файл на S3 корректный).
+Без CORS запрос с `https://quest.b-master.pro` к `https://bm-quest-s3-hot.s3.twcstorage.ru/data/offers-snapshot.json` в DevTools будет **blocked by CORS**; [`snapshot-client.ts`](../../apps/web/lib/offers/snapshot-client.ts) вернёт пустой snapshot → на `/sites` нет школ, на `/agenda` нет смен (даже если файл на S3 корректный).
 
 **Что сделать (порядок):**
 
-1. [Timeweb Cloud → S3](https://timeweb.cloud/my/storage) → бакет `bm-questhub`.
+1. [Timeweb Cloud → S3](https://timeweb.cloud/my/storage) → бакет `bm-quest-s3-hot`.
 2. **Access policy** — если ещё нет публичного `GetObject` на `data/*`: [timeweb-s3-bucket-policy.example.json](../../scripts/timeweb-s3-bucket-policy.example.json) ([инструкция](./timeweb-object-storage-setup.md) §2).
 3. **CORS** — вставить правило из [timeweb-s3-cors.example.json](../../scripts/timeweb-s3-cors.example.json); добавить все прод-домены (`quest.b-master.pro`, `1517.b-master.pro`, …). [Гайд Timeweb CORS](https://timeweb.cloud/docs/s3-storage/supported-features/cors-setup).
-4. Проверка с машины: `curl -sI https://bm-questhub.s3.twcstorage.ru/data/offers-snapshot.json` → **200**.
+4. Проверка с машины: `curl -sI https://bm-quest-s3-hot.s3.twcstorage.ru/data/offers-snapshot.json` → **200**.
 5. Проверка с прод-сайта: DevTools → Network → тот же URL → **200**, без CORS error.
 
 Пример CORS в репозитории уже есть — нужно **применить в панели бакета**, не в настройках Next-приложения.
@@ -240,8 +240,8 @@ make publish-sheet-cold     # Sheet → data → S3 + Timeweb deploy
 make dev-restart            # перечитать локальные JSON на dev (cold)
 
 # Проверка S3
-curl -sI https://bm-questhub.s3.twcstorage.ru/data/offers-snapshot.json
-curl -sI https://bm-questhub.s3.twcstorage.ru/data/v2/catalog-snapshot.json
+curl -sI https://bm-quest-s3-hot.s3.twcstorage.ru/data/offers-snapshot.json
+curl -sI https://bm-quest-s3-hot.s3.twcstorage.ru/data/v2/catalog-snapshot.json
 
 # GitHub workflow (после настройки PAT)
 gh api repos/Brain-Master/BM_QuestHub/actions/workflows/sheet-sync.yml/dispatches \

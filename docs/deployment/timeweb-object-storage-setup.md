@@ -19,12 +19,12 @@ Keys: bucket **Dashboard** in [S3 panel](https://timeweb.cloud/my/storage) — *
 
 ## 1. Create bucket
 
-1. [Create bucket](https://timeweb.cloud/docs/s3-storage/manage-storage/create-bucket) — name e.g. `bm-questhub`, class **Standard**, **public** read for anonymous HTTP.
+1. [Create bucket](https://timeweb.cloud/docs/s3-storage/manage-storage/create-bucket) — name e.g. `bm-quest-s3-hot`, class **Standard**, **public** read for anonymous HTTP.
 2. Pick storage size tier (1 GB starter is enough initially).
 3. Copy S3 credentials to `scripts/s3.env` from [`scripts/s3.env.example`](../../scripts/s3.env.example).
 
 ```bash
-S3_BUCKET=bm-questhub
+S3_BUCKET=bm-quest-s3-hot
 S3_ENDPOINT=https://s3.twcstorage.ru
 AWS_DEFAULT_REGION=ru-1
 AWS_ACCESS_KEY_ID=...
@@ -34,7 +34,7 @@ AWS_SECRET_ACCESS_KEY=...
 Set in App Platform / local build:
 
 ```text
-NEXT_PUBLIC_S3_PUBLIC_BASE_URL=https://bm-questhub.s3.twcstorage.ru
+NEXT_PUBLIC_S3_PUBLIC_BASE_URL=https://bm-quest-s3-hot.s3.twcstorage.ru
 ```
 
 ## 2. Bucket policy (public read)
@@ -51,8 +51,8 @@ Allow anonymous `GetObject` on public prefixes (adjust bucket name):
       "Principal": "*",
       "Action": ["s3:GetObject"],
       "Resource": [
-        "arn:aws:s3:::bm-questhub/data/*",
-        "arn:aws:s3:::bm-questhub/media/*"
+        "arn:aws:s3:::bm-quest-s3-hot/data/*",
+        "arn:aws:s3:::bm-quest-s3-hot/media/*"
       ]
     }
   ]
@@ -64,14 +64,14 @@ Apply in bucket settings → access policy. See [bucket policies](https://timewe
 ## 3. Object layout
 
 ```text
-s3://bm-questhub/data/offers-snapshot.json
-s3://bm-questhub/data/v2/site-manifest.json
-s3://bm-questhub/data/v2/site-config.json
-s3://bm-questhub/data/v2/catalog-snapshot.json
-s3://bm-questhub/data/v2/map-snapshot.json
-s3://bm-questhub/data/v2/schedule-snapshot.json
-s3://bm-questhub/data/v2/detail/<courseSlug>.json
-s3://bm-questhub/media/quests/<slug>/<file>
+s3://bm-quest-s3-hot/data/offers-snapshot.json
+s3://bm-quest-s3-hot/data/v2/site-manifest.json
+s3://bm-quest-s3-hot/data/v2/site-config.json
+s3://bm-quest-s3-hot/data/v2/catalog-snapshot.json
+s3://bm-quest-s3-hot/data/v2/map-snapshot.json
+s3://bm-quest-s3-hot/data/v2/schedule-snapshot.json
+s3://bm-quest-s3-hot/data/v2/detail/<courseSlug>.json
+s3://bm-quest-s3-hot/media/quests/<slug>/<file>
 ```
 
 Local sources: `apps/web/data/`, `apps/web/media/`.
@@ -93,7 +93,7 @@ make s3-sync-media   # skips if apps/web/media is empty
 Verify:
 
 ```bash
-curl -sI "https://bm-questhub.s3.twcstorage.ru/data/v2/site-manifest.json"
+curl -sI "https://bm-quest-s3-hot.s3.twcstorage.ru/data/v2/site-manifest.json"
 ```
 
 Publish V2 snapshots: upload all files, then **last** — `data/v2/site-manifest.json`.
@@ -101,7 +101,7 @@ Publish V2 snapshots: upload all files, then **last** — `data/v2/site-manifest
 ## 5. Build-time env (App Platform / CI)
 
 ```text
-NEXT_PUBLIC_S3_PUBLIC_BASE_URL=https://bm-questhub.s3.twcstorage.ru
+NEXT_PUBLIC_S3_PUBLIC_BASE_URL=https://bm-quest-s3-hot.s3.twcstorage.ru
 OFFERS_SNAPSHOT_SOURCE=s3
 SITE_SNAPSHOT_SOURCE=s3
 ```

@@ -145,6 +145,13 @@ export async function handler(event = {}) {
       });
     }
 
+    if (!dryRun && result.snapshotReadOk === false) {
+      await alertOnce({
+        kind: "snapshot_read_failed",
+        message: "ops/mos-enrolled-snapshot.json read failed (S3 timeout?)",
+      });
+    }
+
     if (!dryRun && result.snapshotOk === false) {
       await alertOnce({
         kind: "snapshot_not_saved",

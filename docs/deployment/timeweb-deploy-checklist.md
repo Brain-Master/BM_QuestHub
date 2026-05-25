@@ -11,17 +11,17 @@ Complete after merging Timeweb S3 + App Platform docs to `main`.
 
 ## S3 bucket
 
-- [ ] [Create public bucket](https://timeweb.cloud/my/storage) `bm-questhub` (Standard, ~1 GB tier).
+- [ ] [Create public bucket](https://timeweb.cloud/my/storage) `bm-quest-s3-hot` (Standard, ~1 GB tier).
 - [ ] Apply policy from [`scripts/timeweb-s3-bucket-policy.example.json`](../../scripts/timeweb-s3-bucket-policy.example.json).
 - [ ] Copy **S3** Access Key + Secret to `scripts/s3.env` (from bucket dashboard), **or** automated:
   - `cp scripts/timeweb.env.example scripts/timeweb.env` → paste **new** Cloud API JWT (revoke any key posted in chat).
-  - `make timeweb-setup` — creates bucket `bm-questhub`, writes `scripts/s3.env`, uploads `data/`, verifies HTTP.
+  - `make timeweb-setup` — creates bucket `bm-quest-s3-hot`, writes `scripts/s3.env`, uploads `data/`, verifies HTTP.
 - [ ] Manual steps only: `make timeweb-s3-setup` then `make s3-sync-data`
-- [ ] `curl -sI https://bm-questhub.s3.twcstorage.ru/data/v2/site-manifest.json` → 200
-- [ ] `curl -sI https://bm-questhub.s3.twcstorage.ru/data/offers-snapshot.json` → 200 (non-zero `Content-Length`)
-- [ ] `curl -sI https://bm-questhub.s3.twcstorage.ru/data/v2/site-config.json` → 200
-- [ ] `curl -sI https://bm-questhub.s3.twcstorage.ru/data/v2/catalog-snapshot.json` → 200
-- [ ] `curl -sI https://bm-questhub.s3.twcstorage.ru/data/v2/map-snapshot.json` → 200
+- [ ] `curl -sI https://bm-quest-s3-hot.s3.twcstorage.ru/data/v2/site-manifest.json` → 200
+- [ ] `curl -sI https://bm-quest-s3-hot.s3.twcstorage.ru/data/offers-snapshot.json` → 200 (non-zero `Content-Length`)
+- [ ] `curl -sI https://bm-quest-s3-hot.s3.twcstorage.ru/data/v2/site-config.json` → 200
+- [ ] `curl -sI https://bm-quest-s3-hot.s3.twcstorage.ru/data/v2/catalog-snapshot.json` → 200
+- [ ] `curl -sI https://bm-quest-s3-hot.s3.twcstorage.ru/data/v2/map-snapshot.json` → 200
 - [ ] If site shows stale venue text but S3 JSON is correct: compare `site-config` vs `map-snapshot` curl from the same network; fix object ACL/policy, then `make publish-sheet-cold` (re-upload `data/v2/`).
 - [ ] CORS on bucket for **hot schedule** — [`scripts/timeweb-s3-cors.example.json`](../../scripts/timeweb-s3-cors.example.json)
 

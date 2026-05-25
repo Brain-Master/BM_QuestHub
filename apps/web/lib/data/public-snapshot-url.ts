@@ -2,8 +2,9 @@
  * Resolves a manifest-relative path to a public HTTP URL when S3/CDN is configured.
  */
 
-/** Timeweb public bucket — same as prod when env is unset in `next dev`. */
-export const DEFAULT_PUBLIC_S3_BASE_URL = "https://bm-questhub.s3.twcstorage.ru";
+/** Timeweb hot bucket — dev fallback when NEXT_PUBLIC_S3_PUBLIC_BASE_URL is unset. */
+export const DEFAULT_PUBLIC_S3_BASE_URL =
+  "https://bm-quest-s3-hot.s3.twcstorage.ru";
 
 function normalizeBase(base: string): string {
   return base.endsWith("/") ? base : `${base}/`;

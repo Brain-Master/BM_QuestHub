@@ -114,7 +114,7 @@ async function main() {
   const nameArg =
     process.argv.find((a, i) => process.argv[i - 1] === "--create") ??
     process.argv.find((a, i) => process.argv[i - 1] === "--setup") ??
-    "bm-questhub";
+    "bm-quest-s3-hot";
 
   if (!createFlag && !setup) {
     console.log("[timeweb-provision] storage presets:");

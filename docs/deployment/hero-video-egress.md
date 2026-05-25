@@ -38,4 +38,4 @@ node scripts/encode-hero-video.mjs --slug cyber-rhythm --source /path/to/source.
 make s3-sync-media
 ```
 
-Verify: `curl -sI "https://bm-questhub.s3.twcstorage.ru/media/quests/cyber-rhythm/hero.mp4"` → `200`.
+Verify: `curl -sI "https://bm-quest-s3-hot.s3.twcstorage.ru/media/quests/cyber-rhythm/hero.mp4"` → `200`.

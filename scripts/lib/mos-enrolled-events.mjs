@@ -34,9 +34,18 @@ export function normalizeEnrolledSnapshot(raw) {
   return out;
 }
 
-export async function loadEnrolledSnapshot() {
+/** @returns {Promise<{ snapshot: Record<string, { enrolled: number, shiftGroupId: string, formatType: string }>, readOk: boolean }>} */
+export async function loadEnrolledSnapshotWithMeta() {
   const stored = await readOpsJson(MOS_ENROLLED_SNAPSHOT_KEY);
-  return normalizeEnrolledSnapshot(stored?.data);
+  return {
+    snapshot: normalizeEnrolledSnapshot(stored?.data),
+    readOk: stored !== null,
+  };
+}
+
+export async function loadEnrolledSnapshot() {
+  const { snapshot } = await loadEnrolledSnapshotWithMeta();
+  return snapshot;
 }
 
 /**

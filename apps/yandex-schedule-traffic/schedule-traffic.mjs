@@ -90,7 +90,7 @@ export async function recordScheduleVisit(input = {}) {
   const page = String(input.page ?? "schedule").trim() || "schedule";
   const nowMs = input.ts ?? Date.now();
 
-  return mergeOpsJson(SCHEDULE_TRAFFIC_S3_KEY, (raw) => {
+  const merged = await mergeOpsJson(SCHEDULE_TRAFFIC_S3_KEY, (raw) => {
     const doc = normalizeTrafficDoc(raw);
     doc.buckets = pruneBuckets(doc.buckets, nowMs);
     const bucket = doc.buckets.find((b) => b.at === at);
@@ -104,6 +104,8 @@ export async function recordScheduleVisit(input = {}) {
     doc.lastPage = page;
     return doc;
   });
+  if (!merged) throw new Error("schedule_traffic_s3_write_failed");
+  return merged;
 }
 
 /**

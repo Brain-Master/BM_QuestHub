@@ -29,6 +29,7 @@
 |----------|------|
 | [timeweb-app-platform.md](./timeweb-app-platform.md) | App Platform, сборка Next |
 | [timeweb-object-storage-setup.md](./timeweb-object-storage-setup.md) | S3 Timeweb |
+| [s3-storage-migration.md](./s3-storage-migration.md) | Cold → hot bucket (`bm-quest-s3-hot`) |
 | [yandex-object-storage-setup.md](./yandex-object-storage-setup.md) | Yandex Object Storage (альтернатива) |
 | [hero-video-egress.md](./hero-video-egress.md) | Видео hero |
 | [yandex-metrika-goals.md](./yandex-metrika-goals.md) | Метрика |

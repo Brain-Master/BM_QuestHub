@@ -2,4 +2,5 @@ function.zip
 node_modules/
 mos-ops-s3.mjs
 s3-connectivity-probe.mjs
+s3-storage.mjs
 telegram-alert.mjs

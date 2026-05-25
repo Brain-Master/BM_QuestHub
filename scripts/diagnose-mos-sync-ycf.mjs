@@ -11,13 +11,12 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { loadRepoEnv } from "./load-dotenv.mjs";
+import { publicBaseUrlForBucket } from "./lib/s3-storage.mjs";
 
 const ROOT = loadRepoEnv();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const YC = path.join(process.env.USERPROFILE || "", "yandex-cloud", "bin", "yc.exe");
-const S3_BASE =
-  process.env.S3_PUBLIC_BASE_URL?.trim() ||
-  "https://bm-questhub.s3.twcstorage.ru";
+const S3_BASE = publicBaseUrlForBucket("hot");
 
 const CONTROLLER = "bm-mos-sync-controller";
 const SYNC = "bm-mos-enrolled-sync";

@@ -301,7 +301,7 @@ make diagnose-mos-sync-ycf
 make verify-mos-sync-adaptive
 yc serverless function invoke --name bm-mos-sync-controller --data '{}'
 yc serverless function invoke --name bm-mos-enrolled-sync --data '{"dryRun":true}'
-curl -s "https://bm-questhub.s3.twcstorage.ru/ops/mos-sync-state.json" | jq '{lastControllerAt,lastSyncAt,nextDueAt}'
+curl -s "https://bm-quest-s3-hot.s3.twcstorage.ru/ops/mos-sync-state.json" | jq '{lastControllerAt,lastSyncAt,nextDueAt}'
 ```
 
 | Симптом | Что проверить |
