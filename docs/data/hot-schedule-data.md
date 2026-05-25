@@ -273,6 +273,20 @@ flowchart LR
 
 Парсинг клиентского JSON: [`snapshot-parse.ts`](../../apps/web/lib/offers/snapshot-parse.ts).
 
+### Метка времени снимка (ops)
+
+| Аудитория | URL | Что видно в жёлтом блоке mos.ru |
+|-----------|-----|----------------------------------|
+| Посетители | `/agenda/`, `/sites/<school>/agenda/` | Только предупреждение про mos.ru |
+| Команда / проверка | те же пути + **`?datastamp=1`** | + строка «Снимок на сайте: … (MSK)» |
+
+Примеры:
+
+- `https://quest.b-master.pro/agenda/?datastamp=1`
+- `http://localhost:3000/sites/school-17/agenda/?datastamp=1`
+
+Время берётся из `generatedAt` hot-снимка: сначала SSR ([`loadScheduleSnapshotGeneratedAt()`](../../apps/web/lib/content/load.ts)), после успешного live-fetch — с S3 ([`use-live-schedule.ts`](../../apps/web/lib/offers/use-live-schedule.ts)). Флаг: [`snapshot-stamp.ts`](../../apps/web/lib/offers/snapshot-stamp.ts).
+
 ---
 
 ## 8. Публикация: dev vs prod

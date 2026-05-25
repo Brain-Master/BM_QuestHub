@@ -10,6 +10,7 @@ type Props = {
   allAgendaHref?: string;
   sitesHref?: string;
   snapshotGeneratedAt?: string | null;
+  showSnapshotTime?: boolean;
   hideTitle?: boolean;
   hideCommunityPanel?: boolean;
 };
@@ -21,6 +22,7 @@ export function OfferAgenda({
   allAgendaHref,
   sitesHref = "/sites",
   snapshotGeneratedAt = null,
+  showSnapshotTime = false,
   hideTitle = false,
   hideCommunityPanel = false,
 }: Props) {
@@ -32,6 +34,7 @@ export function OfferAgenda({
       allAgendaHref={allAgendaHref}
       sitesHref={sitesHref}
       snapshotGeneratedAt={snapshotGeneratedAt}
+      showSnapshotTime={showSnapshotTime}
       hideTitle={hideTitle}
       hideCommunityPanel={hideCommunityPanel}
     />

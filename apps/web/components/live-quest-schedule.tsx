@@ -1,9 +1,11 @@
 "use client";
 
-import { useMemo } from "react";
+import { Suspense, useMemo } from "react";
+import { useSearchParams } from "next/navigation";
 
 import { ScheduleBoard } from "@/components/schedule-board";
 import { buildAgendaItems, groupAgendaItems } from "@/lib/offers/agenda";
+import { isSnapshotStampVisible } from "@/lib/offers/snapshot-stamp";
 import { useLiveSchedule } from "@/lib/offers/use-live-schedule";
 import { useScheduleTrafficPulse } from "@/lib/schedule/use-schedule-traffic-pulse";
 import type { Quest, Venue, World } from "@/lib/schemas";
@@ -13,13 +15,24 @@ type Props = {
   venues: Venue[];
   worlds: World[];
   questSlug: string;
+  initialSnapshotGeneratedAt?: string | null;
 };
 
-export function LiveQuestSchedule({ baseQuests, venues, worlds, questSlug }: Props) {
+function LiveQuestScheduleInner({
+  baseQuests,
+  venues,
+  worlds,
+  questSlug,
+  initialSnapshotGeneratedAt = null,
+}: Props) {
+  const searchParams = useSearchParams();
+  const showSnapshotTime = isSnapshotStampVisible(searchParams);
+
   const { quests, status, liveEnabled, snapshotGeneratedAt } = useLiveSchedule(
     baseQuests,
     {
       refreshInterval: 60_000,
+      initialSnapshotGeneratedAt,
     },
   );
 
@@ -51,7 +64,16 @@ export function LiveQuestSchedule({ baseQuests, venues, worlds, questSlug }: Pro
         showProgramFilter={false}
         displayMode="quest"
         snapshotGeneratedAt={snapshotGeneratedAt}
+        showSnapshotTime={showSnapshotTime}
       />
     </>
+  );
+}
+
+export function LiveQuestSchedule(props: Props) {
+  return (
+    <Suspense fallback={null}>
+      <LiveQuestScheduleInner {...props} />
+    </Suspense>
   );
 }

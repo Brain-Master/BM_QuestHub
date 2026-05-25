@@ -44,3 +44,23 @@ export function countOffersInSnapshot(snapshot: OffersSnapshotV1): number {
     0,
   );
 }
+
+/** Reject Unix epoch and other placeholder timestamps used when S3 fetch fails. */
+const MIN_DISPLAYABLE_SNAPSHOT_MS = Date.parse("2020-01-01T00:00:00.000Z");
+
+export function isDisplayableSnapshotGeneratedAt(
+  iso: string | null | undefined,
+): boolean {
+  if (!iso?.trim()) return false;
+  const ms = Date.parse(iso);
+  return Number.isFinite(ms) && ms >= MIN_DISPLAYABLE_SNAPSHOT_MS;
+}
+
+/** True when snapshot has real offers from S3/Sheet, not the empty fallback payload. */
+export function isUsableOffersSnapshot(snapshot: OffersSnapshotV1): boolean {
+  return (
+    snapshot.source !== "missing_or_unreadable" &&
+    countOffersInSnapshot(snapshot) > 0 &&
+    isDisplayableSnapshotGeneratedAt(snapshot.generatedAt)
+  );
+}

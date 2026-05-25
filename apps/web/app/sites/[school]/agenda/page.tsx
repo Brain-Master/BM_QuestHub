@@ -7,7 +7,12 @@ import { LiveAgenda } from "@/components/live-agenda";
 import { RememberSchoolOnVisit } from "@/components/remember-school-on-visit";
 import { SchoolAgendaHero } from "@/components/school-agenda-hero";
 import { communityConnectCopy } from "@/lib/community-connect-copy";
-import { loadQuestsForSchoolAgenda, loadVenues, loadWorlds } from "@/lib/content/load";
+import {
+  loadQuestsForSchoolAgenda,
+  loadScheduleSnapshotGeneratedAt,
+  loadVenues,
+  loadWorlds,
+} from "@/lib/content/load";
 import { resolvePublicMediaUrl } from "@/lib/media/public-media-url";
 import { getSchoolScopes, resolveSchoolScope } from "@/lib/offers/agenda";
 import {
@@ -79,10 +84,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function SchoolAgendaPage({ params }: Props) {
   const { school: schoolSlug } = await params;
-  const [quests, venues, worlds] = await Promise.all([
+  const [quests, venues, worlds, initialSnapshotGeneratedAt] = await Promise.all([
     loadQuestsForSchoolAgenda(),
     loadVenues(),
     loadWorlds(),
+    loadScheduleSnapshotGeneratedAt(),
   ]);
   const school = resolveSchoolScope(venues, schoolSlug);
   if (!school) notFound();
@@ -108,6 +114,7 @@ export default async function SchoolAgendaPage({ params }: Props) {
         baseQuests={quests}
         venues={venues}
         worlds={worlds}
+        initialSnapshotGeneratedAt={initialSnapshotGeneratedAt}
         schoolSlug={school.slug}
         schoolName={school.name}
         allAgendaHref="/agenda"

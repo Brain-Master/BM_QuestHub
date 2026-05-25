@@ -36,6 +36,7 @@ type Props = {
   showProgramFilter?: boolean;
   displayMode?: "agenda" | "quest";
   snapshotGeneratedAt?: string | null;
+  showSnapshotTime?: boolean;
   hideTitle?: boolean;
   hideCommunityPanel?: boolean;
 };
@@ -166,6 +167,7 @@ export function ScheduleBoard({
   showProgramFilter = true,
   displayMode = "agenda",
   snapshotGeneratedAt = null,
+  showSnapshotTime = false,
   hideTitle = false,
   hideCommunityPanel = false,
 }: Props) {
@@ -438,7 +440,10 @@ export function ScheduleBoard({
 
   return (
     <section className="schedule-board space-y-8 [overflow-anchor:none]">
-      <MosCapacityDataNotice snapshotGeneratedAt={snapshotGeneratedAt} />
+      <MosCapacityDataNotice
+        snapshotGeneratedAt={snapshotGeneratedAt}
+        showSnapshotTime={showSnapshotTime}
+      />
       {hideTitle ? null : (
         <div className="flex flex-col items-start justify-between gap-3 border-b border-white/10 pb-4 sm:flex-row sm:items-center">
         <div>

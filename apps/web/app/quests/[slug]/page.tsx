@@ -13,6 +13,7 @@ import {
   loadQuestBySlug,
   loadQuests,
   loadQuestsShell,
+  loadScheduleSnapshotGeneratedAt,
   loadVenues,
   loadWorldBySlug,
   loadWorlds,
@@ -60,10 +61,11 @@ export default async function QuestPage({ params }: Props) {
   const quest = await loadQuestBySlug(slug);
   if (!quest) notFound();
 
-  const [venues, worlds, baseQuests] = await Promise.all([
+  const [venues, worlds, baseQuests, initialSnapshotGeneratedAt] = await Promise.all([
     loadVenues(),
     loadWorlds(),
     loadQuestsShell(),
+    loadScheduleSnapshotGeneratedAt(),
   ]);
   const world = await loadWorldBySlug(quest.worldSlug);
 
@@ -135,6 +137,7 @@ export default async function QuestPage({ params }: Props) {
           venues={venues}
           worlds={worlds}
           questSlug={slug}
+          initialSnapshotGeneratedAt={initialSnapshotGeneratedAt}
         />
       </section>
     </article>

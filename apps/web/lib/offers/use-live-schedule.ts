@@ -9,6 +9,7 @@ import {
   isLiveScheduleClientEnabled,
   publicOffersSnapshotUrl,
 } from "@/lib/offers/snapshot-client";
+import { isUsableOffersSnapshot } from "@/lib/offers/snapshot-parse";
 import type { Quest } from "@/lib/schemas";
 
 export type LiveScheduleStatus = "idle" | "loading" | "ready" | "error";
@@ -17,7 +18,11 @@ const POLL_MS = 60_000;
 
 export function useLiveSchedule(
   baseQuests: Quest[],
-  options?: { refreshInterval?: number; enabled?: boolean },
+  options?: {
+    refreshInterval?: number;
+    enabled?: boolean;
+    initialSnapshotGeneratedAt?: string | null;
+  },
 ) {
   const enabled =
     options?.enabled !== false && isLiveScheduleClientEnabled();
@@ -35,7 +40,7 @@ export function useLiveSchedule(
 
   const quests = useMemo(() => {
     if (!enabled) return baseQuests;
-    if (!data) return baseQuests;
+    if (!data || !isUsableOffersSnapshot(data)) return baseQuests;
     return mergeOffersIntoQuests(baseQuests, data);
   }, [baseQuests, data, enabled]);
 
@@ -54,6 +59,10 @@ export function useLiveSchedule(
     isValidating,
     refresh: () => void mutate(),
     liveEnabled: enabled,
-    snapshotGeneratedAt: data?.generatedAt ?? null,
+    snapshotGeneratedAt: (() => {
+      const liveAt =
+        data && isUsableOffersSnapshot(data) ? data.generatedAt : null;
+      return liveAt ?? options?.initialSnapshotGeneratedAt ?? null;
+    })(),
   };
 }

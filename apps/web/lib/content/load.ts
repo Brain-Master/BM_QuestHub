@@ -23,6 +23,7 @@ import {
   type World,
 } from "@/lib/schemas";
 import { isLiveScheduleClientEnabled } from "@/lib/offers/snapshot-client";
+import { isDisplayableSnapshotGeneratedAt } from "@/lib/offers/snapshot-parse";
 import { filterQuestsForSchool as filterQuestsForSchoolPure } from "@/lib/school-scope";
 
 const CONTENT_ROOT = path.join(/*turbopackIgnore: true*/ process.cwd(), "content");
@@ -121,11 +122,22 @@ export async function loadQuestsForSchoolAgenda(): Promise<Quest[]> {
 
 /** Quest bodies for static shell when live schedule loads offers in the browser. */
 export async function loadQuestsShell(): Promise<Quest[]> {
-  const bodies = await loadQuestBodies();
   if (!isLiveScheduleClientEnabled()) {
     return loadQuests();
   }
+  // Dev: bake schedule server-side — browser fetch to S3 often fails without CORS.
+  if (process.env.NODE_ENV === "development") {
+    return loadQuests();
+  }
+  const bodies = await loadQuestBodies();
   return bodies.map((q) => ({ ...q, offers: [] }));
+}
+
+/** Hot schedule snapshot time for ops links (`?datastamp=1`) and SSR fallback. */
+export async function loadScheduleSnapshotGeneratedAt(): Promise<string | null> {
+  const schedule = await loadScheduleSnapshotV2();
+  const at = schedule.generatedAt;
+  return isDisplayableSnapshotGeneratedAt(at) ? at : null;
 }
 
 export async function loadQuests(): Promise<Quest[]> {

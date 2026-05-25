@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { formatSnapshotTime } from "@/lib/offers/snapshot-stamp";
 import { SCHEDULE_DICTIONARIES } from "@/lib/offers/schedule-dictionaries";
 import { cn } from "@/lib/utils";
 
@@ -23,29 +24,23 @@ function resolveNotice() {
   };
 }
 
-function formatSnapshotTime(iso: string | null | undefined): string | null {
-  if (!iso?.trim()) return null;
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return null;
-  return d.toLocaleString("ru-RU", {
-    timeZone: "Europe/Moscow",
-    day: "numeric",
-    month: "short",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-}
-
 type Props = {
   snapshotGeneratedAt?: string | null;
+  showSnapshotTime?: boolean;
   className?: string;
 };
 
-export function MosCapacityDataNotice({ snapshotGeneratedAt, className }: Props) {
+export function MosCapacityDataNotice({
+  snapshotGeneratedAt,
+  showSnapshotTime = false,
+  className,
+}: Props) {
   const notice = resolveNotice();
   if (!notice.enabled) return null;
 
-  const snapshotLabel = formatSnapshotTime(snapshotGeneratedAt);
+  const snapshotLabel = showSnapshotTime
+    ? formatSnapshotTime(snapshotGeneratedAt)
+    : null;
 
   return (
     <div
@@ -64,7 +59,12 @@ export function MosCapacityDataNotice({ snapshotGeneratedAt, className }: Props)
       </p>
       <p className="text-amber-50/85">{notice.body}</p>
       {snapshotLabel ? (
-        <p className="mt-2 text-amber-100/70 text-xs">Снимок на сайте: {snapshotLabel} (MSK)</p>
+        <p
+          className="mt-2 text-amber-100/70 text-xs"
+          data-testid="mos-capacity-snapshot-time"
+        >
+          Снимок на сайте: {snapshotLabel} (MSK)
+        </p>
       ) : null}
       <p className="mt-2">
         <Link

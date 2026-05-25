@@ -2,17 +2,23 @@ import type { Metadata } from "next";
 
 import { LiveAgenda } from "@/components/live-agenda";
 import { PreferredSchoolBanner } from "@/components/preferred-school-banner";
-import { loadQuestsShell, loadVenues, loadWorlds } from "@/lib/content/load";
+import {
+  loadQuestsShell,
+  loadScheduleSnapshotGeneratedAt,
+  loadVenues,
+  loadWorlds,
+} from "@/lib/content/load";
 
 export const metadata: Metadata = {
   title: "Расписание смен",
 };
 
 export default async function AgendaPage() {
-  const [baseQuests, venues, worlds] = await Promise.all([
+  const [baseQuests, venues, worlds, initialSnapshotGeneratedAt] = await Promise.all([
     loadQuestsShell(),
     loadVenues(),
     loadWorlds(),
+    loadScheduleSnapshotGeneratedAt(),
   ]);
 
   return (
@@ -23,6 +29,7 @@ export default async function AgendaPage() {
         baseQuests={baseQuests}
         venues={venues}
         worlds={worlds}
+        initialSnapshotGeneratedAt={initialSnapshotGeneratedAt}
         sitesHref="/sites"
       />
     </main>
