@@ -163,7 +163,11 @@ function main() {
     GOOGLE_SHEETS_COLD_SPREADSHEET_ID:
       process.env.GOOGLE_SHEETS_COLD_SPREADSHEET_ID?.trim() ||
       "1fqeVC8BhjGWtOR20NhCUQuhwgchkCCzYsmiudpGE4jc",
-    S3_ENDPOINT: process.env.S3_ENDPOINT?.trim() || "https://s3.twcstorage.ru",
+    S3_ENDPOINT:
+      process.env.S3_ENDPOINT?.trim() || "https://storage.yandexcloud.net",
+    S3_PUBLIC_BASE_URL:
+      process.env.S3_PUBLIC_BASE_URL?.trim() ||
+      "https://storage.yandexcloud.net/bm-questhub",
     TIMEWEB_APP_ID: process.env.TIMEWEB_APP_ID?.trim() || "195536",
     ...(opsUrl ? { OPS_REPORT_URL: opsUrl } : {}),
     SITE_HEALTH_URLS:

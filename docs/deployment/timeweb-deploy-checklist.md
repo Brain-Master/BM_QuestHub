@@ -1,5 +1,7 @@
 # Timeweb deploy checklist (one-time)
 
+> **Активный Object Storage:** Yandex `bm-questhub` — [s3-storage-migration.md](./s3-storage-migration.md). Ниже — Timeweb App Platform + проверки; S3 curl — на YC URL.
+
 Complete after merging Timeweb S3 + App Platform docs to `main`.
 
 Сводка Yandex Cloud Functions: [yandex-cloud-functions.md](./yandex-cloud-functions.md). Индекс deployment: [README.md](./README.md).
@@ -17,11 +19,11 @@ Complete after merging Timeweb S3 + App Platform docs to `main`.
   - `cp scripts/timeweb.env.example scripts/timeweb.env` → paste **new** Cloud API JWT (revoke any key posted in chat).
   - `make timeweb-setup` — creates bucket `bm-quest-s3-hot`, writes `scripts/s3.env`, uploads `data/`, verifies HTTP.
 - [ ] Manual steps only: `make timeweb-s3-setup` then `make s3-sync-data`
-- [ ] `curl -sI https://bm-quest-s3-hot.s3.twcstorage.ru/data/v2/site-manifest.json` → 200
-- [ ] `curl -sI https://bm-quest-s3-hot.s3.twcstorage.ru/data/offers-snapshot.json` → 200 (non-zero `Content-Length`)
-- [ ] `curl -sI https://bm-quest-s3-hot.s3.twcstorage.ru/data/v2/site-config.json` → 200
-- [ ] `curl -sI https://bm-quest-s3-hot.s3.twcstorage.ru/data/v2/catalog-snapshot.json` → 200
-- [ ] `curl -sI https://bm-quest-s3-hot.s3.twcstorage.ru/data/v2/map-snapshot.json` → 200
+- [ ] `curl -sI https://storage.yandexcloud.net/bm-questhub/data/v2/site-manifest.json` → 200
+- [ ] `curl -sI https://storage.yandexcloud.net/bm-questhub/data/offers-snapshot.json` → 200 (non-zero `Content-Length`)
+- [ ] `curl -sI https://storage.yandexcloud.net/bm-questhub/data/v2/site-config.json` → 200
+- [ ] `curl -sI https://storage.yandexcloud.net/bm-questhub/data/v2/catalog-snapshot.json` → 200
+- [ ] `curl -sI https://storage.yandexcloud.net/bm-questhub/data/v2/map-snapshot.json` → 200
 - [ ] If site shows stale venue text but S3 JSON is correct: compare `site-config` vs `map-snapshot` curl from the same network; fix object ACL/policy, then `make publish-sheet-cold` (re-upload `data/v2/`).
 - [ ] CORS on bucket for **hot schedule** — [`scripts/timeweb-s3-cors.example.json`](../../scripts/timeweb-s3-cors.example.json)
 

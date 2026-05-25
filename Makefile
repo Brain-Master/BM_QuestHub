@@ -95,17 +95,24 @@ setup-content-admin: ## setup-content-admin  Настройка content admin
 setup-github-repo: ## setup-github-repo  Первичная настройка GitHub repo
 deploy-yandex-mos-enrolled-sync: ## deploy-yandex-mos-enrolled-sync  YCF bm-mos-enrolled-sync + timer 15m
 deploy-yandex-mos-sync-adaptive: ## deploy-yandex-mos-sync-adaptive  Adaptive stack (controller+traffic, no 15m sync timer)
+provision-mos-ymq: ## provision-mos-ymq  YMQ bm-mos-enrolled-batch + DLQ
+deploy-yandex-mos-ymq-pipeline: ## deploy-yandex-mos-ymq-pipeline  Planner + worker + finalizer YCF
+smoke-mos-ymq-pipeline: ## smoke-mos-ymq-pipeline  Dry-run planner invoke
 verify-mos-sync-lib: ## verify-mos-sync-lib  Unit-тесты mos-sync lib (+ --ycf для smoke)
 verify-mos-sync-adaptive: ## verify-mos-sync-adaptive  YCF functions + controller timer
 diagnose-mos-sync-ycf: ## diagnose-mos-sync-ycf  S3 state + yc invoke controller/sync
+clear-mos-sync-lock: ## clear-mos-sync-lock  Сброс lockUntil в ops/mos-sync-state.json (hot S3)
 redeploy-yandex-mos-sync-controller: ## redeploy-yandex-mos-sync-controller  Только controller после правок lib
 redeploy-yandex-mos-enrolled-sync: ## redeploy-yandex-mos-enrolled-sync  Только sync после правок lib
 deploy-yandex-s3-connectivity-probe: ## deploy-yandex-s3-connectivity-probe  YCF probe S3 Timeweb + TG
 invoke-s3-connectivity-probe: ## invoke-s3-connectivity-probe  Запуск bm-s3-connectivity-probe
-setup-s3-hot-env: ## setup-s3-hot-env  scripts/s3.env из secret/bm-questhub-s3-hot.txt
-migrate-s3-to-hot: ## migrate-s3-to-hot  Копировать bm-questhub → bm-quest-s3-hot
-setup-s3-hot-dev: ## setup-s3-hot-dev  s3.env + apps/web/.env.local для dev:host
-verify-s3-docs: ## verify-s3-docs  Нет активных URL bm-questhub.s3 в docs/apps
+setup-s3-yc-env: ## setup-s3-yc-env  scripts/s3.env из secret/bm-questhub-s3-yc.txt (YC active)
+setup-s3-yc-dev: ## setup-s3-yc-dev  s3.env + apps/web/.env.local для YC dev:host
+migrate-s3-to-yc: ## migrate-s3-to-yc  Timeweb bm-quest-s3-hot → YC bm-questhub (cross)
+setup-s3-hot-env: ## setup-s3-hot-env  Timeweb rollback s3.env из secret/bm-questhub-s3-hot.txt
+migrate-s3-to-hot: ## migrate-s3-to-hot  Копировать bm-questhub → bm-quest-s3-hot (same provider)
+setup-s3-hot-dev: ## setup-s3-hot-dev  Timeweb rollback s3.env + .env.local
+verify-s3-docs: ## verify-s3-docs  Нет активных Timeweb hot URL в docs/apps
 export-mos-enrolled-stats: ## export-mos-enrolled-stats  CSV из ops/mos-enrolled-stats.json
 upload-mos-enrolled-cookies: ## upload-mos-enrolled-cookies  Cookies → S3 для YCF
 setup-github-mos-enrolled-sync: ## setup-github-mos-enrolled-sync  GitHub secret для Actions workflow
@@ -173,6 +180,9 @@ sync-sheet-cold:
 
 publish-sheet-hot:
 	node scripts/publish-sheet-hot.mjs
+
+sync-offers-snapshot-timeweb:
+	node scripts/sync-offers-snapshot-timeweb.mjs
 
 publish-sheet-cold:
 	node scripts/publish-sheet-cold.mjs
@@ -280,6 +290,15 @@ deploy-yandex-mos-enrolled-sync:
 deploy-yandex-mos-sync-adaptive:
 	node scripts/deploy-yandex-mos-sync-adaptive.mjs
 
+provision-mos-ymq:
+	node scripts/provision-mos-ymq.mjs
+
+deploy-yandex-mos-ymq-pipeline:
+	node scripts/deploy-yandex-mos-ymq-pipeline.mjs
+
+smoke-mos-ymq-pipeline:
+	node scripts/smoke-mos-ymq-pipeline.mjs
+
 verify-mos-sync-lib:
 	node scripts/verify-mos-sync-lib.mjs
 
@@ -288,6 +307,9 @@ verify-mos-sync-adaptive:
 
 diagnose-mos-sync-ycf:
 	node scripts/diagnose-mos-sync-ycf.mjs
+
+clear-mos-sync-lock:
+	node scripts/clear-mos-sync-lock.mjs
 
 redeploy-yandex-mos-sync-controller:
 	node scripts/redeploy-yandex-mos-sync-controller.mjs
@@ -300,6 +322,15 @@ deploy-yandex-s3-connectivity-probe:
 
 invoke-s3-connectivity-probe:
 	node scripts/invoke-s3-connectivity-probe.mjs
+
+setup-s3-yc-env:
+	node scripts/setup-s3-yc-env.mjs
+
+setup-s3-yc-dev:
+	node scripts/setup-s3-yc-env.mjs --write-web-env
+
+migrate-s3-to-yc:
+	node scripts/migrate-s3-cross.mjs
 
 setup-s3-hot-env:
 	node scripts/setup-s3-hot-env.mjs

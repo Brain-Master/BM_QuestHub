@@ -16,6 +16,7 @@ import { fileURLToPath } from "node:url";
 import { loadDotEnv, loadRepoEnv } from "./load-dotenv.mjs";
 import { DEFAULT_COOKIES_S3_KEY, saveCookiesToS3 } from "./lib/mos-enrolled-cookie-store.mjs";
 import { loadMosEnrolledCookies } from "./lib/mos-enrolled-cookies.mjs";
+import { assertYcfS3LibsPresent } from "./lib/ycf-s3-lib-files.mjs";
 
 const ROOT = loadRepoEnv();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -119,19 +120,24 @@ function stageBundle() {
     }
   }
 
-  for (const name of fs.readdirSync(path.join(ROOT, "scripts", "lib"))) {
+  const libDir = path.join(ROOT, "scripts", "lib");
+  for (const name of fs.readdirSync(libDir)) {
     if (name.endsWith(".test.mjs")) continue;
     if (
       name.startsWith("mos-enrolled") ||
-      name === "telegram-alert.mjs"
+      name.startsWith("mos-ops-") ||
+      name.startsWith("mos-sync-") ||
+      name.startsWith("schedule-traffic") ||
+      name.startsWith("trigger-sheet") ||
+      name === "telegram-alert.mjs" ||
+      name === "s3-storage.mjs"
     ) {
-      fs.copyFileSync(
-        path.join(ROOT, "scripts", "lib", name),
-        path.join(bundledDir, name),
-      );
-      fs.copyFileSync(path.join(ROOT, "scripts", "lib", name), path.join(APP, name));
+      fs.copyFileSync(path.join(libDir, name), path.join(bundledDir, name));
+      fs.copyFileSync(path.join(libDir, name), path.join(APP, name));
     }
   }
+  assertYcfS3LibsPresent(APP);
+  assertYcfS3LibsPresent(bundledDir);
 
   const npm = spawnSync("npm", ["install", "--omit=dev"], {
     cwd: APP,
@@ -190,7 +196,8 @@ function buildEnvironment() {
     MOS_ENROLLED_FETCH_TIMEOUT_MS: "8000",
     MOS_ENROLLED_AUTO_PUBLISH: process.env.MOS_ENROLLED_AUTO_PUBLISH?.trim() || "0",
     S3_BUCKET: process.env.S3_BUCKET?.trim() || "",
-    S3_ENDPOINT: process.env.S3_ENDPOINT?.trim() || "https://s3.twcstorage.ru",
+    S3_ENDPOINT:
+      process.env.S3_ENDPOINT?.trim() || "https://storage.yandexcloud.net",
     AWS_DEFAULT_REGION: process.env.AWS_DEFAULT_REGION?.trim() || "ru-1",
     AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID?.trim() || "",
     AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY?.trim() || "",

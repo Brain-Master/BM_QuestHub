@@ -123,16 +123,15 @@ function buildEnvironment() {
   loadDotEnv(path.join(ROOT, "apps", "yandex-content-admin", ".env"));
 
   const bucket = process.env.S3_BUCKET?.trim();
-  const publicBase =
-    process.env.S3_PUBLIC_BASE_URL?.trim() ||
-    (bucket ? `https://${bucket}.s3.twcstorage.ru` : "");
+  const publicBase = process.env.S3_PUBLIC_BASE_URL?.trim() || "";
 
   const pairs = {
     CONTENT_ADMIN_TOKEN: readToken(),
     S3_PUBLIC_BASE_URL: publicBase,
     S3_BUCKET: bucket,
-    S3_ENDPOINT: process.env.S3_ENDPOINT?.trim() || "https://s3.twcstorage.ru",
-    AWS_DEFAULT_REGION: process.env.AWS_DEFAULT_REGION?.trim() || "ru-1",
+    S3_ENDPOINT:
+      process.env.S3_ENDPOINT?.trim() || "https://storage.yandexcloud.net",
+    AWS_DEFAULT_REGION: process.env.AWS_DEFAULT_REGION?.trim() || "ru-central1",
     AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID?.trim(),
     AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY?.trim(),
     ALLOWED_ORIGINS:

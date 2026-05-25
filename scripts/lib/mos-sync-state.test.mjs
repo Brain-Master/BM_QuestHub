@@ -2,8 +2,15 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
 import {
+  batchesComplete,
+  clearStaleLockInState,
   computeTargetIntervalSec,
+  evaluateControllerGate,
+  evaluateControllerPipelineAction,
+  isLockActive,
+  isStaleProcessingRun,
   jitterSec,
+  normalizeSyncState,
   resolveControllerTickNextDueAt,
   tierIntervalSec,
 } from "./mos-sync-state.mjs";
@@ -52,5 +59,108 @@ describe("resolveControllerTickNextDueAt", () => {
   it("keeps future nextDueAt", () => {
     const future = new Date(now + 3_600_000).toISOString();
     assert.equal(resolveControllerTickNextDueAt(future, 900, now), future);
+  });
+});
+
+describe("evaluateControllerGate", () => {
+  const now = Date.now();
+  const empty = normalizeSyncState(null);
+
+  it("fail-closed when state read failed", () => {
+    const gate = evaluateControllerGate(empty, false, now);
+    assert.equal(gate.run, false);
+    assert.equal(gate.reason, "state_read_failed");
+  });
+
+  it("does not treat read failure as no_next_due", () => {
+    const gate = evaluateControllerGate(empty, false, now);
+    assert.notEqual(gate.reason, "no_next_due");
+  });
+
+  it("respects active lock when read ok", () => {
+    const locked = {
+      ...empty,
+      lockUntil: new Date(now + 60_000).toISOString(),
+    };
+    const gate = evaluateControllerGate(locked, true, now);
+    assert.equal(gate.run, false);
+    assert.equal(gate.reason, "locked");
+  });
+
+  it("runs when no nextDueAt and read ok", () => {
+    const gate = evaluateControllerGate(empty, true, now);
+    assert.equal(gate.run, true);
+    assert.equal(gate.reason, "no_next_due");
+  });
+});
+
+describe("clearStaleLockInState", () => {
+  it("clears expired lockUntil", () => {
+    const now = Date.now();
+    const state = normalizeSyncState({
+      lockUntil: new Date(now - 1000).toISOString(),
+    });
+    const cleared = clearStaleLockInState(state, now);
+    assert.equal(cleared.lockUntil, null);
+    assert.equal(isLockActive(cleared, now), false);
+  });
+});
+
+describe("YMQ pipeline gate", () => {
+  const now = Date.now();
+  const empty = normalizeSyncState(null);
+
+  it("batchesComplete when done >= total", () => {
+    const s = normalizeSyncState({ batchesTotal: 3, batchesDone: 3 });
+    assert.equal(batchesComplete(s), true);
+  });
+
+  it("processing blocks new plan", () => {
+    const s = normalizeSyncState({
+      runPhase: "processing",
+      batchesTotal: 2,
+      batchesDone: 0,
+      nextDueAt: new Date(now - 1000).toISOString(),
+    });
+    const a = evaluateControllerPipelineAction(s, true, now);
+    assert.equal(a.action, "none");
+    assert.equal(a.reason, "run_in_progress");
+  });
+
+  it("processing with all batches done → finalize", () => {
+    const s = normalizeSyncState({
+      runPhase: "processing",
+      activeRunId: "run-1",
+      batchesTotal: 2,
+      batchesDone: 2,
+    });
+    const a = evaluateControllerPipelineAction(s, true, now);
+    assert.equal(a.action, "finalize");
+    assert.equal(a.reason, "batches_complete");
+  });
+
+  it("idle + due → plan", () => {
+    const s = normalizeSyncState({
+      runPhase: "idle",
+      nextDueAt: new Date(now - 1000).toISOString(),
+    });
+    const a = evaluateControllerPipelineAction(s, true, now);
+    assert.equal(a.action, "plan");
+    assert.equal(a.reason, "due");
+  });
+
+  it("stale processing → reset_stale", () => {
+    const old = new Date(now - 3 * 60 * 60 * 1000).toISOString();
+    const s = normalizeSyncState({
+      runPhase: "processing",
+      batchesTotal: 1,
+      batchesDone: 0,
+      plannerAt: old,
+      lastBatchAt: old,
+    });
+    assert.equal(isStaleProcessingRun(s, now), true);
+    const a = evaluateControllerPipelineAction(s, true, now);
+    assert.equal(a.action, "reset_stale");
+    assert.equal(a.reason, "stale_run");
   });
 });

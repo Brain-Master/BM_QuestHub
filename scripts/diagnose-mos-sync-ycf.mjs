@@ -105,6 +105,9 @@ async function main() {
     log(`  lastControllerAt: ${state.lastControllerAt ?? "—"} (${ctrlAge ?? "?"} min ago)`);
     log(`  lastSyncAt:       ${state.lastSyncAt ?? "—"} (${syncAge ?? "?"} min ago)`);
     log(`  nextDueAt:        ${state.nextDueAt ?? "—"}`);
+    log(
+      `  runPhase:         ${state.runPhase ?? "idle"} (${state.batchesDone ?? 0}/${state.batchesTotal ?? 0} batches, run=${state.activeRunId ?? "—"})`,
+    );
     if (ctrlAge === null || ctrlAge > 10) {
       allOk = false;
       fail("lastControllerAt stale (>10 min) — controller tick or S3 write issue");
@@ -155,10 +158,22 @@ async function main() {
     fail(`controller invoke parse failed: ${ctrl.raw.slice(0, 200)}`);
   }
 
-  log("\n[diagnose] 4/5 Invoke bm-mos-enrolled-sync (dryRun)");
+  log("\n[diagnose] 4/5 Invoke bm-mos-sync-planner (dryRun)");
+  const planner = ycInvoke("bm-mos-sync-planner", '{"dryRun":true,"source":"diagnose"}');
+  if (planner.body?.ok === true || planner.body?.skipped) {
+    ok(`planner dryRun (urls=${planner.body?.urlCount ?? "?"})`);
+  } else if (planner.body?.reason === "pipeline_ymq") {
+    warn("planner missing — deploy YMQ pipeline");
+  } else {
+    warn(`planner: ${JSON.stringify(planner.body ?? planner.raw).slice(0, 200)}`);
+  }
+
+  log("\n[diagnose] 4b/5 Monolith sync (legacy / dryRun)");
   const sync = ycInvoke(SYNC, '{"dryRun":true}');
   if (sync.body && typeof sync.body === "object") {
-    if (sync.body.skipped) {
+    if (sync.body.reason === "pipeline_ymq") {
+      ok("monolith disabled (MOS_SYNC_PIPELINE=ymq) — expected");
+    } else if (sync.body.skipped) {
       warn(`sync skipped: ${sync.body.reason}`);
     } else if (sync.body.ok === true) {
       ok(`sync dryRun ok, urls=${sync.body.urls}`);

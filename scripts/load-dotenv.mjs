@@ -4,9 +4,14 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
-/** Load KEY=VALUE lines from a file into process.env (no override of existing). */
-export function loadDotEnv(filePath) {
+/**
+ * Load KEY=VALUE lines from a file into process.env.
+ * @param {string} filePath
+ * @param {{ override?: boolean }} [opts] When true, later file values replace existing keys.
+ */
+export function loadDotEnv(filePath, opts = {}) {
   if (!fs.existsSync(filePath)) return false;
+  const override = opts.override === true;
   const text = fs.readFileSync(filePath, "utf8");
   for (const line of text.split(/\r?\n/)) {
     const trimmed = line.trim();
@@ -21,7 +26,7 @@ export function loadDotEnv(filePath) {
     ) {
       value = value.slice(1, -1);
     }
-    if (process.env[key] === undefined || process.env[key] === "") {
+    if (override || process.env[key] === undefined || process.env[key] === "") {
       process.env[key] = value;
     }
   }
@@ -40,9 +45,10 @@ export function loadS3Env(opts = {}) {
   if (preferHot) {
     loadDotEnv(path.join(ROOT, "scripts", "s3-hot.env"));
   }
-  loadDotEnv(path.join(ROOT, "scripts", "s3.env"));
+  // Active profile in scripts/s3.env wins over stale s3-hot.env snapshot.
+  loadDotEnv(path.join(ROOT, "scripts", "s3.env"), { override: true });
   if (!preferHot) {
-    loadDotEnv(path.join(ROOT, "scripts", "s3-hot.env"));
+    loadDotEnv(path.join(ROOT, "scripts", "s3-hot.env"), { override: true });
   }
 }
 

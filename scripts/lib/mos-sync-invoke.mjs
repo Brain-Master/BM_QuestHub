@@ -5,6 +5,45 @@ import { mosSyncTrace } from "./mos-sync-trace.mjs";
  * Tries ?integration=async when enabled on sync version; otherwise awaits full sync (no client abort).
  * @param {{ dryRun?: boolean, useAsync?: boolean }} [opts]
  */
+/**
+ * @param {string} envName
+ * @param {{ dryRun?: boolean, runId?: string }} [opts]
+ */
+export async function invokeMosPipelineFunction(envName, opts = {}) {
+  const url = process.env[envName]?.trim();
+  if (!url) throw new Error(`${envName} not set`);
+
+  const token = await fetchYcfIamToken();
+  const payload = JSON.stringify({
+    source: "controller",
+    dryRun: opts.dryRun === true,
+    runId: opts.runId,
+  });
+
+  const wantAsync =
+    process.env.MOS_SYNC_INVOKE_ASYNC !== "0";
+  const plainUrl = url.split("?")[0];
+
+  if (wantAsync) {
+    return postInvoke(`${plainUrl}?integration=async`, token, payload, {
+      asyncMode: true,
+    });
+  }
+  return postInvoke(plainUrl, token, payload, { asyncMode: false });
+}
+
+export async function invokeMosSyncPlanner(opts = {}) {
+  return invokeMosPipelineFunction("MOS_SYNC_PLANNER_FUNCTION_URL", opts);
+}
+
+/**
+ * @param {{ dryRun?: boolean, runId?: string }} [opts]
+ */
+export async function invokeMosSyncFinalizer(opts = {}) {
+  if (!opts.runId) throw new Error("invokeMosSyncFinalizer requires runId");
+  return invokeMosPipelineFunction("MOS_SYNC_FINALIZER_FUNCTION_URL", opts);
+}
+
 export async function invokeMosEnrolledSync(opts = {}) {
   const url = process.env.MOS_ENROLLED_SYNC_FUNCTION_URL?.trim();
   if (!url) throw new Error("MOS_ENROLLED_SYNC_FUNCTION_URL not set");

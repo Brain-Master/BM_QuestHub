@@ -1,10 +1,14 @@
 import { mosSyncDebug } from "./mos-sync-debug.mjs";
 import { invokeMosEnrolledSync } from "./mos-sync-invoke.mjs";
+import { runMosSyncControllerPipelineTick } from "./mos-sync-controller-pipeline.mjs";
 import {
-  acquireSyncLock,
-  controllerShouldRunSync,
+  computeControllerTickMetrics,
+  computeTargetIntervalSec,
+  evaluateControllerGate,
+  loadSyncStateWithMeta,
+  mosSyncPipelineMode,
+  patchControllerInvokeState,
   releaseSyncLock,
-  tickControllerState,
 } from "./mos-sync-state.mjs";
 
 const FALLBACK_TRAFFIC = {
@@ -16,21 +20,24 @@ const FALLBACK_TRAFFIC = {
 };
 
 /**
- * One controller tick: gate on current state, refresh PID metrics, optionally invoke sync.
+ * One controller tick: single state read, S3 write only when invoking sync.
  */
 export async function runMosSyncControllerTick() {
-  let gate = { run: false, reason: "gate_error", state: null };
+  if (mosSyncPipelineMode() === "ymq") {
+    return runMosSyncControllerPipelineTick();
+  }
+  const nowMs = Date.now();
+
+  let loaded;
   try {
-    mosSyncDebug("controller gate check");
-    gate = await controllerShouldRunSync();
-    mosSyncDebug("controller gate", { run: gate.run, reason: gate.reason });
+    loaded = await loadSyncStateWithMeta();
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
-    console.warn("[mos-controller] controllerShouldRunSync:", message);
+    console.warn("[mos-controller] loadSyncStateWithMeta:", message);
     return {
       ok: false,
       invoked: false,
-      reason: "gate_error",
+      reason: "state_load_error",
       error: message,
       stateOk: false,
       stateError: message,
@@ -40,70 +47,59 @@ export async function runMosSyncControllerTick() {
     };
   }
 
-  let tick = {
-    traffic: FALLBACK_TRAFFIC,
-    intervalSec: 900,
-    nextDueAt: gate.state?.nextDueAt ?? null,
-    stateOk: false,
-    stateError: null,
-  };
-
-  try {
-    const t = await tickControllerState();
-    tick = {
-      traffic: t.traffic,
-      intervalSec: t.intervalSec,
-      nextDueAt: t.nextDueAt,
-      stateOk: t.stateOk !== false,
-      stateError: t.stateError ?? null,
-    };
-  } catch (err) {
-    tick.stateError = err instanceof Error ? err.message : String(err);
-    console.warn("[mos-controller] tickControllerState:", tick.stateError);
-  }
+  const { state, readOk: stateReadOk } = loaded;
+  const gate = evaluateControllerGate(state, stateReadOk, nowMs);
+  mosSyncDebug("controller gate", { run: gate.run, reason: gate.reason });
 
   if (!gate.run) {
     return {
-      ok: true,
+      ok: gate.reason !== "state_read_failed",
       invoked: false,
       reason: gate.reason,
-      stateOk: tick.stateOk,
-      stateError: tick.stateError,
-      nextDueAt: tick.nextDueAt,
-      intervalSec: tick.intervalSec,
-      traffic: tick.traffic,
+      stateOk: stateReadOk,
+      stateError: stateReadOk ? null : "state_read_failed",
+      nextDueAt: gate.state.nextDueAt,
+      intervalSec: gate.state.lastIntervalSec,
+      traffic: FALLBACK_TRAFFIC,
     };
   }
 
-  let lockUntil = null;
+  const metrics = await computeControllerTickMetrics(gate.state, nowMs);
+  const { integral } = computeTargetIntervalSec(metrics.traffic, gate.state);
+
+  let lockResult;
   try {
-    lockUntil = await acquireSyncLock();
+    lockResult = await patchControllerInvokeState(nowMs, gate.state, {
+      intervalSec: metrics.intervalSec,
+      integralError: integral,
+      nextDueAt: metrics.nextDueAt ?? undefined,
+    });
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
-    console.warn("[mos-controller] acquireSyncLock:", message);
+    console.warn("[mos-controller] patchControllerInvokeState:", message);
     return {
       ok: false,
       invoked: false,
       reason: "lock_error",
       error: message,
-      stateOk: tick.stateOk,
-      stateError: tick.stateError,
-      nextDueAt: tick.nextDueAt,
-      intervalSec: tick.intervalSec,
-      traffic: tick.traffic,
+      stateOk: false,
+      stateError: message,
+      nextDueAt: metrics.nextDueAt,
+      intervalSec: metrics.intervalSec,
+      traffic: metrics.traffic,
     };
   }
 
-  if (!lockUntil) {
+  if (!lockResult.acquired) {
     return {
       ok: true,
       invoked: false,
-      reason: "lock_busy",
-      stateOk: tick.stateOk,
-      stateError: tick.stateError,
-      nextDueAt: tick.nextDueAt,
-      intervalSec: tick.intervalSec,
-      traffic: tick.traffic,
+      reason: lockResult.stateOk ? "lock_busy" : "state_write_failed",
+      stateOk: lockResult.stateOk,
+      stateError: lockResult.stateOk ? null : "s3_state_write_failed",
+      nextDueAt: metrics.nextDueAt,
+      intervalSec: metrics.intervalSec,
+      traffic: metrics.traffic,
     };
   }
 
@@ -119,11 +115,11 @@ export async function runMosSyncControllerTick() {
       reason: gate.reason,
       invokeStatus: invoke.status,
       invokeBody: invoke.body,
-      stateOk: tick.stateOk,
-      stateError: tick.stateError,
-      nextDueAt: tick.nextDueAt,
-      intervalSec: tick.intervalSec,
-      traffic: tick.traffic,
+      stateOk: lockResult.stateOk,
+      stateError: lockResult.stateOk ? null : "s3_state_write_failed",
+      nextDueAt: metrics.nextDueAt,
+      intervalSec: metrics.intervalSec,
+      traffic: metrics.traffic,
     };
   } catch (err) {
     await releaseSyncLock().catch((e) => {

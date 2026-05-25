@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 /**
- * Sync public Quest Hub assets to S3-compatible object storage (Timeweb by default).
+ * Sync public Quest Hub assets to S3-compatible object storage (Yandex Cloud by default).
  *
  * Required env (see scripts/s3.env.example):
  *   S3_BUCKET, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
  * Optional:
- *   S3_ENDPOINT (default https://s3.twcstorage.ru)
- *   AWS_DEFAULT_REGION (default ru-1)
+ *   S3_ENDPOINT (default https://storage.yandexcloud.net)
+ *   AWS_DEFAULT_REGION (default ru-central1)
  *
  * Usage:
  *   node scripts/sync-s3-public.mjs data-hot
@@ -22,13 +22,16 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { S3_YC_ENDPOINT, S3_YC_REGION } from "./lib/s3-storage.mjs";
+
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const WEB = path.join(ROOT, "apps", "web");
 const DATA_DIR = path.join(WEB, "data");
 const OFFERS_SNAPSHOT = path.join(DATA_DIR, "offers-snapshot.json");
 const DATA_V2 = path.join(DATA_DIR, "v2");
-const ENDPOINT = process.env.S3_ENDPOINT?.trim() || "https://s3.twcstorage.ru";
-const REGION = process.env.AWS_DEFAULT_REGION?.trim() || "ru-1";
+
+const ENDPOINT = process.env.S3_ENDPOINT?.trim() || S3_YC_ENDPOINT;
+const REGION = process.env.AWS_DEFAULT_REGION?.trim() || S3_YC_REGION;
 
 const TARGETS = {
   "data-hot": {

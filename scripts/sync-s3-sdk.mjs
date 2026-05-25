@@ -14,13 +14,16 @@ import {
   S3Client,
 } from "@aws-sdk/client-s3";
 
+import { S3_YC_ENDPOINT, S3_YC_REGION } from "./lib/s3-storage.mjs";
+
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const WEB = path.join(ROOT, "apps", "web");
 const DATA_DIR = path.join(WEB, "data");
 const OFFERS_SNAPSHOT = path.join(DATA_DIR, "offers-snapshot.json");
 const DATA_V2 = path.join(DATA_DIR, "v2");
-const ENDPOINT = process.env.S3_ENDPOINT?.trim() || "https://s3.twcstorage.ru";
-const REGION = process.env.AWS_DEFAULT_REGION?.trim() || "ru-1";
+
+const ENDPOINT = process.env.S3_ENDPOINT?.trim() || S3_YC_ENDPOINT;
+const REGION = process.env.AWS_DEFAULT_REGION?.trim() || S3_YC_REGION;
 
 const TARGETS = {
   "data-hot": {

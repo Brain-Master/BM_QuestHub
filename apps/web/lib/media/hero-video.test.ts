@@ -23,7 +23,7 @@ describe("isVideoFileUrl", () => {
   it("detects mp4 and media paths", () => {
     assert.equal(
       isVideoFileUrl(
-        "https://bm-quest-s3-hot.s3.twcstorage.ru/media/quests/x/hero.mp4",
+        "https://storage.yandexcloud.net/bm-questhub/media/quests/x/hero.mp4",
       ),
       true,
     );
@@ -41,10 +41,10 @@ describe("resolveHeroVideoFileUrl", () => {
 
   it("prefixes media path with S3 base", () => {
     process.env.NEXT_PUBLIC_S3_PUBLIC_BASE_URL =
-      "https://bm-quest-s3-hot.s3.twcstorage.ru";
+      "https://storage.yandexcloud.net/bm-questhub";
     assert.equal(
       resolveHeroVideoFileUrl("media/quests/cyber-rhythm/hero.mp4"),
-      "https://bm-quest-s3-hot.s3.twcstorage.ru/media/quests/cyber-rhythm/hero.mp4",
+      "https://storage.yandexcloud.net/bm-questhub/media/quests/cyber-rhythm/hero.mp4",
     );
   });
 });

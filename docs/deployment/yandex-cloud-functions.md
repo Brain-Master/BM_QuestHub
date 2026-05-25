@@ -8,7 +8,10 @@
 | [`bm-lead-ops-reporter`](../../apps/yandex-lead-ops-reporter/) | Ops-алерты: Telegram + вкладка **Ops** | **HTTP POST**: браузер (ошибка формы), `bm-lead-receiver` (400/502), GitHub **site-health** (каждые 15 мин) | `make deploy-yandex-lead-ops-reporter` |
 | [`bm-content-admin`](../../apps/yandex-content-admin/) | API Sheet→S3: `/sync/hot`, `/sync/cold`, снимки | **HTTP** из Google Apps Script / [`apps/admin`](../../apps/admin/) | `make deploy-yandex-content-admin` |
 | [`bm-mos-sync-controller`](../../apps/yandex-mos-sync-controller/) | PID-регулятор: когда вызывать sync | **Таймер** `bm-mos-sync-controller-timer` — `0/2 * * * ? *` | `make deploy-yandex-mos-sync-adaptive` |
-| [`bm-mos-enrolled-sync`](../../apps/yandex-mos-enrolled-sync/) | `enrolled` с mos.ru → Hot Sheet → publish | **Вызов** из controller (в B1 **без** своего таймера) | B1: adaptive; B2 legacy: `make deploy-yandex-mos-enrolled-sync` (+ таймер 15m) |
+| [`bm-mos-sync-planner`](../../apps/yandex-mos-sync-planner/) | Sheet → manifest S3 + YMQ batches | **Вызов** из controller (`MOS_SYNC_PIPELINE=ymq`) | `make deploy-yandex-mos-ymq-pipeline` |
+| [`bm-mos-url-worker`](../../apps/yandex-mos-url-worker/) | Один батч URL → mos.ru → S3 batch JSON | **YMQ** `bm-mos-enrolled-batch` | `make deploy-yandex-mos-ymq-pipeline` |
+| [`bm-mos-sync-finalizer`](../../apps/yandex-mos-sync-finalizer/) | merge → Sheet → snapshot → publish | **Вызов** из controller когда batches готовы | `make deploy-yandex-mos-ymq-pipeline` |
+| [`bm-mos-enrolled-sync`](../../apps/yandex-mos-enrolled-sync/) | Monolith sync (откат) | `MOS_SYNC_PIPELINE=legacy` | `make deploy-yandex-mos-sync-adaptive` (legacy env) |
 | [`bm-schedule-traffic`](../../apps/yandex-schedule-traffic/) | Pulse визитов расписания → S3 | **HTTP POST** с сайта (`NEXT_PUBLIC_SCHEDULE_PULSE_URL`) | `make deploy-yandex-mos-sync-adaptive` |
 
 Подробности по доменам:

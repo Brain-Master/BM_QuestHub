@@ -16,10 +16,14 @@ const YC = path.join(process.env.USERPROFILE || "", "yandex-cloud", "bin", "yc.e
 const FUNCTIONS = [
   "bm-mos-enrolled-sync",
   "bm-mos-sync-controller",
+  "bm-mos-sync-planner",
+  "bm-mos-url-worker",
+  "bm-mos-sync-finalizer",
   "bm-schedule-traffic",
 ];
 const CONTROLLER_TIMER = "bm-mos-sync-controller-timer";
 const LEGACY_SYNC_TIMER = "bm-mos-enrolled-sync-timer";
+const WORKER_YMQ_TRIGGER = "bm-mos-url-worker-ymq";
 
 function ycJson(args) {
   if (!fs.existsSync(YC)) {
@@ -67,6 +71,22 @@ function main() {
     ok = false;
   } else {
     console.log(`  OK  no legacy ${LEGACY_SYNC_TIMER}`);
+  }
+
+  const workerTrigger = triggers.find((t) => t.name === WORKER_YMQ_TRIGGER);
+  if (workerTrigger?.status === "ACTIVE") {
+    console.log(`  OK  ${WORKER_YMQ_TRIGGER}`);
+  } else {
+    console.log(`  MISSING/INACTIVE  ${WORKER_YMQ_TRIGGER} — run deploy-yandex-mos-ymq-pipeline`);
+    ok = false;
+  }
+
+  const ymqDeploy = path.join(ROOT, "secret", "mos-ymq-pipeline.deploy.txt");
+  if (fs.existsSync(ymqDeploy)) {
+    console.log(`\n[verify] ${path.relative(ROOT, ymqDeploy)} present`);
+  } else {
+    console.log("\n[verify] run: make deploy-yandex-mos-ymq-pipeline");
+    ok = false;
   }
 
   if (fs.existsSync(deployPath)) {

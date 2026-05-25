@@ -11,7 +11,12 @@ import { fileURLToPath } from "node:url";
 
 import { loadDotEnv } from "./load-dotenv.mjs";
 import { readOpsJson, withS3Timeout } from "./lib/mos-ops-s3.mjs";
-import { publicBaseUrlForBucket, resolveS3Bucket } from "./lib/s3-storage.mjs";
+import {
+  publicBaseUrlForBucket,
+  resolveS3Bucket,
+  S3_YC_ENDPOINT,
+  S3_YC_REGION,
+} from "./lib/s3-storage.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -64,8 +69,8 @@ async function benchPublicGet(key, n) {
 function createApiClient() {
   const bucket = process.env.S3_BUCKET?.trim() || BUCKET;
   const client = new S3Client({
-    region: process.env.AWS_DEFAULT_REGION?.trim() || "ru-1",
-    endpoint: process.env.S3_ENDPOINT?.trim() || "https://s3.twcstorage.ru",
+    region: process.env.AWS_DEFAULT_REGION?.trim() || S3_YC_REGION,
+    endpoint: process.env.S3_ENDPOINT?.trim() || S3_YC_ENDPOINT,
     credentials: {
       accessKeyId: process.env.AWS_ACCESS_KEY_ID?.trim() || "",
       secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY?.trim() || "",
@@ -140,7 +145,7 @@ async function main() {
     Boolean(process.env.AWS_SECRET_ACCESS_KEY?.trim());
 
   console.log(`S3 benchmark — rounds=${rounds}, bucket=${process.env.S3_BUCKET?.trim() || BUCKET}`);
-  console.log(`Endpoint: ${process.env.S3_ENDPOINT?.trim() || "https://s3.twcstorage.ru"}`);
+  console.log(`Endpoint: ${process.env.S3_ENDPOINT?.trim() || S3_YC_ENDPOINT}`);
   console.log(`MOS_OPS_S3_TIMEOUT_MS=${process.env.MOS_OPS_S3_TIMEOUT_MS || "(default 10000)"}`);
   console.log("");
 

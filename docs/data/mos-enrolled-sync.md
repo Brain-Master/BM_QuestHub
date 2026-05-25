@@ -12,10 +12,35 @@
 | Компонент | Имя / артефакт |
 |-----------|----------------|
 | Регулятор | YCF `bm-mos-sync-controller` + таймер **`bm-mos-sync-controller-timer`** (`0/2 * * * ? *`) |
-| Sync | YCF `bm-mos-enrolled-sync` (без собственного таймера) |
+| YMQ pipeline (по умолчанию) | `bm-mos-sync-planner` → YMQ `bm-mos-enrolled-batch` → `bm-mos-url-worker` → `bm-mos-sync-finalizer` |
+| Monolith (откат) | YCF `bm-mos-enrolled-sync` с `MOS_SYNC_PIPELINE=legacy` |
 | Pulse визитов | YCF `bm-schedule-traffic` → S3 `ops/schedule-traffic.json` |
-| Деплой | `make deploy-yandex-mos-sync-adaptive` → `secret/mos-sync-adaptive.deploy.txt` |
+| Деплой | `make provision-mos-ymq` → `make deploy-yandex-mos-ymq-pipeline` → `make redeploy-yandex-mos-sync-controller` |
 | Сайт | `NEXT_PUBLIC_SCHEDULE_PULSE_URL` = `TRAFFIC_URL` из deploy-файла |
+
+### YMQ pipeline
+
+```text
+controller (PID) → planner (Sheet → manifest S3 + YMQ)
+                 → N × url-worker (batch fetch mos.ru → ops/mos-sync-runs/{runId}/batch-NNN.json)
+                 → finalizer (merge → Sheet batchUpdate → snapshot → events/TG → sheet-sync)
+```
+
+S3: `ops/mos-sync-runs/{runId}/manifest.json`, `ops/mos-sync-state.json` (`runPhase`, `batchesDone/Total`).
+
+Откат: `MOS_SYNC_PIPELINE=legacy` на controller + sync; monolith снова обрабатывает все URL в одном invoke (лимит 300s).
+
+Rollout:
+
+```bash
+make provision-mos-ymq          # static key needs ymq.writer / ymq.editor
+make deploy-yandex-mos-ymq-pipeline
+make redeploy-yandex-mos-sync-controller   # MOS_SYNC_PIPELINE=ymq
+make smoke-mos-ymq-pipeline
+make verify-mos-sync-adaptive
+```
+
+Если `provision-mos-ymq` падает с IAM — создайте очереди в консоли YMQ и запишите URL/ARN в `secret/mos-ymq.deploy.txt`.
 
 Проверка таймера после деплоя:
 
@@ -174,7 +199,15 @@ make mos-enrolled-sync MOS_ENROLLED_AUTO_PUBLISH=1
 | `MOS_SYNC_T_MAX_SEC` | 86400 | max интервал |
 | `MOS_SYNC_USE_PID` | 1 | PID-lite; `0` → tier fallback |
 | `MOS_PID_KP`, `MOS_PID_KD`, `MOS_PID_KI` | см. код | коэффициенты |
-| `MOS_ENROLLED_SYNC_FUNCTION_URL` | — | URL sync для invoke |
+| `MOS_ENROLLED_SYNC_FUNCTION_URL` | — | URL monolith sync (legacy invoke) |
+| `MOS_SYNC_PIPELINE` | `ymq` | `legacy` = monolith; иначе planner/finalizer |
+| `MOS_SYNC_PLANNER_FUNCTION_URL` | — | URL `bm-mos-sync-planner` |
+| `MOS_SYNC_FINALIZER_FUNCTION_URL` | — | URL `bm-mos-sync-finalizer` |
+| `MOS_YMQ_QUEUE_URL` | — | YMQ main queue (planner send) |
+| `MOS_ENROLLED_BATCH_SIZE` | 8 | URL на сообщение YMQ |
+| `MOS_ENROLLED_WORKER_TIMEOUT_MS` | 120000 | Бюджет url-worker (деплой YMQ pipeline) |
+| `MOS_ENROLLED_BATCH_BUDGET_MS` | 105000 | Flush partial до kill YCF (worker − 15s) |
+| `MOS_SYNC_RUN_STALE_MS` | 7200000 | сброс зависшего `processing` |
 
 ### Telegram / события
 
@@ -203,7 +236,7 @@ make mos-enrolled-sync MOS_ENROLLED_AUTO_PUBLISH=1
 |------|------------|
 | `ops/mos-enrolled-sync.cookies.json` | Опционально: запасная сессия mos.ru |
 | `ops/schedule-traffic.json` | Визиты (корзины 5 мин, 48 ч) |
-| `ops/mos-sync-state.json` | PID, `nextDueAt`, lock |
+| `ops/mos-sync-state.json` | PID, `nextDueAt`, lock (`make clear-mos-sync-lock` при залипшем lock) |
 | `ops/mos-enrolled-events.jsonl` | События прироста enrolled |
 | `ops/mos-enrolled-stats.json` | Почасовые агрегаты |
 | `ops/mos-enrolled-snapshot.json` | Diff между прогонами |
@@ -301,7 +334,7 @@ make diagnose-mos-sync-ycf
 make verify-mos-sync-adaptive
 yc serverless function invoke --name bm-mos-sync-controller --data '{}'
 yc serverless function invoke --name bm-mos-enrolled-sync --data '{"dryRun":true}'
-curl -s "https://bm-quest-s3-hot.s3.twcstorage.ru/ops/mos-sync-state.json" | jq '{lastControllerAt,lastSyncAt,nextDueAt}'
+curl -s "https://storage.yandexcloud.net/bm-questhub/ops/mos-sync-state.json" | jq '{lastControllerAt,lastSyncAt,nextDueAt}'
 ```
 
 | Симптом | Что проверить |
@@ -310,6 +343,11 @@ curl -s "https://bm-quest-s3-hot.s3.twcstorage.ru/ops/mos-sync-state.json" | jq 
 | `invokeStatus: 412` async disabled | На версии sync: `--async-max-retries` + `--async-service-account-id` (`make redeploy-yandex-mos-enrolled-sync`) |
 | `Code: 499 Request cancelled` на **sync** | Controller оборвал HTTP; нужен async invoke — redeploy sync + controller |
 | `mos.ru blocked` / 403 в sync | Опционально `make upload-mos-enrolled-cookies`; проверьте VPN и доступ YCF к mos.ru |
+| `lastSyncAt` null, `lockUntil` в будущем | S3 timeout на merge state; сброс: `make clear-mos-sync-lock` (hot bucket), redeploy controller+sync |
+| `readOpsJson ops/mos-sync-state.json: s3_timeout` | Controller/sync не видят state — fail-closed (не запускают лишний sync); проверьте probe и redeploy |
+| `504` / `300s` на sync | mos.ru timeouts + snapshot write; env: `FETCH_CONCURRENCY=1`, `SNAPSHOT_S3_ATTEMPTS=6` |
+| `504 Execution timeout exceeded` на **url-worker** | batch=8 × fetch 25s > лимит 90s; redeploy pipeline (`MOS_ENROLLED_BATCH_SIZE=4`, `FETCH_TIMEOUT_MS=15000`, worker 120s) или дождаться partial flush |
+| `runPhase=processing`, `batch-000.json` 404 | Worker убит до записи S3; см. url-worker timeout; `resetPipelineRunToIdle` или stale reset (2h) |
 | `lastSyncAt` null, sync `ok: true` | `WARN mos-sync-state not saved (S3)` — Timeweb S3 из YCF; `MOS_SYNC_DEBUG=1` на функции |
 | `cookies saved →` пусто / `s3_timeout` | При `SKIP_S3_COOKIES`+`SKIP_LOCAL` persist отключён (норма) |
 | Дата «Снимок на сайте» старая | `data/offers-snapshot.json` → `generatedAt`; нужен **hot publish** (GHA sheet-sync или `make publish-sheet-hot`), не только mos sync |
@@ -341,6 +379,7 @@ node --test scripts/lib/mos-sync-state.test.mjs
 | `diagnose-mos-sync-ycf` | S3 + invoke controller/sync |
 | `redeploy-yandex-mos-sync-controller` | Только controller после правок lib |
 | `redeploy-yandex-mos-enrolled-sync` | Только sync после правок lib |
+| `clear-mos-sync-lock` | Сброс `lockUntil` в `ops/mos-sync-state.json` на active S3 |
 | `mos-enrolled-sync*` | Локальный CLI/daemon |
 
 | Путь | Роль |

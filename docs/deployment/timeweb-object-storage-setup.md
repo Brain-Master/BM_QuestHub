@@ -1,10 +1,11 @@
 # Timeweb Object Storage — setup and sync
 
-Primary public CDN storage for Quest Hub JSON and media. Site HTML is deployed via [App Platform](./timeweb-app-platform.md).
+> **Legacy / rollback.** Активный production storage — [Yandex Object Storage](./yandex-object-storage-setup.md) (`bm-questhub`). Этот документ — Timeweb hot `bm-quest-s3-hot` и откат: [s3-storage-migration.md](./s3-storage-migration.md).
+
+Site HTML is deployed via [App Platform](./timeweb-app-platform.md).
 
 **Security:** [SECURITY-api-keys.md](./SECURITY-api-keys.md)  
-**Pricing:** [timeweb-object-storage-pricing.md](./timeweb-object-storage-pricing.md)  
-**Legacy (Yandex):** [yandex-object-storage-setup.md](./yandex-object-storage-setup.md)
+**Pricing:** [timeweb-object-storage-pricing.md](./timeweb-object-storage-pricing.md)
 
 ## Connection
 

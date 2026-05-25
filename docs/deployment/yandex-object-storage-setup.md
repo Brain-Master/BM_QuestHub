@@ -1,6 +1,6 @@
 # Yandex Object Storage — настройка бакета и выкладка
 
-> **Legacy / alternative.** Production S3 for Quest Hub uses [Timeweb Object Storage](./timeweb-object-storage-setup.md).
+> **Primary production storage.** Активный бакет `bm-questhub`, endpoint `https://storage.yandexcloud.net`. Timeweb hot — [rollback / legacy](./timeweb-object-storage-setup.md). Миграция: [s3-storage-migration.md](./s3-storage-migration.md).
 
 Пошаговая настройка публичного CDN на [Yandex Object Storage](https://cloud.yandex.ru/docs/storage/) для Quest Hub. Тарифы: [yandex-object-storage-pricing.md](./yandex-object-storage-pricing.md). Общая архитектура: [static-hosting-s3-yandex.md](./static-hosting-s3-yandex.md).
 
@@ -15,15 +15,13 @@
 1. **Сервисные аккаунты** → создать, например `bm-questhub-s3-publisher`.
 2. Роль на каталог: `storage.editor` (или узкая политика только на один бакет).
 3. **Создать статический ключ доступа** (Access Key ID + Secret) — только для CI/локальной выкладки, не в git.
-4. Скопировать [`scripts/s3.env.example`](../../scripts/s3.env.example) → `scripts/s3.env` и заполнить:
+4. Экспорт ключей в `secret/bm-questhub-s3-yc.txt`, затем:
 
 ```bash
-S3_BUCKET=bm-questhub
-AWS_ACCESS_KEY_ID=...
-AWS_SECRET_ACCESS_KEY=...
+make setup-s3-yc-env
 ```
 
-`scripts/s3.env` в `.gitignore`.
+Или вручную из [`scripts/s3-yc.env.example`](../../scripts/s3-yc.env.example) → `scripts/s3.env` (`S3_ENDPOINT=https://storage.yandexcloud.net`, `AWS_DEFAULT_REGION=ru-central1`). Файлы в `.gitignore`.
 
 ## 3. Бакет
 
@@ -104,7 +102,16 @@ make s3-sync-all
 
 ### CORS
 
-Нужен только если браузер будет `fetch` JSON/медиа с другого origin. Build-time `fetch` в CI **не** требует CORS. Пример правила:
+Нужен только если браузер будет `fetch` JSON/медиа с другого origin. Build-time `fetch` в CI **не** требует CORS.
+
+Пример правила (консоль YC или CLI):
+
+```bash
+yc storage bucket update bm-questhub \
+  --cors "id=live-schedule,allowed-origins=https://quest.b-master.pro,allowed-origins=https://1517.b-master.pro,allowed-origins=https://b-master.pro,allowed-origins=https://www.b-master.pro,allowed-origins=http://localhost:3000,allowed-origins=http://127.0.0.1:3000,allowed-methods=method-get,allowed-methods=method-head,allowed-headers=*,expose-headers=ETag,max-age-seconds=3600"
+```
+
+XML-эквивалент:
 
 ```xml
 <CORSConfiguration>

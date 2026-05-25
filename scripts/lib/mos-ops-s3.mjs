@@ -5,10 +5,21 @@ import {
 } from "@aws-sdk/client-s3";
 
 import { mosSyncDebug, mosSyncDebugWarn } from "./mos-sync-debug.mjs";
+import { S3_YC_ENDPOINT, S3_YC_REGION } from "./s3-storage.mjs";
 
 function s3TimeoutMs() {
   const n = Number(process.env.MOS_OPS_S3_TIMEOUT_MS || 10_000);
   return Number.isFinite(n) && n > 0 ? n : 10_000;
+}
+
+function mergeWriteAttempts() {
+  const n = Number(process.env.MOS_OPS_S3_MERGE_WRITE_ATTEMPTS || 4);
+  return Number.isFinite(n) && n > 0 ? n : 4;
+}
+
+function mergeRounds() {
+  const n = Number(process.env.MOS_OPS_S3_MERGE_ROUNDS || 6);
+  return Number.isFinite(n) && n > 0 ? n : 6;
 }
 
 /**
@@ -56,8 +67,8 @@ export function createOpsS3() {
   const bucket = process.env.S3_BUCKET?.trim();
   if (!bucket) return null;
   const client = new S3Client({
-    region: process.env.AWS_DEFAULT_REGION?.trim() || "ru-1",
-    endpoint: process.env.S3_ENDPOINT?.trim() || "https://s3.twcstorage.ru",
+    region: process.env.AWS_DEFAULT_REGION?.trim() || S3_YC_REGION,
+    endpoint: process.env.S3_ENDPOINT?.trim() || S3_YC_ENDPOINT,
     credentials: {
       accessKeyId: process.env.AWS_ACCESS_KEY_ID?.trim() || "",
       secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY?.trim() || "",
@@ -68,27 +79,37 @@ export function createOpsS3() {
 
 /**
  * @param {string} key
- * @returns {Promise<{ data: unknown, etag: string | undefined } | null>}
+ * @returns {Promise<{ data: unknown, etag: string | undefined, readOk: boolean }>}
  */
-export async function readOpsJson(key) {
+export async function readOpsJsonWithMeta(key) {
   const cfg = createOpsS3();
-  if (!cfg) return null;
+  if (!cfg) return { data: null, etag: undefined, readOk: false };
   mosSyncDebug(`readOpsJson ${key} bucket=${cfg.bucket}`);
   try {
     const res = await withS3Timeout(
       cfg.client.send(new GetObjectCommand({ Bucket: cfg.bucket, Key: key })),
     );
     const raw = await res.Body?.transformToString("utf8");
-    if (!raw?.trim()) return { data: null, etag: res.ETag };
-    return { data: JSON.parse(raw), etag: res.ETag };
+    if (!raw?.trim()) return { data: null, etag: res.ETag, readOk: true };
+    return { data: JSON.parse(raw), etag: res.ETag, readOk: true };
   } catch (err) {
     if (isSoftS3Error(err)) {
       console.warn(`[mos-ops-s3] readOpsJson ${key}: ${formatS3Error(err)}`);
-      return null;
+      return { data: null, etag: undefined, readOk: false };
     }
     console.error(`[mos-ops-s3] readOpsJson ${key}:`, formatS3Error(err));
-    return null;
+    return { data: null, etag: undefined, readOk: false };
   }
+}
+
+/**
+ * @param {string} key
+ * @returns {Promise<{ data: unknown, etag: string | undefined } | null>}
+ */
+export async function readOpsJson(key) {
+  const stored = await readOpsJsonWithMeta(key);
+  if (!stored.readOk) return null;
+  return { data: stored.data, etag: stored.etag };
 }
 
 /**
@@ -105,8 +126,13 @@ export async function writeOpsJson(key, data, opts = {}) {
 
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
     if (ifMatch === undefined && attempt > 0) {
-      const current = await readOpsJson(key);
-      ifMatch = current?.etag;
+      const current = await readOpsJsonWithMeta(key);
+      if (!current.readOk) {
+        console.warn(`[mos-ops-s3] writeOpsJson ${key}: read failed on retry`);
+        if (attempt === maxAttempts - 1) return false;
+        continue;
+      }
+      ifMatch = current.etag;
     }
     try {
       /** @type {import("@aws-sdk/client-s3").PutObjectCommandInput} */
@@ -125,8 +151,9 @@ export async function writeOpsJson(key, data, opts = {}) {
       const name = /** @type {{ name?: string }} */ (err).name;
       if (name === "PreconditionFailed" && attempt < maxAttempts - 1) {
         mosSyncDebugWarn(`writeOpsJson ${key} precondition retry`);
-        const current = await readOpsJson(key);
-        ifMatch = current?.etag;
+        const current = await readOpsJsonWithMeta(key);
+        if (!current.readOk) continue;
+        ifMatch = current.etag;
         continue;
       }
       console.warn(
@@ -151,8 +178,12 @@ export async function writeOpsRaw(key, body, opts = {}) {
 
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
     if (ifMatch === undefined && attempt > 0) {
-      const current = await readOpsJson(key);
-      ifMatch = current?.etag;
+      const current = await readOpsJsonWithMeta(key);
+      if (!current.readOk) {
+        if (attempt === maxAttempts - 1) return false;
+        continue;
+      }
+      ifMatch = current.etag;
     }
     try {
       /** @type {import("@aws-sdk/client-s3").PutObjectCommandInput} */
@@ -169,8 +200,9 @@ export async function writeOpsRaw(key, body, opts = {}) {
       const message = formatS3Error(err);
       const name = /** @type {{ name?: string }} */ (err).name;
       if (name === "PreconditionFailed" && attempt < maxAttempts - 1) {
-        const current = await readOpsJson(key);
-        ifMatch = current?.etag;
+        const current = await readOpsJsonWithMeta(key);
+        if (!current.readOk) continue;
+        ifMatch = current.etag;
         continue;
       }
       console.warn(
@@ -184,7 +216,7 @@ export async function writeOpsRaw(key, body, opts = {}) {
 
 /**
  * @param {string} key
- * @returns {Promise<{ text: string, etag: string | undefined } | null>}
+ * @returns {Promise<{ text: string, etag: string | undefined, readOk: boolean } | null>}
  */
 export async function readOpsText(key) {
   const cfg = createOpsS3();
@@ -194,11 +226,11 @@ export async function readOpsText(key) {
       cfg.client.send(new GetObjectCommand({ Bucket: cfg.bucket, Key: key })),
     );
     const text = (await res.Body?.transformToString("utf8")) ?? "";
-    return { text, etag: res.ETag };
+    return { text, etag: res.ETag, readOk: true };
   } catch (err) {
     if (isSoftS3Error(err)) {
       console.warn(`[mos-ops-s3] readOpsText ${key}: ${formatS3Error(err)}`);
-      return { text: "", etag: undefined };
+      return { text: "", etag: undefined, readOk: false };
     }
     console.error(`[mos-ops-s3] readOpsText ${key}:`, formatS3Error(err));
     return null;
@@ -212,14 +244,19 @@ export async function readOpsText(key) {
  * @returns {Promise<unknown | null>}
  */
 export async function mergeOpsJson(key, merge, opts = {}) {
-  const maxAttempts = opts.maxAttempts ?? 6;
-  mosSyncDebug(`mergeOpsJson ${key} (max ${maxAttempts} attempts)`);
+  const maxAttempts = opts.maxAttempts ?? mergeRounds();
+  const writeAttempts = mergeWriteAttempts();
+  mosSyncDebug(`mergeOpsJson ${key} (max ${maxAttempts} rounds, write ${writeAttempts})`);
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
-    const current = await readOpsJson(key);
-    const next = merge(current?.data ?? null);
+    const current = await readOpsJsonWithMeta(key);
+    if (!current.readOk) {
+      mosSyncDebugWarn(`mergeOpsJson ${key} read failed (round ${attempt + 1})`);
+      continue;
+    }
+    const next = merge(current.data ?? null);
     const ok = await writeOpsJson(key, next, {
-      ifMatch: current?.etag,
-      maxAttempts: 1,
+      ifMatch: current.etag,
+      maxAttempts: writeAttempts,
     });
     if (ok) {
       mosSyncDebug(`mergeOpsJson ${key} ok`);

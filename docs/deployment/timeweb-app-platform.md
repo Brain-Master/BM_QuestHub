@@ -55,7 +55,7 @@ Copy from [`apps/web/timeweb.app.env.example`](../../apps/web/timeweb.app.env.ex
 
 ```text
 NEXT_PUBLIC_SITE_URL=https://quest.b-master.pro
-NEXT_PUBLIC_S3_PUBLIC_BASE_URL=https://bm-quest-s3-hot.s3.twcstorage.ru
+NEXT_PUBLIC_S3_PUBLIC_BASE_URL=https://storage.yandexcloud.net/bm-questhub
 NEXT_PUBLIC_LEAD_SUBMIT_URL=https://functions.yandexcloud.net/d4ellekng389grh5rck4
 NEXT_PUBLIC_YM_ID=
 OFFERS_SNAPSHOT_SOURCE=s3

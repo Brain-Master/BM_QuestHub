@@ -18,6 +18,11 @@ import { loadDotEnv, loadRepoEnv } from "./load-dotenv.mjs";
 import { DEFAULT_COOKIES_S3_KEY, saveCookiesToS3 } from "./lib/mos-enrolled-cookie-store.mjs";
 import { loadMosEnrolledCookies } from "./lib/mos-enrolled-cookies.mjs";
 import { readTelegramEnv } from "./lib/read-ycf-telegram-env.mjs";
+import {
+  assertYcfS3LibsPresent,
+  isYcfMosSyncLibFile,
+  YCF_S3_LIB_FILES,
+} from "./lib/ycf-s3-lib-files.mjs";
 
 const ROOT = loadRepoEnv();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -115,23 +120,13 @@ function stageSyncApp() {
   for (const name of fs.readdirSync(bundledDir)) {
     if (name.endsWith(".mjs")) fs.unlinkSync(path.join(bundledDir, name));
   }
-  const syncLibs = fs
-    .readdirSync(LIB)
-    .filter(
-      (n) =>
-        n.endsWith(".mjs") &&
-        !n.endsWith(".test.mjs") &&
-        (n.startsWith("mos-enrolled") ||
-          n.startsWith("mos-ops-") ||
-          n.startsWith("mos-sync-") ||
-          n.startsWith("schedule-traffic") ||
-          n.startsWith("trigger-sheet") ||
-          n === "telegram-alert.mjs"),
-    );
+  const syncLibs = fs.readdirSync(LIB).filter(isYcfMosSyncLibFile);
   for (const name of syncLibs) {
     fs.copyFileSync(path.join(LIB, name), path.join(bundledDir, name));
     fs.copyFileSync(path.join(LIB, name), path.join(SYNC_APP, name));
   }
+  assertYcfS3LibsPresent(SYNC_APP);
+  assertYcfS3LibsPresent(bundledDir);
   npmInstall(SYNC_APP);
   const linked = path.join(SYNC_APP, "node_modules", "bm-mos-enrolled-sync");
   fs.rmSync(linked, { recursive: true, force: true });
@@ -149,6 +144,7 @@ function stageSimpleApp(appDir, libNames) {
     }
   }
   copyLibs(appDir, libNames);
+  assertYcfS3LibsPresent(appDir);
   npmInstall(appDir);
   const mjs = fs.readdirSync(appDir).filter((n) => n.endsWith(".mjs") && n !== "index.js");
   return zipApp(appDir, mjs);
@@ -190,11 +186,13 @@ function buildSyncEnv(syncUrl) {
     MOS_ENROLLED_AUTO_PUBLISH: process.env.MOS_ENROLLED_AUTO_PUBLISH?.trim() || "1",
     MOS_ENROLLED_TG_ENABLED: process.env.MOS_ENROLLED_TG_ENABLED?.trim() || "1",
     S3_BUCKET: process.env.S3_BUCKET?.trim() || "",
-    S3_ENDPOINT: process.env.S3_ENDPOINT?.trim() || "https://s3.twcstorage.ru",
+    S3_ENDPOINT:
+      process.env.S3_ENDPOINT?.trim() || "https://storage.yandexcloud.net",
     AWS_DEFAULT_REGION: process.env.AWS_DEFAULT_REGION?.trim() || "ru-1",
     AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID?.trim() || "",
     AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY?.trim() || "",
     MOS_SYNC_USE_PID: "1",
+    MOS_SYNC_PIPELINE: "legacy",
     MOS_OPS_S3_TIMEOUT_MS: process.env.MOS_OPS_S3_TIMEOUT_MS?.trim() || "30000",
   };
   const tg = readTelegramEnv({ root: ROOT, ycBin: findYc() });
@@ -222,11 +220,14 @@ function buildSyncEnv(syncUrl) {
 
 function buildControllerEnv(syncUrl, cronSecret) {
   loadDotEnv(path.join(ROOT, "scripts", "s3.env"));
-  return {
+  loadDotEnv(path.join(ROOT, "secret", "mos-ymq-pipeline.deploy.txt"));
+  const pairs = {
     MOS_ENROLLED_SYNC_FUNCTION_URL: syncUrl,
+    MOS_SYNC_PIPELINE: process.env.MOS_SYNC_PIPELINE?.trim() || "ymq",
     MOS_CONTROLLER_CRON_SECRET: cronSecret,
     S3_BUCKET: process.env.S3_BUCKET?.trim() || "",
-    S3_ENDPOINT: process.env.S3_ENDPOINT?.trim() || "https://s3.twcstorage.ru",
+    S3_ENDPOINT:
+      process.env.S3_ENDPOINT?.trim() || "https://storage.yandexcloud.net",
     AWS_DEFAULT_REGION: process.env.AWS_DEFAULT_REGION?.trim() || "ru-1",
     AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID?.trim() || "",
     AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY?.trim() || "",
@@ -235,6 +236,11 @@ function buildControllerEnv(syncUrl, cronSecret) {
     MOS_SYNC_T_MAX_SEC: process.env.MOS_SYNC_T_MAX_SEC?.trim() || "86400",
     MOS_OPS_S3_TIMEOUT_MS: process.env.MOS_OPS_S3_TIMEOUT_MS?.trim() || "30000",
   };
+  const planner = process.env.MOS_SYNC_PLANNER_FUNCTION_URL?.trim();
+  const finalizer = process.env.MOS_SYNC_FINALIZER_FUNCTION_URL?.trim();
+  if (planner) pairs.MOS_SYNC_PLANNER_FUNCTION_URL = planner;
+  if (finalizer) pairs.MOS_SYNC_FINALIZER_FUNCTION_URL = finalizer;
+  return pairs;
 }
 
 function buildTrafficEnv() {
@@ -244,7 +250,8 @@ function buildTrafficEnv() {
       process.env.SCHEDULE_PULSE_ALLOWED_ORIGINS?.trim() ||
       "https://quest.b-master.pro,https://www.quest.b-master.pro,http://localhost:3000",
     S3_BUCKET: process.env.S3_BUCKET?.trim() || "",
-    S3_ENDPOINT: process.env.S3_ENDPOINT?.trim() || "https://s3.twcstorage.ru",
+    S3_ENDPOINT:
+      process.env.S3_ENDPOINT?.trim() || "https://storage.yandexcloud.net",
     AWS_DEFAULT_REGION: process.env.AWS_DEFAULT_REGION?.trim() || "ru-1",
     AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID?.trim() || "",
     AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY?.trim() || "",
@@ -431,7 +438,10 @@ async function main() {
   deleteTimerIfExists(ycBin, SYNC_TIMER);
 
   console.log("[deploy] staging bm-schedule-traffic…");
-  const trafficZip = stageSimpleApp(TRAFFIC_APP, ["mos-ops-s3.mjs", "schedule-traffic.mjs"]);
+  const trafficZip = stageSimpleApp(TRAFFIC_APP, [
+    ...YCF_S3_LIB_FILES,
+    "schedule-traffic.mjs",
+  ]);
   ensureFunction(ycBin, TRAFFIC_NAME);
   const trafficPkg = uploadZip(ycBin, trafficZip, TRAFFIC_NAME);
   deployVersion(ycBin, TRAFFIC_NAME, trafficPkg, saId, buildTrafficEnv(), "30s");
@@ -440,13 +450,15 @@ async function main() {
 
   console.log("[deploy] staging bm-mos-sync-controller…");
   const controllerZip = stageSimpleApp(CONTROLLER_APP, [
-    "mos-ops-s3.mjs",
+    ...YCF_S3_LIB_FILES,
     "mos-sync-debug.mjs",
     "mos-sync-trace.mjs",
     "schedule-traffic.mjs",
     "mos-sync-state.mjs",
     "mos-sync-invoke.mjs",
     "mos-sync-controller.mjs",
+    "mos-sync-controller-pipeline.mjs",
+    "mos-sync-failure-alert.mjs",
   ]);
   ensureFunction(ycBin, CONTROLLER_NAME);
   const controllerPkg = uploadZip(ycBin, controllerZip, CONTROLLER_NAME);

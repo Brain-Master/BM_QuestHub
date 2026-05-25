@@ -8,6 +8,8 @@ import { fileURLToPath } from "node:url";
 
 import { loadDotEnv, loadRepoEnv, loadS3Env } from "./load-dotenv.mjs";
 import { readTelegramEnv } from "./lib/read-ycf-telegram-env.mjs";
+import { S3_YC_ENDPOINT, S3_YC_REGION } from "./lib/s3-storage.mjs";
+import { assertYcfS3LibsPresent } from "./lib/ycf-s3-lib-files.mjs";
 
 const ROOT = loadRepoEnv();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -73,12 +75,13 @@ function stageSyncApp() {
       (n) =>
         n.endsWith(".mjs") &&
         !n.endsWith(".test.mjs") &&
-        (n.startsWith("mos-enrolled") ||
+        (n.startsWith("mos-") ||
           n.startsWith("mos-ops-") ||
           n.startsWith("mos-sync-") ||
           n.startsWith("schedule-traffic") ||
           n.startsWith("trigger-sheet") ||
-          n === "telegram-alert.mjs"),
+          n === "telegram-alert.mjs" ||
+          n === "s3-storage.mjs"),
     );
   for (const name of syncLibs) {
     fs.copyFileSync(path.join(LIB, name), path.join(bundledDir, name));
@@ -88,6 +91,8 @@ function stageSyncApp() {
   const linked = path.join(SYNC_APP, "node_modules", "bm-mos-enrolled-sync");
   fs.rmSync(linked, { recursive: true, force: true });
   fs.cpSync(bundledDir, linked, { recursive: true });
+  assertYcfS3LibsPresent(SYNC_APP);
+  assertYcfS3LibsPresent(bundledDir);
   const mjs = fs.readdirSync(SYNC_APP).filter((n) => n.endsWith(".mjs"));
   const zip = path.join(SYNC_APP, "function.zip");
   if (fs.existsSync(zip)) fs.unlinkSync(zip);
@@ -183,19 +188,22 @@ function deployVersionBody({ bucket, object, sha256, sa }) {
     "GOOGLE_SHEETS_HOT_RANGE_FORMATS='Форматы'!A:AZ",
     `MOS_ENROLLED_COOKIES_S3_KEY=${DEFAULT_COOKIES_S3_KEY}`,
     "MOS_ENROLLED_SKIP_LOCAL_COOKIE_WRITE=1",
-    "MOS_ENROLLED_URL_DELAY_MS=1500",
-    "MOS_ENROLLED_FETCH_CONCURRENCY=2",
-    "MOS_ENROLLED_FETCH_TIMEOUT_MS=25000",
-    "MOS_ENROLLED_SNAPSHOT_S3_ATTEMPTS=4",
+    "MOS_ENROLLED_URL_DELAY_MS=1000",
+    "MOS_ENROLLED_FETCH_CONCURRENCY=1",
+    "MOS_ENROLLED_FETCH_TIMEOUT_MS=35000",
+    "MOS_ENROLLED_SNAPSHOT_S3_ATTEMPTS=6",
+    "MOS_OPS_S3_MERGE_WRITE_ATTEMPTS=4",
+    "MOS_OPS_S3_MERGE_ROUNDS=6",
     "MOS_ENROLLED_SKIP_S3_COOKIES=1",
     `MOS_ENROLLED_AUTO_PUBLISH=${process.env.MOS_ENROLLED_AUTO_PUBLISH?.trim() || "1"}`,
     `MOS_ENROLLED_TG_ENABLED=${process.env.MOS_ENROLLED_TG_ENABLED?.trim() || "1"}`,
     `S3_BUCKET=${process.env.S3_BUCKET}`,
-    `S3_ENDPOINT=${process.env.S3_ENDPOINT || "https://s3.twcstorage.ru"}`,
-    `AWS_DEFAULT_REGION=${process.env.AWS_DEFAULT_REGION || "ru-1"}`,
+    `S3_ENDPOINT=${process.env.S3_ENDPOINT || S3_YC_ENDPOINT}`,
+    `AWS_DEFAULT_REGION=${process.env.AWS_DEFAULT_REGION || S3_YC_REGION}`,
     `AWS_ACCESS_KEY_ID=${process.env.AWS_ACCESS_KEY_ID}`,
     `AWS_SECRET_ACCESS_KEY=${process.env.AWS_SECRET_ACCESS_KEY}`,
     "MOS_SYNC_USE_PID=1",
+    "MOS_SYNC_PIPELINE=legacy",
     "MOS_OPS_S3_TIMEOUT_MS=30000",
   ];
 

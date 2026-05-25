@@ -1,4 +1,8 @@
-import { mergeOpsJson, readOpsJson, writeOpsJson } from "./mos-ops-s3.mjs";
+import {
+  mergeOpsJson,
+  readOpsJsonWithMeta,
+  writeOpsJson,
+} from "./mos-ops-s3.mjs";
 import { mosSyncDebug } from "./mos-sync-debug.mjs";
 import { loadTrafficRollup } from "./schedule-traffic.mjs";
 
@@ -24,6 +28,20 @@ export function mosSyncPidConfig() {
   };
 }
 
+/** @returns {"legacy" | "ymq"} */
+export function mosSyncPipelineMode() {
+  const p = process.env.MOS_SYNC_PIPELINE?.trim().toLowerCase();
+  return p === "legacy" ? "legacy" : "ymq";
+}
+
+function envMs(name, fallbackMs) {
+  return envNum(name, fallbackMs);
+}
+
+export function mosSyncRunStaleMs() {
+  return envMs("MOS_SYNC_RUN_STALE_MS", 2 * 60 * 60 * 1000);
+}
+
 /**
  * @param {unknown} raw
  */
@@ -37,6 +55,13 @@ export function normalizeSyncState(raw) {
     lastControllerAt: null,
     lastPublishAt: null,
     lastSyncRunId: null,
+    runPhase: "idle",
+    activeRunId: null,
+    batchesTotal: 0,
+    batchesDone: 0,
+    batchesFailed: 0,
+    plannerAt: null,
+    lastBatchAt: null,
   };
   if (!raw || typeof raw !== "object") return base;
   const s = /** @type {Record<string, unknown>} */ (raw);
@@ -57,7 +82,216 @@ export function normalizeSyncState(raw) {
       typeof s.lastControllerAt === "string" ? s.lastControllerAt : null,
     lastPublishAt: typeof s.lastPublishAt === "string" ? s.lastPublishAt : null,
     lastSyncRunId: typeof s.lastSyncRunId === "string" ? s.lastSyncRunId : null,
+    runPhase:
+      s.runPhase === "processing" ||
+      s.runPhase === "finalizing" ||
+      s.runPhase === "idle"
+        ? s.runPhase
+        : "idle",
+    activeRunId: typeof s.activeRunId === "string" ? s.activeRunId : null,
+    batchesTotal:
+      typeof s.batchesTotal === "number" && Number.isFinite(s.batchesTotal)
+        ? Math.max(0, Math.round(s.batchesTotal))
+        : 0,
+    batchesDone:
+      typeof s.batchesDone === "number" && Number.isFinite(s.batchesDone)
+        ? Math.max(0, Math.round(s.batchesDone))
+        : 0,
+    batchesFailed:
+      typeof s.batchesFailed === "number" && Number.isFinite(s.batchesFailed)
+        ? Math.max(0, Math.round(s.batchesFailed))
+        : 0,
+    plannerAt: typeof s.plannerAt === "string" ? s.plannerAt : null,
+    lastBatchAt: typeof s.lastBatchAt === "string" ? s.lastBatchAt : null,
   };
+}
+
+/**
+ * @param {ReturnType<typeof normalizeSyncState>} state
+ */
+export function batchesComplete(state) {
+  return (
+    state.batchesTotal > 0 &&
+    state.batchesDone >= state.batchesTotal
+  );
+}
+
+/**
+ * @param {ReturnType<typeof normalizeSyncState>} state
+ * @param {number} [nowMs]
+ */
+export function isStaleProcessingRun(state, nowMs = Date.now()) {
+  if (state.runPhase !== "processing" && state.runPhase !== "finalizing") {
+    return false;
+  }
+  const ref = state.lastBatchAt || state.plannerAt;
+  if (!ref) return false;
+  const t = Date.parse(ref);
+  if (!Number.isFinite(t)) return false;
+  return nowMs - t > mosSyncRunStaleMs();
+}
+
+/**
+ * @param {ReturnType<typeof normalizeSyncState>} state
+ * @param {boolean} readOk
+ * @param {number} [nowMs]
+ */
+export function evaluateControllerPipelineAction(state, readOk, nowMs = Date.now()) {
+  if (!readOk) {
+    return { action: "none", reason: "state_read_failed", state };
+  }
+  state = clearStaleLockInState(state, nowMs);
+
+  if (isStaleProcessingRun(state, nowMs)) {
+    return { action: "reset_stale", reason: "stale_run", state };
+  }
+
+  if (state.runPhase === "processing") {
+    if (batchesComplete(state)) {
+      return { action: "finalize", reason: "batches_complete", state };
+    }
+    return { action: "none", reason: "run_in_progress", state };
+  }
+
+  if (state.runPhase === "finalizing") {
+    return { action: "none", reason: "finalizing", state };
+  }
+
+  if (isLockActive(state, nowMs)) {
+    return { action: "none", reason: "locked", state };
+  }
+
+  if (!state.nextDueAt) {
+    return { action: "plan", reason: "no_next_due", state };
+  }
+  if (Date.parse(state.nextDueAt) <= nowMs) {
+    return { action: "plan", reason: "due", state };
+  }
+  return { action: "none", reason: "not_due", state };
+}
+
+/**
+ * Reset YMQ run fields to idle (keeps PID fields).
+ */
+export async function resetPipelineRunToIdle() {
+  return patchSyncState({
+    runPhase: "idle",
+    activeRunId: null,
+    batchesTotal: 0,
+    batchesDone: 0,
+    batchesFailed: 0,
+    plannerAt: null,
+    lastBatchAt: null,
+    lockUntil: null,
+  });
+}
+
+/**
+ * @param {{ failed?: boolean }} [opts]
+ */
+/**
+ * @param {{ runId: string, batchesTotal: number }} params
+ */
+export async function patchPlannerRunStarted(params) {
+  const now = new Date().toISOString();
+  return patchSyncState({
+    runPhase: "processing",
+    activeRunId: params.runId,
+    batchesTotal: params.batchesTotal,
+    batchesDone: 0,
+    batchesFailed: 0,
+    plannerAt: now,
+    lastBatchAt: null,
+    lastSyncRunId: params.runId,
+  });
+}
+
+/**
+ * @param {string} runId
+ */
+export async function patchFinalizeRunStarted(runId) {
+  return patchSyncState({
+    runPhase: "finalizing",
+    activeRunId: runId,
+  });
+}
+
+export async function recordBatchProgress(opts = {}) {
+  const now = new Date().toISOString();
+  const merged = await mergeOpsJson(MOS_SYNC_STATE_S3_KEY, (raw) => {
+    const state = normalizeSyncState(raw);
+    const patch = {
+      batchesDone: state.batchesDone + 1,
+      lastBatchAt: now,
+    };
+    if (opts.failed) {
+      patch.batchesFailed = state.batchesFailed + 1;
+    }
+    return { ...state, ...patch };
+  });
+  return merged !== null;
+}
+
+/**
+ * @param {ReturnType<typeof normalizeSyncState>} state
+ * @param {number} [nowMs]
+ */
+export function isLockActive(state, nowMs = Date.now()) {
+  if (!state.lockUntil) return false;
+  const until = Date.parse(state.lockUntil);
+  return Number.isFinite(until) && until > nowMs;
+}
+
+/**
+ * @param {ReturnType<typeof normalizeSyncState>} state
+ * @param {number} [nowMs]
+ */
+export function clearStaleLockInState(state, nowMs = Date.now()) {
+  if (!state.lockUntil) return state;
+  const until = Date.parse(state.lockUntil);
+  if (Number.isFinite(until) && until <= nowMs) {
+    return { ...state, lockUntil: null };
+  }
+  return state;
+}
+
+/**
+ * @returns {Promise<{ state: ReturnType<typeof normalizeSyncState>, readOk: boolean }>}
+ */
+export async function loadSyncStateWithMeta() {
+  const stored = await readOpsJsonWithMeta(MOS_SYNC_STATE_S3_KEY);
+  let state = normalizeSyncState(stored.data);
+  if (stored.readOk) {
+    state = clearStaleLockInState(state);
+  }
+  return { state, readOk: stored.readOk };
+}
+
+export async function loadSyncState() {
+  const { state } = await loadSyncStateWithMeta();
+  return state;
+}
+
+/**
+ * @param {ReturnType<typeof normalizeSyncState>} state
+ * @param {boolean} readOk
+ * @param {number} [nowMs]
+ */
+export function evaluateControllerGate(state, readOk, nowMs = Date.now()) {
+  if (!readOk) {
+    return { run: false, reason: "state_read_failed", state };
+  }
+  state = clearStaleLockInState(state, nowMs);
+  if (isLockActive(state, nowMs)) {
+    return { run: false, reason: "locked", state };
+  }
+  if (!state.nextDueAt) {
+    return { run: true, reason: "no_next_due", state };
+  }
+  if (Date.parse(state.nextDueAt) <= nowMs) {
+    return { run: true, reason: "due", state };
+  }
+  return { run: false, reason: "not_due", state };
 }
 
 /**
@@ -124,11 +358,6 @@ export function computeNextDueAt(tSec, fromMs = Date.now()) {
   return new Date(fromMs + tSec * 1000 + j * 1000).toISOString();
 }
 
-export async function loadSyncState() {
-  const stored = await readOpsJson(MOS_SYNC_STATE_S3_KEY);
-  return normalizeSyncState(stored?.data);
-}
-
 /**
  * @param {number} lockMs
  */
@@ -139,12 +368,13 @@ export async function acquireSyncLock(lockMs = 10 * 60 * 1000) {
 
   const merged = await mergeOpsJson(MOS_SYNC_STATE_S3_KEY, (raw) => {
     const state = normalizeSyncState(raw);
-    if (state.lockUntil && Date.parse(state.lockUntil) > now) {
+    const cleared = clearStaleLockInState(state, now);
+    if (isLockActive(cleared, now)) {
       acquired = false;
-      return state;
+      return cleared;
     }
     acquired = true;
-    return { ...state, lockUntil };
+    return { ...cleared, lockUntil };
   });
 
   if (merged === null) return null;
@@ -179,10 +409,12 @@ export async function patchSyncState(patch) {
 
 /**
  * @param {{ ok: boolean, hadChanges?: boolean, publishAt?: string, runId?: string }} result
+ * @param {ReturnType<typeof normalizeSyncState>} [knownState]
  */
-export async function onSyncFinished(result) {
+export async function onSyncFinished(result, knownState = null) {
   const traffic = await loadTrafficRollup();
-  const state = await loadSyncState();
+  const state =
+    knownState ?? (await loadSyncStateWithMeta()).state;
   const { t, integral } = computeTargetIntervalSec(traffic, state);
   const now = Date.now();
   const patch = {
@@ -202,7 +434,17 @@ export async function onSyncFinished(result) {
     );
     patch.nextDueAt = computeNextDueAt(backoff, now);
   }
-  const stateOk = await patchSyncState(patch);
+
+  const mergedState = { ...state, ...patch };
+  let stateOk = await patchSyncState(patch);
+  if (!stateOk) {
+    console.warn(
+      "[mos-sync-state] onSyncFinished: merge failed — direct writeOpsJson fallback",
+    );
+    stateOk = await writeOpsJson(MOS_SYNC_STATE_S3_KEY, mergedState, {
+      maxAttempts: 4,
+    });
+  }
   if (!stateOk) {
     console.warn(
       "[mos-sync-state] onSyncFinished: lastSyncAt not persisted (S3)",
@@ -219,7 +461,6 @@ export async function onSyncFinished(result) {
 
 /**
  * nextDueAt for controller tick — never postpone a due or missing schedule.
- * Returns `undefined` to omit nextDueAt from the S3 patch (first run / invalid).
  * @param {string | null | undefined} currentNextDueAt
  * @param {number} [_intervalSec]
  * @param {number} [nowMs]
@@ -241,45 +482,100 @@ export function resolveControllerTickNextDueAt(
  * @param {number} [nowMs]
  */
 export async function controllerShouldRunSync(nowMs = Date.now()) {
-  const state = await loadSyncState();
-  if (state.lockUntil && Date.parse(state.lockUntil) > nowMs) {
-    return { run: false, reason: "locked", state };
-  }
-  if (!state.nextDueAt) {
-    return { run: true, reason: "no_next_due", state };
-  }
-  if (Date.parse(state.nextDueAt) <= nowMs) {
-    return { run: true, reason: "due", state };
-  }
-  return { run: false, reason: "not_due", state };
+  const { state, readOk } = await loadSyncStateWithMeta();
+  return evaluateControllerGate(state, readOk, nowMs);
+}
+
+/**
+ * Compute PID metrics without writing S3 (for controller tick planning).
+ * @param {ReturnType<typeof normalizeSyncState>} state
+ * @param {number} [nowMs]
+ */
+export async function computeControllerTickMetrics(state, nowMs = Date.now()) {
+  const traffic = await loadTrafficRollup(nowMs);
+  const { t, tRaw, integral } = computeTargetIntervalSec(traffic, state);
+  const nextDueAt = resolveControllerTickNextDueAt(state.nextDueAt, t, nowMs);
+  return {
+    traffic,
+    intervalSec: t,
+    tRaw,
+    nextDueAt: nextDueAt ?? state.nextDueAt,
+  };
 }
 
 /**
  * @param {number} [nowMs]
  */
 export async function tickControllerState(nowMs = Date.now()) {
-  const traffic = await loadTrafficRollup(nowMs);
-  const state = await loadSyncState();
-  const { t, tRaw, integral } = computeTargetIntervalSec(traffic, state);
-  const nextDueAt = resolveControllerTickNextDueAt(state.nextDueAt, t, nowMs);
+  const { state, readOk } = await loadSyncStateWithMeta();
+  if (!readOk) {
+    return {
+      traffic: await loadTrafficRollup(nowMs),
+      intervalSec: 900,
+      tRaw: 900,
+      nextDueAt: state.nextDueAt,
+      state,
+      stateOk: false,
+      stateError: "state_read_failed",
+    };
+  }
+
+  const metrics = await computeControllerTickMetrics(state, nowMs);
+  const { integral } = computeTargetIntervalSec(metrics.traffic, state);
 
   /** @type {Partial<ReturnType<typeof normalizeSyncState>>} */
   const patch = {
     lastControllerAt: new Date(nowMs).toISOString(),
-    lastIntervalSec: t,
+    lastIntervalSec: metrics.intervalSec,
     integralError: integral,
   };
-  if (nextDueAt !== undefined) patch.nextDueAt = nextDueAt;
+  if (metrics.nextDueAt !== undefined) patch.nextDueAt = metrics.nextDueAt;
 
   const stateOk = await patchSyncState(patch);
 
   return {
-    traffic,
-    intervalSec: t,
-    tRaw,
-    nextDueAt: nextDueAt ?? state.nextDueAt,
+    traffic: metrics.traffic,
+    intervalSec: metrics.intervalSec,
+    tRaw: metrics.tRaw,
+    nextDueAt: metrics.nextDueAt,
     state,
     stateOk,
     stateError: stateOk ? null : "s3_state_write_failed",
   };
+}
+
+/**
+ * Single merge when controller will invoke sync: lock + optional controller fields.
+ * @param {number} nowMs
+ * @param {ReturnType<typeof normalizeSyncState>} state
+ * @param {{ intervalSec: number, integralError: number, nextDueAt?: string | null }} metrics
+ * @param {number} lockMs
+ */
+export async function patchControllerInvokeState(
+  nowMs,
+  state,
+  metrics,
+  lockMs = 10 * 60 * 1000,
+) {
+  const lockUntil = new Date(nowMs + lockMs).toISOString();
+  const cleared = clearStaleLockInState(state, nowMs);
+  if (isLockActive(cleared, nowMs)) {
+    return { lockUntil: null, acquired: false, stateOk: false };
+  }
+
+  /** @type {Partial<ReturnType<typeof normalizeSyncState>>} */
+  const patch = {
+    lockUntil,
+    lastControllerAt: new Date(nowMs).toISOString(),
+    lastIntervalSec: metrics.intervalSec,
+    integralError: metrics.integralError,
+  };
+  if (metrics.nextDueAt !== undefined) patch.nextDueAt = metrics.nextDueAt;
+
+  const merged = { ...cleared, ...patch };
+  let stateOk = await patchSyncState(patch);
+  if (!stateOk) {
+    stateOk = await writeOpsJson(MOS_SYNC_STATE_S3_KEY, merged, { maxAttempts: 4 });
+  }
+  return { lockUntil, acquired: stateOk, stateOk };
 }

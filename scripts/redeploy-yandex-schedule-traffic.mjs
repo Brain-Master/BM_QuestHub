@@ -7,6 +7,11 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { loadDotEnv, loadRepoEnv, loadS3Env } from "./load-dotenv.mjs";
+import { S3_YC_ENDPOINT, S3_YC_REGION } from "./lib/s3-storage.mjs";
+import {
+  assertYcfS3LibsPresent,
+  YCF_S3_LIB_FILES,
+} from "./lib/ycf-s3-lib-files.mjs";
 
 const ROOT = loadRepoEnv();
 const LIB = path.join(ROOT, "scripts", "lib");
@@ -31,9 +36,10 @@ function main() {
   for (const name of fs.readdirSync(APP)) {
     if (name.endsWith(".mjs") && name !== "index.js") fs.unlinkSync(path.join(APP, name));
   }
-  for (const name of ["mos-ops-s3.mjs", "schedule-traffic.mjs"]) {
+  for (const name of [...YCF_S3_LIB_FILES, "schedule-traffic.mjs"]) {
     fs.copyFileSync(path.join(LIB, name), path.join(APP, name));
   }
+  assertYcfS3LibsPresent(APP);
   spawnSync("npm", ["install", "--omit=dev"], { cwd: APP, stdio: "inherit", shell: true });
   const mjs = fs.readdirSync(APP).filter((n) => n.endsWith(".mjs") && n !== "index.js");
   const zip = path.join(APP, "function.zip");
@@ -52,8 +58,8 @@ function main() {
   const env = [
     "ALLOWED_ORIGINS=https://quest.b-master.pro,https://www.quest.b-master.pro,http://localhost:3000",
     `S3_BUCKET=${process.env.S3_BUCKET}`,
-    `S3_ENDPOINT=${process.env.S3_ENDPOINT || "https://s3.twcstorage.ru"}`,
-    `AWS_DEFAULT_REGION=${process.env.AWS_DEFAULT_REGION || "ru-1"}`,
+    `S3_ENDPOINT=${process.env.S3_ENDPOINT || S3_YC_ENDPOINT}`,
+    `AWS_DEFAULT_REGION=${process.env.AWS_DEFAULT_REGION || S3_YC_REGION}`,
     `AWS_ACCESS_KEY_ID=${process.env.AWS_ACCESS_KEY_ID}`,
     `AWS_SECRET_ACCESS_KEY=${process.env.AWS_SECRET_ACCESS_KEY}`,
     "MOS_OPS_S3_TIMEOUT_MS=30000",

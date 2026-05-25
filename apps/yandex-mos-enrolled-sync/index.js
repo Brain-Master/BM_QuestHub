@@ -62,6 +62,17 @@ export async function handler(event = {}) {
   process.env.MOS_ENROLLED_SYNC = "1";
   process.env.BM_QUESTHUB_ROOT = __dirname;
 
+  const pipeline = process.env.MOS_SYNC_PIPELINE?.trim().toLowerCase() || "ymq";
+  if (pipeline !== "legacy") {
+    return jsonResponse(410, {
+      ok: false,
+      skipped: true,
+      reason: "pipeline_ymq",
+      message:
+        "Monolith sync disabled. Set MOS_SYNC_PIPELINE=legacy on bm-mos-enrolled-sync or use planner/worker/finalizer.",
+    });
+  }
+
   const dryRun =
     normalized.dryRun === true ||
     normalized.dry_run === true ||

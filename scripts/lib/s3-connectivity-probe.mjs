@@ -6,9 +6,15 @@ import {
   createOpsS3,
   formatS3Error,
   readOpsJson,
+  readOpsJsonWithMeta,
   withS3Timeout,
 } from "./mos-ops-s3.mjs";
-import { resolveS3Bucket } from "./s3-storage.mjs";
+import {
+  publicBaseUrlForBucket,
+  resolveS3Bucket,
+  S3_YC_ENDPOINT,
+  S3_YC_REGION,
+} from "./s3-storage.mjs";
 import { sendTelegramAlert } from "./telegram-alert.mjs";
 
 const DEFAULT_KEYS = [
@@ -54,7 +60,7 @@ function createApiClient(log) {
     return null;
   }
   log(
-    `config bucket=${cfg.bucket} endpoint=${process.env.S3_ENDPOINT?.trim() || "https://s3.twcstorage.ru"} region=${process.env.AWS_DEFAULT_REGION?.trim() || "ru-1"}`,
+    `config bucket=${cfg.bucket} endpoint=${process.env.S3_ENDPOINT?.trim() || S3_YC_ENDPOINT} region=${process.env.AWS_DEFAULT_REGION?.trim() || S3_YC_REGION}`,
   );
   log(`config MOS_OPS_S3_TIMEOUT_MS=${process.env.MOS_OPS_S3_TIMEOUT_MS?.trim() || "10000 (default)"}`);
   return cfg;
@@ -164,20 +170,26 @@ async function probeReadOpsJson(log, rounds) {
   const key = "ops/mos-enrolled-snapshot.json";
   const ms = [];
   let lastError = null;
+  let readFailed = false;
   for (let i = 0; i < rounds; i++) {
     const t0 = performance.now();
     try {
-      await readOpsJson(key);
+      const stored = await readOpsJsonWithMeta(key);
       ms.push(Math.round(performance.now() - t0));
+      if (!stored.readOk) {
+        readFailed = true;
+        lastError = "readOk=false";
+      }
     } catch (err) {
       lastError = formatS3Error(err);
+      readFailed = true;
       ms.push(Math.round(performance.now() - t0));
     }
   }
   const s = timingStats(ms);
   const slowMs = Number(process.env.S3_PROBE_READOPS_SLOW_MS || 10_000);
   const timedOut = ms.some((n) => n >= Number(process.env.MOS_OPS_S3_TIMEOUT_MS || 15_000) - 500);
-  const ok = !lastError && !timedOut && s.p50 < slowMs;
+  const ok = !lastError && !readFailed && !timedOut && s.p50 < slowMs;
   log(
     `  readOpsJson(${key}): ${ok ? "ok" : "FAIL"} ${fmtStats(s)}${timedOut ? " (hit S3 timeout)" : ""}`,
   );
@@ -255,7 +267,7 @@ export async function runS3ConnectivityProbe(opts = {}) {
   const source = opts.source?.trim() || "ycf";
   const bucket = resolveS3Bucket("hot");
   const publicBase =
-    process.env.S3_PUBLIC_BASE_URL?.trim() || `https://${bucket}.s3.twcstorage.ru`;
+    process.env.S3_PUBLIC_BASE_URL?.trim() || publicBaseUrlForBucket("hot");
 
   /** @type {string[]} */
   const lines = [];
