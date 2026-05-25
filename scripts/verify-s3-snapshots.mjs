@@ -35,22 +35,44 @@ function webDataDir() {
   return candidates[0];
 }
 
-function resolveUrl(relativePath, manifestUrl) {
-  const rel = relativePath.replace(/^\//, "");
-  if (manifestUrl) {
-    try {
-      return new URL(rel, normalizeBase(manifestUrl)).toString();
-    } catch {
-      /* fall through */
-    }
+/**
+ * Path-style S3 URL → bucket root (`https://host/<bucket>/`).
+ * Manifest paths are relative to bucket root, not the manifest file directory.
+ */
+function snapshotBaseUrlFromManifest(manifestUrl) {
+  try {
+    const u = new URL(manifestUrl);
+    const segments = u.pathname.split("/").filter(Boolean);
+    if (segments.length === 0) return null;
+    const bucket = segments[0];
+    return `${u.origin}/${bucket}/`;
+  } catch {
+    return null;
   }
-  const base = publicBaseUrl();
-  if (!base) return null;
+}
+
+function resolveAgainstBase(relativePath, base) {
+  const rel = relativePath.replace(/^\//, "");
   try {
     return new URL(rel, normalizeBase(base)).toString();
   } catch {
     return null;
   }
+}
+
+/**
+ * Resolve manifest-relative paths (e.g. data/v2/map-snapshot.json).
+ * When manifestUrl is set, it only signals remote mode — base is bucket root, not the manifest file URL.
+ */
+function resolveUrl(relativePath, manifestUrl) {
+  const manifest = manifestUrl?.trim() || null;
+  if (manifest) {
+    const base = publicBaseUrl() ?? snapshotBaseUrlFromManifest(manifest);
+    if (base) return resolveAgainstBase(relativePath, base);
+  }
+  const base = publicBaseUrl();
+  if (!base) return null;
+  return resolveAgainstBase(relativePath, base);
 }
 
 function isNetworkError(err) {
@@ -167,9 +189,7 @@ async function main() {
   let scheduleLabel = "";
 
   if (schedulePath.endsWith("schedule-snapshot.json")) {
-    const scheduleUrl =
-      resolveUrl(schedulePath, manifestUrl) ??
-      new URL(schedulePath.replace(/^\//, ""), normalizeBase(base)).toString();
+    const scheduleUrl = resolveUrl(schedulePath, manifestUrl);
     const localRel = schedulePath.replace(/^data\//, "");
     const { data: schedule, source } = await loadJson({
       url: scheduleUrl,
