@@ -27,7 +27,7 @@ function setBaseEnv() {
     TELEGRAM_CHAT_ID: "telegram-chat",
     GOOGLE_SERVICE_ACCOUNT_JSON: serviceAccountJson(),
     GOOGLE_SHEETS_SPREADSHEET_ID: "spreadsheet-id",
-    GOOGLE_LEADS_SHEET_RANGE: "Leads!A:S",
+    GOOGLE_LEADS_SHEET_RANGE: "Leads!A:U",
     N8N_WEBHOOK_URL: "https://n8n.example/webhook/lead",
     N8N_TIMEOUT_MS: "1000",
     OPS_REPORT_URL: "https://ops.example/report",
@@ -55,6 +55,8 @@ function leadPayload(overrides = {}) {
     schoolSlug: "school-1517",
     submittedAt: "2026-05-18T10:00:00.000Z",
     source: "bm-questhub-static",
+    policyVersion: "2026-05-28",
+    consentAt: "2026-05-18T10:00:00.000Z",
     ...overrides,
   };
 }
@@ -254,5 +256,7 @@ test("sheet row contract keeps expected column order", () => {
     "school-1517",
     "Без аллергий",
     "bm-questhub-static",
+    "2026-05-28",
+    "2026-05-18T10:00:00.000Z",
   ]);
 });

@@ -6,6 +6,7 @@ import {
   LEGAL_INDEX_PATH,
   LEGAL_OPERATOR_DETAILS_PATH,
   LEGAL_PERSONAL_DATA_PATH,
+  LEGAL_TERMS_PATH,
 } from "@/lib/legal-routes";
 import { communityConnectCopy } from "@/lib/community-connect-copy";
 
@@ -39,6 +40,12 @@ export function SiteFooter() {
           </Link>
         </div>
         <div className="flex flex-col gap-3 text-sm md:text-right">
+          <Link
+            className="text-muted-foreground hover:text-foreground"
+            href={LEGAL_TERMS_PATH}
+          >
+            Пользовательское соглашение
+          </Link>
           <Link
             className="text-muted-foreground hover:text-foreground"
             href={LEGAL_PERSONAL_DATA_PATH}

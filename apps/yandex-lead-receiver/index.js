@@ -171,6 +171,9 @@ function normalizeLead(payload, requestId) {
     schoolSlug: typeof payload.schoolSlug === "string" ? payload.schoolSlug.trim() : "",
     submittedAt: typeof payload.submittedAt === "string" ? payload.submittedAt.trim() : "",
     source: typeof payload.source === "string" ? payload.source.trim() : "bm-questhub-static",
+    policyVersion:
+      typeof payload.policyVersion === "string" ? payload.policyVersion.trim() : "",
+    consentAt: typeof payload.consentAt === "string" ? payload.consentAt.trim() : "",
   };
 }
 
@@ -422,6 +425,8 @@ function leadToSheetRow(lead) {
     lead.schoolSlug,
     lead.comment,
     lead.source,
+    lead.policyVersion,
+    lead.consentAt,
   ];
 }
 

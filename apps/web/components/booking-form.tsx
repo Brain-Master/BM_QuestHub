@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { formatRuPhoneInput, normalizePersonName } from "@/lib/lead-form-fields";
 import { trackBookingLeadSubmit } from "@/lib/client-analytics";
+import { PERSONAL_DATA_POLICY_VERSION } from "@/content/legal/policy-meta";
 import { submitLeadToYandex } from "@/lib/lead-submit-client";
 import {
   LEGAL_PERSONAL_DATA_CONSENT_PATH,
@@ -111,7 +112,11 @@ export function BookingForm({
   });
 
   async function onSubmit(values: LeadPayload) {
-    const res = await submitLeadToYandex(values);
+    const res = await submitLeadToYandex({
+      ...values,
+      policyVersion: PERSONAL_DATA_POLICY_VERSION,
+      consentAt: new Date().toISOString(),
+    });
     if (!res.ok) {
       if (onSubmitFailed) {
         onSubmitFailed();

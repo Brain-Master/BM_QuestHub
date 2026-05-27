@@ -294,6 +294,10 @@ export const leadSchema = z.object({
   venueSlug: z.string(),
   venueName: z.string(),
   schoolSlug: z.string().optional(),
+  /** Версия политики ПДн на момент отправки (ISO date). */
+  policyVersion: z.string().optional(),
+  /** Момент выражения согласия (ISO 8601). */
+  consentAt: z.string().optional(),
 });
 
 export type LeadFormInput = z.input<typeof leadSchema>;

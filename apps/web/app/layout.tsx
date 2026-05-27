@@ -3,12 +3,12 @@ import { Manrope, Onest } from "next/font/google";
 
 import "./globals.css";
 
-import { AnalyticsVisitScope } from "@/components/analytics-visit-scope";
+import { ConsentGatedAnalytics } from "@/components/consent-gated-analytics";
+import { CookieConsentBanner } from "@/components/cookie-consent-banner";
 import { HostScopeBootstrap } from "@/components/host-scope-bootstrap";
 import { ScrollToTopButton } from "@/components/scroll-to-top-button";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
-import { YandexMetrika } from "@/components/yandex-metrika";
 import { loadWorlds } from "@/lib/content/load";
 import { loadSiteConfig } from "@/lib/data/site-config-loader";
 
@@ -51,8 +51,8 @@ export default async function RootLayout({
     >
       <body className="bm-page-bg flex min-h-full flex-col bg-background text-foreground">
         <HostScopeBootstrap />
-        <AnalyticsVisitScope />
-        <YandexMetrika />
+        <ConsentGatedAnalytics />
+        <CookieConsentBanner />
         <SiteHeader worlds={worlds} navigation={siteConfig.navigation} />
         <div className="flex flex-1 flex-col">{children}</div>
         <ScrollToTopButton />

@@ -1,3 +1,4 @@
+import { PERSONAL_DATA_POLICY_UPDATED_AT } from "@/content/legal/policy-meta";
 import { personalDataPolicy, type LegalSection } from "@/content/legal/personal-data-policy";
 import { BRAINMASTER_LEGAL_EMAIL } from "@/lib/site-contact";
 
@@ -5,7 +6,7 @@ export const personalDataConsent = {
   title:
     "Согласие на обработку персональных данных Индивидуальным предпринимателем Ткаченко Артёмом Алексеевичем (BrainMaster)",
   shortTitle: "Согласие на обработку персональных данных",
-  updatedAt: "18 мая 2026",
+  updatedAt: PERSONAL_DATA_POLICY_UPDATED_AT,
   operator: personalDataPolicy.operator,
   sections: [
     {

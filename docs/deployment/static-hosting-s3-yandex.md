@@ -160,7 +160,7 @@ TELEGRAM_CHAT_ID=<telegram chat id>
 GOOGLE_SERVICE_ACCOUNT_JSON=<one-line service account json>
 # Or use GOOGLE_SERVICE_ACCOUNT_JSON_BASE64 for CLI deployments.
 GOOGLE_SHEETS_SPREADSHEET_ID=<spreadsheet id>
-GOOGLE_LEADS_SHEET_RANGE=Leads!A:S
+GOOGLE_LEADS_SHEET_RANGE=Leads!A:U
 N8N_WEBHOOK_URL=<optional n8n production webhook>
 N8N_TIMEOUT_MS=2500
 OPS_REPORT_URL=<bm-lead-ops-reporter invoke URL>
@@ -189,7 +189,7 @@ yc serverless function version create \
   --execution-timeout 10s \
   --source-path function.zip \
   --environment ALLOWED_ORIGINS="https://quest.b-master.pro" \
-  --environment GOOGLE_LEADS_SHEET_RANGE="Leads!A:S"
+  --environment GOOGLE_LEADS_SHEET_RANGE="Leads!A:U"
 ```
 
 Pass sensitive values with the Yandex Cloud console, a secrets flow, or your

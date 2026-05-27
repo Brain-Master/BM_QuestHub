@@ -47,7 +47,7 @@ On validation or delivery failure the receiver POSTs `lead.server_error` to the 
 
 ## Google Sheet Columns
 
-The append row currently writes columns `A:S`:
+The append row currently writes columns `A:U`:
 
 1. `receivedAt`
 2. `submittedAt`
@@ -68,3 +68,5 @@ The append row currently writes columns `A:S`:
 17. `schoolSlug`
 18. `comment`
 19. `source`
+20. `policyVersion`
+21. `consentAt`

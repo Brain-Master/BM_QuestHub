@@ -1,6 +1,7 @@
 "use client";
 
 import type { AnalyticsScope } from "@/lib/analytics-scope";
+import { hasAnalyticsConsent } from "@/lib/cookie-consent";
 
 function ymId(): number | null {
   const raw = process.env.NEXT_PUBLIC_YM_ID;
@@ -13,7 +14,7 @@ export function reachGoal(
   goal: string,
   params?: Record<string, string | number | boolean | undefined>,
 ) {
-  if (typeof window === "undefined") return;
+  if (typeof window === "undefined" || !hasAnalyticsConsent()) return;
   const id = ymId();
   if (!id || !window.ym) return;
   const clean = params
@@ -29,7 +30,7 @@ export function setVisitParams(params: {
   scope: AnalyticsScope;
   school_slug: string;
 }) {
-  if (typeof window === "undefined") return;
+  if (typeof window === "undefined" || !hasAnalyticsConsent()) return;
   const id = ymId();
   if (!id || !window.ym) return;
   window.ym(id, "params", {
