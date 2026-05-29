@@ -16,6 +16,7 @@ function makeSite(slug: string, campus: SiteCampus): SiteScopeCard {
   return {
     slug,
     name: slug,
+    fullName: slug,
     routeSlugs: [slug],
     type: "school",
     city: "moscow",
@@ -69,6 +70,7 @@ test.describe("Map projection helpers", () => {
     const campus: SiteCampus = {
       slug: "main",
       name: "Main",
+      headline: "Test",
       address: "Test",
       latitude: 0.25,
       longitude: 0.5,
@@ -98,6 +100,7 @@ test.describe("Map projection helpers", () => {
     const campus: SiteCampus = {
       slug: "main",
       name: "Main",
+      headline: "Test",
       address: "Test",
       latitude: 0.25,
       longitude: 0.5,

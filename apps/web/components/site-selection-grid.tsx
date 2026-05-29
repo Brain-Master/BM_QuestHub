@@ -189,6 +189,11 @@ function LogoMark({ site, compact = false }: { site: SiteScopeCard; compact?: bo
   );
 }
 
+function resolveSiteHeaderDistrict(site: SiteScopeCard): string | undefined {
+  if (site.campusCount > 1) return site.locationLabel;
+  return site.district;
+}
+
 function SiteHeaderMeta({
   site,
   showCityInHeader,
@@ -196,17 +201,18 @@ function SiteHeaderMeta({
   site: SiteScopeCard;
   showCityInHeader: boolean;
 }) {
-  if (!showCityInHeader && !site.district) return null;
+  const districtLabel = resolveSiteHeaderDistrict(site);
+  if (!showCityInHeader && !districtLabel) return null;
 
   return (
     <p className="flex flex-wrap items-center gap-x-1.5 text-cyan-100/85 text-xs tracking-[0.16em]">
       {showCityInHeader ? <span className="uppercase">{site.cityLabel}</span> : null}
-      {showCityInHeader && site.district ? (
+      {showCityInHeader && districtLabel ? (
         <span aria-hidden className="text-cyan-100/50">
           ·
         </span>
       ) : null}
-      {site.district ? <span className="normal-case">{site.district}</span> : null}
+      {districtLabel ? <span className="normal-case">{districtLabel}</span> : null}
     </p>
   );
 }
@@ -218,15 +224,16 @@ function SiteListHeaderMeta({
   site: SiteScopeCard;
   showCityInHeader: boolean;
 }) {
-  if (!showCityInHeader && !site.district) return null;
+  const districtLabel = resolveSiteHeaderDistrict(site);
+  if (!showCityInHeader && !districtLabel) return null;
 
   return (
     <p className="flex flex-wrap items-center gap-x-1.5 text-muted-foreground text-xs">
       {showCityInHeader ? (
         <span className="font-medium uppercase tracking-[0.12em]">{site.cityLabel}</span>
       ) : null}
-      {showCityInHeader && site.district ? <span aria-hidden>·</span> : null}
-      {site.district ? <span>{site.district}</span> : null}
+      {showCityInHeader && districtLabel ? <span aria-hidden>·</span> : null}
+      {districtLabel ? <span>{districtLabel}</span> : null}
     </p>
   );
 }
@@ -276,11 +283,15 @@ function LocationBlock({ site }: { site: SiteScopeCard }) {
 
           return (
             <div key={campus.slug} className="rounded-lg bg-white/[0.04] p-2.5 sm:p-3">
-              <p className="font-medium text-foreground">{campus.name}</p>
-              <p className="mt-1 text-muted-foreground text-xs leading-relaxed">{campus.address}</p>
+              <p className="font-medium text-foreground">{campus.headline}</p>
+              {campus.headline !== campus.address ? (
+                <p className="mt-1 text-muted-foreground text-xs leading-relaxed">{campus.address}</p>
+              ) : null}
               {showTransit ? (
                 <p className="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-muted-foreground text-xs leading-relaxed">
-                  <MetroLabel metro={campus.metro} />
+                  {campus.metro && campus.metro !== "—" ? (
+                    <MetroLabel metro={campus.metro} />
+                  ) : null}
                   {campus.metro &&
                   campus.metro !== "—" &&
                   showDistrictPerCampus &&
@@ -313,7 +324,7 @@ function SiteListLocation({ site }: { site: SiteScopeCard }) {
           {campus.metro && campus.metro !== "—" ? (
             <>
               <span aria-hidden> · </span>
-              <MetroLabel metro={campus.metro} className="inline-flex" />
+              <MetroLabel metro={campus.metro} />
             </>
           ) : null}
         </p>
@@ -348,11 +359,15 @@ function SiteListLocation({ site }: { site: SiteScopeCard }) {
 
           return (
             <div key={campus.slug} className="rounded-lg bg-white/[0.04] px-2.5 py-2">
-              <p className="font-medium text-foreground text-sm leading-snug">{campus.name}</p>
-              <p className="mt-0.5 text-muted-foreground text-xs leading-snug">{campus.address}</p>
+              <p className="font-medium text-foreground text-sm leading-snug">{campus.headline}</p>
+              {campus.headline !== campus.address ? (
+                <p className="mt-0.5 text-muted-foreground text-xs leading-snug">{campus.address}</p>
+              ) : null}
               {showTransit ? (
                 <p className="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-muted-foreground text-xs leading-snug">
-                  <MetroLabel metro={campus.metro} />
+                  {campus.metro && campus.metro !== "—" ? (
+                    <MetroLabel metro={campus.metro} />
+                  ) : null}
                   {campus.metro &&
                   campus.metro !== "—" &&
                   showDistrictPerCampus &&

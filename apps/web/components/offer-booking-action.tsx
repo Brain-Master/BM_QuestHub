@@ -22,6 +22,7 @@ import type {
 } from "@/lib/offers/schedule-board";
 import { resolveRegistrationFlow } from "@/lib/registration-flow";
 import type { Quest, Venue, VenueOffer } from "@/lib/schemas";
+import { resolveVenueShortName } from "@/lib/sites/venue-label";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -187,7 +188,7 @@ export function OfferBookingAction({
             <div className="bm-scrollbar min-h-0 overflow-y-auto overscroll-contain px-5 py-4 [scrollbar-gutter:stable] [scrollbar-width:thin]">
               <BookingForm
                 summary={{
-                  venueName: venue.name,
+                  venueName: resolveVenueShortName(venue),
                   questTitle: quest.title,
                   dates: offer.dateRange,
                   format: formatLabel,
@@ -204,7 +205,7 @@ export function OfferBookingAction({
                     ? `${variant.type} · ${variant.time}`
                     : undefined,
                   venueSlug: venue.slug,
-                  venueName: venue.name,
+                  venueName: resolveVenueShortName(venue),
                   schoolSlug,
                 }}
                 flowContext={flowContext}

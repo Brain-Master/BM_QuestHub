@@ -90,6 +90,13 @@ async function ingestImageFromFile(options: {
     isPlaceholderInboxBytes(options.webRoot, buffer, options.placeholderFile)
   ) {
     console.warn(`[ingest-inbox] skip placeholder source: ${sourceKey}`);
+    const cachedOutput = options.manifest.entries[options.manifestKey]?.output;
+    if (cachedOutput && fs.existsSync(path.join(options.webRoot, cachedOutput))) {
+      return { publicUrl: cachedOutput, skipped: true };
+    }
+    if (fs.existsSync(diskPath)) {
+      return { publicUrl, skipped: true };
+    }
     return { skipped: true };
   }
 

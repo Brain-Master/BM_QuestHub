@@ -81,7 +81,7 @@ const HOT_FORMAT_HEADERS = [
 const SCHOOL_NAME =
   'ГБОУДО «Московский детско-юношеский центр экологии, краеведения и туризма»';
 const DISPLAY_NAME = "МДЮЦ ЭКТ";
-const SCOPE = "school-mduc-ekt";
+const SCOPE = "mduc-ekt";
 
 const ENTRANCE_NOTE =
   "Перед стартом смены подтвердим вход, место встречи и кабинет в корпусе.";
@@ -101,7 +101,7 @@ const COLD_VENUES = [
     slug: "mduc-ekt-odesskaya",
     address: "ул. Одесская, 12А",
     metro: "Каховская",
-    district: "Черёмушки",
+    district: "Зюзино",
     latitude: "55.6539",
     longitude: "37.5984",
   },

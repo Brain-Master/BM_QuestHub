@@ -22,6 +22,7 @@ import {
   pageAlternates,
 } from "@/lib/seo/metadata";
 import {
+  resolveSchoolCampusLocations,
   resolveSchoolLandingMedia,
   resolveSchoolLocationSummary,
 } from "@/lib/school-landing-media";
@@ -50,7 +51,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const location = resolveSchoolLocationSummary(school.venues);
   const media = resolveSchoolLandingMedia(school.slug);
-  const title = `Летние смены · ${school.name} · BrainMaster`;
+  const fullName = school.venues[0]?.name ?? school.name;
+  const title = `Летние смены · ${fullName} · BrainMaster`;
   const description = location
     ? `Расписание инженерных квестов BrainMaster · ${school.name} · ${location}. Запись на mos.ru и предварительные заявки.`
     : `Расписание инженерных квестов BrainMaster для площадки ${school.name}.`;
@@ -94,7 +96,8 @@ export default async function SchoolAgendaPage({ params }: Props) {
   if (!school) notFound();
 
   const media = resolveSchoolLandingMedia(school.slug);
-  const locationSummary = resolveSchoolLocationSummary(school.venues);
+  const campusLocations = resolveSchoolCampusLocations(school.venues);
+  const schoolFullName = school.venues[0]?.name ?? school.name;
   const videoPosterUrl =
     media.videoPosterUrl ??
     media.activityGallery[0]?.url;
@@ -104,8 +107,9 @@ export default async function SchoolAgendaPage({ params }: Props) {
       <RememberSchoolOnVisit slug={school.slug} name={school.name} />
 
       <SchoolAgendaHero
-        schoolName={school.name}
-        locationSummary={locationSummary}
+        schoolShortName={school.name}
+        schoolFullName={schoolFullName}
+        campusLocations={campusLocations}
         videoFileUrl={media.videoFileUrl}
         videoPosterUrl={videoPosterUrl}
       />

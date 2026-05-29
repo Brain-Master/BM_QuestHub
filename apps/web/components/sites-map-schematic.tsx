@@ -42,6 +42,7 @@ import {
 import { PREFERRED_SCHOOL_STORAGE_KEY } from "@/lib/preferred-school";
 import { resolvePublicMediaUrl } from "@/lib/media/public-media-url";
 import type { SiteScopeCard } from "@/lib/sites/scope-card";
+import { pluralizeRuLabel } from "@/lib/i18n/pluralize-ru";
 import { buildSiteHref } from "@/lib/sites/site-route";
 import { cn } from "@/lib/utils";
 
@@ -977,7 +978,7 @@ function SiteList({
                   {points.length > 1 ? (
                     <>
                       <span aria-hidden>·</span>
-                      <span>{points.length} корпусов</span>
+                      <span>{pluralizeRuLabel(points.length, ["корпус", "корпуса", "корпусов"])}</span>
                     </>
                   ) : null}
                 </p>
@@ -1076,7 +1077,7 @@ function MapTooltip({
       >
         {point.site.name}
       </Link>
-      <p className="mt-0.5 text-orange-300 text-xs leading-relaxed">{point.campus.name}</p>
+      <p className="mt-0.5 text-orange-300 text-xs leading-relaxed">{point.campus.headline}</p>
       <p className="mt-0.5 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-cyan-100/90 text-xs leading-relaxed">
         {metro ? <MetroLabel metro={metro} /> : <span>{point.site.locationSummary}</span>}
       </p>
@@ -1208,7 +1209,7 @@ function SelectedSiteDetails({ site, points }: { site: SiteScopeCard; points: Di
           <div className="grid gap-1.5 rounded-xl border border-white/10 bg-black/15 p-3">
             {points.map((point) => (
               <p key={point.id} className="text-muted-foreground text-xs leading-relaxed">
-                <span className="font-medium text-foreground">{point.campus.name}</span>
+                <span className="font-medium text-foreground">{point.campus.headline}</span>
                 {point.campus.metro && point.campus.metro !== "—" ? (
                   <>
                     <span aria-hidden> · </span>

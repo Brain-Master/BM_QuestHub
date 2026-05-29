@@ -7,7 +7,7 @@ metro: Каховская
 city: moscow
 latitude: 55.6539
 longitude: 37.5984
-district: Черёмушки
+district: Зюзино
 entranceNote: Перед стартом смены подтвердим вход, место встречи и кабинет в корпусе.
 directions:
   - Постройте маршрут до ул. Одесская, 12А и ориентируйтесь на главный вход.
@@ -15,5 +15,5 @@ directions:
   - Дождитесь координатора BrainMaster в согласованной зоне встречи.
 contactNote: Точный кабинет и порядок прохода отправляем родителям перед началом смены.
 photos: []
-schoolScopeSlug: school-mduc-ekt
+schoolScopeSlug: mduc-ekt
 listedOnSites: true

@@ -157,7 +157,7 @@
       "output": "media/quests/minecraft-taina-drevnih-inzhenerov/og.webp",
       "updatedAt": "2026-05-21T10:49:44.445Z"
     },
-    "venue:school-mduc-ekt:logo": {
+    "venue:mduc-ekt:logo": {
       "sourceUrl": "venues\\school-mduc-ekt\\logo-256.source.png",
       "sha256": "2e59b55a1907a6ba9d5b5f799a45a1e084e0c63bf1acb0c4ca78ce9b25aded1c",
       "output": "media/venues/logos/school-mduc-ekt.webp",

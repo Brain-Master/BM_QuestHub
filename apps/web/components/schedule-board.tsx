@@ -22,6 +22,7 @@ import {
 import { PREFERRED_SCHOOL_STORAGE_KEY } from "@/lib/preferred-school";
 import { venueVisibleForSchoolScope } from "@/lib/school-scope";
 import { buildSiteHref } from "@/lib/sites/site-route";
+import { resolveVenueShortName } from "@/lib/sites/venue-label";
 import { communityConnectCopy } from "@/lib/community-connect-copy";
 import { cn } from "@/lib/utils";
 
@@ -230,17 +231,17 @@ export function ScheduleBoard({
   }, [boardItems]);
 
   const sites = React.useMemo(() => {
-    const unique = Array.from(new Set(boardItems.map((item) => item.venue.name))).sort(
-      (a, b) => a.localeCompare(b, "ru"),
-    );
+    const unique = Array.from(
+      new Set(boardItems.map((item) => resolveVenueShortName(item.venue))),
+    ).sort((a, b) => a.localeCompare(b, "ru"));
     return [ALL_SITES, ...unique];
   }, [boardItems]);
   const querySite = React.useMemo(() => {
     if (!querySchoolSlug || schoolSlug) return undefined;
-    return (
+    const match =
       boardItems.find((item) => item.venue.schoolScopeSlug === querySchoolSlug) ??
-      boardItems.find((item) => venueVisibleForSchoolScope(item.venue, querySchoolSlug))
-    )?.venue.name;
+      boardItems.find((item) => venueVisibleForSchoolScope(item.venue, querySchoolSlug));
+    return match ? resolveVenueShortName(match.venue) : undefined;
   }, [boardItems, querySchoolSlug, schoolSlug]);
   const activeSite =
     site === QUERY_SITE && querySite && sites.includes(querySite)
@@ -291,7 +292,13 @@ export function ScheduleBoard({
           return false;
         }
       }
-      if (!schoolSlug && activeSite !== ALL_SITES && item.venue.name !== activeSite) return false;
+      if (
+        !schoolSlug &&
+        activeSite !== ALL_SITES &&
+        resolveVenueShortName(item.venue) !== activeSite
+      ) {
+        return false;
+      }
       if (format !== ALL_FORMATS && !itemFormatTypes(item).includes(format)) return false;
       if (showAgeFilter && activeAge !== ALL_AGES) {
         const itemAges = [

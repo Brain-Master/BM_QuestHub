@@ -1,8 +1,11 @@
 import Link from "next/link";
 import { CalendarDays, MapPin, Train, User } from "lucide-react";
 
+import { MetroLabel } from "@/components/metro-label";
 import type { ScheduleBoardItem } from "@/lib/offers/schedule-board";
+import { resolveScheduleVenueForMaps } from "@/lib/offers/schedule-location";
 import { buildVenueSiteHref } from "@/lib/sites/site-route";
+import { resolveVenueShortName } from "@/lib/sites/venue-label";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -53,7 +56,8 @@ function splitDateLabel(label: string): { first: string; second: string | null }
 }
 
 function yandexMapsHref(item: ScheduleBoardItem): string {
-  const query = [item.venue.name, item.venue.metro && `м. ${item.venue.metro}`, item.venue.address]
+  const venue = resolveScheduleVenueForMaps(item);
+  const query = [venue.name, venue.metro && `м. ${venue.metro}`, venue.address]
     .filter(Boolean)
     .join(", ");
 
@@ -69,6 +73,7 @@ export function ScheduleInfoStrip({
   const teacherName = teacherDisplayName(item.teacherName);
   const dateLabel = splitDateLabel(item.shortDateLabel);
   const denseDateLabel = item.shortDateLabel.replace(/\s+\(.+\)$/, "");
+  const venueShortName = resolveVenueShortName(item.venue);
 
   const fullStrip = (
     <div
@@ -88,17 +93,13 @@ export function ScheduleInfoStrip({
             href={buildVenueSiteHref(item.venue)}
             className="rounded-sm transition hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            {item.venue.name}
+            {venueShortName}
           </Link>
-          {item.venue.metro ? (
-            <span
-              className={cn(
-                "text-primary/75 leading-none",
-                compact ? "text-[10px]" : "text-[11px]",
-              )}
-            >
-              м. {item.venue.metro}
-            </span>
+          {item.venue.metro && item.venue.metro !== "—" ? (
+            <MetroLabel
+              metro={item.venue.metro}
+              className={cn("text-primary/90", compact ? "text-[10px]" : "text-[11px]")}
+            />
           ) : null}
         </div>
         <a
@@ -177,7 +178,7 @@ export function ScheduleInfoStrip({
               href={buildVenueSiteHref(item.venue)}
               className="rounded-sm leading-snug transition hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              {item.venue.name}
+              {venueShortName}
             </Link>
           </span>
           <span className="inline-flex items-center gap-1.5 text-foreground">

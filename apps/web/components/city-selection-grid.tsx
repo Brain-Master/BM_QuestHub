@@ -4,22 +4,12 @@ import { ArrowRight, BookOpen, Building2, Users, UsersRound } from "lucide-react
 
 import { buttonVariants } from "@/components/ui/button";
 import type { CityCard } from "@/lib/sites/city-card";
+import { pluralizeRu } from "@/lib/i18n/pluralize-ru";
 import { cn } from "@/lib/utils";
 
 type Props = {
   cities: CityCard[];
 };
-
-function pluralize(
-  count: number,
-  forms: [string, string, string],
-): string {
-  const mod10 = count % 10;
-  const mod100 = count % 100;
-  if (mod10 === 1 && mod100 !== 11) return forms[0];
-  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return forms[1];
-  return forms[2];
-}
 
 function CityStat({
   icon: Icon,
@@ -80,28 +70,28 @@ function CityCardView({ city }: { city: CityCard }) {
             <CityStat
               icon={BookOpen}
               value={city.courseCount}
-              label={pluralize(city.courseCount, ["курс", "курса", "курсов"])}
+              label={pluralizeRu(city.courseCount, ["курс", "курса", "курсов"])}
             />
           </li>
           <li>
             <CityStat
               icon={Building2}
               value={city.siteCount}
-              label={pluralize(city.siteCount, ["площадка", "площадки", "площадок"])}
+              label={pluralizeRu(city.siteCount, ["площадка", "площадки", "площадок"])}
             />
           </li>
           <li>
             <CityStat
               icon={UsersRound}
               value={city.groupCount}
-              label={pluralize(city.groupCount, ["группа", "группы", "групп"])}
+              label={pluralizeRu(city.groupCount, ["группа", "группы", "групп"])}
             />
           </li>
           <li>
             <CityStat
               icon={Users}
               value={city.participantCount}
-              label={pluralize(city.participantCount, [
+              label={pluralizeRu(city.participantCount, [
                 "участник",
                 "участника",
                 "участников",
@@ -113,7 +103,7 @@ function CityCardView({ city }: { city: CityCard }) {
         <div className="mt-auto flex items-center justify-between gap-3 border-white/10 border-t pt-4">
           <p className="text-muted-foreground text-xs">
             {city.siteCount}{" "}
-            {pluralize(city.siteCount, ["площадка", "площадки", "площадок"])}
+            {pluralizeRu(city.siteCount, ["площадка", "площадки", "площадок"])}
           </p>
           <Link
             href={`/sites?city=${encodeURIComponent(city.slug)}`}

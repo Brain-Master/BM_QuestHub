@@ -28,6 +28,7 @@ export function routeSlugsForSchoolScope(scopeSlug) {
   const aliases = [scopeSlug];
   const short = scopeSlug.match(/^school-(.+)$/)?.[1];
   if (short) aliases.push(short);
+  if (scopeSlug === "mduc-ekt") aliases.push("school-mduc-ekt");
   return aliases;
 }
 

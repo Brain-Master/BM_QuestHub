@@ -9,6 +9,7 @@ import { ScheduleStatusBadge } from "@/components/schedule-status-badge";
 import { ScheduleTariffList } from "@/components/schedule-tariff-list";
 import { Badge } from "@/components/ui/badge";
 import type { ScheduleBoardItem } from "@/lib/offers/schedule-board";
+import { resolveScheduleVenueForMaps } from "@/lib/offers/schedule-location";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -44,7 +45,8 @@ function teacherDisplayName(name: string | null): string {
 }
 
 function yandexMapsHref(item: ScheduleBoardItem): string {
-  const query = [item.venue.name, item.venue.metro && `м. ${item.venue.metro}`, item.venue.address]
+  const venue = resolveScheduleVenueForMaps(item);
+  const query = [venue.name, venue.metro && `м. ${venue.metro}`, venue.address]
     .filter(Boolean)
     .join(", ");
 

@@ -1,9 +1,9 @@
 {
   "version": 2,
-  "generatedAt": "2026-05-29T15:12:17.209Z",
+  "generatedAt": "2026-05-29T20:14:13.532Z",
   "source": "google_sheet_cold",
   "integrity": {
-    "contentHash": "sha256:0d152567f457bf7b1eb98a50387dce5f09ed417922db8800e55abf1a25002f58"
+    "contentHash": "sha256:5f9eadd34982393a243d21c6a2bd44c5857220e347dad7fc8e53b6f353e3d7d1"
   },
   "venues": [
     {
@@ -20,7 +20,24 @@
       ],
       "entranceNote": "Адрес базы BrainMaster подтверждаем при записи на конкретную смену.",
       "contactNote": "Для открытых городских смен детали локации зависят от программы и даты.",
-      "photos": [],
+      "photos": [
+        {
+          "url": "media/venues/photos/bm-base-moscow/01.webp",
+          "alt": "База BrainMaster (Москва)"
+        },
+        {
+          "url": "media/venues/photos/bm-base-moscow/02.webp",
+          "alt": "База BrainMaster (Москва)"
+        },
+        {
+          "url": "media/venues/photos/bm-base-moscow/03.webp",
+          "alt": "База BrainMaster (Москва)"
+        },
+        {
+          "url": "media/venues/photos/bm-base-moscow/04.webp",
+          "alt": "База BrainMaster (Москва)"
+        }
+      ],
       "listedOnSites": true,
       "logoUrl": "media/venues/logos/bm-base-moscow.webp"
     },
@@ -40,7 +57,24 @@
       ],
       "entranceNote": "Перед стартом смены подтвердим вход, место встречи и кабинет в корпусе.",
       "contactNote": "Точный кабинет и порядок прохода отправляем родителям перед началом смены.",
-      "photos": [],
+      "photos": [
+        {
+          "url": "media/venues/photos/school-1212-yasenevo/01.webp",
+          "alt": "ГБОУ Школа №1212"
+        },
+        {
+          "url": "media/venues/photos/school-1212-yasenevo/02.webp",
+          "alt": "ГБОУ Школа №1212"
+        },
+        {
+          "url": "media/venues/photos/school-1212-yasenevo/03.webp",
+          "alt": "ГБОУ Школа №1212"
+        },
+        {
+          "url": "media/venues/photos/school-1212-yasenevo/04.webp",
+          "alt": "ГБОУ Школа №1212"
+        }
+      ],
       "listedOnSites": true,
       "schoolScopeSlug": "school-1212",
       "logoUrl": "media/venues/logos/school-1212.webp"
@@ -61,7 +95,24 @@
       ],
       "entranceNote": "Перед стартом смены подтвердим вход, место встречи и кабинет в корпусе.",
       "contactNote": "Точный кабинет и порядок прохода отправляем родителям перед началом смены.",
-      "photos": [],
+      "photos": [
+        {
+          "url": "media/venues/photos/school-1383-verkhnie-likhobory/01.webp",
+          "alt": "Школа №1383"
+        },
+        {
+          "url": "media/venues/photos/school-1383-verkhnie-likhobory/02.webp",
+          "alt": "Школа №1383"
+        },
+        {
+          "url": "media/venues/photos/school-1383-verkhnie-likhobory/03.webp",
+          "alt": "Школа №1383"
+        },
+        {
+          "url": "media/venues/photos/school-1383-verkhnie-likhobory/04.webp",
+          "alt": "Школа №1383"
+        }
+      ],
       "listedOnSites": true,
       "schoolScopeSlug": "school-1383",
       "logoUrl": "media/venues/logos/school-1383.webp"
@@ -82,7 +133,24 @@
       ],
       "entranceNote": "Перед стартом смены подтвердим вход, место встречи и кабинет в корпусе.",
       "contactNote": "Точный кабинет и порядок прохода отправляем родителям перед началом смены.",
-      "photos": [],
+      "photos": [
+        {
+          "url": "media/venues/photos/school-1517-narodnoe-opolchenie/01.webp",
+          "alt": "Школа №1517"
+        },
+        {
+          "url": "media/venues/photos/school-1517-narodnoe-opolchenie/02.webp",
+          "alt": "Школа №1517"
+        },
+        {
+          "url": "media/venues/photos/school-1517-narodnoe-opolchenie/03.webp",
+          "alt": "Школа №1517"
+        },
+        {
+          "url": "media/venues/photos/school-1517-narodnoe-opolchenie/04.webp",
+          "alt": "Школа №1517"
+        }
+      ],
       "listedOnSites": true,
       "schoolScopeSlug": "school-1517",
       "logoUrl": "media/venues/logos/school-1517.webp"
@@ -101,7 +169,24 @@
       ],
       "entranceNote": "Перед стартом смены подтвердим вход, место встречи и кабинет в корпусе.",
       "contactNote": "Точный кабинет и порядок прохода отправляем родителям перед началом смены.",
-      "photos": [],
+      "photos": [
+        {
+          "url": "media/venues/photos/school-17-belyaevo/01.webp",
+          "alt": "Школа №17"
+        },
+        {
+          "url": "media/venues/photos/school-17-belyaevo/02.webp",
+          "alt": "Школа №17"
+        },
+        {
+          "url": "media/venues/photos/school-17-belyaevo/03.webp",
+          "alt": "Школа №17"
+        },
+        {
+          "url": "media/venues/photos/school-17-belyaevo/04.webp",
+          "alt": "Школа №17"
+        }
+      ],
       "listedOnSites": true,
       "schoolScopeSlug": "school-17",
       "logoUrl": "media/venues/logos/school-17.webp"
@@ -122,7 +207,24 @@
       ],
       "entranceNote": "Перед стартом смены подтвердим вход, место встречи и кабинет в корпусе.",
       "contactNote": "Точный кабинет и порядок прохода отправляем родителям перед началом смены.",
-      "photos": [],
+      "photos": [
+        {
+          "url": "media/venues/photos/school-2103-yasenevo/01.webp",
+          "alt": "Школа №2103"
+        },
+        {
+          "url": "media/venues/photos/school-2103-yasenevo/02.webp",
+          "alt": "Школа №2103"
+        },
+        {
+          "url": "media/venues/photos/school-2103-yasenevo/03.webp",
+          "alt": "Школа №2103"
+        },
+        {
+          "url": "media/venues/photos/school-2103-yasenevo/04.webp",
+          "alt": "Школа №2103"
+        }
+      ],
       "listedOnSites": true,
       "schoolScopeSlug": "school-2103",
       "logoUrl": "media/venues/logos/school-2103.webp"
@@ -143,7 +245,24 @@
       ],
       "entranceNote": "Перед стартом смены подтвердим вход, место встречи и кабинет в корпусе.",
       "contactNote": "Точный кабинет и порядок прохода отправляем родителям перед началом смены.",
-      "photos": [],
+      "photos": [
+        {
+          "url": "media/venues/photos/school-875-yugo-zapadnaya/01.webp",
+          "alt": "Школа №875"
+        },
+        {
+          "url": "media/venues/photos/school-875-yugo-zapadnaya/02.webp",
+          "alt": "Школа №875"
+        },
+        {
+          "url": "media/venues/photos/school-875-yugo-zapadnaya/03.webp",
+          "alt": "Школа №875"
+        },
+        {
+          "url": "media/venues/photos/school-875-yugo-zapadnaya/04.webp",
+          "alt": "Школа №875"
+        }
+      ],
       "listedOnSites": true,
       "schoolScopeSlug": "school-875",
       "logoUrl": "media/venues/logos/school-875.webp"
@@ -164,7 +283,24 @@
       ],
       "entranceNote": "Перед стартом смены подтвердим вход, место встречи и кабинет в корпусе.",
       "contactNote": "Точный кабинет и порядок прохода отправляем родителям перед началом смены.",
-      "photos": [],
+      "photos": [
+        {
+          "url": "media/venues/photos/school-937-orekhovo/01.webp",
+          "alt": "Школа №937"
+        },
+        {
+          "url": "media/venues/photos/school-937-orekhovo/02.webp",
+          "alt": "Школа №937"
+        },
+        {
+          "url": "media/venues/photos/school-937-orekhovo/03.webp",
+          "alt": "Школа №937"
+        },
+        {
+          "url": "media/venues/photos/school-937-orekhovo/04.webp",
+          "alt": "Школа №937"
+        }
+      ],
       "listedOnSites": true,
       "schoolScopeSlug": "school-937",
       "logoUrl": "media/venues/logos/school-937.webp"
@@ -177,7 +313,7 @@
       "address": "ул. Одесская, 12А",
       "metro": "Каховская",
       "city": "moscow",
-      "district": "Черёмушки",
+      "district": "Зюзино",
       "latitude": 55.6539,
       "longitude": 37.5984,
       "directions": [
@@ -187,7 +323,7 @@
       "contactNote": "Точный кабинет и порядок прохода отправляем родителям перед началом смены.",
       "photos": [],
       "listedOnSites": true,
-      "schoolScopeSlug": "school-mduc-ekt",
+      "schoolScopeSlug": "mduc-ekt",
       "logoUrl": "media/venues/logos/school-mduc-ekt.webp"
     },
     {
@@ -208,7 +344,7 @@
       "contactNote": "Точный кабинет и порядок прохода отправляем родителям перед началом смены.",
       "photos": [],
       "listedOnSites": true,
-      "schoolScopeSlug": "school-mduc-ekt",
+      "schoolScopeSlug": "mduc-ekt",
       "logoUrl": "media/venues/logos/school-mduc-ekt.webp"
     }
   ]

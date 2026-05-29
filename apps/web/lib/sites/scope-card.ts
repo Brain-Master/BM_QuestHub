@@ -1,7 +1,9 @@
 import type { SchoolScope } from "@/lib/offers/agenda";
 import type { Quest, Venue, World } from "@/lib/schemas";
+import { pluralizeRuLabel } from "@/lib/i18n/pluralize-ru";
 import { buildAgendaItems } from "@/lib/offers/agenda";
 import { filterQuestsForSchool } from "@/lib/school-scope";
+import { resolveCampusHeadline } from "@/lib/sites/campus-label";
 import { DEFAULT_CITY, getCityLabel } from "@/lib/sites/city-card";
 
 export { DEFAULT_CITY };
@@ -9,6 +11,7 @@ export { DEFAULT_CITY };
 export type SiteCampus = {
   slug: string;
   name: string;
+  headline: string;
   address: string;
   metro?: string;
   district?: string;
@@ -23,6 +26,7 @@ export type SiteCampus = {
 export type SiteScopeCard = {
   slug: string;
   name: string;
+  fullName: string;
   routeSlugs: string[];
   type: Venue["type"];
   city: string;
@@ -59,7 +63,9 @@ function resolveLocationLabel(venues: Venue[]): string {
 
 function resolveLocationSummary(venues: Venue[], campusCount: number): string {
   const location = resolveLocationLabel(venues);
-  if (campusCount > 1) return `${location} · ${campusCount} корпусов`;
+  if (campusCount > 1) {
+    return `${location} · ${pluralizeRuLabel(campusCount, ["корпус", "корпуса", "корпусов"])}`;
+  }
 
   const [venue] = venues;
   if (!venue) return location;
@@ -91,6 +97,7 @@ export function buildSiteScopeCards(params: {
       const campuses = scope.venues.map((venue) => ({
         slug: venue.slug,
         name: venue.name,
+        headline: resolveCampusHeadline(scope.venues, venue),
         address: venue.address,
         metro: venue.metro,
         district: venue.district,
@@ -114,6 +121,7 @@ export function buildSiteScopeCards(params: {
       return {
         slug: scope.slug,
         name: primaryVenue?.displayName ?? scope.name,
+        fullName: primaryVenue?.name ?? scope.name,
         routeSlugs: scope.routeSlugs,
         type: primaryVenue?.type ?? "school",
         city,

@@ -147,6 +147,7 @@ function routeSlugsForSchoolScope(slug: string): string[] {
   const aliases = [slug];
   const short = slug.match(/^school-(.+)$/)?.[1];
   if (short) aliases.push(short);
+  if (slug === "mduc-ekt") aliases.push("school-mduc-ekt");
   return aliases;
 }
 

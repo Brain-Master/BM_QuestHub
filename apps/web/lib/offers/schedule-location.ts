@@ -1,5 +1,6 @@
 import type { AgendaOfferItem } from "@/lib/offers/agenda";
 import type { ScheduleCard, Venue } from "@/lib/schemas";
+import { resolveVenueShortName } from "@/lib/sites/venue-label";
 
 /** Address shown on schedule cards: Hot group row overrides cold venue when set. */
 export function resolveScheduleAddress(
@@ -25,7 +26,7 @@ export function resolveScheduleVenueForMaps(
 ): Pick<Venue, "name" | "metro" | "address"> {
   const address = resolveScheduleAddress(item.venue, item.offer.scheduleCard);
   return {
-    name: item.venue.name,
+    name: resolveVenueShortName(item.venue),
     metro: item.venue.metro,
     address,
   };

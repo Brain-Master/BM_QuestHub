@@ -5,6 +5,12 @@ import {
 } from "@/lib/media/design-pack-slots";
 import type { MediaIngestManifest } from "@/lib/media/manifest";
 import { readMediaIngestManifest } from "@/lib/media/manifest";
+import {
+  resolveSchoolCampusLocations,
+  type SchoolCampusLocation,
+} from "@/lib/sites/campus-label";
+
+export type { SchoolCampusLocation };
 
 export type SchoolLandingMedia = {
   videoFileUrl?: string;
@@ -97,13 +103,25 @@ export function resolveSchoolLandingMedia(
 }
 
 export function resolveSchoolLocationSummary(venues: readonly Venue[]): string {
-  const [venue] = venues;
-  if (!venue) return "";
+  const locations = resolveSchoolCampusLocations(venues);
+  if (locations.length === 0) return "";
+  const includeHeadline = locations.length > 1;
+  return locations
+    .map((location) => formatCampusLocationLine(location, includeHeadline))
+    .join("; ");
+}
 
+export { resolveSchoolCampusLocations };
+
+function formatCampusLocationLine(
+  location: SchoolCampusLocation,
+  includeHeadline: boolean,
+): string {
   const parts = [
-    venue.metro ? `м. ${venue.metro}` : undefined,
-    venue.district,
+    includeHeadline ? location.headline : undefined,
+    location.metro ? `м. ${location.metro}` : undefined,
+    location.district,
   ].filter(Boolean);
 
-  return parts.join(" · ");
+  return parts.length > 0 ? parts.join(" · ") : location.headline;
 }

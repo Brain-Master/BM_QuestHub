@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import {
   CalendarDays,
   Camera,
@@ -14,11 +15,19 @@ import {
 } from "lucide-react";
 
 import { CommunityConnectPanel } from "@/components/community-connect-panel";
+import { LiveAgenda } from "@/components/live-agenda";
+import { MetroLabel } from "@/components/metro-label";
 import { PortalHero } from "@/components/portal-hero";
 import { RememberSchoolOnVisit } from "@/components/remember-school-on-visit";
 import { buttonVariants } from "@/components/ui/button";
 import { communityConnectCopy } from "@/lib/community-connect-copy";
-import { loadQuests, loadVenues, loadWorlds } from "@/lib/content/load";
+import {
+  loadQuests,
+  loadQuestsForSchoolAgenda,
+  loadScheduleSnapshotGeneratedAt,
+  loadVenues,
+  loadWorlds,
+} from "@/lib/content/load";
 import { resolvePublicMediaUrl } from "@/lib/media/public-media-url";
 import { getSchoolScopes, resolveSchoolScope } from "@/lib/offers/agenda";
 import { buildSiteScopeCards, type SiteCampus } from "@/lib/sites/scope-card";
@@ -35,15 +44,6 @@ type Props = {
 
 function hasCoordinates(campus: SiteCampus): boolean {
   return typeof campus.latitude === "number" && typeof campus.longitude === "number";
-}
-
-function campusTransitLabel(campus: SiteCampus): string | undefined {
-  const parts = [
-    campus.metro && campus.metro !== "—" ? `м. ${campus.metro}` : undefined,
-    campus.district,
-  ].filter(Boolean);
-
-  return parts.length > 0 ? parts.join(" · ") : undefined;
 }
 
 function campusAccessSteps(campus: SiteCampus): string[] {
@@ -91,19 +91,24 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const school = resolveSchoolScope(venues, schoolSlug);
   if (!school) return { title: "Площадка не найдена" };
 
+  const fullName = school.venues[0]?.name ?? school.name;
+
   return {
-    title: `Площадка · ${school.name}`,
+    title: `Площадка · ${fullName}`,
     description: `Адрес, карта и расписание BrainMaster для площадки ${school.name}.`,
   };
 }
 
 export default async function SchoolPage({ params }: Props) {
   const { school: schoolSlug } = await params;
-  const [quests, venues, worlds] = await Promise.all([
-    loadQuests(),
-    loadVenues(),
-    loadWorlds(),
-  ]);
+  const [quests, venues, worlds, agendaQuests, initialSnapshotGeneratedAt] =
+    await Promise.all([
+      loadQuests(),
+      loadVenues(),
+      loadWorlds(),
+      loadQuestsForSchoolAgenda(),
+      loadScheduleSnapshotGeneratedAt(),
+    ]);
   const school = resolveSchoolScope(venues, schoolSlug);
   if (!school) notFound();
 
@@ -115,28 +120,27 @@ export default async function SchoolPage({ params }: Props) {
   })[0];
   if (!site) notFound();
 
-  const primaryCampus =
-    site.campuses.find((campus) => hasCoordinates(campus)) ?? site.campuses[0];
-  if (!primaryCampus) notFound();
-
   const mapSrc = buildYandexMapWidgetSrc({
     siteName: site.name,
-    campus: primaryCampus,
+    campuses: site.campuses,
   });
   const mapHref = buildYandexMapsHref({
     siteName: site.name,
-    campus: primaryCampus,
+    campuses: site.campuses,
   });
   const siteQuests = filterQuestsForSchool(quests, venues, school.slug);
   const sitePhotos = uniqueSitePhotos(site);
+  const heroEyebrow =
+    site.name !== site.fullName ? site.name : "Площадка BrainMaster";
+  const mapCampusCount = site.campuses.filter((campus) => hasCoordinates(campus)).length;
 
   return (
     <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:py-10">
       <RememberSchoolOnVisit slug={school.slug} name={school.name} />
 
       <PortalHero
-        eyebrow="Площадка BrainMaster"
-        title={site.name}
+        eyebrow={heroEyebrow}
+        title={site.fullName}
         description={`${site.locationSummary}. Посмотрите адрес, откройте карту и перейдите к расписанию или курсам этой площадки.`}
         aside={
           <div className="grid gap-3 rounded-3xl border border-white/10 bg-black/20 p-4 text-sm backdrop-blur">
@@ -203,8 +207,10 @@ export default async function SchoolPage({ params }: Props) {
 
           <div className="mt-6 grid gap-3">
             {site.campuses.map((campus) => {
-              const transit = campusTransitLabel(campus);
-              const campusHref = buildYandexMapsHref({ siteName: site.name, campus });
+              const campusHref = buildYandexMapsHref({
+                siteName: site.name,
+                campuses: [campus],
+              });
 
               return (
                 <article
@@ -213,13 +219,25 @@ export default async function SchoolPage({ params }: Props) {
                 >
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                     <div className="min-w-0">
-                      <p className="font-medium text-foreground">{campus.name}</p>
-                      <p className="mt-1 text-muted-foreground text-sm leading-relaxed">
-                        {campus.address}
-                      </p>
-                      {transit ? (
+                      <p className="font-medium text-foreground">{campus.headline}</p>
+                      {campus.headline !== campus.address ? (
+                        <p className="mt-1 text-muted-foreground text-sm leading-relaxed">
+                          {campus.address}
+                        </p>
+                      ) : null}
+                      {campus.metro && campus.metro !== "—" ? (
+                        <p className="mt-2 flex flex-wrap items-center gap-x-1.5 text-primary text-xs leading-relaxed">
+                          <MetroLabel metro={campus.metro} />
+                          {campus.district ? (
+                            <>
+                              <span aria-hidden>·</span>
+                              <span>{campus.district}</span>
+                            </>
+                          ) : null}
+                        </p>
+                      ) : campus.district ? (
                         <p className="mt-2 text-primary text-xs leading-relaxed">
-                          {transit}
+                          {campus.district}
                         </p>
                       ) : null}
                     </div>
@@ -278,8 +296,9 @@ export default async function SchoolPage({ params }: Props) {
                 Карта проезда
               </h2>
               <p className="mt-1 text-muted-foreground text-sm leading-relaxed">
-                Виджет ведет к основному корпусу. Для остальных корпусов используйте
-                кнопку «Маршрут» в карточке адреса.
+                {mapCampusCount > 1
+                  ? "На карте отмечены все корпуса площадки. Для маршрута до конкретного здания используйте кнопку «Маршрут» в карточке адреса."
+                  : "Виджет ведет к адресу площадки. При необходимости откройте полную карту или постройте маршрут."}
               </p>
             </div>
           </div>
@@ -354,13 +373,6 @@ export default async function SchoolPage({ params }: Props) {
 
           <div className="mt-5 flex flex-wrap gap-2">
             <Link
-              href={`/sites/${site.slug}/agenda`}
-              className={cn(buttonVariants({ variant: "default", size: "sm" }), "gap-2")}
-            >
-              <CalendarDays className="size-4" aria-hidden />
-              Смотреть расписание
-            </Link>
-            <Link
               href={`/sites/${site.slug}/catalog`}
               className={cn(
                 buttonVariants({ variant: "outline", size: "sm" }),
@@ -427,6 +439,36 @@ export default async function SchoolPage({ params }: Props) {
             </div>
           )}
         </aside>
+      </section>
+
+      <section className="mt-6 rounded-[1.5rem] border border-white/10 bg-card/50 p-5 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)] backdrop-blur-md sm:p-6">
+        <div className="flex items-start gap-3">
+          <span className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-primary/15 text-primary">
+            <CalendarDays className="size-5" aria-hidden />
+          </span>
+          <div>
+            <h2 className="font-heading text-2xl font-semibold tracking-tight">
+              Расписание
+            </h2>
+            <p className="mt-2 max-w-2xl text-muted-foreground text-sm leading-relaxed">
+              Открытые смены на этой площадке: корпус, адрес, даты, время и доступность мест.
+            </p>
+          </div>
+        </div>
+
+        <Suspense fallback={null}>
+          <LiveAgenda
+            baseQuests={agendaQuests}
+            venues={venues}
+            worlds={worlds}
+            initialSnapshotGeneratedAt={initialSnapshotGeneratedAt}
+            schoolSlug={school.slug}
+            schoolName={school.name}
+            allAgendaHref="/agenda"
+            sitesHref="/sites"
+            hideCommunityPanel
+          />
+        </Suspense>
       </section>
 
       <CommunityConnectPanel

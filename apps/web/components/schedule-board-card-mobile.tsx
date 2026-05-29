@@ -12,6 +12,7 @@ import type {
   ScheduleBoardVariant,
 } from "@/lib/offers/schedule-board";
 import { buildVenueSiteHref } from "@/lib/sites/site-route";
+import { resolveVenueShortName } from "@/lib/sites/venue-label";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -145,7 +146,7 @@ export function ScheduleBoardCardMobile({
                   href={buildVenueSiteHref(item.venue)}
                   className="truncate rounded-sm transition hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
-                  {item.venue.name}
+                  {resolveVenueShortName(item.venue)}
                 </Link>
               </span>
             ) : null}
