@@ -17,13 +17,13 @@ function envS3BaseUrl(): string | null {
 
 /**
  * Public base from NEXT_PUBLIC_S3_PUBLIC_BASE_URL (no trailing slash in env is ok).
- * In `next dev`, falls back to {@link DEFAULT_PUBLIC_S3_BASE_URL} so media matches production.
+ * Falls back to {@link DEFAULT_PUBLIC_S3_BASE_URL} when unset so static export never
+ * resolves `media/...` to site-relative `/media/...` (SPA HTML instead of WebP).
  */
 export function publicS3BaseUrl(): string | null {
   const fromEnv = envS3BaseUrl();
   if (fromEnv) return fromEnv;
-  if (process.env.NODE_ENV === "development") return DEFAULT_PUBLIC_S3_BASE_URL;
-  return null;
+  return DEFAULT_PUBLIC_S3_BASE_URL;
 }
 
 /**

@@ -1,14 +1,14 @@
 {
   "version": 2,
-  "generatedAt": "2026-05-21T13:03:36.661Z",
+  "generatedAt": "2026-05-29T15:12:17.209Z",
   "source": "google_sheet_cold",
   "integrity": {
-    "contentHash": "sha256:2a56ab90c854a3632e7fbd857e989ace7b302088be93574ae1d7cbbfe0841904"
+    "contentHash": "sha256:5967c54698f495bb5fa7a30e30e9d6c6dd994f3381bc2e535e9ef120af597af7"
   },
   "course": {
     "slug": "cyber-rhythm",
     "worldSlug": "cyber-rhythm",
-    "title": "КиберРитм",
+    "title": "КиберРитм: Инженерия Звука",
     "tagline": "Узнай, как рождается звук — и собери свою Bluetooth-колонку!",
     "catalogTagline": "Откуда берётся звук? Не из колонки — а из схемы, которую собрал сам. За пять дней — от первого провода до Bluetooth-колонки в руках!",
     "ageLabel": "1-6 классы",

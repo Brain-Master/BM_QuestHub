@@ -15,6 +15,10 @@ on:
 jobs:
   sync:
     runs-on: ubuntu-latest
+    env:
+      GOOGLE_DRIVE_AUTH: service_account
+      GOOGLE_MEDIA_DRIVE_FOLDER_ID: ${{ vars.GOOGLE_MEDIA_DRIVE_FOLDER_ID }}
+      GOOGLE_MEDIA_DRIVE_INBOX_SUBFOLDER: Sync
     steps:
       - uses: actions/checkout@v4
 
@@ -32,6 +36,11 @@ jobs:
         run: npm ci --omit=dev
         working-directory: scripts
 
+      - name: Pull media inbox from Drive
+        env:
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+        run: node scripts/pull-media-inbox-from-drive.mjs
+
       - name: Sync from Google Sheets
         env:
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
@@ -41,7 +50,6 @@ jobs:
           GOOGLE_SHEETS_COLD_SPREADSHEET_ID: ${{ vars.GOOGLE_SHEETS_COLD_SPREADSHEET_ID }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          SKIP_MEDIA_INGEST: "1"
         run: node scripts/run-sheet-sync.mjs ${{ inputs.tier }}
 
       - name: Validate snapshots
@@ -54,7 +62,7 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           S3_ENDPOINT: ${{ vars.S3_ENDPOINT }}
-          AWS_DEFAULT_REGION: ru-1
+          AWS_DEFAULT_REGION: ru-central1
         run: node scripts/run-s3-sync.mjs data-hot
 
       - name: Upload cold catalog to S3
@@ -64,7 +72,7 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           S3_ENDPOINT: ${{ vars.S3_ENDPOINT }}
-          AWS_DEFAULT_REGION: ru-1
+          AWS_DEFAULT_REGION: ru-central1
         run: node scripts/run-s3-sync.mjs data-cold
 
       - name: Upload media to S3 (cold only)
@@ -74,7 +82,7 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           S3_ENDPOINT: ${{ vars.S3_ENDPOINT }}
-          AWS_DEFAULT_REGION: ru-1
+          AWS_DEFAULT_REGION: ru-central1
         run: node scripts/run-s3-sync.mjs media
 
       - name: Timeweb deploy (cold only)

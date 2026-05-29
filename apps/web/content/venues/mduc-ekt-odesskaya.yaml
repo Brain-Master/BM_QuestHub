@@ -1,0 +1,19 @@
+slug: mduc-ekt-odesskaya
+name: ГБОУДО «Московский детско-юношеский центр экологии, краеведения и туризма»
+displayName: МДЮЦ ЭКТ
+type: school
+address: ул. Одесская, 12А
+metro: Каховская
+city: moscow
+latitude: 55.6539
+longitude: 37.5984
+district: Черёмушки
+entranceNote: Перед стартом смены подтвердим вход, место встречи и кабинет в корпусе.
+directions:
+  - Постройте маршрут до ул. Одесская, 12А и ориентируйтесь на главный вход.
+  - На входе скажите, что вы на занятия BrainMaster.
+  - Дождитесь координатора BrainMaster в согласованной зоне встречи.
+contactNote: Точный кабинет и порядок прохода отправляем родителям перед началом смены.
+photos: []
+schoolScopeSlug: school-mduc-ekt
+listedOnSites: true

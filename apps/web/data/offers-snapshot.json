@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-05-25T20:49:42.357Z",
+  "generatedAt": "2026-05-29T15:43:02.124Z",
   "source": "google_sheet",
   "offersByQuest": {
     "mekhvarium-laboratoriya-kineticheskih-monstrov": [
@@ -83,7 +83,7 @@
         "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/847271",
         "includedNote": "Формат интенсива. Контакт: Халаджан Г.А.\n\nВозраст: 6–13 лет",
         "sheetStatus": "Идёт набор",
-        "enrolled": 3,
+        "enrolled": 5,
         "maxCapacity": 20,
         "scheduleCard": {
           "displayTitle": "Мехвариум: Лаборатория Инженерных Монстров",
@@ -127,7 +127,7 @@
               "ageLabel": "6–13 лет",
               "mosRuCode": "2448205",
               "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/847271",
-              "enrolled": 3,
+              "enrolled": 5,
               "registrationChannel": "mos_ru",
               "allowPreliminaryRegistration": true
             }
@@ -158,7 +158,7 @@
         "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/847888",
         "includedNote": "Формат интенсива.\n\nВозраст: 6–15 лет\n\nКод карточки mos.ru: 2448595",
         "sheetStatus": "Идёт набор",
-        "enrolled": 9,
+        "enrolled": 15,
         "maxCapacity": 15,
         "scheduleCard": {
           "displayTitle": "Мехвариум: Лаборатория Кинетических Монстров",
@@ -192,9 +192,70 @@
               "ageLabel": "6–15 лет",
               "mosRuCode": "2448595",
               "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/847888",
-              "enrolled": 9,
+              "enrolled": 15,
               "registrationChannel": "mos_ru",
               "allowPreliminaryRegistration": true
+            }
+          ],
+          "media": {
+            "hero": {
+              "url": "media/quests/mekhvarium-laboratoriya-kineticheskih-monstrov/hero.webp",
+              "alt": "Мехвариум: Лаборатория Кинетических Монстров"
+            },
+            "compact": {
+              "url": "media/quests/mekhvarium-laboratoriya-kineticheskih-monstrov/hero.webp",
+              "alt": "Мехвариум: Лаборатория Кинетических Монстров"
+            }
+          }
+        }
+      },
+      {
+        "id": "sheet:mekhvarium-laboratoriya-kineticheskih-monstrov:mduc-ekt-mosfilmovskaya:2026-06-15:2026-06-19",
+        "venueSlug": "mduc-ekt-mosfilmovskaya",
+        "shiftLabel": "Мехвариум: Лаборатория Кинетических Монстров · МДЮЦ ЭКТ",
+        "startDate": "2026-06-15",
+        "endDate": "2026-06-19",
+        "startTime": "10:00",
+        "endTime": "13:30",
+        "dateRange": "15.06.2026 — 19.06.2026",
+        "daySchedule": "Ежедневно: 10:00–13:30",
+        "priceLabel": "12 950 ₽",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/853150",
+        "includedNote": "Возраст: 6–15 лет\n\nКод карточки mos.ru: 2451655",
+        "sheetStatus": "Идёт набор",
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "Мехвариум: Лаборатория Кинетических Монстров",
+          "tags": [
+            "Офлайн",
+            "Интенсив (полдня)"
+          ],
+          "addressOverride": "ул. Мосфильмовская, 55к1",
+          "programNameH1": "Мехвариум",
+          "programNameH2": "Лаборатория Кинетических Монстров",
+          "programFilterLabel": "Мехвариум: Лаборатория Кинетических Монстров",
+          "ageLabel": "6–15 лет",
+          "formatType": "Интенсив (полдня)",
+          "formatTime": "Пн-Пт, 10:00 – 13:30",
+          "formatNote": "Электроника и расходники включены. Камерный формат: до 12 человек.",
+          "mosRuCode": "2451655",
+          "status": "Идёт набор",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "mduc-ekt-mosfilmovskaya:2026-06-15:интенсив-полдня",
+              "type": "Интенсив (полдня)",
+              "time": "Пн-Пт, 10:00 – 13:30",
+              "priceLabel": "12 950 ₽",
+              "note": "Электроника и расходники включены. Камерный формат: до 12 человек.",
+              "ageLabel": "6–15 лет",
+              "mosRuCode": "2451655",
+              "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/853150",
+              "registrationChannel": "mos_ru",
+              "allowPreliminaryRegistration": false
             }
           ],
           "media": {
@@ -223,7 +284,7 @@
         "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/840243",
         "includedNote": "Формат полного дня. Питание (завтрак, обед, полдник).\n\nВозраст: 6–13 лет\n\nКод карточки mos.ru: 2440640",
         "sheetStatus": "Идёт набор",
-        "enrolled": 17,
+        "enrolled": 23,
         "maxCapacity": 20,
         "scheduleCard": {
           "displayTitle": "Мехвариум: Лаборатория Кинетических Монстров",
@@ -257,7 +318,7 @@
               "ageLabel": "6–13 лет",
               "mosRuCode": "2440640",
               "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/840243",
-              "enrolled": 17,
+              "enrolled": 23,
               "registrationChannel": "mos_ru",
               "allowPreliminaryRegistration": false
             }
@@ -288,7 +349,7 @@
         "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/841885",
         "includedNote": "Формат интенсива. Корпус ШО-3.\n\nВозраст: 7–15 лет\n\nКод карточки mos.ru: 2444383",
         "sheetStatus": "Идёт набор",
-        "enrolled": 2,
+        "enrolled": 10,
         "maxCapacity": 20,
         "scheduleCard": {
           "displayTitle": "Мехвариум: Лаборатория Кинетических Монстров",
@@ -323,7 +384,7 @@
               "ageLabel": "7–15 лет",
               "mosRuCode": "2444383",
               "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/841885",
-              "enrolled": 2,
+              "enrolled": 10,
               "registrationChannel": "mos_ru",
               "allowPreliminaryRegistration": false
             },
@@ -367,7 +428,7 @@
         "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/843884",
         "includedNote": "Укороченная смена (4 дня). Формат интенсива.\n\nВозраст: 6–15 лет\n\nКод карточки mos.ru: 2445956",
         "sheetStatus": "Идёт набор",
-        "enrolled": 3,
+        "enrolled": 5,
         "maxCapacity": 12,
         "scheduleCard": {
           "displayTitle": "Мехвариум: Мастерская Гидравлических Монстров",
@@ -401,7 +462,7 @@
               "ageLabel": "6–15 лет",
               "mosRuCode": "2445956",
               "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/843884",
-              "enrolled": 3,
+              "enrolled": 5,
               "registrationChannel": "mos_ru",
               "allowPreliminaryRegistration": true
             }
@@ -507,7 +568,7 @@
         "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/847913",
         "includedNote": "Формат интенсива.\n\nВозраст: 6–15 лет\n\nКод карточки mos.ru: 2448613",
         "sheetStatus": "Идёт набор",
-        "enrolled": 6,
+        "enrolled": 9,
         "maxCapacity": 15,
         "scheduleCard": {
           "displayTitle": "Мехвариум: Мастерская Гидравлических Монстров",
@@ -541,9 +602,70 @@
               "ageLabel": "6–15 лет",
               "mosRuCode": "2448613",
               "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/847913",
-              "enrolled": 6,
+              "enrolled": 9,
               "registrationChannel": "mos_ru",
               "allowPreliminaryRegistration": true
+            }
+          ],
+          "media": {
+            "hero": {
+              "url": "media/quests/mekhvarium-masterskaya-gidravlicheskih-monstrov/hero.webp",
+              "alt": "Мехвариум: Мастерская Гидравлических Монстров"
+            },
+            "compact": {
+              "url": "media/quests/mekhvarium-masterskaya-gidravlicheskih-monstrov/hero.webp",
+              "alt": "Мехвариум: Мастерская Гидравлических Монстров"
+            }
+          }
+        }
+      },
+      {
+        "id": "sheet:mekhvarium-masterskaya-gidravlicheskih-monstrov:mduc-ekt-mosfilmovskaya:2026-06-22:2026-06-26",
+        "venueSlug": "mduc-ekt-mosfilmovskaya",
+        "shiftLabel": "Мехвариум: Мастерская Гидравлических Монстров · МДЮЦ ЭКТ",
+        "startDate": "2026-06-22",
+        "endDate": "2026-06-26",
+        "startTime": "10:00",
+        "endTime": "13:30",
+        "dateRange": "22.06.2026 — 26.06.2026",
+        "daySchedule": "Ежедневно: 10:00–13:30",
+        "priceLabel": "12 950 ₽",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/853205",
+        "includedNote": "Возраст: 6–15 лет\n\nКод карточки mos.ru: 2451690",
+        "sheetStatus": "Идёт набор",
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "Мехвариум: Мастерская Гидравлических Монстров",
+          "tags": [
+            "Офлайн",
+            "Интенсив (полдня)"
+          ],
+          "addressOverride": "ул. Мосфильмовская, 55к1",
+          "programNameH1": "Мехвариум",
+          "programNameH2": "Мастерская Гидравлических Монстров",
+          "programFilterLabel": "Мехвариум: Мастерская Гидравлических Монстров",
+          "ageLabel": "6–15 лет",
+          "formatType": "Интенсив (полдня)",
+          "formatTime": "Пн-Пт, 10:00 – 13:30",
+          "formatNote": "Электроника и расходники включены. Камерный формат: до 12 человек.",
+          "mosRuCode": "2451690",
+          "status": "Идёт набор",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "mduc-ekt-mosfilmovskaya:2026-06-22:интенсив-полдня",
+              "type": "Интенсив (полдня)",
+              "time": "Пн-Пт, 10:00 – 13:30",
+              "priceLabel": "12 950 ₽",
+              "note": "Электроника и расходники включены. Камерный формат: до 12 человек.",
+              "ageLabel": "6–15 лет",
+              "mosRuCode": "2451690",
+              "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/853205",
+              "registrationChannel": "mos_ru",
+              "allowPreliminaryRegistration": false
             }
           ],
           "media": {
@@ -572,7 +694,7 @@
         "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/841892",
         "includedNote": "Укороченная смена (4 дня). Формат интенсива. Корпус ШО-3.\n\nВозраст: 7–15 лет\n\nКод карточки mos.ru: 2444393",
         "sheetStatus": "Идёт набор",
-        "enrolled": 1,
+        "enrolled": 5,
         "maxCapacity": 20,
         "scheduleCard": {
           "displayTitle": "Мехвариум: Мастерская Гидравлических Монстров",
@@ -607,7 +729,7 @@
               "ageLabel": "7–15 лет",
               "mosRuCode": "2444393",
               "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/841892",
-              "enrolled": 1,
+              "enrolled": 5,
               "registrationChannel": "mos_ru",
               "allowPreliminaryRegistration": false
             },
@@ -649,7 +771,7 @@
         "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/842914",
         "includedNote": "Укороченная смена (4 дня). Формат интенсива\n\nВозраст: 6–14 лет\n\nКод карточки mos.ru: 2445152",
         "sheetStatus": "Идёт набор",
-        "enrolled": 0,
+        "enrolled": 1,
         "maxCapacity": 15,
         "scheduleCard": {
           "displayTitle": "Мехвариум: Кинетические + Гидравлические Монстры",
@@ -683,7 +805,7 @@
               "ageLabel": "6–14 лет",
               "mosRuCode": "2445152",
               "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/842914",
-              "enrolled": 0,
+              "enrolled": 1,
               "registrationChannel": "mos_ru",
               "allowPreliminaryRegistration": true
             }
@@ -843,6 +965,67 @@
         }
       },
       {
+        "id": "sheet:minecraft-probuzhdenie-strazhey:mduc-ekt-odesskaya:2026-06-22:2026-06-26",
+        "venueSlug": "mduc-ekt-odesskaya",
+        "shiftLabel": "Minecraft: Пробуждение Стражей · МДЮЦ ЭКТ",
+        "startDate": "2026-06-22",
+        "endDate": "2026-06-26",
+        "startTime": "10:00",
+        "endTime": "13:30",
+        "dateRange": "22.06.2026 — 26.06.2026",
+        "daySchedule": "Ежедневно: 10:00–13:30",
+        "priceLabel": "12 950 ₽",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/853210",
+        "includedNote": "Возраст: 6–15 лет\n\nКод карточки mos.ru: 2451687",
+        "sheetStatus": "Идёт набор",
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "Minecraft: Пробуждение Стражей",
+          "tags": [
+            "Офлайн",
+            "Интенсив (полдня)"
+          ],
+          "addressOverride": "ул. Одесская, 12А",
+          "programNameH1": "Minecraft",
+          "programNameH2": "Пробуждение Стражей",
+          "programFilterLabel": "Minecraft: Пробуждение Стражей",
+          "ageLabel": "6–15 лет",
+          "formatType": "Интенсив (полдня)",
+          "formatTime": "Пн-Пт, 10:00 – 13:30",
+          "formatNote": "Электроника и расходники включены. Камерный формат: до 12 человек.",
+          "mosRuCode": "2451687",
+          "status": "Идёт набор",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "mduc-ekt-odesskaya:2026-06-22:интенсив-полдня",
+              "type": "Интенсив (полдня)",
+              "time": "Пн-Пт, 10:00 – 13:30",
+              "priceLabel": "12 950 ₽",
+              "note": "Электроника и расходники включены. Камерный формат: до 12 человек.",
+              "ageLabel": "6–15 лет",
+              "mosRuCode": "2451687",
+              "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/853210",
+              "registrationChannel": "mos_ru",
+              "allowPreliminaryRegistration": false
+            }
+          ],
+          "media": {
+            "hero": {
+              "url": "media/quests/minecraft-probuzhdenie-strazhey/hero.webp",
+              "alt": "Minecraft: Пробуждение Стражей"
+            },
+            "compact": {
+              "url": "media/quests/minecraft-probuzhdenie-strazhey/hero.webp",
+              "alt": "Minecraft: Пробуждение Стражей"
+            }
+          }
+        }
+      },
+      {
         "id": "sheet:minecraft-probuzhdenie-strazhey:school-2103-yasenevo:2026-06-15:2026-06-19",
         "venueSlug": "school-2103-yasenevo",
         "shiftLabel": "Minecraft: Пробуждение Стража · Школа №2103",
@@ -856,7 +1039,7 @@
         "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/841894",
         "includedNote": "Формат интенсива. Корпус ШО-3.\n\nВозраст: 7–15 лет\n\nКод карточки mos.ru: 2444397",
         "sheetStatus": "Идёт набор",
-        "enrolled": 2,
+        "enrolled": 5,
         "maxCapacity": 20,
         "scheduleCard": {
           "displayTitle": "Minecraft: Пробуждение Стража",
@@ -891,7 +1074,7 @@
               "ageLabel": "7–15 лет",
               "mosRuCode": "2444397",
               "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/841894",
-              "enrolled": 2,
+              "enrolled": 5,
               "registrationChannel": "mos_ru",
               "allowPreliminaryRegistration": false
             },
@@ -935,7 +1118,7 @@
         "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/843887",
         "includedNote": "Формат интенсива.\n\nВозраст: 6–15 лет\n\nКод карточки mos.ru: 2445959",
         "sheetStatus": "Идёт набор",
-        "enrolled": 2,
+        "enrolled": 4,
         "maxCapacity": 12,
         "scheduleCard": {
           "displayTitle": "КиберРитм: Инженерия Звука",
@@ -969,7 +1152,7 @@
               "ageLabel": "6–15 лет",
               "mosRuCode": "2445959",
               "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/843887",
-              "enrolled": 2,
+              "enrolled": 4,
               "registrationChannel": "mos_ru",
               "allowPreliminaryRegistration": true
             }
@@ -1000,7 +1183,7 @@
         "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/848078",
         "includedNote": "Формат интенсива.\n\nВозраст: 6–15 лет\n\nКод карточки mos.ru: 2448701",
         "sheetStatus": "Идёт набор",
-        "enrolled": 2,
+        "enrolled": 3,
         "maxCapacity": 15,
         "scheduleCard": {
           "displayTitle": "КиберРитм: Инженерия Звука",
@@ -1034,7 +1217,7 @@
               "ageLabel": "6–15 лет",
               "mosRuCode": "2448701",
               "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/848078",
-              "enrolled": 2,
+              "enrolled": 3,
               "registrationChannel": "mos_ru",
               "allowPreliminaryRegistration": true
             }
@@ -1065,7 +1248,7 @@
         "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/839055",
         "includedNote": "Формат интенсива. Корпус ШО-3.\n\nВозраст: 7–15 лет\n\nКод карточки mos.ru: 2442453",
         "sheetStatus": "Идёт набор",
-        "enrolled": 2,
+        "enrolled": 3,
         "maxCapacity": 20,
         "scheduleCard": {
           "displayTitle": "КиберРитм: Инженерия Звука",
@@ -1100,7 +1283,7 @@
               "ageLabel": "7–15 лет",
               "mosRuCode": "2442453",
               "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/839055",
-              "enrolled": 2,
+              "enrolled": 3,
               "registrationChannel": "mos_ru",
               "allowPreliminaryRegistration": false
             },
@@ -1142,7 +1325,7 @@
         "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/842871",
         "includedNote": "Формат интенсива\n\nВозраст: 6–14 лет\n\nКод карточки mos.ru: 2445194",
         "sheetStatus": "Идёт набор",
-        "enrolled": 5,
+        "enrolled": 7,
         "maxCapacity": 15,
         "scheduleCard": {
           "displayTitle": "КиберРитм + Minecraft: Пробуждение Стража",
@@ -1176,7 +1359,7 @@
               "ageLabel": "6–14 лет",
               "mosRuCode": "2445194",
               "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/842871",
-              "enrolled": 5,
+              "enrolled": 7,
               "registrationChannel": "mos_ru",
               "allowPreliminaryRegistration": true
             }
@@ -1321,6 +1504,67 @@
               "enrolled": 9,
               "registrationChannel": "mos_ru",
               "allowPreliminaryRegistration": true
+            }
+          ],
+          "media": {
+            "hero": {
+              "url": "media/quests/minecraft-taina-drevnih-inzhenerov/hero.webp",
+              "alt": "Minecraft: Тайна Древних Инженеров"
+            },
+            "compact": {
+              "url": "media/quests/minecraft-taina-drevnih-inzhenerov/hero.webp",
+              "alt": "Minecraft: Тайна Древних Инженеров"
+            }
+          }
+        }
+      },
+      {
+        "id": "sheet:minecraft-taina-drevnih-inzhenerov:mduc-ekt-odesskaya:2026-06-15:2026-06-19",
+        "venueSlug": "mduc-ekt-odesskaya",
+        "shiftLabel": "Minecraft: Тайна Древних Инженеров · МДЮЦ ЭКТ",
+        "startDate": "2026-06-15",
+        "endDate": "2026-06-19",
+        "startTime": "10:00",
+        "endTime": "13:30",
+        "dateRange": "15.06.2026 — 19.06.2026",
+        "daySchedule": "Ежедневно: 10:00–13:30",
+        "priceLabel": "12 950 ₽",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/853173",
+        "includedNote": "Возраст: 6–15 лет\n\nКод карточки mos.ru: 2451662",
+        "sheetStatus": "Идёт набор",
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "Minecraft: Тайна Древних Инженеров",
+          "tags": [
+            "Офлайн",
+            "Интенсив (полдня)"
+          ],
+          "addressOverride": "ул. Одесская, 12А",
+          "programNameH1": "Minecraft",
+          "programNameH2": "Тайна Древних Инженеров",
+          "programFilterLabel": "Minecraft: Тайна Древних Инженеров",
+          "ageLabel": "6–15 лет",
+          "formatType": "Интенсив (полдня)",
+          "formatTime": "Пн-Пт, 10:00 – 13:30",
+          "formatNote": "Электроника и расходники включены. Камерный формат: до 12 человек.",
+          "mosRuCode": "2451662",
+          "status": "Идёт набор",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "mduc-ekt-odesskaya:2026-06-15:интенсив-полдня",
+              "type": "Интенсив (полдня)",
+              "time": "Пн-Пт, 10:00 – 13:30",
+              "priceLabel": "12 950 ₽",
+              "note": "Электроника и расходники включены. Камерный формат: до 12 человек.",
+              "ageLabel": "6–15 лет",
+              "mosRuCode": "2451662",
+              "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/853173",
+              "registrationChannel": "mos_ru",
+              "allowPreliminaryRegistration": false
             }
           ],
           "media": {

@@ -14,6 +14,7 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "sun9-23.userapi.com", pathname: "/**" },
       { protocol: "https", hostname: "sun9-88.userapi.com", pathname: "/**" },
       { protocol: "https", hostname: "i.mycdn.me", pathname: "/**" },
+      { protocol: "https", hostname: "storage.yandexcloud.net", pathname: "/**" },
       { protocol: "https", hostname: "s3.twcstorage.ru", pathname: "/**" },
       { protocol: "https", hostname: "*.s3.twcstorage.ru", pathname: "/**" },
     ],

@@ -36,6 +36,10 @@ export function resolvePublicMediaUrl(pathOrUrl: string | undefined): string | u
   let raw = pathOrUrl.trim();
   if (raw.startsWith("http://") || raw.startsWith("https://")) return raw;
 
+  // Some snapshots carry `/media/...` while others use `media/...`.
+  // Normalize both to the same relative form before further mapping.
+  if (raw.startsWith("/media/")) raw = raw.slice(1);
+
   raw = normalizeScheduleMediaPath(raw);
 
   const base = publicS3BaseUrl();

@@ -59,6 +59,70 @@ function findViolations(value, currentPath = "") {
   return violations;
 }
 
+function hasNonEmptyString(value) {
+  return typeof value === "string" && value.trim().length > 0;
+}
+
+function validateColdMediaPresence() {
+  const catalogPath = path.join(WEB, "data", "v2", "catalog-snapshot.json");
+  const mapPath = path.join(WEB, "data", "v2", "map-snapshot.json");
+  if (!fs.existsSync(catalogPath) || !fs.existsSync(mapPath)) {
+    console.warn("[validate-public-snapshot] skip media-url guard (missing cold snapshots)");
+    return [];
+  }
+
+  const errors = [];
+  const catalog = JSON.parse(fs.readFileSync(catalogPath, "utf8"));
+  const map = JSON.parse(fs.readFileSync(mapPath, "utf8"));
+
+  const worlds = Array.isArray(catalog.worlds) ? catalog.worlds : [];
+  const courses = Array.isArray(catalog.courses) ? catalog.courses : [];
+  const venues = Array.isArray(map.venues) ? map.venues : [];
+
+  const worldWithoutHero = worlds.filter(
+    (w) => hasNonEmptyString(w?.slug) && !hasNonEmptyString(w?.heroImageUrl),
+  );
+  if (worldWithoutHero.length > 0) {
+    errors.push(
+      `worlds without heroImageUrl: ${worldWithoutHero
+        .slice(0, 5)
+        .map((w) => w.slug)
+        .join(", ")}`,
+    );
+  }
+
+  const coursesWithoutImages = courses.filter(
+    (c) =>
+      hasNonEmptyString(c?.slug) &&
+      (!hasNonEmptyString(c?.heroImageUrl) || !hasNonEmptyString(c?.catalogImageUrl)),
+  );
+  if (coursesWithoutImages.length > 0) {
+    errors.push(
+      `courses without hero/catalog image URLs: ${coursesWithoutImages
+        .slice(0, 5)
+        .map((c) => c.slug)
+        .join(", ")}`,
+    );
+  }
+
+  const venuesWithoutMedia = venues.filter((v) => {
+    if (!hasNonEmptyString(v?.slug)) return false;
+    const hasLogo = hasNonEmptyString(v?.logoUrl);
+    const hasPhotos = Array.isArray(v?.photos) && v.photos.length > 0;
+    return !hasLogo && !hasPhotos;
+  });
+  if (venuesWithoutMedia.length > 0) {
+    errors.push(
+      `venues without logoUrl/photos: ${venuesWithoutMedia
+        .slice(0, 5)
+        .map((v) => v.slug)
+        .join(", ")}`,
+    );
+  }
+
+  return errors;
+}
+
 let failed = false;
 
 for (const file of collectPublicFiles()) {
@@ -76,6 +140,16 @@ for (const file of collectPublicFiles()) {
   } else {
     console.log(`[validate-public-snapshot] ok ${path.relative(ROOT, file)}`);
   }
+}
+
+const coldMediaErrors = validateColdMediaPresence();
+if (coldMediaErrors.length > 0) {
+  failed = true;
+  console.error(
+    `[validate-public-snapshot] media-url guard failed: ${coldMediaErrors.join(" | ")}`,
+  );
+} else {
+  console.log("[validate-public-snapshot] media-url guard ok");
 }
 
 if (failed) process.exit(1);

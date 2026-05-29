@@ -4,6 +4,7 @@
  *
  *   node scripts/migrate-s3-cross.mjs --dry-run
  *   node scripts/migrate-s3-cross.mjs
+ *   node scripts/migrate-s3-cross.mjs --prefix media/
  *
  * Defaults: source Timeweb bm-quest-s3-hot (secret/bm-questhub-s3-hot.txt),
  *           dest YC bm-questhub (secret/bm-questhub-s3-yc.txt or active s3.env).
@@ -180,6 +181,7 @@ async function main() {
   const destEndpoint = arg("--dest-endpoint", S3_YC_ENDPOINT);
   const dryRun = hasFlag("--dry-run");
   const skipExisting = !hasFlag("--force");
+  const keyPrefix = arg("--prefix", "").replace(/^\//, "");
 
   const sourceClient = createClient({
     endpoint: sourceEndpoint,
@@ -195,9 +197,14 @@ async function main() {
   console.log(
     `[migrate-cross] ${sourceEndpoint}/${sourceBucket} → ${destEndpoint}/${destBucket}`,
   );
-  console.log(`[migrate-cross] dryRun=${dryRun} skipExisting=${skipExisting}`);
+  console.log(
+    `[migrate-cross] dryRun=${dryRun} skipExisting=${skipExisting} prefix=${keyPrefix || "(all)"}`,
+  );
 
-  const keys = await listAllKeys(sourceClient, sourceBucket);
+  let keys = await listAllKeys(sourceClient, sourceBucket);
+  if (keyPrefix) {
+    keys = keys.filter(({ key }) => key.startsWith(keyPrefix));
+  }
   console.log(`[migrate-cross] listed ${keys.length} object(s) from source`);
 
   let copied = 0;

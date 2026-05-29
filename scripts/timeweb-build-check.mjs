@@ -35,6 +35,16 @@ function timewebBuildEnv() {
 }
 
 export function runTimewebBuildCheck() {
+  const s3Base = process.env.NEXT_PUBLIC_S3_PUBLIC_BASE_URL?.trim();
+  if (!s3Base) {
+    console.warn(
+      "[timeweb-build-check] WARN: NEXT_PUBLIC_S3_PUBLIC_BASE_URL unset — using preflight fallback (set in App Platform env for remote builds)",
+    );
+  } else if (!s3Base.includes("storage.yandexcloud.net")) {
+    console.warn(
+      `[timeweb-build-check] WARN: NEXT_PUBLIC_S3_PUBLIC_BASE_URL is not Yandex: ${s3Base}`,
+    );
+  }
   console.log("[timeweb-build-check] npm run build (SITE_SNAPSHOT_SOURCE=s3)");
   const result = spawnSync("npm", ["run", "build"], {
     cwd: WEB,

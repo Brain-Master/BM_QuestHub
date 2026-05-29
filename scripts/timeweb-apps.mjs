@@ -113,10 +113,6 @@ async function main() {
 
     loadRepoEnv();
     const envs = readAppEnvs();
-    const s3Base = process.env.S3_BUCKET
-      ? `https://${process.env.S3_BUCKET}.s3.twcstorage.ru`
-      : envs.NEXT_PUBLIC_S3_PUBLIC_BASE_URL;
-    if (s3Base) envs.NEXT_PUBLIC_S3_PUBLIC_BASE_URL = s3Base;
 
     const commitSha = await fetchCommitSha(token, providerId, repositoryId, branch);
     console.log(`[timeweb-apps] deploy branch ${branch} @ ${commitSha.slice(0, 7)}`);

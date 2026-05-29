@@ -1,15 +1,15 @@
 {
   "version": 2,
-  "generatedAt": "2026-05-21T13:03:36.661Z",
+  "generatedAt": "2026-05-29T15:12:17.209Z",
   "source": "google_sheet_cold",
   "integrity": {
-    "contentHash": "sha256:a9078cf0a4ce637f673a427ab353bb58d9ebd6ef45c787f1bc31932e8272fb69"
+    "contentHash": "sha256:0c772e4a0c3041f27bacc9f65f6273cff52dd9220bdb29110ace599519b72c48"
   },
   "course": {
     "slug": "minecraft-taina-drevnih-inzhenerov",
     "worldSlug": "minecraft",
     "title": "Minecraft: тайна древних инженеров",
-    "tagline": "Minecraft выходит из экрана: создаём механизмы, артефакты и инженерные устройства в реальном мире.",
+    "tagline": "Minecraft выходит из экрана: создаём механизмы, артефакты и инженерные устройства в РЕАЛЬНОМ МИРЕ.",
     "catalogTagline": "Раскрой тайну древних инженеров: строй, программируй и оживляй механизмы Minecraft в реальном мире!.",
     "ageLabel": "1-6 классы",
     "format": "intensive",

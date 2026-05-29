@@ -7,6 +7,9 @@
 
 Реальные фото **не коммитим** в git (`media/inbox/**` в `.gitignore`). В репозитории только `.gitkeep` и заглушки в `media/placeholders/`.
 
+GitHub Actions `sheet-sync.yml` читает это же дерево через service account (Drive pull перед sync).  
+Папка `BM_QuestHub_Media` должна быть расшарена на `client_email` из `GOOGLE_SERVICE_ACCOUNT_JSON` минимум с правом Viewer.
+
 | Команда | Кто | Действие |
 |---------|-----|----------|
 | `make media-pull` | Команда | Снимок сайта → **Sync/** (заглушки + локальные исходники) |

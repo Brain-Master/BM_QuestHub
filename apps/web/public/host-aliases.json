@@ -50,6 +50,11 @@
       "scopeSlug": "school-2103",
       "routeSlug": "2103",
       "name": "Школа №2103"
+    },
+    "mduc-ekt": {
+      "scopeSlug": "school-mduc-ekt",
+      "routeSlug": "mduc-ekt",
+      "name": "МДЮЦ ЭКТ"
     }
   }
 }

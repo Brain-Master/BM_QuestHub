@@ -52,8 +52,9 @@ NEXT_PUBLIC_S3_PUBLIC_BASE_URL=https://bm-quest-s3-hot.s3.twcstorage.ru
 # 1. Секреты (не в git): secret/bm-questhub-s3-yc.txt, secret/bm-questhub-s3-hot.txt
 make setup-s3-yc-env
 
-# 2. Dry-run, затем копирование Get→Put
+# 2. Dry-run, затем копирование Get→Put (только media: --prefix media/)
 node scripts/migrate-s3-cross.mjs --dry-run
+node scripts/migrate-s3-cross.mjs --prefix media/ --dry-run
 make migrate-s3-to-yc
 
 # 3. Проверка объекта

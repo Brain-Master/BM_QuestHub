@@ -126,6 +126,8 @@ scripts-s3-deps: ## scripts-s3-deps   npm install в scripts/ (S3 sync)
 timeweb-s3-setup: ## timeweb-s3-setup  Создать bucket + scripts/s3.env (TIMEWEB_API_TOKEN)
 timeweb-setup: scripts-s3-deps ## timeweb-setup       Полная настройка Timeweb
 timeweb-build-check: ## timeweb-build-check  Проверка сборки перед деплоем
+timeweb-sync-app-env: ## timeweb-sync-app-env  Синхрон env App Platform из timeweb.app.env.example
+verify-prod-media-urls: ## verify-prod-media-urls  Smoke: прод не отдаёт HTML на /media/*
 timeweb-deploy: timeweb-build-check ## timeweb-deploy       Деплой на Timeweb
 s3-sync-data: scripts-s3-deps ## s3-sync-data      Всё дерево data/ (bootstrap, legacy YAML)
 s3-sync-data-hot: scripts-s3-deps ## s3-sync-data-hot  Hot JSON → S3
@@ -364,6 +366,12 @@ setup-github-repo:
 
 timeweb-build-check:
 	node scripts/timeweb-build-check.mjs
+
+timeweb-sync-app-env:
+	node scripts/timeweb-sync-app-env.mjs
+
+verify-prod-media-urls:
+	node scripts/verify-prod-media-urls.mjs
 
 timeweb-deploy:
 	node scripts/timeweb-deploy.mjs

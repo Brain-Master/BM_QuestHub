@@ -165,6 +165,8 @@ function main() {
       "1fqeVC8BhjGWtOR20NhCUQuhwgchkCCzYsmiudpGE4jc",
     S3_ENDPOINT:
       process.env.S3_ENDPOINT?.trim() || "https://storage.yandexcloud.net",
+    AWS_DEFAULT_REGION:
+      process.env.AWS_DEFAULT_REGION?.trim() || "ru-central1",
     S3_PUBLIC_BASE_URL:
       process.env.S3_PUBLIC_BASE_URL?.trim() ||
       "https://storage.yandexcloud.net/bm-questhub",

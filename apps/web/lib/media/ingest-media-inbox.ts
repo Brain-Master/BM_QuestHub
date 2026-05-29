@@ -350,9 +350,16 @@ export async function ingestMediaFromInbox(
   if (coldBundle) {
     const worldBySlug = new Map(coldBundle.catalog.worlds.map((w) => [w.slug, w]));
     const courseBySlug = new Map(coldBundle.catalog.courses.map((c) => [c.slug, c]));
-    const venueByScope = new Map(
-      coldBundle.map.venues.map((v) => [v.schoolScopeSlug || v.slug, v]),
-    );
+    const venues = coldBundle.map.venues;
+    const venueBySlug = new Map(venues.map((v) => [v.slug, v]));
+
+    function applyLogoToScope(scopeSlug: string, logoUrl: string) {
+      for (const v of venues) {
+        if ((v.schoolScopeSlug || v.slug) === scopeSlug) {
+          v.logoUrl = logoUrl;
+        }
+      }
+    }
 
     for (const slug of context.worldSlugs) {
       const world = worldBySlug.get(slug);
@@ -415,7 +422,7 @@ export async function ingestMediaFromInbox(
     }
 
     for (const ref of context.venues) {
-      const venue = venueByScope.get(ref.scopeSlug);
+      const venue = venueBySlug.get(ref.venueSlug);
       if (!venue) continue;
       for (const slot of slotsForEntity("venue", ref.scopeSlug)) {
         const source = findInboxSourceFile(webRoot, slot.inboxDir, slot.sourceFilename);
@@ -433,7 +440,7 @@ export async function ingestMediaFromInbox(
               placeholderFile: slot.placeholderFile,
             });
             if (publicUrl) {
-              venue.logoUrl = publicUrl;
+              applyLogoToScope(ref.scopeSlug, publicUrl);
             }
             if (skipped) result.imagesSkipped += 1;
             else result.imagesProcessed += 1;

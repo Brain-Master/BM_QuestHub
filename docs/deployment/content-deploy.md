@@ -16,6 +16,17 @@ Static Timeweb App with **Google Sheets** as editor UI (этап 1) and optional
 2. **BrainMaster → Опубликовать** (Apps Script → `POST /sync/hot` or `/sync/cold` on Yandex content-admin).
 3. GitHub Actions [`sheet-sync.yml`](../../.github/workflows/sheet-sync.yml) runs sync → tier-specific S3 upload → (cold) Timeweb deploy.
 
+### CI media ingest source
+
+`sheet-sync.yml` now pulls inbox sources from Google Drive (`BM_QuestHub_Media/Sync`) before running sheet sync.  
+This keeps `heroImageUrl` / `catalogImageUrl` / `logoUrl` / `photos` in cold snapshots even when publication is triggered from Apps Script.
+
+Required GitHub settings:
+
+- `GOOGLE_SERVICE_ACCOUNT_JSON` secret with Drive API enabled.
+- `GOOGLE_MEDIA_DRIVE_FOLDER_ID` repository variable (root media folder id).
+- Service account access to `BM_QuestHub_Media` (at least Viewer).
+
 ## S3 upload (tier-isolated)
 
 | Target | CLI / CI | S3 path |

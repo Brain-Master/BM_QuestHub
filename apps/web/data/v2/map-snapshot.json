@@ -1,9 +1,9 @@
 {
   "version": 2,
-  "generatedAt": "2026-05-21T13:03:36.661Z",
+  "generatedAt": "2026-05-29T15:12:17.209Z",
   "source": "google_sheet_cold",
   "integrity": {
-    "contentHash": "sha256:b3796a22b3b340fcfc235f52db0247ffbeef36070d6c3bd920e179d9a82f85ec"
+    "contentHash": "sha256:0d152567f457bf7b1eb98a50387dce5f09ed417922db8800e55abf1a25002f58"
   },
   "venues": [
     {
@@ -92,21 +92,16 @@
       "name": "Школа №17",
       "displayName": "Школа №17",
       "type": "school",
-      "address": "ул. Введенского, 28",
+      "address": "ул. Введенского, 27А",
       "metro": "Беляево",
       "city": "moscow",
       "district": "Коньково",
-      "latitude": 55.6364,
-      "longitude": 37.5323,
       "directions": [
-        "Постройте маршрут до ул. Введенского, 28 и ориентируйтесь на главный вход школы.\nНа входе скажите, что вы на занятия BrainMaster.\nДождитесь координатора BrainMaster в согласованной зоне встречи."
+        "Постройте маршрут до ул. Введенского, 27А и ориентируйтесь на главный вход школы.\nНа входе скажите, что вы на занятия BrainMaster.\nДождитесь координатора BrainMaster в согласованной зоне встречи."
       ],
       "entranceNote": "Перед стартом смены подтвердим вход, место встречи и кабинет в корпусе.",
       "contactNote": "Точный кабинет и порядок прохода отправляем родителям перед началом смены.",
-      "photos": [
-        { "url": "/venues/photos/school-17-belyaevo/01.webp", "alt": "Вход и учебные пространства · Школа №17" },
-        { "url": "/venues/photos/school-17-belyaevo/02.webp", "alt": "Кабинет BrainMaster · Школа №17" }
-      ],
+      "photos": [],
       "listedOnSites": true,
       "schoolScopeSlug": "school-17",
       "logoUrl": "media/venues/logos/school-17.webp"
@@ -173,6 +168,48 @@
       "listedOnSites": true,
       "schoolScopeSlug": "school-937",
       "logoUrl": "media/venues/logos/school-937.webp"
+    },
+    {
+      "slug": "mduc-ekt-odesskaya",
+      "name": "ГБОУДО «Московский детско-юношеский центр экологии, краеведения и туризма»",
+      "displayName": "МДЮЦ ЭКТ",
+      "type": "school",
+      "address": "ул. Одесская, 12А",
+      "metro": "Каховская",
+      "city": "moscow",
+      "district": "Черёмушки",
+      "latitude": 55.6539,
+      "longitude": 37.5984,
+      "directions": [
+        "Постройте маршрут до ул. Одесская, 12А и ориентируйтесь на главный вход.\nНа входе скажите, что вы на занятия BrainMaster.\nДождитесь координатора BrainMaster в согласованной зоне встречи."
+      ],
+      "entranceNote": "Перед стартом смены подтвердим вход, место встречи и кабинет в корпусе.",
+      "contactNote": "Точный кабинет и порядок прохода отправляем родителям перед началом смены.",
+      "photos": [],
+      "listedOnSites": true,
+      "schoolScopeSlug": "school-mduc-ekt",
+      "logoUrl": "media/venues/logos/school-mduc-ekt.webp"
+    },
+    {
+      "slug": "mduc-ekt-mosfilmovskaya",
+      "name": "ГБОУДО «Московский детско-юношеский центр экологии, краеведения и туризма»",
+      "displayName": "МДЮЦ ЭКТ",
+      "type": "school",
+      "address": "ул. Мосфильмовская, 55к1",
+      "metro": "Минская",
+      "city": "moscow",
+      "district": "Раменки",
+      "latitude": 55.7092,
+      "longitude": 37.4988,
+      "directions": [
+        "Постройте маршрут до ул. Мосфильмовская, 55к1 и ориентируйтесь на главный вход.\nНа входе скажите, что вы на занятия BrainMaster.\nДождитесь координатора BrainMaster в согласованной зоне встречи."
+      ],
+      "entranceNote": "Перед стартом смены подтвердим вход, место встречи и кабинет в корпусе.",
+      "contactNote": "Точный кабинет и порядок прохода отправляем родителям перед началом смены.",
+      "photos": [],
+      "listedOnSites": true,
+      "schoolScopeSlug": "school-mduc-ekt",
+      "logoUrl": "media/venues/logos/school-mduc-ekt.webp"
     }
   ]
 }

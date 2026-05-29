@@ -30,10 +30,10 @@ describe("publicS3BaseUrl", () => {
     assert.equal(publicS3BaseUrl(), DEFAULT_PUBLIC_S3_BASE_URL);
   });
 
-  it("returns null in production when env is empty", () => {
+  it("falls back to default bucket in production when env is empty", () => {
     process.env.NODE_ENV = "production";
     delete process.env.NEXT_PUBLIC_S3_PUBLIC_BASE_URL;
-    assert.equal(publicS3BaseUrl(), null);
+    assert.equal(publicS3BaseUrl(), DEFAULT_PUBLIC_S3_BASE_URL);
   });
 });
 

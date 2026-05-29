@@ -37,6 +37,10 @@ describe("resolvePublicMediaUrl", () => {
       resolvePublicMediaUrl("media/quests/cyber-rhythm/hero.webp"),
       "https://storage.yandexcloud.net/bm-questhub/media/quests/cyber-rhythm/hero.webp",
     );
+    assert.equal(
+      resolvePublicMediaUrl("/media/quests/cyber-rhythm/hero.webp"),
+      "https://storage.yandexcloud.net/bm-questhub/media/quests/cyber-rhythm/hero.webp",
+    );
   });
 
   it("maps legacy schedule paths with colons to __ storage keys", () => {

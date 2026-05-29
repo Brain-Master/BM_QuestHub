@@ -1,9 +1,9 @@
 {
   "version": 2,
-  "generatedAt": "2026-05-21T13:03:36.661Z",
+  "generatedAt": "2026-05-29T15:12:17.209Z",
   "source": "google_sheet_cold",
   "integrity": {
-    "contentHash": "sha256:3c5287458b38ef7ec8112adb7d61003c1fbe1314a38707268f79f099076abfe8"
+    "contentHash": "sha256:8a2596b044ab7fdf1e1034d51b6318a83b9a3c295ad2c6ea17ff998aaeff81e4"
   },
   "worlds": [
     {
@@ -28,7 +28,7 @@
     },
     {
       "slug": "mekhvarium",
-      "name": "Мехвариум",
+      "name": "МЕХВАРИУМ",
       "description": "Bio-punk лаборатории монстров — механика, гидравлика и инженерный характер в каждом проекте.",
       "themeKey": "mekhvarium",
       "tagline": "Секретные лаборатории, где механика оживает — а монстры двигаются по твоим правилам.",
@@ -70,7 +70,7 @@
     {
       "slug": "cyber-rhythm",
       "worldSlug": "cyber-rhythm",
-      "title": "КиберРитм",
+      "title": "КиберРитм: Инженерия Звука",
       "tagline": "Узнай, как рождается звук — и собери свою Bluetooth-колонку!",
       "catalogTagline": "Откуда берётся звук? Не из колонки — а из схемы, которую собрал сам. За пять дней — от первого провода до Bluetooth-колонки в руках!",
       "ageLabel": "1-6 классы",
@@ -186,7 +186,7 @@
       "slug": "minecraft-taina-drevnih-inzhenerov",
       "worldSlug": "minecraft",
       "title": "Minecraft: тайна древних инженеров",
-      "tagline": "Minecraft выходит из экрана: создаём механизмы, артефакты и инженерные устройства в реальном мире.",
+      "tagline": "Minecraft выходит из экрана: создаём механизмы, артефакты и инженерные устройства в РЕАЛЬНОМ МИРЕ.",
       "catalogTagline": "Раскрой тайну древних инженеров: строй, программируй и оживляй механизмы Minecraft в реальном мире!.",
       "ageLabel": "1-6 классы",
       "format": "intensive",

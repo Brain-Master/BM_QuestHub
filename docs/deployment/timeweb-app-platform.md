@@ -67,6 +67,13 @@ Build runs `verify:s3` before `next build` when snapshot sources are `s3`; empty
 
 Do not set `AWS_*` or `GOOGLE_*` here.
 
+Sync panel env from the example file:
+
+```bash
+make timeweb-sync-app-env   # PATCH App Platform envs, then redeploy
+make verify-prod-media-urls # smoke: YC WebP + catalog bundle uses storage.yandexcloud.net
+```
+
 ## Domains and school subdomains
 
 | Host | Role |
