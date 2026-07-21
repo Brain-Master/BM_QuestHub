@@ -55,7 +55,9 @@ describe("legacy token adapter", () => {
   it("writes a trimmed token to the private legacy key", async () => {
     const { legacyTokenAdapter } = await import("./legacy-token-adapter");
     legacyTokenAdapter.write("  keep  internal  ");
-    expect(store.get(PRIVATE_KEY)).toBe("keep  internal");
+    expect([...store.entries()]).toEqual([
+      [PRIVATE_KEY, "keep  internal"],
+    ]);
   });
 
   it("preserves the legacy empty-string write behavior", async () => {
@@ -67,6 +69,14 @@ describe("legacy token adapter", () => {
   });
 
   it("accesses sessionStorage lazily after module evaluation", async () => {
+    vi.unstubAllGlobals();
+    vi.resetModules();
+
+    expect("sessionStorage" in globalThis).toBe(false);
+
+    const { legacyTokenAdapter } =
+      await import("./legacy-token-adapter");
+
     const getItem = vi.fn((key: string) => store.get(key) ?? null);
     const setItem = vi.fn((key: string, value: string) => {
       store.set(key, value);
@@ -86,11 +96,6 @@ describe("legacy token adapter", () => {
       },
     });
 
-    await import("./legacy-token-adapter");
-    expect(getItem).not.toHaveBeenCalled();
-    expect(setItem).not.toHaveBeenCalled();
-
-    const { legacyTokenAdapter } = await import("./legacy-token-adapter");
     legacyTokenAdapter.read();
     expect(getItem).toHaveBeenCalledTimes(1);
     legacyTokenAdapter.write("x");
@@ -113,8 +118,22 @@ describe("legacy token adapter", () => {
     });
 
     const { legacyTokenAdapter } = await import("./legacy-token-adapter");
-    expect(() => legacyTokenAdapter.read()).toThrow(boom);
-    expect(() => legacyTokenAdapter.write("x")).toThrow(boom);
+
+    let readError: unknown;
+    try {
+      legacyTokenAdapter.read();
+    } catch (error) {
+      readError = error;
+    }
+    expect(readError).toBe(boom);
+
+    let writeError: unknown;
+    try {
+      legacyTokenAdapter.write("x");
+    } catch (error) {
+      writeError = error;
+    }
+    expect(writeError).toBe(boom);
   });
 
   it("does not log token values during reads or writes", async () => {
