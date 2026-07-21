@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { createValidSnapshotBundleFixture } from "./test-fixtures/snapshot-bundle.fixtures";
+import { legacyTokenAdapter } from "./legacy-token-adapter";
 
 const API_URL = "https://content-admin.example.test/invoke";
 const TOKEN = "test-content-token";
@@ -72,7 +73,7 @@ describe("admin API request contracts", () => {
         return store.size;
       },
     });
-    sessionStorage.setItem("contentAdminToken", TOKEN);
+    legacyTokenAdapter.write(TOKEN);
   });
 
   afterEach(() => {
