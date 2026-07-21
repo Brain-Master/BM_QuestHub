@@ -1,0 +1,171 @@
+# Admin CMS quality gates — PR/push/main + manual dispatch only.
+# PA-OPS-001 override: create .github/workflows/admin-cms-ci.yml (INT-02).
+# Read-only contents; no secrets; no deploy/publish; no Sheet Sync.
+name: Admin CMS CI
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - ".github/workflows/admin-cms-ci.yml"
+      - "AGENTS.md"
+      - "PLANS.md"
+      - "docs/admin-cms/**"
+      - "apps/admin/**"
+      - "scripts/admin-cms-ci-guard.mjs"
+      - "scripts/admin-cms-ci-guard.test.mjs"
+      - "scripts/secret-scan.mjs"
+      - "tools/secret-scan/**"
+      - ".secretlintrc.json"
+      - ".secretlintignore"
+      - "Makefile"
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/admin-cms-ci.yml"
+      - "AGENTS.md"
+      - "PLANS.md"
+      - "docs/admin-cms/**"
+      - "apps/admin/**"
+      - "scripts/admin-cms-ci-guard.mjs"
+      - "scripts/admin-cms-ci-guard.test.mjs"
+      - "scripts/secret-scan.mjs"
+      - "tools/secret-scan/**"
+      - ".secretlintrc.json"
+      - ".secretlintignore"
+      - "Makefile"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: admin-cms-ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  admin-cms-quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CI: "true"
+      NO_COLOR: "1"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22.23.1"
+          cache: npm
+          cache-dependency-path: |
+            apps/admin/package-lock.json
+            tools/secret-scan/package-lock.json
+
+      - name: Tool versions
+        run: |
+          set -euo pipefail
+          node --version
+          npm --version
+          git --version
+          make --version | head -n 1
+          test "$(node --version)" = "v22.23.1"
+
+      - name: Admin npm ci
+        working-directory: apps/admin
+        run: npm ci
+
+      - name: Secret-scan npm ci
+        working-directory: tools/secret-scan
+        run: npm ci
+
+      - name: Guard tests
+        run: node --test scripts/admin-cms-ci-guard.test.mjs
+
+      - name: Resolve diff base
+        id: diff-base
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE_SHA="${{ github.event.pull_request.base.sha }}"
+          elif [ "${{ github.event_name }}" = "push" ]; then
+            BEFORE="${{ github.event.before }}"
+            if [ -n "$BEFORE" ] && [ "$BEFORE" != "0000000000000000000000000000000000000000" ]; then
+              BASE_SHA="$BEFORE"
+            else
+              BASE_SHA="$(git rev-parse HEAD^)"
+            fi
+          else
+            BASE_SHA="$(git rev-parse HEAD^)"
+          fi
+          git cat-file -e "${BASE_SHA}^{commit}"
+          echo "base_sha=${BASE_SHA}" >> "$GITHUB_OUTPUT"
+
+      - name: Repository guard
+        run: node scripts/admin-cms-ci-guard.mjs preflight --base "${{ steps.diff-base.outputs.base_sha }}"
+
+      - name: Dependency integrity
+        run: |
+          set -euo pipefail
+          npm --prefix apps/admin ls --all
+          git diff --exit-code -- apps/admin/package.json apps/admin/package-lock.json
+          git diff --exit-code -- tools/secret-scan/package.json tools/secret-scan/package-lock.json
+
+      - name: Admin tests and summary
+        run: |
+          set -euo pipefail
+          set -o pipefail
+          npm --prefix apps/admin run test 2>&1 | tee "$RUNNER_TEMP/admin-tests.log"
+          node scripts/admin-cms-ci-guard.mjs test-summary \
+            --log "$RUNNER_TEMP/admin-tests.log" \
+            --github-summary "$GITHUB_STEP_SUMMARY"
+
+      - name: Lint
+        run: npm --prefix apps/admin run lint
+
+      - name: Typecheck
+        run: npm --prefix apps/admin run typecheck
+
+      - name: Build
+        run: |
+          set -euo pipefail
+          test ! -e apps/admin/dist
+          npm --prefix apps/admin run build
+          test -e apps/admin/dist
+
+      - name: Cleanup build output
+        run: |
+          set -euo pipefail
+          rm -rf apps/admin/dist
+          test ! -e apps/admin/dist
+
+      - name: Secret scan
+        run: make secret-scan
+
+      - name: Final clean state
+        run: |
+          set -euo pipefail
+          test ! -e apps/admin/dist
+          git diff --check
+          test -z "$(git status --porcelain=v1 --untracked-files=all)"
+          {
+            echo ""
+            echo "## Admin CMS CI gates"
+            echo ""
+            echo "| Gate | Result |"
+            echo "| --- | --- |"
+            echo "| Node | v22.23.1 |"
+            echo "| Guard tests | PASS |"
+            echo "| Preflight | PASS |"
+            echo "| npm ls / lock integrity | PASS |"
+            echo "| Admin tests | PASS |"
+            echo "| Lint | PASS |"
+            echo "| Typecheck | PASS |"
+            echo "| Build + cleanup | PASS |"
+            echo "| Secret scan | PASS |"
+            echo "| Clean worktree | PASS |"
+          } >> "$GITHUB_STEP_SUMMARY"

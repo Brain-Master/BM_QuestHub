@@ -1,0 +1,14 @@
+{
+  "name": "@bm-questhub/secret-scan",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "engines": {
+    "node": "22.x"
+  },
+  "devDependencies": {
+    "@secretlint/secretlint-rule-no-dotenv": "13.0.2",
+    "@secretlint/secretlint-rule-preset-recommend": "13.0.2",
+    "secretlint": "13.0.2"
+  }
+}

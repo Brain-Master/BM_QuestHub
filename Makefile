@@ -7,7 +7,7 @@
 
 WEB := apps/web
 
-.PHONY: help run check dev-host dev-restart brand-assets docs-index validate-snapshots export-yaml-snapshots content-publish content-publish-hot sync-sheet-hot sync-sheet-cold publish-sheet-hot publish-sheet-cold seed-sheet-headers restore-cold-design-from-backup encode-hero-video media-deps media-placeholders media-scaffold media-checkout media-pull media-commit media-push media-publish-site media-drive-push media-drive-pull data-import-sheets data-checkout data-pull data-commit data-push data-publish-site data-docs-push design-pack design-pack-oauth-login design-pack-publish-drive scripts-s3-deps timeweb-s3-setup timeweb-setup s3-sync-data s3-sync-data-hot s3-sync-data-cold s3-sync-media s3-sync-static s3-sync-all timeweb-build-check timeweb-deploy setup-ops-sheet site-health-check setup-github-ops ops-verify-all design-pack-psd setup-sheets-env setup-content-admin import-site-data-to-sheets backfill-shift-group-ids mos-enrolled-sync mos-enrolled-sync-dry mos-enrolled-sync-on mos-enrolled-sync-off mos-enrolled-sync-status mos-enrolled-sync-daemon upload-mos-enrolled-cookies setup-github-mos-enrolled-sync deploy-yandex-mos-enrolled-sync deploy-yandex-content-admin deploy-yandex-lead-ops-reporter setup-github-repo
+.PHONY: help run check secret-scan dev-host dev-restart brand-assets docs-index validate-snapshots export-yaml-snapshots content-publish content-publish-hot sync-sheet-hot sync-sheet-cold publish-sheet-hot publish-sheet-cold seed-sheet-headers restore-cold-design-from-backup encode-hero-video media-deps media-placeholders media-scaffold media-checkout media-pull media-commit media-push media-publish-site media-drive-push media-drive-pull data-import-sheets data-checkout data-pull data-commit data-push data-publish-site data-docs-push design-pack design-pack-oauth-login design-pack-publish-drive scripts-s3-deps timeweb-s3-setup timeweb-setup s3-sync-data s3-sync-data-hot s3-sync-data-cold s3-sync-media s3-sync-static s3-sync-all timeweb-build-check timeweb-deploy setup-ops-sheet site-health-check setup-github-ops ops-verify-all design-pack-psd setup-sheets-env setup-content-admin import-site-data-to-sheets backfill-shift-group-ids mos-enrolled-sync mos-enrolled-sync-dry mos-enrolled-sync-on mos-enrolled-sync-off mos-enrolled-sync-status mos-enrolled-sync-daemon upload-mos-enrolled-cookies setup-github-mos-enrolled-sync deploy-yandex-mos-enrolled-sync deploy-yandex-content-admin deploy-yandex-lead-ops-reporter setup-github-repo
 
 # Печать целей с суффиксом «## @раздел …» (см. make help)
 help: ## @meta Список целей make
@@ -20,6 +20,7 @@ run: check ## run              check + Next dev на 0.0.0.0:3000 (LAN)
 dev-host: ## dev-host          Next dev на 0.0.0.0:3000 без check
 dev-restart: ## dev-restart    Освободить :3000 и перезапустить dev
 check: ## check                Линтер + production build (apps/web)
+secret-scan: ## secret-scan     Secretlint gate (tracked + untracked non-ignored)
 brand-assets: ## brand-assets  PNG/WebP/ICO из brainmaster-logo → generated + Next
 docs-index: ## docs-index      docs/indexes/* из исходников и DocAsCode-тегов
 
@@ -149,6 +150,9 @@ dev-restart:
 
 check:
 	cd $(WEB) && npm run check
+
+secret-scan:
+	node scripts/secret-scan.mjs
 
 brand-assets:
 	python -m pip install -q -r scripts/requirements-brand-assets.txt
