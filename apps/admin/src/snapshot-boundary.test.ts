@@ -26,11 +26,45 @@ describe("current flat snapshot bundle boundary", () => {
     expect(parsed.offers).toBeNull();
   });
   it("accepts null-prototype objects at object boundaries", () => {
-    const catalog = Object.create(null) as Record<string, unknown>;
-    const map = Object.create(null) as Record<string, unknown>;
-    const site = Object.create(null) as Record<string, unknown>;
-    const manifest = Object.create(null) as Record<string, unknown>;
-    const offers = Object.create(null) as Record<string, unknown>;
+    const catalog = Object.assign(Object.create(null), {
+      version: 2,
+      generatedAt: "synthetic-generated-at",
+      source: "synthetic-source",
+      integrity: Object.assign(Object.create(null), {
+        contentHash: "synthetic-content-hash",
+      }),
+      worlds: [],
+      courses: [],
+    }) as Record<string, unknown>;
+    const map = Object.assign(Object.create(null), {
+      version: 2,
+      generatedAt: "synthetic-generated-at",
+      source: "synthetic-source",
+      integrity: Object.assign(Object.create(null), {
+        contentHash: "synthetic-content-hash",
+      }),
+      venues: [],
+    }) as Record<string, unknown>;
+    const site = Object.assign(Object.create(null), {
+      version: 2,
+      generatedAt: "synthetic-generated-at",
+      source: "synthetic-source",
+      brand: Object.create(null),
+      navigation: Object.create(null),
+      cities: [],
+    }) as Record<string, unknown>;
+    const manifest = Object.assign(Object.create(null), {
+      version: 2,
+      generatedAt: "synthetic-generated-at",
+      source: "synthetic-source",
+      snapshots: Object.create(null),
+    }) as Record<string, unknown>;
+    const offers = Object.assign(Object.create(null), {
+      version: 1,
+      generatedAt: "synthetic-generated-at",
+      source: "synthetic-source",
+      offersByQuest: Object.create(null),
+    }) as Record<string, unknown>;
     const bundle = Object.assign(Object.create(null), {
       ok: true,
       catalog,
@@ -246,14 +280,7 @@ describe("current flat snapshot bundle boundary", () => {
   });
 
   it("distinguishes allowed null from a missing nullable property", () => {
-    const withNull = {
-      ok: true,
-      catalog: {},
-      map: {},
-      site: {},
-      manifest: null,
-      offers: null,
-    };
+    const withNull = createValidSnapshotBundleFixture();
     expect(parseSnapshotsBundle(withNull)).toBe(withNull);
 
     try {

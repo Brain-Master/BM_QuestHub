@@ -19,6 +19,9 @@ const CLOSED_STRING_VOCABULARY = new Set([
   "synthetic-offers",
   "synthetic-additive",
   "synthetic-invalid",
+  "synthetic-generated-at",
+  "synthetic-source",
+  "synthetic-content-hash",
   "root-null",
   "ok-false",
   "missing-catalog",
@@ -47,6 +50,51 @@ const ISO_DATE = /\d{4}-\d{2}-\d{2}/;
 const UUID_LIKE =
   /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i;
 
+const SYNTHETIC_CATALOG = {
+  version: 2,
+  generatedAt: "synthetic-generated-at",
+  source: "synthetic-source",
+  integrity: { contentHash: "synthetic-content-hash" },
+  worlds: [] as unknown[],
+  courses: [] as unknown[],
+  fixtureKind: "synthetic-catalog",
+};
+
+const SYNTHETIC_MAP = {
+  version: 2,
+  generatedAt: "synthetic-generated-at",
+  source: "synthetic-source",
+  integrity: { contentHash: "synthetic-content-hash" },
+  venues: [] as unknown[],
+  fixtureKind: "synthetic-map",
+};
+
+const SYNTHETIC_SITE = {
+  version: 2,
+  generatedAt: "synthetic-generated-at",
+  source: "synthetic-source",
+  brand: {},
+  navigation: {},
+  cities: [] as unknown[],
+  fixtureKind: "synthetic-site",
+};
+
+const SYNTHETIC_MANIFEST = {
+  version: 2,
+  generatedAt: "synthetic-generated-at",
+  source: "synthetic-source",
+  snapshots: {},
+  fixtureKind: "synthetic-manifest",
+};
+
+const SYNTHETIC_OFFERS = {
+  version: 1,
+  generatedAt: "synthetic-generated-at",
+  source: "synthetic-source",
+  offersByQuest: {},
+  fixtureKind: "synthetic-offers",
+};
+
 function collectStrings(value: unknown, out: string[]): void {
   if (typeof value === "string") {
     out.push(value);
@@ -73,14 +121,17 @@ describe("synthetic snapshot fixtures", () => {
     expect(parsed).toBe(fixture);
     expect(parsed.manifest).toBeNull();
     expect(parsed.offers).toBeNull();
+    expect(parsed.catalog).toEqual(SYNTHETIC_CATALOG);
+    expect(parsed.map).toEqual(SYNTHETIC_MAP);
+    expect(parsed.site).toEqual(SYNTHETIC_SITE);
   });
 
   it("creates a valid object-valued snapshot bundle fixture", () => {
     const fixture = createValidSnapshotBundleWithObjectOptionalsFixture();
     const parsed = parseSnapshotsBundle(fixture);
     expect(parsed).toBe(fixture);
-    expect(parsed.manifest).toEqual({ fixtureKind: "synthetic-manifest" });
-    expect(parsed.offers).toEqual({ fixtureKind: "synthetic-offers" });
+    expect(parsed.manifest).toEqual(SYNTHETIC_MANIFEST);
+    expect(parsed.offers).toEqual(SYNTHETIC_OFFERS);
   });
 
   it("keeps every invalid fixture invalid with the expected first issue", () => {
@@ -126,8 +177,17 @@ describe("synthetic snapshot fixtures", () => {
     expect(validA.map).not.toBe(validB.map);
     expect(validA.site).not.toBe(validB.site);
     expect(validA.fixtureMetadata).not.toBe(validB.fixtureMetadata);
+    expect(
+      (validA.catalog as { integrity: object }).integrity,
+    ).not.toBe((validB.catalog as { integrity: object }).integrity);
+    expect((validA.catalog as { worlds: unknown[] }).worlds).not.toBe(
+      (validB.catalog as { worlds: unknown[] }).worlds,
+    );
+    expect((validA.catalog as { courses: unknown[] }).courses).not.toBe(
+      (validB.catalog as { courses: unknown[] }).courses,
+    );
     (validA.catalog as { fixtureKind: string }).fixtureKind = "mutated";
-    expect(validB.catalog).toEqual({ fixtureKind: "synthetic-catalog" });
+    expect(validB.catalog).toEqual(SYNTHETIC_CATALOG);
 
     const objectA = createValidSnapshotBundleWithObjectOptionalsFixture();
     const objectB = createValidSnapshotBundleWithObjectOptionalsFixture();
@@ -137,8 +197,14 @@ describe("synthetic snapshot fixtures", () => {
     expect(objectA.manifest).not.toBe(objectB.manifest);
     expect(objectA.offers).not.toBe(objectB.offers);
     expect(objectA.catalog).not.toBe(validA.catalog);
+    expect(
+      (objectA.manifest as { snapshots: object }).snapshots,
+    ).not.toBe((objectB.manifest as { snapshots: object }).snapshots);
+    expect(
+      (objectA.offers as { offersByQuest: object }).offersByQuest,
+    ).not.toBe((objectB.offers as { offersByQuest: object }).offersByQuest);
     (objectA.manifest as { fixtureKind: string }).fixtureKind = "mutated";
-    expect(objectB.manifest).toEqual({ fixtureKind: "synthetic-manifest" });
+    expect(objectB.manifest).toEqual(SYNTHETIC_MANIFEST);
 
     const invalidA = createInvalidSnapshotBundleFixtures();
     const invalidB = createInvalidSnapshotBundleFixtures();
@@ -166,8 +232,14 @@ describe("synthetic snapshot fixtures", () => {
     catalogInput.map.fixtureKind = "mutated";
     const catalogArrayB = invalidB.find((row) => row.id === "catalog-array");
     expect(
-      (catalogArrayB!.input as { map: { fixtureKind: string } }).map,
-    ).toEqual({ fixtureKind: "synthetic-map" });
+      (catalogArrayB!.input as { map: Record<string, unknown> }).map,
+    ).toEqual({
+      version: 2,
+      generatedAt: "synthetic-generated-at",
+      source: "synthetic-source",
+      integrity: {},
+      venues: [],
+    });
   });
 
   it("keeps fixture data bounded and inside the closed synthetic vocabulary", () => {

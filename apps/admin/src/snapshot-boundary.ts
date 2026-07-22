@@ -20,6 +20,14 @@ export type SnapshotsBundle = {
   [key: string]: unknown;
 };
 
+export const CURRENT_SNAPSHOT_VERSIONS = Object.freeze({
+  catalog: 2,
+  map: 2,
+  site: 2,
+  manifest: 2,
+  offers: 1,
+} as const);
+
 export type SnapshotBundleValidationIssueCode =
   | "REQUIRED"
   | "INVALID_TYPE"
@@ -27,6 +35,10 @@ export type SnapshotBundleValidationIssueCode =
 
 export type SnapshotBundleValidationExpected =
   | "literal true"
+  | "literal 1"
+  | "literal 2"
+  | "string"
+  | "array"
   | "object"
   | "object|null";
 
@@ -50,6 +62,53 @@ const MAX_ISSUES = 5;
 const OBJECT_ROOTS = ["catalog", "map", "site"] as const;
 const NULLABLE_ROOTS = ["manifest", "offers"] as const;
 
+type DocumentFieldKind = "version" | "string" | "array" | "object";
+
+type DocumentFieldContract = {
+  readonly name: string;
+  readonly kind: DocumentFieldKind;
+};
+
+const CATALOG_FIELDS: readonly DocumentFieldContract[] = [
+  { name: "version", kind: "version" },
+  { name: "generatedAt", kind: "string" },
+  { name: "source", kind: "string" },
+  { name: "integrity", kind: "object" },
+  { name: "worlds", kind: "array" },
+  { name: "courses", kind: "array" },
+];
+
+const MAP_FIELDS: readonly DocumentFieldContract[] = [
+  { name: "version", kind: "version" },
+  { name: "generatedAt", kind: "string" },
+  { name: "source", kind: "string" },
+  { name: "integrity", kind: "object" },
+  { name: "venues", kind: "array" },
+];
+
+const SITE_FIELDS: readonly DocumentFieldContract[] = [
+  { name: "version", kind: "version" },
+  { name: "generatedAt", kind: "string" },
+  { name: "source", kind: "string" },
+  { name: "brand", kind: "object" },
+  { name: "navigation", kind: "object" },
+  { name: "cities", kind: "array" },
+];
+
+const MANIFEST_FIELDS: readonly DocumentFieldContract[] = [
+  { name: "version", kind: "version" },
+  { name: "generatedAt", kind: "string" },
+  { name: "source", kind: "string" },
+  { name: "snapshots", kind: "object" },
+];
+
+const OFFERS_FIELDS: readonly DocumentFieldContract[] = [
+  { name: "version", kind: "version" },
+  { name: "generatedAt", kind: "string" },
+  { name: "source", kind: "string" },
+  { name: "offersByQuest", kind: "object" },
+];
+
 function isPlainRecord(value: unknown): value is Record<string, unknown> {
   if (value === null || typeof value !== "object") return false;
   if (Array.isArray(value)) return false;
@@ -68,6 +127,135 @@ function pushIssue(
 ): void {
   if (issues.length < MAX_ISSUES) {
     issues.push(issue);
+  }
+}
+
+function versionExpected(
+  version: 1 | 2,
+): "literal 1" | "literal 2" {
+  return version === 1 ? "literal 1" : "literal 2";
+}
+
+function fieldExpected(
+  field: DocumentFieldContract,
+  version: 1 | 2,
+): SnapshotBundleValidationExpected {
+  switch (field.kind) {
+    case "version":
+      return versionExpected(version);
+    case "string":
+      return "string";
+    case "array":
+      return "array";
+    case "object":
+      return "object";
+  }
+}
+
+function validateDocumentFields(
+  issues: SnapshotBundleValidationIssue[],
+  rootPath: string,
+  document: Record<string, unknown>,
+  version: 1 | 2,
+  fields: readonly DocumentFieldContract[],
+): void {
+  for (const field of fields) {
+    const path = `${rootPath}.${field.name}`;
+    if (!hasOwn(document, field.name)) {
+      pushIssue(issues, {
+        path,
+        code: "REQUIRED",
+        expected: fieldExpected(field, version),
+      });
+      continue;
+    }
+
+    const value = document[field.name];
+    switch (field.kind) {
+      case "version":
+        if (value !== version) {
+          pushIssue(issues, {
+            path,
+            code: "INVALID_VALUE",
+            expected: versionExpected(version),
+          });
+        }
+        break;
+      case "string":
+        if (typeof value !== "string") {
+          pushIssue(issues, {
+            path,
+            code: "INVALID_TYPE",
+            expected: "string",
+          });
+        }
+        break;
+      case "array":
+        if (!Array.isArray(value)) {
+          pushIssue(issues, {
+            path,
+            code: "INVALID_TYPE",
+            expected: "array",
+          });
+        }
+        break;
+      case "object":
+        if (!isPlainRecord(value)) {
+          pushIssue(issues, {
+            path,
+            code: "INVALID_TYPE",
+            expected: "object",
+          });
+        }
+        break;
+    }
+  }
+}
+
+function validateSnapshotDocuments(
+  issues: SnapshotBundleValidationIssue[],
+  input: Record<string, unknown>,
+): void {
+  validateDocumentFields(
+    issues,
+    "$.catalog",
+    input.catalog as Record<string, unknown>,
+    CURRENT_SNAPSHOT_VERSIONS.catalog,
+    CATALOG_FIELDS,
+  );
+  validateDocumentFields(
+    issues,
+    "$.map",
+    input.map as Record<string, unknown>,
+    CURRENT_SNAPSHOT_VERSIONS.map,
+    MAP_FIELDS,
+  );
+  validateDocumentFields(
+    issues,
+    "$.site",
+    input.site as Record<string, unknown>,
+    CURRENT_SNAPSHOT_VERSIONS.site,
+    SITE_FIELDS,
+  );
+
+  if (input.manifest !== null) {
+    validateDocumentFields(
+      issues,
+      "$.manifest",
+      input.manifest as Record<string, unknown>,
+      CURRENT_SNAPSHOT_VERSIONS.manifest,
+      MANIFEST_FIELDS,
+    );
+  }
+
+  if (input.offers !== null) {
+    validateDocumentFields(
+      issues,
+      "$.offers",
+      input.offers as Record<string, unknown>,
+      CURRENT_SNAPSHOT_VERSIONS.offers,
+      OFFERS_FIELDS,
+    );
   }
 }
 
@@ -128,6 +316,12 @@ export function parseSnapshotsBundle(input: unknown): SnapshotsBundle {
       });
     }
   }
+
+  if (issues.length > 0) {
+    throw new SnapshotBundleValidationError(issues);
+  }
+
+  validateSnapshotDocuments(issues, input);
 
   if (issues.length > 0) {
     throw new SnapshotBundleValidationError(issues);
