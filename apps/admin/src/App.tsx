@@ -6,13 +6,14 @@ import {
   publishContent,
   saveSnapshot,
 } from "./api";
+import { legacyTokenAdapter } from "./legacy-token-adapter";
 
 type Tab = "catalog" | "map" | "site" | "offers" | "publish";
 
 export function App() {
   const [tab, setTab] = useState<Tab>("catalog");
   const [tokenInput, setTokenInput] = useState(
-    () => sessionStorage.getItem("contentAdminToken") ?? "",
+    () => legacyTokenAdapter.read(),
   );
   const [catalogJson, setCatalogJson] = useState("");
   const [mapJson, setMapJson] = useState("");
@@ -22,8 +23,8 @@ export function App() {
   const [busy, setBusy] = useState(false);
 
   const applyToken = () => {
-    sessionStorage.setItem("contentAdminToken", tokenInput.trim());
-    setStatus("Токен сохранён в sessionStorage");
+    legacyTokenAdapter.write(tokenInput);
+    setStatus("Токен сохранён");
   };
 
   const refresh = useCallback(async () => {

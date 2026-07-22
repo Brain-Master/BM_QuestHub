@@ -2,6 +2,7 @@ import {
   parseSnapshotsBundle,
   type SnapshotsBundle,
 } from "./snapshot-boundary";
+import { legacyTokenAdapter } from "./legacy-token-adapter";
 
 export type { SnapshotsBundle } from "./snapshot-boundary";
 
@@ -34,14 +35,10 @@ export class ApiClientError extends Error {
 
 type AbortCause = "timeout" | "manual";
 
-function token(): string {
-  return sessionStorage.getItem("contentAdminToken") ?? "";
-}
-
 function headers(): HeadersInit {
   return {
     "content-type": "application/json",
-    "x-content-token": token(),
+    "x-content-token": legacyTokenAdapter.read(),
   };
 }
 
