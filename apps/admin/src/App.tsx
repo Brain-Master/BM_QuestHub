@@ -12,6 +12,7 @@ import {
   type AdminAuthState,
 } from "./auth-failure-state";
 import { legacyTokenAdapter } from "./legacy-token-adapter";
+import { formatUiError } from "./ui-error-formatter";
 
 type Tab = "catalog" | "map" | "site" | "offers" | "publish";
 
@@ -40,7 +41,7 @@ export function App() {
       return;
     }
 
-    setStatus(error instanceof Error ? error.message : String(error));
+    setStatus(formatUiError(error).text);
   }, []);
 
   const refresh = useCallback(async () => {
