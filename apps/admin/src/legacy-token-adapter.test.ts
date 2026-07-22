@@ -81,12 +81,13 @@ describe("legacy token adapter", () => {
     const setItem = vi.fn((key: string, value: string) => {
       store.set(key, value);
     });
+    const removeItem = vi.fn((key: string) => {
+      store.delete(key);
+    });
     vi.stubGlobal("sessionStorage", {
       getItem,
       setItem,
-      removeItem: (key: string) => {
-        store.delete(key);
-      },
+      removeItem,
       clear: () => {
         store.clear();
       },
@@ -100,6 +101,8 @@ describe("legacy token adapter", () => {
     expect(getItem).toHaveBeenCalledTimes(1);
     legacyTokenAdapter.write("x");
     expect(setItem).toHaveBeenCalledTimes(1);
+    legacyTokenAdapter.clear();
+    expect(removeItem).toHaveBeenCalledTimes(1);
   });
 
   it("propagates storage failures without fallback", async () => {
@@ -147,13 +150,14 @@ describe("legacy token adapter", () => {
     const { legacyTokenAdapter } = await import("./legacy-token-adapter");
     legacyTokenAdapter.read();
     legacyTokenAdapter.write(" another-secret ");
+    legacyTokenAdapter.clear();
 
     for (const spy of [info, log, debug, warn, error]) {
       expect(spy).not.toHaveBeenCalled();
     }
   });
 
-  it("keeps product storage access and the legacy key inside the adapter module", () => {
+  it("keeps product storage access and the legacy key inside the adapter module", async () => {
     const productFiles: string[] = [];
 
     function walk(dir: string) {
@@ -194,8 +198,83 @@ describe("legacy token adapter", () => {
     expect(adapterSource).toContain("@deprecated");
     expect(adapterSource).toMatch(/M3/);
     expect(adapterSource).toMatch(/server-side session/);
+    expect(adapterSource).toMatch(/clear\s*\(\)\s*:\s*void/);
+    expect(adapterSource).toMatch(/clear\s*\(\)\s*\{/);
     expect(appSource).toMatch(/legacyTokenAdapter/);
     expect(apiSource).toMatch(/legacyTokenAdapter/);
     expect(appSource).not.toContain("sessionStorage");
+
+    const { legacyTokenAdapter } = await import("./legacy-token-adapter");
+    expect(typeof legacyTokenAdapter.clear).toBe("function");
+  });
+
+  it("clears the legacy token with removeItem", async () => {
+    store.set(PRIVATE_KEY, "stored-token");
+    const removeItem = vi.fn((key: string) => {
+      store.delete(key);
+    });
+    const setItem = vi.fn((key: string, value: string) => {
+      store.set(key, value);
+    });
+    vi.stubGlobal("sessionStorage", {
+      getItem: (key: string) => store.get(key) ?? null,
+      setItem,
+      removeItem,
+      clear: () => {
+        store.clear();
+      },
+      key: (index: number) => [...store.keys()][index] ?? null,
+      get length() {
+        return store.size;
+      },
+    });
+
+    const { legacyTokenAdapter } = await import("./legacy-token-adapter");
+    legacyTokenAdapter.clear();
+
+    expect(store.has(PRIVATE_KEY)).toBe(false);
+    expect([...store.keys()]).not.toContain(PRIVATE_KEY);
+    expect(removeItem).toHaveBeenCalledTimes(1);
+    expect(removeItem).toHaveBeenCalledWith(PRIVATE_KEY);
+    expect(setItem).not.toHaveBeenCalled();
+  });
+
+  it("propagates clear failures without fallback or logging", async () => {
+    const boom = new Error("removeItem failed");
+    const getItem = vi.fn();
+    const setItem = vi.fn();
+    const removeItem = vi.fn(() => {
+      throw boom;
+    });
+    vi.stubGlobal("sessionStorage", {
+      getItem,
+      setItem,
+      removeItem,
+      clear: () => undefined,
+      key: () => null,
+      length: 0,
+    });
+
+    const info = vi.spyOn(console, "info");
+    const log = vi.spyOn(console, "log");
+    const debug = vi.spyOn(console, "debug");
+    const warn = vi.spyOn(console, "warn");
+    const error = vi.spyOn(console, "error");
+
+    const { legacyTokenAdapter } = await import("./legacy-token-adapter");
+
+    let clearError: unknown;
+    try {
+      legacyTokenAdapter.clear();
+    } catch (err) {
+      clearError = err;
+    }
+    expect(clearError).toBe(boom);
+    expect(getItem).not.toHaveBeenCalled();
+    expect(setItem).not.toHaveBeenCalled();
+    expect(removeItem).toHaveBeenCalledTimes(1);
+    for (const spy of [info, log, debug, warn, error]) {
+      expect(spy).not.toHaveBeenCalled();
+    }
   });
 });
