@@ -5,6 +5,7 @@
 export interface LegacyTokenAdapter {
   read(): string;
   write(value: string): void;
+  clear(): void;
 }
 
 const LEGACY_TOKEN_STORAGE_KEY = "contentAdminToken";
@@ -19,5 +20,8 @@ export const legacyTokenAdapter: LegacyTokenAdapter = {
   },
   write(value: string) {
     sessionStorage.setItem(LEGACY_TOKEN_STORAGE_KEY, value.trim());
+  },
+  clear() {
+    sessionStorage.removeItem(LEGACY_TOKEN_STORAGE_KEY);
   },
 };

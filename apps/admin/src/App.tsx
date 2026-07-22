@@ -6,6 +6,11 @@ import {
   publishContent,
   saveSnapshot,
 } from "./api";
+import {
+  authFailureTransition,
+  READY_AUTH_STATE,
+  type AdminAuthState,
+} from "./auth-failure-state";
 import { legacyTokenAdapter } from "./legacy-token-adapter";
 
 type Tab = "catalog" | "map" | "site" | "offers" | "publish";
@@ -15,6 +20,8 @@ export function App() {
   const [tokenInput, setTokenInput] = useState(
     () => legacyTokenAdapter.read(),
   );
+  const [authState, setAuthState] =
+    useState<AdminAuthState>(READY_AUTH_STATE);
   const [catalogJson, setCatalogJson] = useState("");
   const [mapJson, setMapJson] = useState("");
   const [siteJson, setSiteJson] = useState("");
@@ -22,10 +29,19 @@ export function App() {
   const [status, setStatus] = useState("");
   const [busy, setBusy] = useState(false);
 
-  const applyToken = () => {
-    legacyTokenAdapter.write(tokenInput);
-    setStatus("Токен сохранён");
-  };
+  const handleRequestError = useCallback((error: unknown) => {
+    const transition = authFailureTransition(error);
+
+    if (transition) {
+      legacyTokenAdapter.clear();
+      setTokenInput(transition.nextTokenInput);
+      setAuthState(transition.nextAuthState);
+      setStatus(transition.message);
+      return;
+    }
+
+    setStatus(error instanceof Error ? error.message : String(error));
+  }, []);
 
   const refresh = useCallback(async () => {
     if (!hasApiUrl()) {
@@ -44,15 +60,22 @@ export function App() {
       );
       setStatus("Снимки загружены");
     } catch (e) {
-      setStatus(e instanceof Error ? e.message : String(e));
+      handleRequestError(e);
     } finally {
       setBusy(false);
     }
-  }, []);
+  }, [handleRequestError]);
+
+  const applyToken = () => {
+    legacyTokenAdapter.write(tokenInput);
+    setAuthState(READY_AUTH_STATE);
+    setStatus("Токен сохранён");
+    void refresh();
+  };
 
   useEffect(() => {
-    if (tokenInput) void refresh();
-  }, [refresh, tokenInput]);
+    if (legacyTokenAdapter.read()) void refresh();
+  }, [refresh]);
 
   async function saveCurrent() {
     setBusy(true);
@@ -68,7 +91,7 @@ export function App() {
       }
       setStatus(`Сохранено: ${tab}`);
     } catch (e) {
-      setStatus(e instanceof Error ? e.message : String(e));
+      handleRequestError(e);
     } finally {
       setBusy(false);
     }
@@ -88,7 +111,7 @@ export function App() {
             : `Cold: синк + deploy запущены. ${JSON.stringify(result.workflow ?? {})}`),
       );
     } catch (e) {
-      setStatus(e instanceof Error ? e.message : String(e));
+      handleRequestError(e);
     } finally {
       setBusy(false);
     }
@@ -140,7 +163,7 @@ export function App() {
             Обновить
           </button>
         </label>
-        <p className="status" role="status">
+        <p className="status" role="status" data-auth-state={authState.status}>
           {status}
         </p>
       </section>
