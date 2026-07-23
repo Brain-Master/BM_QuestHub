@@ -185,16 +185,17 @@ function resolveRequestId(options?: ApiObservabilityOptions): string {
 }
 
 function readNow(options?: ApiObservabilityOptions): number {
-  const clock = options?.now;
-  if (typeof clock === "function") {
-    try {
-      const value = clock();
-      if (typeof value === "number" && Number.isFinite(value)) return value;
-    } catch {
-      // Clock failures fall back to performance.now().
-    }
+  const clock =
+    typeof options?.now === "function"
+      ? options.now
+      : () => performance.now();
+
+  try {
+    const value = clock();
+    return typeof value === "number" && Number.isFinite(value) ? value : 0;
+  } catch {
+    return 0;
   }
-  return performance.now();
 }
 
 function classifyOutcome(error: unknown): {

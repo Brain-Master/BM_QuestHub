@@ -891,69 +891,223 @@ describe("admin API request contracts", () => {
   });
 
   it("isolates observer clock and request-ID factory failures from operations", async () => {
-    const { loadSnapshots, ApiClientError } = await import("./api");
+    const { loadSnapshots } = await import("./api");
+    const originalNow = performance.now.bind(performance);
+    let defaultClockCalls = 0;
 
-    const successObservations: unknown[] = [];
-    const success = await loadSnapshots({
-      observability: {
-        createRequestId: () => {
-          throw new Error("factory boom");
+    try {
+      // A. Custom clock throws on both reads; success + durationMs 0 + one observation.
+      const successObservations: unknown[] = [];
+      const success = await loadSnapshots({
+        observability: {
+          createRequestId: () => {
+            throw new Error("factory boom");
+          },
+          now: () => {
+            throw new Error("clock boom");
+          },
+          onObservation: (observation) => {
+            successObservations.push(observation);
+            throw new Error("observer boom on success");
+          },
         },
-        now: () => {
-          throw new Error("clock boom");
-        },
-        onObservation: (observation) => {
-          successObservations.push(observation);
-          throw new Error("observer boom on success");
-        },
-      },
-    });
-    expect(success.ok).toBe(true);
-    expect(successObservations).toHaveLength(1);
-    const successHeaders = fetchMock.mock.calls[0][1] as RequestInit;
-    const successRequestId = (
-      successHeaders.headers as Record<string, string>
-    )["x-request-id"];
-    expect(successRequestId).toMatch(
-      /^[A-Za-z0-9][A-Za-z0-9._:-]{0,63}$/,
-    );
-    expect(successRequestId).not.toContain("factory boom");
-    expect(successObservations[0]).toMatchObject({
-      requestId: successRequestId,
-      outcome: "success",
-    });
+      });
+      expect(success.ok).toBe(true);
+      expect(successObservations).toHaveLength(1);
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+      const successHeaders = fetchMock.mock.calls[0][1] as RequestInit;
+      const successRequestId = (
+        successHeaders.headers as Record<string, string>
+      )["x-request-id"];
+      expect(successRequestId).toMatch(
+        /^[A-Za-z0-9][A-Za-z0-9._:-]{0,63}$/,
+      );
+      expect(successRequestId).not.toContain("factory boom");
+      expect(successObservations[0]).toMatchObject({
+        requestId: successRequestId,
+        outcome: "success",
+        durationMs: 0,
+      });
 
-    const unsafe = "token-should-never-appear";
-    const { response, json } = nonOkResponse(500, {
-      error: PRIVATE_BACKEND_MARKER,
-    });
-    fetchMock.mockResolvedValueOnce(response);
-    const failureObservations: unknown[] = [];
-    const error = await loadSnapshots({
-      observability: {
-        createRequestId: () => unsafe,
-        onObservation: (observation) => {
-          failureObservations.push(observation);
-          throw new Error("observer boom on failure");
-        },
-      },
-    }).catch((caught: unknown) => caught);
+      // B. Custom clock non-finite (NaN, Infinity) → durationMs 0; one observation each.
+      for (const nonFinite of [Number.NaN, Number.POSITIVE_INFINITY]) {
+        vi.resetModules();
+        const { loadSnapshots: loadWithNonFinite } = await import("./api");
+        const nonFiniteObservations: unknown[] = [];
+        const nonFiniteResult = await loadWithNonFinite({
+          observability: {
+            now: () => nonFinite,
+            onObservation: (observation) => {
+              nonFiniteObservations.push(observation);
+            },
+          },
+        });
+        expect(nonFiniteResult.ok).toBe(true);
+        expect(nonFiniteObservations).toHaveLength(1);
+        expect(nonFiniteObservations[0]).toMatchObject({
+          outcome: "success",
+          durationMs: 0,
+        });
+      }
 
-    expect(error).toBeInstanceOf(ApiClientError);
-    expect(json).not.toHaveBeenCalled();
-    expect(failureObservations).toHaveLength(1);
-    const failureHeaders = fetchMock.mock.calls[1][1] as RequestInit;
-    const failureRequestId = (
-      failureHeaders.headers as Record<string, string>
-    )["x-request-id"];
-    expect(failureRequestId).not.toBe(unsafe);
-    expect(failureRequestId).not.toContain("token");
-    expect(String(error)).not.toContain(unsafe);
-    expect(JSON.stringify(failureObservations[0])).not.toContain(unsafe);
-    expect(failureObservations[0]).toMatchObject({
-      requestId: failureRequestId,
-      outcome: "http_error",
-      httpStatus: 500,
-    });
+      // C. Default performance.now() throws on success → result preserved, durationMs 0.
+      vi.resetModules();
+      const { loadSnapshots: loadDefaultSuccess } = await import("./api");
+      defaultClockCalls = 0;
+      performance.now = () => {
+        defaultClockCalls += 1;
+        throw new Error("default clock boom");
+      };
+      const defaultSuccessObservations: unknown[] = [];
+      const defaultSuccess = await loadDefaultSuccess({
+        observability: {
+          onObservation: (observation) => {
+            defaultSuccessObservations.push(observation);
+          },
+        },
+      });
+      expect(defaultSuccess.ok).toBe(true);
+      expect(defaultSuccessObservations).toHaveLength(1);
+      expect(defaultClockCalls).toBeGreaterThanOrEqual(2);
+      const defaultSuccessHeaders = fetchMock.mock.calls[
+        fetchMock.mock.calls.length - 1
+      ][1] as RequestInit;
+      const defaultSuccessRequestId = (
+        defaultSuccessHeaders.headers as Record<string, string>
+      )["x-request-id"];
+      expect(defaultSuccessObservations[0]).toMatchObject({
+        requestId: defaultSuccessRequestId,
+        outcome: "success",
+        durationMs: 0,
+      });
+
+      // Default clock non-finite → durationMs 0.
+      for (const nonFinite of [
+        Number.NaN,
+        Number.POSITIVE_INFINITY,
+        Number.NEGATIVE_INFINITY,
+      ]) {
+        vi.resetModules();
+        const { loadSnapshots: loadDefaultNonFinite } = await import("./api");
+        performance.now = () => nonFinite;
+        const defaultNonFiniteObservations: unknown[] = [];
+        const defaultNonFinite = await loadDefaultNonFinite({
+          observability: {
+            onObservation: (observation) => {
+              defaultNonFiniteObservations.push(observation);
+            },
+          },
+        });
+        expect(defaultNonFinite.ok).toBe(true);
+        expect(defaultNonFiniteObservations).toHaveLength(1);
+        expect(defaultNonFiniteObservations[0]).toMatchObject({
+          outcome: "success",
+          durationMs: 0,
+        });
+      }
+
+      // D. Default clock throws on HTTP error → exact original ApiClientError preserved.
+      vi.resetModules();
+      const {
+        loadSnapshots: loadDefaultError,
+        ApiClientError: ApiClientErrorReloaded,
+      } = await import("./api");
+      const { response, json } = nonOkResponse(500, {
+        error: PRIVATE_BACKEND_MARKER,
+      });
+      fetchMock.mockResolvedValueOnce(response);
+      performance.now = () => {
+        throw new Error("default clock boom on error");
+      };
+      const defaultErrorObservations: unknown[] = [];
+      const error = await loadDefaultError({
+        observability: {
+          onObservation: (observation) => {
+            defaultErrorObservations.push(observation);
+          },
+        },
+      }).catch((caught: unknown) => caught);
+
+      expect(error).toBeInstanceOf(ApiClientErrorReloaded);
+      expect(error).toMatchObject({
+        code: "SERVER_ERROR",
+        status: 500,
+      });
+      expect((error as Error).message).not.toContain("default clock boom");
+      expect(json).not.toHaveBeenCalled();
+      expect(defaultErrorObservations).toHaveLength(1);
+      expect(defaultErrorObservations[0]).toMatchObject({
+        outcome: "http_error",
+        httpStatus: 500,
+        durationMs: 0,
+      });
+
+      // E. Existing factory/observer isolation on failure path.
+      performance.now = originalNow;
+      vi.resetModules();
+      const {
+        loadSnapshots: loadFactoryFailure,
+        ApiClientError: ApiClientErrorFactory,
+      } = await import("./api");
+      const unsafe = "token-should-never-appear";
+      const failureBody = nonOkResponse(500, {
+        error: PRIVATE_BACKEND_MARKER,
+      });
+      fetchMock.mockResolvedValueOnce(failureBody.response);
+      const failureObservations: unknown[] = [];
+      const failureError = await loadFactoryFailure({
+        observability: {
+          createRequestId: () => unsafe,
+          onObservation: (observation) => {
+            failureObservations.push(observation);
+            throw new Error("observer boom on failure");
+          },
+        },
+      }).catch((caught: unknown) => caught);
+
+      expect(failureError).toBeInstanceOf(ApiClientErrorFactory);
+      expect(failureBody.json).not.toHaveBeenCalled();
+      expect(failureObservations).toHaveLength(1);
+      const failureHeaders = fetchMock.mock.calls[
+        fetchMock.mock.calls.length - 1
+      ][1] as RequestInit;
+      const failureRequestId = (
+        failureHeaders.headers as Record<string, string>
+      )["x-request-id"];
+      expect(failureRequestId).not.toBe(unsafe);
+      expect(failureRequestId).not.toContain("token");
+      expect(String(failureError)).not.toContain(unsafe);
+      expect(JSON.stringify(failureObservations[0])).not.toContain(unsafe);
+      expect(failureObservations[0]).toMatchObject({
+        requestId: failureRequestId,
+        outcome: "http_error",
+        httpStatus: 500,
+      });
+
+      // Failed custom clock must not invoke the default clock.
+      defaultClockCalls = 0;
+      performance.now = () => {
+        defaultClockCalls += 1;
+        return 123;
+      };
+      vi.resetModules();
+      const { loadSnapshots: loadCustomNoDefault } = await import("./api");
+      const isolatedObservations: unknown[] = [];
+      await loadCustomNoDefault({
+        observability: {
+          now: () => {
+            throw new Error("custom only");
+          },
+          onObservation: (observation) => {
+            isolatedObservations.push(observation);
+          },
+        },
+      });
+      expect(defaultClockCalls).toBe(0);
+      expect(isolatedObservations).toHaveLength(1);
+      expect(isolatedObservations[0]).toMatchObject({ durationMs: 0 });
+    } finally {
+      performance.now = originalNow;
+    }
   });
 });
