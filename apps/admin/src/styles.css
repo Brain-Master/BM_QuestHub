@@ -10,14 +10,14 @@
 
 body {
   margin: 0;
-  overflow-x: hidden;
 }
 
 .skip-link {
   position: absolute;
-  left: -9999px;
-  top: 0;
+  left: 0.75rem;
+  top: 0.75rem;
   z-index: 100;
+  transform: translateY(calc(-100% - 1rem));
   padding: 0.75rem 1rem;
   background: #0f172a;
   color: #fff;
@@ -26,8 +26,7 @@ body {
 
 .skip-link:focus,
 .skip-link:focus-visible {
-  left: 0.75rem;
-  top: 0.75rem;
+  transform: translateY(0);
 }
 
 .app-shell {
@@ -53,6 +52,8 @@ body {
 
 .app-shell__utility {
   margin-bottom: 1rem;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .app-shell__body {
@@ -68,6 +69,13 @@ body {
 
 .app-shell__main {
   min-width: 0;
+  max-width: 100%;
+}
+
+.app-shell__utility code,
+.app-shell__main code {
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .app-shell__main:focus {
@@ -124,6 +132,8 @@ body {
   padding: 1rem;
   margin-bottom: 1rem;
   box-shadow: 0 1px 3px rgb(15 23 42 / 8%);
+  min-width: 0;
+  max-width: 100%;
 }
 
 .row {
@@ -136,7 +146,8 @@ body {
 
 .row input {
   flex: 1;
-  min-width: 12rem;
+  min-width: min(12rem, 100%);
+  max-width: 100%;
   min-height: 2.75rem;
   padding: 0.4rem 0.6rem;
 }

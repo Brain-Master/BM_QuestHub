@@ -329,7 +329,58 @@ describe("admin app shell contract", () => {
       /@media\s*\(\s*max-width:\s*52rem\s*\)\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/s,
     );
     expect(css).toMatch(/@media\s*\(\s*prefers-reduced-motion:\s*reduce\s*\)/);
-    expect(css).toMatch(/overflow-x:\s*hidden/);
+
+    // No global horizontal clipping that conceals overflow instead of reflow.
+    for (const selector of [
+      "html",
+      "body",
+      "#root",
+      ".app-shell",
+      ".app-shell__body",
+      ".app-shell__utility",
+      ".app-shell__main",
+    ]) {
+      const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const block = new RegExp(`${escaped}\\s*\\{[^}]*\\}`, "s");
+      const match = css.match(block);
+      if (match) {
+        expect(match[0]).not.toMatch(/overflow-x:\s*(hidden|clip)/);
+      }
+    }
+    expect(css).not.toMatch(
+      /(?:^|[,}\s])(?:html|body|#root)\s*\{[^}]*overflow-x:\s*(?:hidden|clip)/s,
+    );
+
+    // Safe skip-link hiding: transform off-screen, not horizontal displacement.
+    expect(css).not.toMatch(/left:\s*-9999px/);
+    expect(css).not.toMatch(/right:\s*9999px/);
+    expect(css).toMatch(
+      /\.skip-link\s*\{[^}]*transform:\s*translateY\([^)]+\)/s,
+    );
+    expect(css).toMatch(
+      /\.skip-link:focus(?:-visible)?(?:,\s*\.skip-link:focus(?:-visible)?)?\s*\{[^}]*transform:\s*translateY\(\s*0\s*\)/s,
+    );
+
+    // Technical values wrap; flex inputs can shrink within the viewport.
+    expect(css).toMatch(
+      /\.app-shell__utility\s*\{[^}]*min-width:\s*0[^}]*max-width:\s*100%/s,
+    );
+    expect(css).toMatch(
+      /\.app-shell__main\s*\{[^}]*min-width:\s*0[^}]*max-width:\s*100%/s,
+    );
+    expect(css).toMatch(
+      /\.panel\s*\{[^}]*min-width:\s*0[^}]*max-width:\s*100%/s,
+    );
+    expect(css).toMatch(
+      /\.app-shell__utility\s+code\s*,\s*\.app-shell__main\s+code\s*\{[^}]*(?:overflow-wrap:\s*anywhere|word-break:\s*break-word)/s,
+    );
+    expect(css).toMatch(
+      /\.app-shell__(?:utility|main)\s+code[\s\S]*?(?:overflow-wrap:\s*anywhere|word-break:\s*break-word)/,
+    );
+    expect(css).toMatch(
+      /\.row\s+input\s*\{[^}]*(?:min-width:\s*min\(\s*12rem\s*,\s*100%\s*\)|max-width:\s*100%)/s,
+    );
+
     expect(css).toMatch(/\.panel\s*\{/);
     expect(css).toMatch(/\.tabs\s*\{/);
     expect(css).toMatch(/\.editor textarea\s*\{/);
