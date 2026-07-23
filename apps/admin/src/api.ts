@@ -22,14 +22,65 @@ export type ApiClientErrorCode =
   | "SERVER_ERROR"
   | "HTTP_ERROR";
 
+const CORRELATION_ID_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,63}$/;
+
+const SECRET_LIKE_CORRELATION_PATTERNS = [
+  "token",
+  "secret",
+  "password",
+  "authorization",
+  "bearer",
+  "api-key",
+  "api_key",
+  "sk-",
+  "ghp_",
+  "gho_",
+  "ghu_",
+  "ghs_",
+  "ghr_",
+] as const;
+
+function isSecretLikeCorrelationId(value: string): boolean {
+  const lower = value.toLowerCase();
+  return SECRET_LIKE_CORRELATION_PATTERNS.some((pattern) =>
+    lower.includes(pattern),
+  );
+}
+
+function sanitizeCorrelationId(value: unknown): string | undefined {
+  if (typeof value !== "string") return undefined;
+  if (value.length === 0 || value.length > 64) return undefined;
+  if (!CORRELATION_ID_PATTERN.test(value)) return undefined;
+  if (isSecretLikeCorrelationId(value)) return undefined;
+  return value;
+}
+
+function readResponseCorrelationId(response: Response): string | undefined {
+  const headers = response.headers;
+  if (!headers || typeof headers.get !== "function") return undefined;
+
+  for (const name of ["x-request-id", "x-correlation-id"] as const) {
+    const sanitized = sanitizeCorrelationId(headers.get(name));
+    if (sanitized !== undefined) return sanitized;
+  }
+
+  return undefined;
+}
+
 export class ApiClientError extends Error {
   readonly name = "ApiClientError";
+  readonly correlationId?: string;
 
   constructor(
     readonly code: ApiClientErrorCode,
     readonly status: number,
+    correlationId?: string,
   ) {
     super("API request failed");
+    const sanitized = sanitizeCorrelationId(correlationId);
+    if (sanitized !== undefined) {
+      this.correlationId = sanitized;
+    }
   }
 }
 
@@ -118,7 +169,11 @@ async function request<T>(
 
     const res = await fetch(requestUrl(method, path), init);
     if (!res.ok) {
-      throw new ApiClientError(apiClientErrorCode(res.status), res.status);
+      throw new ApiClientError(
+        apiClientErrorCode(res.status),
+        res.status,
+        readResponseCorrelationId(res),
+      );
     }
     return (await res.json()) as T;
   } catch (error) {

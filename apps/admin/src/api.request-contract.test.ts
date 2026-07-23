@@ -34,12 +34,45 @@ function pendingAbortableFetch() {
   });
 }
 
-function nonOkResponse(status: number, body?: unknown) {
+function createCompatibleHeaders(headerInit?: HeadersInit): Headers {
+  const map = new Map<string, string>();
+
+  if (headerInit) {
+    if (Array.isArray(headerInit)) {
+      for (const [key, value] of headerInit) {
+        map.set(String(key).toLowerCase(), String(value));
+      }
+    } else if (headerInit instanceof Headers) {
+      headerInit.forEach((value, key) => {
+        map.set(key.toLowerCase(), value);
+      });
+    } else {
+      for (const [key, value] of Object.entries(headerInit)) {
+        if (value !== undefined) {
+          map.set(key.toLowerCase(), String(value));
+        }
+      }
+    }
+  }
+
+  return {
+    get(name: string) {
+      return map.get(name.toLowerCase()) ?? null;
+    },
+  } as Headers;
+}
+
+function nonOkResponse(
+  status: number,
+  body?: unknown,
+  headerInit?: HeadersInit,
+) {
   const json = vi.fn(async () => body ?? { error: `status-${status}` });
   return {
     response: {
       ok: false,
       status,
+      headers: createCompatibleHeaders(headerInit),
       json,
     } as unknown as Response,
     json,
@@ -418,5 +451,114 @@ describe("admin API request contracts", () => {
     expect(parsed.searchParams.get("path")).toBe("/snapshots");
     expect(init.method).toBe("GET");
     expect(Object.prototype.hasOwnProperty.call(init, "body")).toBe(false);
+  });
+
+  it("captures a safe x-request-id without parsing the error body", async () => {
+    const correlationId = "req-safe-abc.123:45_67";
+    const { response, json } = nonOkResponse(
+      500,
+      { error: PRIVATE_BACKEND_MARKER },
+      { "x-request-id": correlationId },
+    );
+    fetchMock.mockResolvedValueOnce(response);
+    const { loadSnapshots, ApiClientError } = await import("./api");
+
+    const error = await loadSnapshots().catch((caught: unknown) => caught);
+    expect(error).toBeInstanceOf(ApiClientError);
+    expect(error).toMatchObject({
+      name: "ApiClientError",
+      message: "API request failed",
+      code: "SERVER_ERROR",
+      status: 500,
+      correlationId,
+    });
+    expect(json).not.toHaveBeenCalled();
+    expect(Object.prototype.hasOwnProperty.call(error, "payload")).toBe(false);
+    expect(Object.prototype.hasOwnProperty.call(error, "response")).toBe(false);
+    expect(Object.prototype.hasOwnProperty.call(error, "cause")).toBe(false);
+    expect(String(error)).not.toContain(PRIVATE_BACKEND_MARKER);
+    expect(JSON.stringify(error)).not.toContain(PRIVATE_BACKEND_MARKER);
+  });
+
+  it("uses x-correlation-id only when x-request-id is absent", async () => {
+    const fallbackId = "corr-fallback-99";
+    const preferredId = "req-preferred-1";
+
+    const fallback = nonOkResponse(
+      503,
+      { error: PRIVATE_BACKEND_MARKER },
+      { "x-correlation-id": fallbackId },
+    );
+    fetchMock.mockResolvedValueOnce(fallback.response);
+    const { loadSnapshots, ApiClientError } = await import("./api");
+
+    const fallbackError = await loadSnapshots().catch(
+      (caught: unknown) => caught,
+    );
+    expect(fallbackError).toBeInstanceOf(ApiClientError);
+    expect(fallbackError).toMatchObject({
+      code: "SERVER_ERROR",
+      status: 503,
+      correlationId: fallbackId,
+    });
+    expect(fallback.json).not.toHaveBeenCalled();
+
+    const both = nonOkResponse(
+      404,
+      { error: PRIVATE_BACKEND_MARKER },
+      {
+        "x-request-id": preferredId,
+        "x-correlation-id": fallbackId,
+      },
+    );
+    fetchMock.mockResolvedValueOnce(both.response);
+    const bothError = await loadSnapshots().catch((caught: unknown) => caught);
+    expect(bothError).toBeInstanceOf(ApiClientError);
+    expect(bothError).toMatchObject({
+      code: "HTTP_ERROR",
+      status: 404,
+      correlationId: preferredId,
+    });
+    expect(both.json).not.toHaveBeenCalled();
+  });
+
+  it("rejects unsafe correlation headers without leaking them", async () => {
+    const unsafeHeaders: Array<Record<string, string>> = [
+      { "x-request-id": "bad\nid" },
+      { "x-request-id": " has-space" },
+      { "x-request-id": "a".repeat(65) },
+      { "x-request-id": `token-${PRIVATE_BACKEND_MARKER}` },
+      { "x-correlation-id": `secret-${PRIVATE_BACKEND_MARKER}` },
+      { "x-request-id": `sk-${PRIVATE_BACKEND_MARKER}` },
+    ];
+
+    for (const headers of unsafeHeaders) {
+      const { response, json } = nonOkResponse(
+        422,
+        { error: PRIVATE_BACKEND_MARKER },
+        headers,
+      );
+      fetchMock.mockResolvedValueOnce(response);
+      const { loadSnapshots, ApiClientError } = await import("./api");
+
+      const error = await loadSnapshots().catch((caught: unknown) => caught);
+      expect(error).toBeInstanceOf(ApiClientError);
+      expect(error).toMatchObject({
+        name: "ApiClientError",
+        message: "API request failed",
+        code: "VALIDATION_FAILED",
+        status: 422,
+      });
+      expect(
+        (error as InstanceType<typeof ApiClientError>).correlationId,
+      ).toBeUndefined();
+      expect(json).not.toHaveBeenCalled();
+      expect(String(error)).not.toContain(PRIVATE_BACKEND_MARKER);
+      expect(JSON.stringify(error)).not.toContain(PRIVATE_BACKEND_MARKER);
+      for (const value of Object.values(headers)) {
+        expect(String(error)).not.toContain(value);
+        expect(JSON.stringify(error)).not.toContain(value);
+      }
+    }
   });
 });
