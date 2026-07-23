@@ -1,10 +1,27 @@
 import {
   parseSnapshotsBundle,
+  SnapshotBundleValidationError,
   type SnapshotsBundle,
 } from "./snapshot-boundary";
 import { legacyTokenAdapter } from "./legacy-token-adapter";
+import {
+  API_OPERATIONS,
+  createApiRequestObservation,
+  sanitizeApiRequestId,
+  type ApiObservabilityOptions,
+  type ApiOperation,
+  type ApiRequestOutcome,
+} from "./api-observability";
 
 export type { SnapshotsBundle } from "./snapshot-boundary";
+export type {
+  ApiObservabilityOptions,
+  ApiObserver,
+  ApiOperation,
+  ApiRequestObservation,
+  ApiRequestOutcome,
+} from "./api-observability";
+export { API_OPERATIONS } from "./api-observability";
 
 const API_URL = import.meta.env.VITE_CONTENT_ADMIN_URL?.replace(/\/$/, "") ?? "";
 
@@ -12,6 +29,7 @@ const REQUEST_TIMEOUT_MS = 15_000;
 
 export type ApiRequestOptions = {
   signal?: AbortSignal;
+  observability?: ApiObservabilityOptions;
 };
 
 export type ApiClientErrorCode =
@@ -86,10 +104,11 @@ export class ApiClientError extends Error {
 
 type AbortCause = "timeout" | "manual";
 
-function headers(): HeadersInit {
+function headers(requestId: string): HeadersInit {
   return {
     "content-type": "application/json",
     "x-content-token": legacyTokenAdapter.read(),
+    "x-request-id": requestId,
   };
 }
 
@@ -142,10 +161,157 @@ function createRequestAbort(signal?: AbortSignal) {
   };
 }
 
+function resolveRequestId(options?: ApiObservabilityOptions): string {
+  const factory = options?.createRequestId;
+  if (typeof factory === "function") {
+    try {
+      const custom = factory();
+      const sanitized = sanitizeApiRequestId(custom);
+      if (sanitized !== null) return sanitized;
+    } catch {
+      // Custom factory failures fall back to the default UUID generator.
+    }
+  }
+
+  try {
+    const generated = crypto.randomUUID();
+    const sanitized = sanitizeApiRequestId(generated);
+    if (sanitized !== null) return sanitized;
+  } catch {
+    // Default generator failure is handled below.
+  }
+
+  throw new Error("Unable to create API request ID");
+}
+
+function readNow(options?: ApiObservabilityOptions): number {
+  const clock = options?.now;
+  if (typeof clock === "function") {
+    try {
+      const value = clock();
+      if (typeof value === "number" && Number.isFinite(value)) return value;
+    } catch {
+      // Clock failures fall back to performance.now().
+    }
+  }
+  return performance.now();
+}
+
+function classifyOutcome(error: unknown): {
+  outcome: ApiRequestOutcome;
+  httpStatus: number | null;
+} {
+  if (error instanceof ApiClientError) {
+    return { outcome: "http_error", httpStatus: error.status };
+  }
+  if (error instanceof DOMException && error.name === "TimeoutError") {
+    return { outcome: "timeout", httpStatus: null };
+  }
+  if (error instanceof DOMException && error.name === "AbortError") {
+    return { outcome: "cancelled", httpStatus: null };
+  }
+  if (error instanceof SnapshotBundleValidationError) {
+    return { outcome: "invalid_response", httpStatus: null };
+  }
+  if (error instanceof SyntaxError) {
+    return { outcome: "invalid_response", httpStatus: null };
+  }
+  return { outcome: "transport_error", httpStatus: null };
+}
+
+function emitObservationSafely(
+  operation: ApiOperation,
+  requestId: string,
+  startedAt: number,
+  endedAt: number,
+  outcome: ApiRequestOutcome,
+  httpStatus: number | null,
+  observer: ApiObservabilityOptions["onObservation"],
+): void {
+  try {
+    const observation = createApiRequestObservation({
+      requestId,
+      operation,
+      startedAt,
+      endedAt,
+      outcome,
+      httpStatus,
+    });
+    if (typeof observer === "function") {
+      try {
+        observer(observation);
+      } catch {
+        // Observer failures must not replace the original result or error.
+      }
+    }
+  } catch {
+    // Observation pipeline failures must not replace the original result or error.
+  }
+}
+
+async function withApiObservation<T>(
+  operation: ApiOperation,
+  options: ApiRequestOptions | undefined,
+  execute: (requestId: string) => Promise<T>,
+): Promise<T> {
+  const observability = options?.observability;
+  const requestId = resolveRequestId(observability);
+  const startedAt = readNow(observability);
+  let outcome: ApiRequestOutcome = "success";
+  let httpStatus: number | null = null;
+
+  try {
+    return await execute(requestId);
+  } catch (error) {
+    const classified = classifyOutcome(error);
+    outcome = classified.outcome;
+    httpStatus = classified.httpStatus;
+    throw error;
+  } finally {
+    const endedAt = readNow(observability);
+    emitObservationSafely(
+      operation,
+      requestId,
+      startedAt,
+      endedAt,
+      outcome,
+      httpStatus,
+      observability?.onObservation,
+    );
+  }
+}
+
+function saveSnapshotOperation(
+  type: "catalog" | "map" | "site" | "manifest" | "offers",
+): ApiOperation {
+  switch (type) {
+    case "catalog":
+      return API_OPERATIONS.SAVE_CATALOG;
+    case "map":
+      return API_OPERATIONS.SAVE_MAP;
+    case "site":
+      return API_OPERATIONS.SAVE_SITE;
+    case "manifest":
+      return API_OPERATIONS.SAVE_MANIFEST;
+    case "offers":
+      return API_OPERATIONS.SAVE_OFFERS;
+  }
+}
+
+function publishContentOperation(tier: "hot" | "cold"): ApiOperation {
+  switch (tier) {
+    case "hot":
+      return API_OPERATIONS.PUBLISH_HOT;
+    case "cold":
+      return API_OPERATIONS.PUBLISH_COLD;
+  }
+}
+
 async function request<T>(
   method: string,
   path: string,
-  body?: unknown,
+  body: unknown | undefined,
+  requestId: string,
   options?: ApiRequestOptions,
 ): Promise<T> {
   if (!API_URL) throw new Error("Задайте VITE_CONTENT_ADMIN_URL");
@@ -155,7 +321,7 @@ async function request<T>(
   try {
     const init: RequestInit = {
       method,
-      headers: headers(),
+      headers: headers(requestId),
       signal: abort.signal,
     };
 
@@ -195,14 +361,20 @@ async function request<T>(
 export async function loadSnapshots(
   options?: ApiRequestOptions,
 ): Promise<SnapshotsBundle> {
-  const response = await request<unknown>(
-    "GET",
-    "/snapshots",
-    undefined,
+  return withApiObservation(
+    API_OPERATIONS.LOAD_SNAPSHOTS,
     options,
+    async (requestId) => {
+      const response = await request<unknown>(
+        "GET",
+        "/snapshots",
+        undefined,
+        requestId,
+        options,
+      );
+      return parseSnapshotsBundle(response);
+    },
   );
-
-  return parseSnapshotsBundle(response);
 }
 
 export function saveSnapshot(
@@ -210,11 +382,17 @@ export function saveSnapshot(
   data: unknown,
   options?: ApiRequestOptions,
 ) {
-  return request<{ ok: boolean }>(
-    "PUT",
-    `/snapshots/${type}`,
-    { data },
+  return withApiObservation(
+    saveSnapshotOperation(type),
     options,
+    (requestId) =>
+      request<{ ok: boolean }>(
+        "PUT",
+        `/snapshots/${type}`,
+        { data },
+        requestId,
+        options,
+      ),
   );
 }
 
@@ -223,11 +401,17 @@ export function publishContent(
   options?: ApiRequestOptions,
 ) {
   const path = tier === "hot" ? "/sync/hot" : "/sync/cold";
-  return request<{ ok: boolean; tier: string; message?: string; workflow?: unknown }>(
-    "POST",
-    path,
-    {},
+  return withApiObservation(
+    publishContentOperation(tier),
     options,
+    (requestId) =>
+      request<{ ok: boolean; tier: string; message?: string; workflow?: unknown }>(
+        "POST",
+        path,
+        {},
+        requestId,
+        options,
+      ),
   );
 }
 

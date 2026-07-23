@@ -127,10 +127,16 @@ describe("admin API request contracts", () => {
     expect(parsed.origin + parsed.pathname).toBe(API_URL);
     expect(parsed.searchParams.get("path")).toBe("/snapshots");
     expect(init.method).toBe("GET");
-    expect(init.headers).toEqual({
-      "content-type": "application/json",
-      "x-content-token": TOKEN,
-    });
+    const requestHeaders = init.headers as Record<string, string>;
+    expect(requestHeaders["content-type"]).toBe("application/json");
+    expect(requestHeaders["x-content-token"]).toBe(TOKEN);
+    expect(requestHeaders["x-request-id"]).toMatch(
+      /^[A-Za-z0-9][A-Za-z0-9._:-]{0,63}$/i,
+    );
+    expect(requestHeaders["x-correlation-id"]).toBeUndefined();
+    expect(Object.keys(requestHeaders).sort()).toEqual(
+      ["content-type", "x-content-token", "x-request-id"].sort(),
+    );
     expect(Object.prototype.hasOwnProperty.call(init, "body")).toBe(false);
     expect(init.signal).toBeInstanceOf(AbortSignal);
     expect(init.signal?.aborted).toBe(false);
@@ -560,5 +566,394 @@ describe("admin API request contracts", () => {
         expect(JSON.stringify(error)).not.toContain(value);
       }
     }
+  });
+
+  it("sends one safe request ID and emits one successful load observation", async () => {
+    const observations: unknown[] = [];
+    const requestId = "req-load-success-1";
+    const { loadSnapshots } = await import("./api");
+    const { API_OPERATIONS } = await import("./api-observability");
+
+    const result = await loadSnapshots({
+      observability: {
+        createRequestId: () => requestId,
+        now: (() => {
+          let tick = 1000;
+          return () => {
+            const value = tick;
+            tick += 25;
+            return value;
+          };
+        })(),
+        onObservation: (observation) => {
+          observations.push(observation);
+        },
+      },
+    });
+
+    expect(result.ok).toBe(true);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    const init = fetchMock.mock.calls[0][1] as RequestInit;
+    const requestHeaders = init.headers as Record<string, string>;
+    expect(requestHeaders["x-request-id"]).toBe(requestId);
+    expect(requestHeaders["x-content-token"]).toBe(TOKEN);
+    expect(requestHeaders["content-type"]).toBe("application/json");
+    expect(requestHeaders["x-correlation-id"]).toBeUndefined();
+    expect(observations).toHaveLength(1);
+    expect(observations[0]).toEqual({
+      requestId,
+      operation: API_OPERATIONS.LOAD_SNAPSHOTS,
+      durationMs: 25,
+      outcome: "success",
+      httpStatus: null,
+    });
+    expect(Object.keys(observations[0] as object)).toEqual([
+      "requestId",
+      "operation",
+      "durationMs",
+      "outcome",
+      "httpStatus",
+    ]);
+  });
+
+  it("uses stable save operation names for every snapshot type", async () => {
+    fetchMock.mockImplementation(async () => Response.json({ ok: true }));
+    const { saveSnapshot } = await import("./api");
+    const { API_OPERATIONS } = await import("./api-observability");
+
+    const cases = [
+      ["catalog", API_OPERATIONS.SAVE_CATALOG],
+      ["map", API_OPERATIONS.SAVE_MAP],
+      ["site", API_OPERATIONS.SAVE_SITE],
+      ["manifest", API_OPERATIONS.SAVE_MANIFEST],
+      ["offers", API_OPERATIONS.SAVE_OFFERS],
+    ] as const;
+
+    for (const [type, operation] of cases) {
+      const observations: unknown[] = [];
+      await saveSnapshot(type, { title: type }, {
+        observability: {
+          createRequestId: () => `req-save-${type}`,
+          onObservation: (observation) => {
+            observations.push(observation);
+          },
+        },
+      });
+      expect(observations).toHaveLength(1);
+      expect(observations[0]).toMatchObject({
+        requestId: `req-save-${type}`,
+        operation,
+        outcome: "success",
+        httpStatus: null,
+      });
+      const serialized = JSON.stringify(observations[0]);
+      expect(serialized).not.toContain(`/snapshots/${type}`);
+      expect(serialized).not.toContain("path");
+      expect(serialized).not.toContain(API_URL);
+    }
+  });
+
+  it("uses stable publish operation names for hot and cold", async () => {
+    fetchMock.mockImplementation(async () =>
+      Response.json({ ok: true, tier: "hot" }),
+    );
+    const { publishContent } = await import("./api");
+    const { API_OPERATIONS } = await import("./api-observability");
+
+    for (const [tier, operation] of [
+      ["hot", API_OPERATIONS.PUBLISH_HOT],
+      ["cold", API_OPERATIONS.PUBLISH_COLD],
+    ] as const) {
+      const observations: unknown[] = [];
+      await publishContent(tier, {
+        observability: {
+          createRequestId: () => `req-publish-${tier}`,
+          onObservation: (observation) => {
+            observations.push(observation);
+          },
+        },
+      });
+      expect(observations).toHaveLength(1);
+      expect(observations[0]).toMatchObject({
+        requestId: `req-publish-${tier}`,
+        operation,
+        outcome: "success",
+        httpStatus: null,
+      });
+      const serialized = JSON.stringify(observations[0]);
+      expect(serialized).not.toContain(`/sync/${tier}`);
+      expect(serialized).not.toContain(API_URL);
+    }
+  });
+
+  it("emits an HTTP-error observation without reading body or leaking token", async () => {
+    const { response, json } = nonOkResponse(422, {
+      error: PRIVATE_BACKEND_MARKER,
+      token: TOKEN,
+    });
+    fetchMock.mockResolvedValueOnce(response);
+    const observations: unknown[] = [];
+    const { loadSnapshots, ApiClientError } = await import("./api");
+
+    const error = await loadSnapshots({
+      observability: {
+        createRequestId: () => "req-http-error-1",
+        onObservation: (observation) => {
+          observations.push(observation);
+        },
+      },
+    }).catch((caught: unknown) => caught);
+
+    expect(error).toBeInstanceOf(ApiClientError);
+    expect(json).not.toHaveBeenCalled();
+    expect(observations).toHaveLength(1);
+    expect(observations[0]).toEqual({
+      requestId: "req-http-error-1",
+      operation: "load_snapshots",
+      durationMs: expect.any(Number),
+      outcome: "http_error",
+      httpStatus: 422,
+    });
+    const serialized = JSON.stringify(observations[0]);
+    expect(serialized).not.toContain(PRIVATE_BACKEND_MARKER);
+    expect(serialized).not.toContain(TOKEN);
+    expect(serialized).not.toContain("x-content-token");
+    expect(serialized).not.toContain("body");
+    expect(serialized).not.toContain("headers");
+    expect(Object.prototype.hasOwnProperty.call(observations[0], "body")).toBe(
+      false,
+    );
+    expect(Object.prototype.hasOwnProperty.call(observations[0], "token")).toBe(
+      false,
+    );
+  });
+
+  it("emits one timeout observation after cleanup", async () => {
+    vi.useFakeTimers();
+    fetchMock = pendingAbortableFetch();
+    vi.stubGlobal("fetch", fetchMock);
+    const observations: unknown[] = [];
+    const { loadSnapshots, ApiClientError } = await import("./api");
+
+    const pending = loadSnapshots({
+      observability: {
+        createRequestId: () => "req-timeout-1",
+        onObservation: (observation) => {
+          observations.push(observation);
+        },
+      },
+    });
+    const rejection = expect(pending).rejects.toMatchObject({
+      name: "TimeoutError",
+      message: "Request timed out",
+    });
+
+    await vi.advanceTimersByTimeAsync(15_000);
+    await rejection;
+    const result = await pending.catch((caught: unknown) => caught);
+    expect(result).not.toBeInstanceOf(ApiClientError);
+    expect(vi.getTimerCount()).toBe(0);
+    expect(observations).toHaveLength(1);
+    expect(observations[0]).toMatchObject({
+      requestId: "req-timeout-1",
+      operation: "load_snapshots",
+      outcome: "timeout",
+      httpStatus: null,
+    });
+  });
+
+  it("emits one cancellation observation after cleanup", async () => {
+    vi.useFakeTimers();
+    fetchMock = pendingAbortableFetch();
+    vi.stubGlobal("fetch", fetchMock);
+    const caller = new AbortController();
+    const observations: unknown[] = [];
+    const { loadSnapshots, ApiClientError } = await import("./api");
+
+    const pending = loadSnapshots({
+      signal: caller.signal,
+      observability: {
+        createRequestId: () => "req-cancel-1",
+        onObservation: (observation) => {
+          observations.push(observation);
+        },
+      },
+    });
+    const rejection = expect(pending).rejects.toMatchObject({
+      name: "AbortError",
+      message: "Request cancelled",
+    });
+
+    caller.abort();
+    await rejection;
+    const result = await pending.catch((caught: unknown) => caught);
+    expect(result).not.toBeInstanceOf(ApiClientError);
+    expect(vi.getTimerCount()).toBe(0);
+    expect(observations).toHaveLength(1);
+    expect(observations[0]).toMatchObject({
+      requestId: "req-cancel-1",
+      operation: "load_snapshots",
+      outcome: "cancelled",
+      httpStatus: null,
+    });
+  });
+
+  it("classifies malformed successful snapshots as invalid-response", async () => {
+    const malformed = createValidSnapshotBundleFixture() as {
+      ok: true;
+      catalog: unknown;
+      map: Record<string, unknown>;
+      site: Record<string, unknown>;
+      manifest: null;
+      offers: null;
+    };
+    malformed.catalog = [];
+    fetchMock.mockResolvedValueOnce(Response.json(malformed));
+    const observations: unknown[] = [];
+    const { loadSnapshots } = await import("./api");
+    const { SnapshotBundleValidationError } = await import("./snapshot-boundary");
+
+    const error = await loadSnapshots({
+      observability: {
+        createRequestId: () => "req-invalid-snapshot-1",
+        onObservation: (observation) => {
+          observations.push(observation);
+        },
+      },
+    }).catch((caught: unknown) => caught);
+
+    expect(error).toBeInstanceOf(SnapshotBundleValidationError);
+    expect(observations).toHaveLength(1);
+    expect(observations[0]).toMatchObject({
+      requestId: "req-invalid-snapshot-1",
+      operation: "load_snapshots",
+      outcome: "invalid_response",
+      httpStatus: null,
+    });
+    expect((observations[0] as { outcome: string }).outcome).not.toBe("success");
+  });
+
+  it("classifies successful-response JSON parse failures as invalid-response", async () => {
+    const json = vi.fn(async () => {
+      throw new SyntaxError("Unexpected token");
+    });
+    fetchMock.mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      headers: createCompatibleHeaders(),
+      json,
+    } as unknown as Response);
+    const observations: unknown[] = [];
+    const { loadSnapshots } = await import("./api");
+
+    const error = await loadSnapshots({
+      observability: {
+        createRequestId: () => "req-json-syntax-1",
+        onObservation: (observation) => {
+          observations.push(observation);
+        },
+      },
+    }).catch((caught: unknown) => caught);
+
+    expect(error).toBeInstanceOf(SyntaxError);
+    expect(observations).toHaveLength(1);
+    expect(observations[0]).toMatchObject({
+      requestId: "req-json-syntax-1",
+      operation: "load_snapshots",
+      outcome: "invalid_response",
+      httpStatus: null,
+    });
+  });
+
+  it("classifies network failures as transport-error and preserves identity", async () => {
+    const networkError = new Error("synthetic network failure");
+    fetchMock.mockRejectedValueOnce(networkError);
+    const observations: unknown[] = [];
+    const { loadSnapshots } = await import("./api");
+
+    const error = await loadSnapshots({
+      observability: {
+        createRequestId: () => "req-transport-1",
+        onObservation: (observation) => {
+          observations.push(observation);
+        },
+      },
+    }).catch((caught: unknown) => caught);
+
+    expect(error).toBe(networkError);
+    expect(observations).toHaveLength(1);
+    expect(observations[0]).toMatchObject({
+      requestId: "req-transport-1",
+      operation: "load_snapshots",
+      outcome: "transport_error",
+      httpStatus: null,
+    });
+  });
+
+  it("isolates observer clock and request-ID factory failures from operations", async () => {
+    const { loadSnapshots, ApiClientError } = await import("./api");
+
+    const successObservations: unknown[] = [];
+    const success = await loadSnapshots({
+      observability: {
+        createRequestId: () => {
+          throw new Error("factory boom");
+        },
+        now: () => {
+          throw new Error("clock boom");
+        },
+        onObservation: (observation) => {
+          successObservations.push(observation);
+          throw new Error("observer boom on success");
+        },
+      },
+    });
+    expect(success.ok).toBe(true);
+    expect(successObservations).toHaveLength(1);
+    const successHeaders = fetchMock.mock.calls[0][1] as RequestInit;
+    const successRequestId = (
+      successHeaders.headers as Record<string, string>
+    )["x-request-id"];
+    expect(successRequestId).toMatch(
+      /^[A-Za-z0-9][A-Za-z0-9._:-]{0,63}$/,
+    );
+    expect(successRequestId).not.toContain("factory boom");
+    expect(successObservations[0]).toMatchObject({
+      requestId: successRequestId,
+      outcome: "success",
+    });
+
+    const unsafe = "token-should-never-appear";
+    const { response, json } = nonOkResponse(500, {
+      error: PRIVATE_BACKEND_MARKER,
+    });
+    fetchMock.mockResolvedValueOnce(response);
+    const failureObservations: unknown[] = [];
+    const error = await loadSnapshots({
+      observability: {
+        createRequestId: () => unsafe,
+        onObservation: (observation) => {
+          failureObservations.push(observation);
+          throw new Error("observer boom on failure");
+        },
+      },
+    }).catch((caught: unknown) => caught);
+
+    expect(error).toBeInstanceOf(ApiClientError);
+    expect(json).not.toHaveBeenCalled();
+    expect(failureObservations).toHaveLength(1);
+    const failureHeaders = fetchMock.mock.calls[1][1] as RequestInit;
+    const failureRequestId = (
+      failureHeaders.headers as Record<string, string>
+    )["x-request-id"];
+    expect(failureRequestId).not.toBe(unsafe);
+    expect(failureRequestId).not.toContain("token");
+    expect(String(error)).not.toContain(unsafe);
+    expect(JSON.stringify(failureObservations[0])).not.toContain(unsafe);
+    expect(failureObservations[0]).toMatchObject({
+      requestId: failureRequestId,
+      outcome: "http_error",
+      httpStatus: 500,
+    });
   });
 });
