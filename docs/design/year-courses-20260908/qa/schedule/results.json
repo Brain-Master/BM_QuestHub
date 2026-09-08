@@ -1,0 +1,36 @@
+{
+  "status": "passed",
+  "checks": [
+    "51 groups / 52 weekly slots / 8 locations / 46 open / 5 closed",
+    "Direct IDs distinct from listing IDs; fallback search URLs preserved",
+    "1517 open group / 2 of 12 / direct card 965306",
+    "Combined filters, empty/reset, multi-day group preserved",
+    "Exact campus filter and school change resets incompatible address",
+    "Privacy whitelist, 1440/390/320 reflow, keyboard focus",
+    "Overview / SHMI / agenda navigation; no annual workspace writes or runtime errors"
+  ],
+  "annualWrites": [],
+  "legacyNavigationRequests": [
+    {
+      "method": "POST",
+      "path": "/__nextjs_original-stack-frames"
+    },
+    {
+      "method": "POST",
+      "path": "/__nextjs_original-stack-frames"
+    },
+    {
+      "method": "POST",
+      "path": "/__nextjs_original-stack-frames"
+    },
+    {
+      "method": "POST",
+      "path": "/d4ejc04vneckj5nu0r68"
+    },
+    {
+      "method": "POST",
+      "path": "/__nextjs_original-stack-frames"
+    }
+  ],
+  "note": "All external requests and non-diagnostic local POSTs blocked. Existing agenda may attempt its traffic telemetry; not a new schedule write."
+}

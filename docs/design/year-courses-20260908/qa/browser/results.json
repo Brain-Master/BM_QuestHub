@@ -1,0 +1,111 @@
+{
+  "checks": [
+    {
+      "width": 1440,
+      "path": "/year-courses/",
+      "status": "passed"
+    },
+    {
+      "width": 1440,
+      "path": "/year-courses/shmi/",
+      "status": "passed"
+    },
+    {
+      "width": 1440,
+      "path": "/year-courses/it-academy/",
+      "status": "passed"
+    },
+    {
+      "width": 1440,
+      "path": "/year-courses/projects/",
+      "status": "passed"
+    },
+    {
+      "width": 1440,
+      "path": "/year-courses/olympiad-league/",
+      "status": "passed"
+    },
+    {
+      "width": 390,
+      "path": "/year-courses/",
+      "status": "passed"
+    },
+    {
+      "width": 390,
+      "path": "/year-courses/shmi/",
+      "status": "passed"
+    },
+    {
+      "width": 390,
+      "path": "/year-courses/it-academy/",
+      "status": "passed"
+    },
+    {
+      "width": 390,
+      "path": "/year-courses/projects/",
+      "status": "passed"
+    },
+    {
+      "width": 390,
+      "path": "/year-courses/olympiad-league/",
+      "status": "passed"
+    },
+    {
+      "width": 320,
+      "path": "/year-courses/",
+      "status": "passed"
+    },
+    {
+      "width": 320,
+      "path": "/year-courses/shmi/",
+      "status": "passed"
+    },
+    {
+      "width": 320,
+      "path": "/year-courses/it-academy/",
+      "status": "passed"
+    },
+    {
+      "width": 320,
+      "path": "/year-courses/projects/",
+      "status": "passed"
+    },
+    {
+      "width": 320,
+      "path": "/year-courses/olympiad-league/",
+      "status": "passed"
+    },
+    {
+      "navigation": "card / reload / Back",
+      "video": "playback passed",
+      "keyboard": "card focus visible",
+      "reducedMotion": "passed"
+    },
+    {
+      "path": "/",
+      "status": "HTTP 200 and rendered main content",
+      "h1Count": 1
+    },
+    {
+      "path": "/catalog/",
+      "status": "HTTP 200 and rendered main content",
+      "h1Count": 0
+    },
+    {
+      "path": "/agenda/",
+      "status": "HTTP 200 and rendered main content",
+      "h1Count": 0
+    },
+    {
+      "path": "/sites/",
+      "status": "HTTP 200 and rendered main content",
+      "h1Count": 1
+    },
+    {
+      "path": "/legal/",
+      "status": "HTTP 200 and rendered main content",
+      "h1Count": 1
+    }
+  ],
+  "errors": []
+}

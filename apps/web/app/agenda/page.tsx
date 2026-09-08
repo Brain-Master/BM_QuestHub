@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { LiveAgenda } from "@/components/live-agenda";
+import { YearScheduleLink } from "@/components/year-schedule-link";
 import { PreferredSchoolBanner } from "@/components/preferred-school-banner";
 import {
   loadQuestsShell,
@@ -24,6 +25,7 @@ export default async function AgendaPage() {
   return (
     <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:py-10">
       <PreferredSchoolBanner mode="agenda" />
+      <YearScheduleLink />
 
       <LiveAgenda
         baseQuests={baseQuests}

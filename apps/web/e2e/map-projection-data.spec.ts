@@ -72,6 +72,8 @@ test.describe("Map projection helpers", () => {
       name: "Main",
       headline: "Test",
       address: "Test",
+      directions: [],
+      photos: [],
       latitude: 0.25,
       longitude: 0.5,
     };
@@ -102,6 +104,8 @@ test.describe("Map projection helpers", () => {
       name: "Main",
       headline: "Test",
       address: "Test",
+      directions: [],
+      photos: [],
       latitude: 0.25,
       longitude: 0.5,
     };

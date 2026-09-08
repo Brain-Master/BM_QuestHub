@@ -1,0 +1,70 @@
+[
+  {
+    "id": "I008",
+    "name": "workshop",
+    "source": "photo:-221557445:457239680",
+    "source_ids": [
+      "P007"
+    ],
+    "sha256": "6d69ce89a661b2f179f3b08ec47d7354a188e31587912c93743dcacfb95ab231",
+    "description": "Группа детей с наставником у стола с деталями; обсуждение задания.",
+    "rights": "Owner review required before publication"
+  },
+  {
+    "id": "I100",
+    "name": "academy",
+    "source": "photo:-221557445:457240830",
+    "source_ids": [
+      "P077"
+    ],
+    "sha256": "985ce5cd6dafb6e2260a0224f359b79caeca0db259810e72710cd0edd2b10f3b",
+    "description": "Наставник показывает ученику небольшой электронный узел; на столе инструменты и корпуса.",
+    "rights": "Owner review required before publication"
+  },
+  {
+    "id": "I135",
+    "name": "project",
+    "source": "article-image:7688bf0862d24f4458bd16dd2d5b651c77d8411a6b0d453e50a1573ae03348b4",
+    "source_ids": [
+      "A01"
+    ],
+    "sha256": "7688bf0862d24f4458bd16dd2d5b651c77d8411a6b0d453e50a1573ae03348b4",
+    "description": "Крупный снимок открытого 3D-принтера с красными печатными деталями и металлическими направляющими.",
+    "rights": "Owner review required before publication"
+  },
+  {
+    "id": "I174",
+    "name": "olympiad",
+    "source": "article-image:e7fa02cff270e4b75b0314ae6716ebea6fb59f70f72a7be65311e553ff81bf8d",
+    "source_ids": [
+      "A06"
+    ],
+    "sha256": "e7fa02cff270e4b75b0314ae6716ebea6fb59f70f72a7be65311e553ff81bf8d",
+    "description": "Большое групповое фото на сцене ВсОШ по труду/технологии, на экране 6–11 апреля; год по изображению не установлен.",
+    "rights": "Owner review required before publication"
+  },
+  {
+    "id": "I106",
+    "name": "electronics",
+    "source": "photo:-221557445:457240852",
+    "source_ids": [
+      "P080"
+    ],
+    "sha256": "600a9c51cd5a6b10dd836d823140501f032e114ac7d30fd42ddd9e19f975a0b5",
+    "description": "Макросъёмка пайки небольшой платы в держателе; хороший кадр технической практики без полного лица.",
+    "rights": "Owner review required before publication"
+  },
+  {
+    "id": "V01",
+    "source": "video:-221557445:456239017",
+    "source_ids": [
+      "P004"
+    ],
+    "excerpt_seconds": [
+      10,
+      40
+    ],
+    "audio": "Removed intentionally; silent process excerpt",
+    "rights": "Owner review required before publication"
+  }
+]

@@ -12,6 +12,104 @@ body {
   margin: 0;
 }
 
+.skip-link {
+  position: absolute;
+  left: 0.75rem;
+  top: 0.75rem;
+  z-index: 100;
+  transform: translateY(calc(-100% - 1rem));
+  padding: 0.75rem 1rem;
+  background: #0f172a;
+  color: #fff;
+  text-decoration: none;
+}
+
+.skip-link:focus,
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
+.app-shell {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.app-shell__header {
+  margin-bottom: 1rem;
+}
+
+.app-shell__title {
+  margin: 0 0 0.25rem;
+  font-size: 1.5rem;
+}
+
+.app-shell__description {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.app-shell__utility {
+  margin-bottom: 1rem;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.app-shell__body {
+  display: grid;
+  grid-template-columns: minmax(10rem, 12rem) minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.app-shell__navigation {
+  min-width: 0;
+}
+
+.app-shell__main {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.app-shell__utility code,
+.app-shell__main code {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.app-shell__main:focus {
+  outline: none;
+}
+
+.app-shell__main:focus-visible {
+  outline: 2px solid #0f172a;
+  outline-offset: 2px;
+}
+
+.app-shell__state {
+  background: #fff;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 1px 3px rgb(15 23 42 / 8%);
+}
+
+.app-shell__state-title {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+}
+
+.app-shell__retry {
+  margin-top: 0.75rem;
+  min-height: 2.75rem;
+  min-width: 2.75rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+}
+
 .layout {
   max-width: 960px;
   margin: 0 auto;
@@ -34,6 +132,8 @@ body {
   padding: 1rem;
   margin-bottom: 1rem;
   box-shadow: 0 1px 3px rgb(15 23 42 / 8%);
+  min-width: 0;
+  max-width: 100%;
 }
 
 .row {
@@ -46,7 +146,9 @@ body {
 
 .row input {
   flex: 1;
-  min-width: 12rem;
+  min-width: min(12rem, 100%);
+  max-width: 100%;
+  min-height: 2.75rem;
   padding: 0.4rem 0.6rem;
 }
 
@@ -60,10 +162,12 @@ body {
   gap: 0.5rem;
   margin-bottom: 1rem;
   flex-wrap: wrap;
+  flex-direction: column;
 }
 
 .tabs button {
-  padding: 0.4rem 0.75rem;
+  padding: 0.5rem 0.75rem;
+  min-height: 2.75rem;
   border: 1px solid #cbd5e1;
   background: #fff;
   border-radius: 6px;
@@ -92,6 +196,7 @@ button.primary {
   color: #fff;
   border: none;
   padding: 0.5rem 1rem;
+  min-height: 2.75rem;
   border-radius: 6px;
   cursor: pointer;
 }
@@ -101,6 +206,32 @@ button:disabled {
   cursor: not-allowed;
 }
 
+:focus-visible {
+  outline: 2px solid #0f172a;
+  outline-offset: 2px;
+}
+
 code {
   font-size: 0.85em;
+}
+
+@media (max-width: 52rem) {
+  .app-shell__body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .tabs {
+    flex-direction: row;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

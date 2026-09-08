@@ -15,23 +15,24 @@ describe("publicS3BaseUrl", () => {
   afterEach(() => {
     if (prevEnv === undefined) delete process.env.NEXT_PUBLIC_S3_PUBLIC_BASE_URL;
     else process.env.NEXT_PUBLIC_S3_PUBLIC_BASE_URL = prevEnv;
-    process.env.NODE_ENV = prevNodeEnv;
+    if (prevNodeEnv === undefined) Reflect.deleteProperty(process.env, "NODE_ENV");
+    else Reflect.set(process.env, "NODE_ENV", prevNodeEnv);
   });
 
   it("prefers NEXT_PUBLIC_S3_PUBLIC_BASE_URL when set", () => {
-    process.env.NODE_ENV = "development";
+    Reflect.set(process.env, "NODE_ENV", "development");
     process.env.NEXT_PUBLIC_S3_PUBLIC_BASE_URL = "https://custom.example";
     assert.equal(publicS3BaseUrl(), "https://custom.example");
   });
 
   it("falls back to default bucket in development when env is empty", () => {
-    process.env.NODE_ENV = "development";
+    Reflect.set(process.env, "NODE_ENV", "development");
     delete process.env.NEXT_PUBLIC_S3_PUBLIC_BASE_URL;
     assert.equal(publicS3BaseUrl(), DEFAULT_PUBLIC_S3_BASE_URL);
   });
 
   it("falls back to default bucket in production when env is empty", () => {
-    process.env.NODE_ENV = "production";
+    Reflect.set(process.env, "NODE_ENV", "production");
     delete process.env.NEXT_PUBLIC_S3_PUBLIC_BASE_URL;
     assert.equal(publicS3BaseUrl(), DEFAULT_PUBLIC_S3_BASE_URL);
   });
@@ -64,11 +65,12 @@ describe("resolvePublicSnapshotUrl", () => {
     else process.env.NEXT_PUBLIC_S3_PUBLIC_BASE_URL = prevS3;
     if (prevSource === undefined) delete process.env.SITE_SNAPSHOT_SOURCE;
     else process.env.SITE_SNAPSHOT_SOURCE = prevSource;
-    process.env.NODE_ENV = prevNodeEnv;
+    if (prevNodeEnv === undefined) Reflect.deleteProperty(process.env, "NODE_ENV");
+    else Reflect.set(process.env, "NODE_ENV", prevNodeEnv);
   });
 
   it("does not append snapshot path after site-manifest.json filename", () => {
-    process.env.NODE_ENV = "development";
+    Reflect.set(process.env, "NODE_ENV", "development");
     process.env.SITE_SNAPSHOT_SOURCE = "s3";
     delete process.env.NEXT_PUBLIC_S3_PUBLIC_BASE_URL;
 
@@ -78,7 +80,7 @@ describe("resolvePublicSnapshotUrl", () => {
   });
 
   it("uses NEXT_PUBLIC_S3_PUBLIC_BASE_URL when set with manifestUrl", () => {
-    process.env.NODE_ENV = "production";
+    Reflect.set(process.env, "NODE_ENV", "production");
     process.env.SITE_SNAPSHOT_SOURCE = "s3";
     process.env.NEXT_PUBLIC_S3_PUBLIC_BASE_URL =
       "https://storage.yandexcloud.net/bm-questhub";
@@ -88,7 +90,7 @@ describe("resolvePublicSnapshotUrl", () => {
   });
 
   it("returns null without manifestUrl when SITE_SNAPSHOT_SOURCE is not s3", () => {
-    process.env.NODE_ENV = "development";
+    Reflect.set(process.env, "NODE_ENV", "development");
     delete process.env.SITE_SNAPSHOT_SOURCE;
     delete process.env.NEXT_PUBLIC_S3_PUBLIC_BASE_URL;
 

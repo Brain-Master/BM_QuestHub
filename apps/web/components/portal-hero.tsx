@@ -17,7 +17,7 @@ export function PortalHero({
   showBadges = true,
 }: Props) {
   return (
-    <section className="relative mb-8 overflow-hidden rounded-[1.5rem] border border-white/10 bg-gradient-to-br from-violet-950/90 via-background to-cyan-950/50 p-5 shadow-[0_0_80px_-24px_rgba(139,92,246,0.35)] sm:mb-10 sm:rounded-3xl sm:p-8 md:mb-12 md:p-12">
+    <section className="relative mb-8 rounded-[1.5rem] border border-white/15 bg-slate-900/80 p-5 sm:mb-10 sm:rounded-3xl sm:p-8 md:mb-12 md:p-12">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 opacity-[0.35]"
@@ -37,7 +37,7 @@ export function PortalHero({
           backgroundSize: "240px 240px",
         }}
       />
-      <div className="relative grid gap-10 lg:grid-cols-[minmax(0,1fr)_280px] lg:items-end">
+      <div className={`relative grid gap-10 lg:items-end ${aside ? "lg:grid-cols-[minmax(0,1fr)_280px]" : ""}`}>
         <div className="space-y-5">
           <p className="text-[11px] text-cyan-200/90 uppercase tracking-[0.22em] md:text-xs md:tracking-[0.28em]">
             {eyebrow}

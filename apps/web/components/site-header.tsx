@@ -59,6 +59,11 @@ export function SiteHeader({ worlds, navigation }: Props) {
   );
   const navItems = [
     {
+      href: "/year-courses/",
+      label: "Годовые курсы",
+      active: normalizedPath.startsWith("/year-courses/"),
+    },
+    {
       href: agendaHref,
       label: "Расписание",
       active:

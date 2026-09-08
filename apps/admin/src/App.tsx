@@ -6,6 +6,7 @@ import {
   publishContent,
   saveSnapshot,
 } from "./api";
+import { AppShell, type AppShellState } from "./app-shell";
 import {
   authFailureTransition,
   READY_AUTH_STATE,
@@ -15,6 +16,9 @@ import { legacyTokenAdapter } from "./legacy-token-adapter";
 import { formatUiError } from "./ui-error-formatter";
 
 type Tab = "catalog" | "map" | "site" | "offers" | "publish";
+
+const MISSING_API_URL_MESSAGE =
+  "Укажите VITE_CONTENT_ADMIN_URL при сборке admin";
 
 export function App() {
   const [tab, setTab] = useState<Tab>("catalog");
@@ -29,6 +33,10 @@ export function App() {
   const [offersJson, setOffersJson] = useState("");
   const [status, setStatus] = useState("");
   const [busy, setBusy] = useState(false);
+  // Initial authorized is a shell content state, not an RBAC claim.
+  const [shellState, setShellState] = useState<AppShellState>({
+    kind: "authorized",
+  });
 
   const handleRequestError = useCallback((error: unknown) => {
     const transition = authFailureTransition(error);
@@ -46,10 +54,12 @@ export function App() {
 
   const refresh = useCallback(async () => {
     if (!hasApiUrl()) {
-      setStatus("Укажите VITE_CONTENT_ADMIN_URL при сборке admin");
+      setStatus(MISSING_API_URL_MESSAGE);
+      setShellState({ kind: "error", message: MISSING_API_URL_MESSAGE });
       return;
     }
     setBusy(true);
+    setShellState({ kind: "loading", message: "Загружаем данные" });
     setStatus("Загрузка…");
     try {
       const data = await loadSnapshots();
@@ -59,9 +69,19 @@ export function App() {
       setOffersJson(
         data.offers ? JSON.stringify(data.offers, null, 2) : "{}",
       );
+      setShellState({ kind: "authorized" });
       setStatus("Снимки загружены");
     } catch (e) {
       handleRequestError(e);
+      if (authFailureTransition(e)) {
+        // 401: keep shell authorized so token controls and buffers remain.
+        setShellState({ kind: "authorized" });
+      } else {
+        setShellState({
+          kind: "error",
+          message: formatUiError(e).text,
+        });
+      }
     } finally {
       setBusy(false);
     }
@@ -136,60 +156,64 @@ export function App() {
           : setSiteJson;
 
   return (
-    <div className="layout">
-      <header className="header">
-        <h1>Quest Hub — редактор</h1>
-        <p className="muted">
-          Горячее расписание — без rebuild. Холодный контент — Timeweb API.
-        </p>
-      </header>
-
-      <section className="panel">
-        <label>
-          API URL:{" "}
-          <code>{import.meta.env.VITE_CONTENT_ADMIN_URL || "не задан"}</code>
-        </label>
-        <label className="row">
-          Bearer token
-          <input
-            type="password"
-            value={tokenInput}
-            onChange={(e) => setTokenInput(e.target.value)}
-            placeholder="CONTENT_ADMIN_TOKEN"
-          />
-          <button type="button" onClick={applyToken}>
-            Сохранить
-          </button>
-          <button type="button" onClick={() => void refresh()} disabled={busy}>
-            Обновить
-          </button>
-        </label>
+    <AppShell
+      title="Quest Hub — редактор"
+      description="Горячее расписание — без rebuild. Холодный контент — Timeweb API."
+      state={shellState}
+      onRetry={
+        shellState.kind === "error" ? () => void refresh() : undefined
+      }
+      utility={
+        <section className="panel">
+          <label>
+            API URL:{" "}
+            <code>{import.meta.env.VITE_CONTENT_ADMIN_URL || "не задан"}</code>
+          </label>
+          <label className="row">
+            Bearer token
+            <input
+              type="password"
+              value={tokenInput}
+              onChange={(e) => setTokenInput(e.target.value)}
+              placeholder="CONTENT_ADMIN_TOKEN"
+            />
+            <button type="button" onClick={applyToken}>
+              Сохранить
+            </button>
+            <button type="button" onClick={() => void refresh()} disabled={busy}>
+              Обновить
+            </button>
+          </label>
+        </section>
+      }
+      status={
         <p className="status" role="status" data-auth-state={authState.status}>
           {status}
         </p>
-      </section>
-
-      <nav className="tabs">
-        {(
-          [
-            ["catalog", "Каталог"],
-            ["map", "Площадки"],
-            ["site", "Site config"],
-            ["offers", "Расписание"],
-            ["publish", "Публикация"],
-          ] as const
-        ).map(([id, label]) => (
-          <button
-            key={id}
-            type="button"
-            className={tab === id ? "active" : ""}
-            onClick={() => setTab(id)}
-          >
-            {label}
-          </button>
-        ))}
-      </nav>
-
+      }
+      navigation={
+        <div className="tabs">
+          {(
+            [
+              ["catalog", "Каталог"],
+              ["map", "Площадки"],
+              ["site", "Site config"],
+              ["offers", "Расписание"],
+              ["publish", "Публикация"],
+            ] as const
+          ).map(([id, label]) => (
+            <button
+              key={id}
+              type="button"
+              className={tab === id ? "active" : ""}
+              onClick={() => setTab(id)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      }
+    >
       {tab === "publish" ? (
         <section className="panel">
           <p>
@@ -236,6 +260,6 @@ export function App() {
           </button>
         </section>
       )}
-    </div>
+    </AppShell>
   );
 }

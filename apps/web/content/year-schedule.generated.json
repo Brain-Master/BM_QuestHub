@@ -1,0 +1,1490 @@
+{
+  "version": 1,
+  "asOf": "2026-09-08",
+  "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+  "locations": [
+    {
+      "id": "LOC-001",
+      "school": "Школа № 17",
+      "address": "г. Москва, вн.тер. м.о. Коньково, ул. Введенского, д. 28, стр. 1",
+      "metro": "Беляево (12 мин)"
+    },
+    {
+      "id": "LOC-002",
+      "school": "Школа № 875",
+      "address": "г. Москва, вн.тер. м.о. Тропарево-Никулино, пр-кт Вернадского, д. 99, к. 2",
+      "metro": "Юго-Западная (8 мин)"
+    },
+    {
+      "id": "LOC-003",
+      "school": "Школа № 1212",
+      "address": "г. Москва, вн.тер. м.о. Ясенево, Вильнюсская ул., д. 14",
+      "metro": "Ясенево (21 мин)"
+    },
+    {
+      "id": "LOC-004",
+      "school": "Школа № 1212",
+      "address": "г. Москва, вн.тер. м.о. Ясенево, Голубинская ул., д. 21, к. 3",
+      "metro": "Ясенево (11 мин)"
+    },
+    {
+      "id": "LOC-005",
+      "school": "Школа № 1383",
+      "address": "г. Москва, вн.тер. м.о. Бескудниковский, Дубнинская ул., д. 7",
+      "metro": "Верхние Лихоборы (8 мин)"
+    },
+    {
+      "id": "LOC-006",
+      "school": "Школа № 1517",
+      "address": "г. Москва, вн.тер. м.о. Хорошево-Мневники, ул. Маршала Тухачевского, д. 58, к. 2",
+      "metro": "Полежаевская (более 45 мин); Щукинская (41 мин)"
+    },
+    {
+      "id": "LOC-007",
+      "school": "Школа № 2044",
+      "address": "г. Москва, Дмитровское ш., д. 169Б",
+      "metro": "Алтуфьево (более 45 мин)"
+    },
+    {
+      "id": "LOC-008",
+      "school": "Школа № 2044",
+      "address": "г. Москва, вн.тер. м.о. Северный, Дмитровское ш., д. 165Е, к. 8",
+      "metro": "Физтех (12 мин); Новодачная (20 мин); Долгопрудная (37 мин)"
+    }
+  ],
+  "groups": [
+    {
+      "id": "К4953-26",
+      "groupCode": "К4953-26",
+      "listingId": "2535009",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера БрэйнМастер (ШМИ1) Группа 1 (платно)",
+      "locationId": "LOC-001",
+      "teacher": "Мартынова Анна Александровна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 12,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 1000,
+      "coursePrice": 35000,
+      "courseStart": "2026-09-14",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Понедельник",
+          "start": "14:40",
+          "end": "15:25"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/groups?keyword=2535009",
+      "linkKind": "search",
+      "limitedSource": false
+    },
+    {
+      "id": "К4954-26",
+      "groupCode": "К4954-26",
+      "listingId": "2535133",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера БрэйнМастер (ШМИ1) Группа 2 (платно)",
+      "locationId": "LOC-001",
+      "teacher": "Мартынова Анна Александровна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 12,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 1000,
+      "coursePrice": 35000,
+      "courseStart": "2026-09-14",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Понедельник",
+          "start": "15:35",
+          "end": "16:20"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/groups?keyword=2535133",
+      "linkKind": "search",
+      "limitedSource": false
+    },
+    {
+      "id": "К4955-26",
+      "groupCode": "К4955-26",
+      "listingId": "2535164",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера БрэйнМастер (ШМИ1) Группа 3 (платно)",
+      "locationId": "LOC-001",
+      "teacher": "Мартынова Анна Александровна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 12,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 1000,
+      "coursePrice": 35000,
+      "courseStart": "2026-09-14",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Понедельник",
+          "start": "16:30",
+          "end": "17:15"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/groups?keyword=2535164",
+      "linkKind": "search",
+      "limitedSource": false
+    },
+    {
+      "id": "К4956-26",
+      "groupCode": "К4956-26",
+      "listingId": "2535246",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера БрэйнМастер (ШМИ2) Группа 1 (платно)",
+      "locationId": "LOC-001",
+      "teacher": "Толмачева Василиса Владимировна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 11,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 1000,
+      "coursePrice": 35000,
+      "courseStart": "2026-09-14",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Среда",
+          "start": "14:40",
+          "end": "15:25"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/groups?keyword=2535246",
+      "linkKind": "search",
+      "limitedSource": false
+    },
+    {
+      "id": "К4957-26",
+      "groupCode": "К4957-26",
+      "listingId": "2535266",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера БрэйнМастер (ШМИ2) Группа 2 (платно)",
+      "locationId": "LOC-001",
+      "teacher": "Толмачева Василиса Владимировна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 12,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 1000,
+      "coursePrice": 35000,
+      "courseStart": "2026-09-14",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Среда",
+          "start": "15:35",
+          "end": "16:20"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/groups?keyword=2535266",
+      "linkKind": "search",
+      "limitedSource": false
+    },
+    {
+      "id": "К4958-26",
+      "groupCode": "К4958-26",
+      "listingId": "2535323",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера БрэйнМастер (ШМИ2) Группа 3 (платно)",
+      "locationId": "LOC-001",
+      "teacher": "Толмачева Василиса Владимировна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 12,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 1000,
+      "coursePrice": 35000,
+      "courseStart": "2026-09-14",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Среда",
+          "start": "16:30",
+          "end": "17:15"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/groups?keyword=2535323",
+      "linkKind": "search",
+      "limitedSource": false
+    },
+    {
+      "id": "К1981-26",
+      "groupCode": "К1981-26",
+      "listingId": "2463216",
+      "programme": "shmi",
+      "title": "Школа молодого IT инженера 1-М",
+      "locationId": "LOC-002",
+      "teacher": "Мартынова Ирина Валерьевна",
+      "status": "open",
+      "totalSeats": 20,
+      "freeSeats": 13,
+      "ageMin": 6,
+      "ageMax": 8,
+      "lessonPrice": 900,
+      "coursePrice": 64800,
+      "courseStart": "2026-09-01",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Вторник",
+          "start": "14:30",
+          "end": "15:15"
+        },
+        {
+          "weekday": "Четверг",
+          "start": "14:30",
+          "end": "15:15"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/groups?keyword=2463216",
+      "linkKind": "search",
+      "limitedSource": false
+    },
+    {
+      "id": "К4613-26",
+      "groupCode": "К4613-26",
+      "listingId": "2533414",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера 1-2 (1-6 классы)",
+      "locationId": "LOC-003",
+      "teacher": "Васильев Иван Алексеевич",
+      "status": "open",
+      "totalSeats": 10,
+      "freeSeats": 7,
+      "ageMin": 6,
+      "ageMax": 14,
+      "lessonPrice": 1000,
+      "coursePrice": 45000,
+      "courseStart": "2026-09-01",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Четверг",
+          "start": "14:30",
+          "end": "15:15"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/groups?keyword=2533414",
+      "linkKind": "search",
+      "limitedSource": false
+    },
+    {
+      "id": "К4611-26",
+      "groupCode": "К4611-26",
+      "listingId": "2533414",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера 1-2 (1-6 классы)",
+      "locationId": "LOC-003",
+      "teacher": "Васильев Иван Алексеевич",
+      "status": "open",
+      "totalSeats": 10,
+      "freeSeats": 10,
+      "ageMin": 6,
+      "ageMax": 14,
+      "lessonPrice": 1000,
+      "coursePrice": 45000,
+      "courseStart": "2026-09-01",
+      "courseEnd": "2027-03-31",
+      "slots": [
+        {
+          "weekday": "Четверг",
+          "start": "15:30",
+          "end": "16:15"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/groups?keyword=2533414",
+      "linkKind": "search",
+      "limitedSource": false
+    },
+    {
+      "id": "К4615-26",
+      "groupCode": "К4615-26",
+      "listingId": "2533414",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера 1-2 (1-6 классы)",
+      "locationId": "LOC-003",
+      "teacher": "Васильев Иван Алексеевич",
+      "status": "open",
+      "totalSeats": 10,
+      "freeSeats": 10,
+      "ageMin": 6,
+      "ageMax": 14,
+      "lessonPrice": 1000,
+      "coursePrice": 45000,
+      "courseStart": "2026-09-01",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Четверг",
+          "start": "16:30",
+          "end": "17:15"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/groups?keyword=2533414",
+      "linkKind": "search",
+      "limitedSource": false
+    },
+    {
+      "id": "К4617-26",
+      "groupCode": "К4617-26",
+      "listingId": "2533899",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера 3 (1-6 классы)",
+      "locationId": "LOC-004",
+      "teacher": "Васильев Иван Алексеевич",
+      "status": "open",
+      "totalSeats": 10,
+      "freeSeats": 7,
+      "ageMin": 6,
+      "ageMax": 14,
+      "lessonPrice": 1000,
+      "coursePrice": 45000,
+      "courseStart": "2026-09-01",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Понедельник",
+          "start": "14:20",
+          "end": "15:05"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/groups?keyword=2533899",
+      "linkKind": "search",
+      "limitedSource": false
+    },
+    {
+      "id": "К4618-26",
+      "groupCode": "К4618-26",
+      "listingId": "2533899",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера 3 (1-6 классы)",
+      "locationId": "LOC-004",
+      "teacher": "Васильев Иван Алексеевич",
+      "status": "open",
+      "totalSeats": 10,
+      "freeSeats": 10,
+      "ageMin": 6,
+      "ageMax": 14,
+      "lessonPrice": 1000,
+      "coursePrice": 45000,
+      "courseStart": "2026-09-01",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Понедельник",
+          "start": "15:20",
+          "end": "16:05"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/groups?keyword=2533899",
+      "linkKind": "search",
+      "limitedSource": false
+    },
+    {
+      "id": "К4619-26",
+      "groupCode": "К4619-26",
+      "listingId": "2533899",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера 3 (1-6 классы)",
+      "locationId": "LOC-004",
+      "teacher": "Васильев Иван Алексеевич",
+      "status": "open",
+      "totalSeats": 10,
+      "freeSeats": 9,
+      "ageMin": 6,
+      "ageMax": 14,
+      "lessonPrice": 1000,
+      "coursePrice": 45000,
+      "courseStart": "2026-09-01",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Понедельник",
+          "start": "16:20",
+          "end": "17:05"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/groups?keyword=2533899",
+      "linkKind": "search",
+      "limitedSource": false
+    },
+    {
+      "id": "К2371-26",
+      "groupCode": "К2371-26",
+      "listingId": "2523369",
+      "programme": "shmi",
+      "title": "\"Школа молодого ИТ-инженера\" (2026-2027 уч.год)",
+      "locationId": "LOC-005",
+      "teacher": "Халаджан Геворк Арменович",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 5,
+      "ageMin": 6,
+      "ageMax": 12,
+      "lessonPrice": 1000,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-07",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Понедельник",
+          "start": "13:50",
+          "end": "14:35"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/card/968382",
+      "linkKind": "card",
+      "limitedSource": false
+    },
+    {
+      "id": "К2372-26",
+      "groupCode": "К2372-26",
+      "listingId": "2523369",
+      "programme": "shmi",
+      "title": "\"Школа молодого ИТ-инженера\" (2026-2027 уч.год)",
+      "locationId": "LOC-005",
+      "teacher": "Халаджан Геворк Арменович",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 10,
+      "ageMin": 6,
+      "ageMax": 12,
+      "lessonPrice": 1000,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-01",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Понедельник",
+          "start": "14:50",
+          "end": "15:35"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/card/968382",
+      "linkKind": "card",
+      "limitedSource": false
+    },
+    {
+      "id": "К2377-26",
+      "groupCode": "К2377-26",
+      "listingId": "2523369",
+      "programme": "shmi",
+      "title": "\"Школа молодого ИТ-инженера\" (2026-2027 уч.год)",
+      "locationId": "LOC-005",
+      "teacher": "Халаджан Геворк Арменович",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 7,
+      "ageMin": 6,
+      "ageMax": 12,
+      "lessonPrice": 1000,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-07",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Понедельник",
+          "start": "15:50",
+          "end": "16:35"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/card/968382",
+      "linkKind": "card",
+      "limitedSource": false
+    },
+    {
+      "id": "К2380-26",
+      "groupCode": "К2380-26",
+      "listingId": "2523369",
+      "programme": "shmi",
+      "title": "\"Школа молодого ИТ-инженера\" (2026-2027 уч.год)",
+      "locationId": "LOC-005",
+      "teacher": "Халаджан Геворк Арменович",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 8,
+      "ageMin": 6,
+      "ageMax": 12,
+      "lessonPrice": 1000,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-07",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Понедельник",
+          "start": "16:50",
+          "end": "17:35"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/card/968382",
+      "linkKind": "card",
+      "limitedSource": false
+    },
+    {
+      "id": "К2378-26",
+      "groupCode": "К2378-26",
+      "listingId": "2523369",
+      "programme": "shmi",
+      "title": "\"Школа молодого ИТ-инженера\" (2026-2027 уч.год)",
+      "locationId": "LOC-005",
+      "teacher": "Халаджан Геворк Арменович",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 12,
+      "ageMin": 6,
+      "ageMax": 12,
+      "lessonPrice": 1000,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-07",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Понедельник",
+          "start": "17:50",
+          "end": "18:35"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/card/968382",
+      "linkKind": "card",
+      "limitedSource": false
+    },
+    {
+      "id": "К2373-26",
+      "groupCode": "К2373-26",
+      "listingId": "2523369",
+      "programme": "shmi",
+      "title": "\"Школа молодого ИТ-инженера\" (2026-2027 уч.год)",
+      "locationId": "LOC-005",
+      "teacher": "Халаджан Геворк Арменович",
+      "status": "closed",
+      "totalSeats": 12,
+      "freeSeats": 0,
+      "ageMin": 6,
+      "ageMax": 12,
+      "lessonPrice": 1000,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-07",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Вторник",
+          "start": "13:50",
+          "end": "14:35"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/card/968382",
+      "linkKind": "card",
+      "limitedSource": false
+    },
+    {
+      "id": "К2374-26",
+      "groupCode": "К2374-26",
+      "listingId": "2523369",
+      "programme": "shmi",
+      "title": "\"Школа молодого ИТ-инженера\" (2026-2027 уч.год)",
+      "locationId": "LOC-005",
+      "teacher": "Халаджан Геворк Арменович",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 7,
+      "ageMin": 6,
+      "ageMax": 12,
+      "lessonPrice": 1000,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-07",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Вторник",
+          "start": "14:50",
+          "end": "15:35"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/card/968382",
+      "linkKind": "card",
+      "limitedSource": false
+    },
+    {
+      "id": "К2375-26",
+      "groupCode": "К2375-26",
+      "listingId": "2523369",
+      "programme": "shmi",
+      "title": "\"Школа молодого ИТ-инженера\" (2026-2027 уч.год)",
+      "locationId": "LOC-005",
+      "teacher": "Халаджан Геворк Арменович",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 4,
+      "ageMin": 6,
+      "ageMax": 12,
+      "lessonPrice": 1000,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-07",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Вторник",
+          "start": "15:50",
+          "end": "16:35"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/card/968382",
+      "linkKind": "card",
+      "limitedSource": false
+    },
+    {
+      "id": "К2379-26",
+      "groupCode": "К2379-26",
+      "listingId": "2523369",
+      "programme": "shmi",
+      "title": "\"Школа молодого ИТ-инженера\" (2026-2027 уч.год)",
+      "locationId": "LOC-005",
+      "teacher": "Халаджан Геворк Арменович",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 6,
+      "ageMin": 6,
+      "ageMax": 12,
+      "lessonPrice": 1000,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-07",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Вторник",
+          "start": "16:50",
+          "end": "17:35"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/card/968382",
+      "linkKind": "card",
+      "limitedSource": false
+    },
+    {
+      "id": "К2376-26",
+      "groupCode": "К2376-26",
+      "listingId": "2523369",
+      "programme": "shmi",
+      "title": "\"Школа молодого ИТ-инженера\" (2026-2027 уч.год)",
+      "locationId": "LOC-005",
+      "teacher": "Халаджан Геворк Арменович",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 6,
+      "ageMin": 6,
+      "ageMax": 12,
+      "lessonPrice": 1000,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-07",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Вторник",
+          "start": "17:50",
+          "end": "18:35"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/card/968382",
+      "linkKind": "card",
+      "limitedSource": false
+    },
+    {
+      "id": "listing:2415012",
+      "groupCode": null,
+      "listingId": "2415012",
+      "programme": "shmi",
+      "title": "Научно - исследовательский клуб 1517. Школа Молодого IT-Инженера(1 год обучения)(1 группа)",
+      "locationId": "LOC-006",
+      "teacher": null,
+      "status": "closed",
+      "totalSeats": null,
+      "freeSeats": null,
+      "ageMin": null,
+      "ageMax": null,
+      "lessonPrice": null,
+      "coursePrice": null,
+      "courseStart": "2026-09-01",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Вторник",
+          "start": "14:50",
+          "end": "15:35"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/groups?keyword=2415012",
+      "linkKind": "search",
+      "limitedSource": true
+    },
+    {
+      "id": "К7648-26",
+      "groupCode": "К7648-26",
+      "listingId": "2521004",
+      "programme": "shmi",
+      "title": "Научно - исследовательский клуб 1517. Школа Молодого IT-Инженера (1 год обучения)группа 2",
+      "locationId": "LOC-006",
+      "teacher": "Хмельков Д.А.",
+      "status": "closed",
+      "totalSeats": 12,
+      "freeSeats": 0,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 810,
+      "coursePrice": 32400,
+      "courseStart": "2026-09-01",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Вторник",
+          "start": "15:45",
+          "end": "16:30"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/card/964768",
+      "linkKind": "card",
+      "limitedSource": false
+    },
+    {
+      "id": "К7651-26",
+      "groupCode": "К7651-26",
+      "listingId": "2521221",
+      "programme": "shmi",
+      "title": "Научно - исследовательский клуб 1517. Школа Молодого IT-Инженера (2 год обучения) 1 группа",
+      "locationId": "LOC-006",
+      "teacher": "Хмельков Д.А.",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 2,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 950,
+      "coursePrice": 38000,
+      "courseStart": "2026-09-01",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Вторник",
+          "start": "16:40",
+          "end": "17:25"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/card/965306",
+      "linkKind": "card",
+      "limitedSource": false
+    },
+    {
+      "id": "listing:2542312",
+      "groupCode": null,
+      "listingId": "2542312",
+      "programme": "shmi",
+      "title": "Научно - исследовательский клуб 1517. Школа Молодого IT-Инженера (2-ой год обучения) (2 группа)",
+      "locationId": "LOC-006",
+      "teacher": null,
+      "status": "closed",
+      "totalSeats": null,
+      "freeSeats": null,
+      "ageMin": null,
+      "ageMax": null,
+      "lessonPrice": null,
+      "coursePrice": null,
+      "courseStart": "2026-09-05",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Четверг",
+          "start": "14:50",
+          "end": "15:35"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/groups?keyword=2542312",
+      "linkKind": "search",
+      "limitedSource": true
+    },
+    {
+      "id": "К7733-26",
+      "groupCode": "К7733-26",
+      "listingId": "2542356",
+      "programme": "shmi",
+      "title": "Научно - исследовательский клуб 1517. Школа Молодого IT-Инженера(1 год обучения)(3 группа)",
+      "locationId": "LOC-006",
+      "teacher": "Хмельков Даниил Антонович",
+      "status": "closed",
+      "totalSeats": 12,
+      "freeSeats": 0,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 810,
+      "coursePrice": 32400,
+      "courseStart": "2026-09-04",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Четверг",
+          "start": "15:45",
+          "end": "16:30"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/card/1000157",
+      "linkKind": "card",
+      "limitedSource": false
+    },
+    {
+      "id": "К4055-26",
+      "groupCode": "К4055-26",
+      "listingId": "2548561",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера BrainMaster 5-6 класс. Робототехника.",
+      "locationId": "LOC-007",
+      "teacher": "Халаджан Геворк Арменович",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 12,
+      "ageMin": 10,
+      "ageMax": 13,
+      "lessonPrice": 1000,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-07",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Среда",
+          "start": "14:00",
+          "end": "14:45"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/groups?keyword=2548561",
+      "linkKind": "search",
+      "limitedSource": false
+    },
+    {
+      "id": "К4069-26",
+      "groupCode": "К4069-26",
+      "listingId": "2549841",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера BrainMaster 5-6 класс-2. Робототехника.",
+      "locationId": "LOC-007",
+      "teacher": "Халаджан Геворк Арменович",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 10,
+      "ageMin": 10,
+      "ageMax": 13,
+      "lessonPrice": 1000,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-07",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Среда",
+          "start": "15:00",
+          "end": "15:45"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/groups?keyword=2549841",
+      "linkKind": "search",
+      "limitedSource": false
+    },
+    {
+      "id": "К4070-26",
+      "groupCode": "К4070-26",
+      "listingId": "2549842",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера BrainMaster 5-6 класс-3. Робототехника.",
+      "locationId": "LOC-007",
+      "teacher": "Халаджан Геворк Арменович",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 12,
+      "ageMin": 10,
+      "ageMax": 13,
+      "lessonPrice": 1000,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-07",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Среда",
+          "start": "16:00",
+          "end": "16:45"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/groups?keyword=2549842",
+      "linkKind": "search",
+      "limitedSource": false
+    },
+    {
+      "id": "К4071-26",
+      "groupCode": "К4071-26",
+      "listingId": "2549843",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера BrainMaster 5-6 класс-4. Робототехника.",
+      "locationId": "LOC-007",
+      "teacher": "Халаджан Геворк Арменович",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 12,
+      "ageMin": 10,
+      "ageMax": 13,
+      "lessonPrice": 1000,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-07",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Пятница",
+          "start": "14:00",
+          "end": "14:45"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/groups?keyword=2549843",
+      "linkKind": "search",
+      "limitedSource": false
+    },
+    {
+      "id": "К4072-26",
+      "groupCode": "К4072-26",
+      "listingId": "2549844",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера BrainMaster 5-6 класс-5. Робототехника.",
+      "locationId": "LOC-007",
+      "teacher": "Халаджан Геворк Арменович",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 12,
+      "ageMin": 10,
+      "ageMax": 13,
+      "lessonPrice": 1000,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-07",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Пятница",
+          "start": "15:00",
+          "end": "15:45"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/groups?keyword=2549844",
+      "linkKind": "search",
+      "limitedSource": false
+    },
+    {
+      "id": "К4073-26",
+      "groupCode": "К4073-26",
+      "listingId": "2549845",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера BrainMaster 5-6 класс-6. Робототехника.",
+      "locationId": "LOC-007",
+      "teacher": "Халаджан Геворк Арменович",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 12,
+      "ageMin": 10,
+      "ageMax": 13,
+      "lessonPrice": 1000,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-07",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Пятница",
+          "start": "16:00",
+          "end": "16:45"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/groups?keyword=2549845",
+      "linkKind": "search",
+      "limitedSource": false
+    },
+    {
+      "id": "К4045-26",
+      "groupCode": "К4045-26",
+      "listingId": "2548560",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера BrainMaster 1-4 класс. Робототехника.",
+      "locationId": "LOC-008",
+      "teacher": "Любченко Ирина Сергеевна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 12,
+      "ageMin": 6,
+      "ageMax": 11,
+      "lessonPrice": 1000,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-07",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Вторник",
+          "start": "14:00",
+          "end": "14:45"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/groups?keyword=2548560",
+      "linkKind": "search",
+      "limitedSource": false
+    },
+    {
+      "id": "К4046-26",
+      "groupCode": "К4046-26",
+      "listingId": "2548560",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера BrainMaster 1-4 класс. Робототехника.",
+      "locationId": "LOC-008",
+      "teacher": "Любченко Ирина Сергеевна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 12,
+      "ageMin": 6,
+      "ageMax": 11,
+      "lessonPrice": 1000,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-07",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Вторник",
+          "start": "15:00",
+          "end": "15:45"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/groups?keyword=2548560",
+      "linkKind": "search",
+      "limitedSource": false
+    },
+    {
+      "id": "К4061-26",
+      "groupCode": "К4061-26",
+      "listingId": "2549789",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера BrainMaster 1-4 класс-2. Робототехника.",
+      "locationId": "LOC-008",
+      "teacher": "Любченко Ирина Сергеевна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 12,
+      "ageMin": 6,
+      "ageMax": 11,
+      "lessonPrice": 1000,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-07",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Вторник",
+          "start": "15:00",
+          "end": "15:45"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/groups?keyword=2549789",
+      "linkKind": "search",
+      "limitedSource": false
+    },
+    {
+      "id": "К4048-26",
+      "groupCode": "К4048-26",
+      "listingId": "2548560",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера BrainMaster 1-4 класс. Робототехника.",
+      "locationId": "LOC-008",
+      "teacher": "Любченко Ирина Сергеевна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 12,
+      "ageMin": 6,
+      "ageMax": 11,
+      "lessonPrice": 1000,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-07",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Вторник",
+          "start": "16:00",
+          "end": "16:45"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/groups?keyword=2548560",
+      "linkKind": "search",
+      "limitedSource": false
+    },
+    {
+      "id": "К4062-26",
+      "groupCode": "К4062-26",
+      "listingId": "2549788",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера BrainMaster 1-4 класс-3. Робототехника.",
+      "locationId": "LOC-008",
+      "teacher": "Любченко Ирина Сергеевна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 12,
+      "ageMin": 6,
+      "ageMax": 11,
+      "lessonPrice": 1000,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-07",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Вторник",
+          "start": "16:00",
+          "end": "16:45"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/groups?keyword=2549788",
+      "linkKind": "search",
+      "limitedSource": false
+    },
+    {
+      "id": "К4049-26",
+      "groupCode": "К4049-26",
+      "listingId": "2548560",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера BrainMaster 1-4 класс. Робототехника.",
+      "locationId": "LOC-008",
+      "teacher": "Любченко Ирина Сергеевна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 12,
+      "ageMin": 6,
+      "ageMax": 11,
+      "lessonPrice": 1000,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-07",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Среда",
+          "start": "14:00",
+          "end": "14:45"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/groups?keyword=2548560",
+      "linkKind": "search",
+      "limitedSource": false
+    },
+    {
+      "id": "К4063-26",
+      "groupCode": "К4063-26",
+      "listingId": "2549787",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера BrainMaster 1-4 класс-4. Робототехника.",
+      "locationId": "LOC-008",
+      "teacher": "Любченко Ирина Сергеевна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 12,
+      "ageMin": 6,
+      "ageMax": 11,
+      "lessonPrice": 1000,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-07",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Среда",
+          "start": "14:00",
+          "end": "14:45"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/groups?keyword=2549787",
+      "linkKind": "search",
+      "limitedSource": false
+    },
+    {
+      "id": "К4050-26",
+      "groupCode": "К4050-26",
+      "listingId": "2548560",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера BrainMaster 1-4 класс. Робототехника.",
+      "locationId": "LOC-008",
+      "teacher": "Любченко Ирина Сергеевна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 12,
+      "ageMin": 6,
+      "ageMax": 11,
+      "lessonPrice": 1000,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-07",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Среда",
+          "start": "15:00",
+          "end": "15:45"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/groups?keyword=2548560",
+      "linkKind": "search",
+      "limitedSource": false
+    },
+    {
+      "id": "К4064-26",
+      "groupCode": "К4064-26",
+      "listingId": "2549786",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера BrainMaster 1-4 класс-5. Робототехника.",
+      "locationId": "LOC-008",
+      "teacher": "Любченко Ирина Сергеевна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 12,
+      "ageMin": 6,
+      "ageMax": 11,
+      "lessonPrice": 1000,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-07",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Среда",
+          "start": "15:00",
+          "end": "15:45"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/groups?keyword=2549786",
+      "linkKind": "search",
+      "limitedSource": false
+    },
+    {
+      "id": "К4051-26",
+      "groupCode": "К4051-26",
+      "listingId": "2548560",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера BrainMaster 1-4 класс. Робототехника.",
+      "locationId": "LOC-008",
+      "teacher": "Любченко Ирина Сергеевна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 12,
+      "ageMin": 6,
+      "ageMax": 11,
+      "lessonPrice": 1000,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-07",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Среда",
+          "start": "16:00",
+          "end": "16:45"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/groups?keyword=2548560",
+      "linkKind": "search",
+      "limitedSource": false
+    },
+    {
+      "id": "К4065-26",
+      "groupCode": "К4065-26",
+      "listingId": "2549784",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера BrainMaster 1-4 класс-6. Робототехника.",
+      "locationId": "LOC-008",
+      "teacher": "Любченко Ирина Сергеевна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 12,
+      "ageMin": 6,
+      "ageMax": 11,
+      "lessonPrice": 1000,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-07",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Среда",
+          "start": "16:00",
+          "end": "16:45"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/groups?keyword=2549784",
+      "linkKind": "search",
+      "limitedSource": false
+    },
+    {
+      "id": "К4052-26",
+      "groupCode": "К4052-26",
+      "listingId": "2548560",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера BrainMaster 1-4 класс. Робототехника.",
+      "locationId": "LOC-008",
+      "teacher": "Любченко Ирина Сергеевна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 12,
+      "ageMin": 6,
+      "ageMax": 11,
+      "lessonPrice": 1000,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-07",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Пятница",
+          "start": "14:00",
+          "end": "14:45"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/groups?keyword=2548560",
+      "linkKind": "search",
+      "limitedSource": false
+    },
+    {
+      "id": "К4066-26",
+      "groupCode": "К4066-26",
+      "listingId": "2549783",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера BrainMaster 1-4 класс-7. Робототехника.",
+      "locationId": "LOC-008",
+      "teacher": "Любченко Ирина Сергеевна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 12,
+      "ageMin": 6,
+      "ageMax": 11,
+      "lessonPrice": 1000,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-07",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Пятница",
+          "start": "14:00",
+          "end": "14:45"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/groups?keyword=2549783",
+      "linkKind": "search",
+      "limitedSource": false
+    },
+    {
+      "id": "К4053-26",
+      "groupCode": "К4053-26",
+      "listingId": "2548560",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера BrainMaster 1-4 класс. Робототехника.",
+      "locationId": "LOC-008",
+      "teacher": "Любченко Ирина Сергеевна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 12,
+      "ageMin": 6,
+      "ageMax": 11,
+      "lessonPrice": 1000,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-07",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Пятница",
+          "start": "15:00",
+          "end": "15:45"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/groups?keyword=2548560",
+      "linkKind": "search",
+      "limitedSource": false
+    },
+    {
+      "id": "К4067-26",
+      "groupCode": "К4067-26",
+      "listingId": "2549782",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера BrainMaster 1-4 класс-8. Робототехника.",
+      "locationId": "LOC-008",
+      "teacher": "Любченко Ирина Сергеевна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 12,
+      "ageMin": 6,
+      "ageMax": 11,
+      "lessonPrice": 1000,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-07",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Пятница",
+          "start": "15:00",
+          "end": "15:45"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/groups?keyword=2549782",
+      "linkKind": "search",
+      "limitedSource": false
+    },
+    {
+      "id": "К4054-26",
+      "groupCode": "К4054-26",
+      "listingId": "2548560",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера BrainMaster 1-4 класс. Робототехника.",
+      "locationId": "LOC-008",
+      "teacher": "Любченко Ирина Сергеевна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 12,
+      "ageMin": 6,
+      "ageMax": 11,
+      "lessonPrice": 1000,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-07",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Пятница",
+          "start": "16:00",
+          "end": "16:45"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/groups?keyword=2548560",
+      "linkKind": "search",
+      "limitedSource": false
+    },
+    {
+      "id": "К4068-26",
+      "groupCode": "К4068-26",
+      "listingId": "2549781",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера BrainMaster 1-4 класс-9. Робототехника.",
+      "locationId": "LOC-008",
+      "teacher": "Любченко Ирина Сергеевна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 12,
+      "ageMin": 6,
+      "ageMax": 11,
+      "lessonPrice": 1000,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-07",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Пятница",
+          "start": "16:00",
+          "end": "16:45"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/groups?keyword=2549781",
+      "linkKind": "search",
+      "limitedSource": false
+    }
+  ]
+}

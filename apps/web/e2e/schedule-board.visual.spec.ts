@@ -15,7 +15,7 @@ async function prepareVisualPage(page: Page, testInfo: TestInfo) {
 
     class FrozenDate extends RealDate {
       constructor(...args: ConstructorParameters<typeof Date>) {
-        super(...(args.length ? args : [fixedNow]));
+        super(args.length ? new RealDate(...args).valueOf() : fixedNow);
       }
 
       static now() {
