@@ -14,7 +14,6 @@ function site(overrides: Partial<SiteScopeCard> & Pick<SiteScopeCard, "city">): 
     fullName: "Test School",
     routeSlugs: ["school-test"],
     type: "school",
-    city: overrides.city,
     cityLabel: overrides.city,
     locationLabel: "District",
     locationSummary: "District",

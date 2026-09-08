@@ -1,0 +1,22 @@
+{
+  "name": "BrainMaster annual programmes",
+  "kind": "product-surface-evolution",
+  "required_files": [
+    "README.md",
+    "brief.md",
+    "input-evidence.md",
+    "audit.md",
+    "decision-log.md",
+    "brandbook.md",
+    "tokens.json",
+    "handoff/designer.md",
+    "handoff/developer.md",
+    "qa/validation-report.md"
+  ],
+  "masters": [
+    "apps/web/app/year-courses/year-courses.css",
+    "apps/web/content/year-programs.ts"
+  ],
+  "media_manifest": "apps/web/public/editorial/year-courses/provenance.json",
+  "release_status": "local-preview-only"
+}

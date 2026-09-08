@@ -400,6 +400,7 @@ export function buildScheduleBoardItem(
   item: AgendaOfferItem,
   schoolSlug?: string,
   now = new Date(),
+  resolveMedia = coalesceScheduleMediaImage,
 ): ScheduleBoardItem {
   const { offer, quest, world } = item;
   const card = offer.scheduleCard;
@@ -409,11 +410,11 @@ export function buildScheduleBoardItem(
   const variants = normalizeVariants(offer, statusKey, statusLabel);
   const commonAgeLabel = getCommonAgeLabel(variants, card?.ageLabel ?? quest.ageLabel);
   const questHeroFallback = questHeroMediaImage(quest);
-  const hero = coalesceScheduleMediaImage(
+  const hero = resolveMedia(
     card?.media?.hero ?? card?.media?.fallback ?? null,
     questHeroFallback,
   );
-  const compact = coalesceScheduleMediaImage(
+  const compact = resolveMedia(
     card?.media?.compact ?? null,
     hero ?? questHeroFallback,
   );
