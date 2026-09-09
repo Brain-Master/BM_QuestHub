@@ -8,6 +8,7 @@ import {
   loadEnrolledSnapshotWithMeta,
 } from "./mos-enrolled-events.mjs";
 import { fetchMosEnrolledCount } from "./mos-enrolled-fetch.mjs";
+import { groupLifecycle } from "./mos-group-lifecycle.mjs";
 import {
   FORMATS_SHEET,
   columnLetter,
@@ -67,6 +68,7 @@ export async function processUrlBatch(options) {
   if (!manifest?.byUrl) {
     throw new Error(`manifest missing for run ${runId}`);
   }
+  if (!Array.isArray(manifest.urlBatches?.[batchIndex]) || JSON.stringify(manifest.urlBatches[batchIndex]) !== JSON.stringify(urls)) throw Error("MOS_BATCH_MANIFEST_MISMATCH");
 
   const delayMs = Number(process.env.MOS_ENROLLED_URL_DELAY_MS || 500);
   const concurrency = fetchConcurrency();
@@ -78,6 +80,7 @@ export async function processUrlBatch(options) {
   await initMosCookieSession(root);
   const [loadedSnapshot] = await Promise.all([loadEnrolledSnapshotWithMeta()]);
   const prevSnapshot = loadedSnapshot.snapshot;
+  if (!loadedSnapshot.readOk) throw Error("MOS_BASELINE_READ_FAILED");
 
   /** @type {{ range: string, value: string }[]} */
   const pendingWrites = [];
@@ -85,6 +88,7 @@ export async function processUrlBatch(options) {
   const errors = [];
   /** @type {Array<{ url: string, before: number | null, after: number, delta: number, rows: { shiftGroupId: string, formatType: string }[] }>} */
   const changes = [];
+  const skippedArchivedGroupIds = new Set();
   /** @type {Record<string, { enrolled: number, shiftGroupId: string, formatType: string }>} */
   const nextSnapshotPartial = {};
   let updatedRows = 0;
@@ -95,8 +99,15 @@ export async function processUrlBatch(options) {
    * @param {string} url
    */
   async function processOneUrl(url) {
-    const rows = manifest.byUrl[url];
-    if (!Array.isArray(rows) || rows.length === 0) return;
+    const plannedRows = manifest.byUrl[url];
+    if (!Array.isArray(plannedRows) || plannedRows.length === 0) { errors.push({url,message:"MOS_BATCH_ROWS_MISSING"}); return; }
+    const rows = plannedRows.filter(row => {
+      const result = groupLifecycle(row.lifecycle);
+      if (result.state === "unknown") errors.push({url,message:result.reason});
+      if (result.state === "archived") skippedArchivedGroupIds.add(row.shiftGroupId);
+      return result.state === "current" || result.state === "future";
+    });
+    if (!rows.length) return;
 
     const hotTotal = hotEnrolledTotalForUrl(
       rows.map((/** @type {{ enrolled?: number }} */ row) => ({
@@ -225,6 +236,7 @@ export async function processUrlBatch(options) {
     at: new Date().toISOString(),
     nextSnapshotPartial,
     pendingWrites,
+    skippedArchivedGroupIds: [...skippedArchivedGroupIds],
     errors,
     changes,
     updatedRows,
@@ -258,6 +270,7 @@ export async function processUrlBatch(options) {
     updatedRows,
     unchanged,
     pendingWrites: pendingWrites.length,
+    skippedArchivedGroupIds: [...skippedArchivedGroupIds],
     dryRun,
     budgetExhausted,
   };

@@ -1,0 +1,55 @@
+import {test, mock} from 'node:test';
+import assert from 'node:assert/strict';
+let dispatches=0;
+let manifest={batchesTotal:1,spreadsheetId:'test',byUrl:{}};
+let batch={status:'partial',errors:[{url:'https://www.mos.ru/pgu2/activity/card/1',message:'MOS_HTTP_500'}],updatedRows:0,nextSnapshotPartial:{}};
+let readOk=true, saveOk=true, stateReadOk=true, resetOk=true, resets=0, finishes=0;
+const noop=async()=>{};
+mock.module('./mos-enrolled-cookie-store.mjs',{namedExports:{initMosCookieSession:noop,persistMosCookieSession:async()=>({saved:false})}});
+mock.module('./mos-enrolled-events.mjs',{namedExports:{loadEnrolledSnapshotWithMeta:async()=>({snapshot:{},readOk}),maybeSendEnrolledDigest:noop,recordEnrolledEvents:noop,saveEnrolledSnapshot:async()=>saveOk}});
+mock.module('./mos-enrolled-enabled.mjs',{namedExports:{mosEnrolledSyncEnabled:()=>({enabled:true,reason:'test'})}});
+mock.module('./mos-enrolled-sync.mjs',{namedExports:{batchWriteCells:async()=>{throw Error('Unexpected Sheet write')},getToken:async()=>{throw Error('Unexpected auth')}}});
+mock.module('./mos-sync-failure-alert.mjs',{namedExports:{notifyMosSyncFailure:noop}});
+mock.module('./mos-sync-state.mjs',{namedExports:{loadSyncStateWithMeta:async()=>({state:{lastSyncAt:null},readOk:stateReadOk}),onSyncFinished:async()=>{finishes++;return {stateOk:true}},patchFinalizeRunStarted:noop,resetPipelineRunToIdle:async()=>{resets++;return resetOk}}});
+mock.module('./mos-sync-trace.mjs',{namedExports:{mosSyncTrace:()=>{}}});
+mock.module('./schedule-traffic.mjs',{namedExports:{loadTrafficRollup:async()=>({visits1h:0})}});
+mock.module('./trigger-sheet-sync-hot.mjs',{namedExports:{triggerSheetSyncHot:async()=>{dispatches++;return {ok:true}}}});
+mock.module('./mos-sync-run.mjs',{namedExports:{readRunManifest:async()=>manifest,readBatchResult:async()=>batch}});
+const {runMosEnrolledFinalize}=await import('./mos-enrolled-finalize.mjs');
+test('real finalizer dispatches independent annual refresh after legacy failure, but never reports legacy success',async t=>{
+  const previous=process.env.MOS_ENROLLED_AUTO_PUBLISH;t.after(()=>{if(previous===undefined)delete process.env.MOS_ENROLLED_AUTO_PUBLISH;else process.env.MOS_ENROLLED_AUTO_PUBLISH=previous;});
+  process.env.MOS_ENROLLED_AUTO_PUBLISH='1';
+  const r=await runMosEnrolledFinalize({root:'/test',runId:'test-run'});
+  assert.equal(r.ok,false);assert.equal(r.errors.length,1);assert.equal(r.updatedRows,0);assert.equal(r.publish.ok,true);assert.equal(dispatches,1);
+  await runMosEnrolledFinalize({root:'/test',runId:'test-run',dryRun:true});assert.equal(dispatches,1);
+  process.env.MOS_ENROLLED_AUTO_PUBLISH='0';
+  await runMosEnrolledFinalize({root:'/test',runId:'test-run'});assert.equal(dispatches,1);
+});
+test('empty archived plan finalizes and dispatches annual refresh; corrupt/unknown plans do not succeed',async t=>{
+  const previous=process.env.MOS_ENROLLED_AUTO_PUBLISH;t.after(()=>{if(previous===undefined)delete process.env.MOS_ENROLLED_AUTO_PUBLISH;else process.env.MOS_ENROLLED_AUTO_PUBLISH=previous;});
+  process.env.MOS_ENROLLED_AUTO_PUBLISH='1'; const before=dispatches;
+  manifest={batchesTotal:0,urlCount:0,byUrl:{},archivedGroupIds:['old'],lifecycleErrors:[]};
+  const r=await runMosEnrolledFinalize({root:'/test',runId:'empty'});
+  assert.equal(r.ok,true); assert.equal(r.updatedRows,0); assert.equal(dispatches,before+1);
+  manifest.lifecycleErrors=[{url:'u',message:'MOS_DATES_INVALID'}];
+  assert.equal((await runMosEnrolledFinalize({root:'/test',runId:'unknown'})).ok,false);
+  manifest={byUrl:{}};
+  assert.equal((await runMosEnrolledFinalize({root:'/test',runId:'corrupt'})).reason,'manifest_invalid');
+});
+test('failed batches and unreadable or unsaved baseline never report success',async()=>{
+  manifest={batchesTotal:1,byUrl:{}};batch={status:'partial',errors:[]};
+  assert.equal((await runMosEnrolledFinalize({root:'/test',runId:'partial',dryRun:true})).ok,false);
+  readOk=false;
+  assert.equal((await runMosEnrolledFinalize({root:'/test',runId:'unreadable'})).reason,'baseline_read_failed');
+  readOk=true; saveOk=false; batch={status:'ok',errors:[]};
+  assert.equal((await runMosEnrolledFinalize({root:'/test',runId:'unsaved'})).ok,false);
+});
+test('zero-batch failed read/reset never continues to PID writes or dispatch',async()=>{
+  manifest={batchesTotal:0,urlCount:0,byUrl:{},archivedGroupIds:['old'],lifecycleErrors:[]};
+  const before={resets,finishes,dispatches}; stateReadOk=false;
+  assert.equal((await runMosEnrolledFinalize({root:'/test',runId:'zero'})).reason,'baseline_read_failed');
+  assert.deepEqual({resets,finishes,dispatches},before);
+  stateReadOk=true;resetOk=false;
+  assert.equal((await runMosEnrolledFinalize({root:'/test',runId:'zero'})).reason,'state_reset_failed');
+  assert.equal(finishes,before.finishes);assert.equal(dispatches,before.dispatches);resetOk=true;
+});

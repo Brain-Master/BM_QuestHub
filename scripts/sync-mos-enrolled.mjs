@@ -87,7 +87,6 @@ async function runCycle(argv) {
 
   if (
     !dryRun &&
-    (result.updatedRows ?? 0) > 0 &&
     (argv.includes("--publish") || process.env.MOS_ENROLLED_AUTO_PUBLISH === "1")
   ) {
     log("[mos-enrolled] publishing hot snapshot…");
@@ -99,7 +98,7 @@ async function runCycle(argv) {
     if (pub.status !== 0) return pub.status ?? 1;
   }
 
-  return result.errors.length > 0 ? 1 : 0;
+  return result.ok ? 0 : 1;
 }
 
 async function main() {

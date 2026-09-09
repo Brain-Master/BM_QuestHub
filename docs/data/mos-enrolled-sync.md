@@ -394,3 +394,12 @@ node --test scripts/lib/mos-sync-state.test.mjs
 | `apps/yandex-mos-enrolled-sync/` | YCF sync |
 | `apps/yandex-mos-sync-controller/` | YCF controller |
 | `apps/yandex-schedule-traffic/` | YCF pulse |
+# Annual read-only refresh (local candidate, September 2026)
+
+See [the annual audit](annual-schedule-audit-2026-09-09.md) for exact coverage,
+unresolved identities, source evidence and deployment gates. The new hot workflow
+reads the published baseline before Sheets regeneration, refreshes individual mos
+card IDs, retains last-good values on a failed/partial card, and archives a strict
+coverage report. Existing finalizer auto-publish enables this independently of
+legacy row changes. No new timer is introduced. This source change alone does not
+deploy the YCF function or prove successful production refresh.

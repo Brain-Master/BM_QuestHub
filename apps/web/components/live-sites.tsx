@@ -16,7 +16,8 @@ type Props = {
 };
 
 export function LiveSites({ baseQuests, venues, worlds }: Props) {
-  const { quests, status, liveEnabled } = useLiveSchedule(baseQuests);
+  const { quests, status, liveEnabled, hasLiveSnapshot } = useLiveSchedule(baseQuests);
+  const hasKnownSchedule = !liveEnabled || hasLiveSnapshot || baseQuests.some(quest => quest.offers.length > 0);
 
   const sites = useMemo(
     () =>
@@ -25,12 +26,13 @@ export function LiveSites({ baseQuests, venues, worlds }: Props) {
         quests,
         venues,
         worlds,
+        includeInactive: true,
         scheduleLoading: liveEnabled && status === "loading",
-      }),
+      }).filter(site => site.listedOnSites),
     [quests, venues, worlds, liveEnabled, status],
   );
 
-  const cityCards = useMemo(() => buildCityCards(sites), [sites]);
+  const cityCards = useMemo(() => buildCityCards(sites, { includeInactive: true }), [sites]);
 
   return (
     <>
@@ -39,7 +41,8 @@ export function LiveSites({ baseQuests, venues, worlds }: Props) {
           Загружаем актуальное расписание по площадкам…
         </p>
       ) : null}
-      <SiteSelectionGrid sites={sites} cityCards={cityCards} />
+      {status === "error" && <p role="status">Не удалось обновить расписание. Сохранённые сведения могут быть устаревшими.</p>}
+      {!hasKnownSchedule ? <p>Данные о группах пока недоступны. Покажем доступность площадок после загрузки расписания.</p> : <SiteSelectionGrid sites={sites} cityCards={cityCards} />}
     </>
   );
 }

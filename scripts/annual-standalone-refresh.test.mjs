@@ -1,0 +1,22 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import {spawnSync} from 'node:child_process';
+import {fileURLToPath} from 'node:url';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+test('standalone CLI validates source/hash and retains all-archived undiscovered coverage without network',t=>{
+  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'questhub-standalone-test-'));
+  t.after(()=>fs.rmSync(dir,{recursive:true,force:true}));
+  const source=JSON.parse(fs.readFileSync(path.join(root,'apps/web/content/year-schedule.generated.json'),'utf8'));
+  source.groups=[{...source.groups[0],courseStart:'2024-09-01',courseEnd:'2025-05-31'}];
+  const registry={version:1,sourceSha256:source.sourceSha256,attemptedAt:'2026-09-09T00:00:00.000Z',expectedGroups:1,verifiedGroups:0,archivedGroups:1,ok:true,groups:{},candidates:{},errors:[]};
+  const input=path.join(dir,'input.json'),data=path.join(dir,'source.json'),output=path.join(dir,'output.json');
+  fs.writeFileSync(input,JSON.stringify(registry));fs.writeFileSync(data,JSON.stringify(source));
+  const run=out=>spawnSync(process.execPath,[path.join(root,'scripts/refresh-annual-mos.mjs'),`--input=${input}`,`--output=${out}`,`--source=${data}`],{cwd:root,encoding:'utf8',timeout:15000});
+  const r=run(output);assert.equal(r.status,0,r.stderr);
+  const result=JSON.parse(fs.readFileSync(output,'utf8'));assert.equal(result.ok,true);assert.equal(result.archivedGroups,1);assert.equal(result.verifiedGroups,0);
+  source.sourceSha256='0'.repeat(64);fs.writeFileSync(data,JSON.stringify(source));
+  const bad=run(path.join(dir,'bad.json'));assert.notEqual(bad.status,0);assert.match(bad.stderr,/ANNUAL_SOURCE_REVISION_MISMATCH/);assert.equal(fs.existsSync(path.join(dir,'bad.json')),false);
+});

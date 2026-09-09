@@ -24,7 +24,7 @@ import {
 
 import { MetroLabel } from "@/components/metro-label";
 import { buttonVariants } from "@/components/ui/button";
-import { buildSiteMapColorMap, getSiteMapColor } from "@/lib/sites/map-colors";
+import { buildSiteMapColorMap, getSiteMapColor, campusHasNoGroups, INACTIVE_MAP_MARKER_COLOR } from "@/lib/sites/map-colors";
 import {
   MOSCOW_MAP_BOUNDS,
   positionSitesOnMap,
@@ -193,6 +193,7 @@ function getClusterMarkerColor(
   mapColorMode: "default" | "site",
   siteColorBySlug: Map<string, string>,
 ): string {
+  if (cluster.points.every(point => campusHasNoGroups(point.site, point.campus))) return INACTIVE_MAP_MARKER_COLOR;
   if (mapColorMode === "default") return DEFAULT_MAP_MARKER_COLOR;
 
   const firstSiteSlug = cluster.points[0]?.site.slug;
@@ -303,7 +304,8 @@ function MapPinMarker({
   onSelect: () => void;
 }) {
   const metro = point.campus.metro && point.campus.metro !== "—" ? point.campus.metro : primaryMetro(point.site);
-  const color = mapColorMode === "site" ? markerColor : "#f97316";
+  const inactive = campusHasNoGroups(point.site, point.campus);
+  const color = inactive ? INACTIVE_MAP_MARKER_COLOR : mapColorMode === "site" ? markerColor : DEFAULT_MAP_MARKER_COLOR;
 
   return (
     <div
@@ -322,8 +324,10 @@ function MapPinMarker({
           dimmed && "opacity-35 saturate-50",
         )}
         data-map-interactive="true"
+        data-campus-marker={point.campus.slug}
+        data-inactive={inactive || undefined}
         style={{ backgroundColor: color }}
-        aria-label={`${active ? "Открыть расписание площадки" : "Выбрать площадку"} ${point.site.name}, корпус ${point.campus.name}${metro ? `, метро ${metro}` : ""}`}
+        aria-label={`${active ? inactive ? "Открыть информацию о площадке" : "Открыть расписание площадки" : "Выбрать площадку"} ${point.site.name}, ${point.campus.address}${metro ? `, метро ${metro}` : ""}${inactive ? ", сейчас нет групп" : ""}`}
         aria-pressed={active}
         onFocus={onActivate}
         onBlur={onDeactivate}
@@ -331,7 +335,8 @@ function MapPinMarker({
       >
         <span
           className={cn(
-            "pointer-events-none absolute inset-0 rounded-full opacity-55 motion-safe:animate-ping",
+            "pointer-events-none absolute inset-0 rounded-full opacity-55",
+            !inactive && "motion-safe:animate-ping",
             active || preview ? "scale-125" : "",
           )}
           style={{ backgroundColor: color }}
@@ -369,6 +374,7 @@ function ClusterMarker({
         )}
         data-map-interactive="true"
         data-testid="sites-map-cluster"
+        data-inactive={cluster.points.every(point => campusHasNoGroups(point.site, point.campus)) || undefined}
         style={{ borderColor: markerColor, color: markerColor }}
         aria-label={`Группа из ${cluster.points.length} точек${visibleCount !== cluster.points.length ? `, найдено ${visibleCount}` : ""}`}
         onPointerDown={(event) => event.stopPropagation()}
@@ -580,7 +586,8 @@ export function SiteMapCanvas({
 
   function selectPoint(point: DisplayMapPoint) {
     if (activePointId === point.id) {
-      navigateToAgenda(point.site);
+      if (campusHasNoGroups(point.site, point.campus)) router.push(buildSiteHref(point.site.slug));
+      else navigateToAgenda(point.site);
       return;
     }
 
@@ -635,13 +642,16 @@ export function SiteMapCanvas({
 
   if (mappedSites.length === 0) {
     return (
+      <div>
+      {filterSlot}
       <div className="rounded-2xl border border-dashed border-white/15 bg-card/35 px-6 py-16 text-center">
         <p className="font-heading text-xl font-semibold text-foreground">
-          Карта появится после добавления площадок
+          Нет площадок по выбранным условиям
         </p>
         <p className="mx-auto mt-2 max-w-xl text-muted-foreground text-sm leading-relaxed">
-          Добавьте адрес, метро или координаты, чтобы площадки появились на карте.
+          Измените поиск или сбросьте фильтры, чтобы увидеть площадки на карте.
         </p>
+      </div>
       </div>
     );
   }
@@ -948,8 +958,10 @@ function SiteList({
         return (
           <article
             key={site.slug}
+            data-site={site.slug} data-inactive={site.shiftCount === 0 || undefined}
             className={cn(
               "group rounded-2xl border bg-black/10 text-left transition",
+              site.shiftCount === 0 && "grayscale",
               active || preview
                 ? "border-orange-400/60 shadow-[0_0_28px_rgba(234,88,12,0.18)]"
                 : "border-white/10 hover:border-orange-300/30",
@@ -1097,14 +1109,22 @@ function MapTooltip({
         style={style}
       >
         {content}
-        <button
+        {campusHasNoGroups(point.site, point.campus) ? (
+          <Link
+            href={buildSiteHref(point.site.slug)}
+            className="mt-2 inline-flex w-full items-center justify-center rounded-lg border border-white/10 px-2.5 py-1.5 text-xs focus-visible:ring-2 focus-visible:ring-ring"
+            onClick={() => rememberSite(point.site)}
+          >
+            О площадке · в этом корпусе пока нет групп
+          </Link>
+        ) : <button
           type="button"
           className="mt-2 inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-white/10 bg-white/[0.06] px-2.5 py-1.5 font-medium text-cyan-50 text-xs transition hover:bg-white/[0.1] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           aria-label={`Открыть расписание выбранной площадки ${point.site.name}`}
           onClick={onOpenAgenda}
         >
           Открыть расписание
-        </button>
+        </button>}
       </div>
     );
   }
@@ -1234,6 +1254,10 @@ function SelectedSiteDetails({ site, points }: { site: SiteScopeCard; points: Di
       </div>
 
       <div className="mt-4 grid gap-2">
+        {site.shiftCount === 0 ? <>
+          <p className="text-muted-foreground text-sm">На этой площадке пока нет групп.</p>
+          <Link href={buildSiteHref(site.slug)} className={buttonVariants({ variant: "outline", size: "sm" })} onClick={() => rememberSite(site)}>О площадке</Link>
+        </> : <>
         <Link
           href={`/sites/${site.slug}/agenda`}
           className={cn(buttonVariants({ variant: "default", size: "sm" }), "gap-2")}
@@ -1253,6 +1277,7 @@ function SelectedSiteDetails({ site, points }: { site: SiteScopeCard; points: Di
           <Grid2X2 className="size-4" aria-hidden />
           Доступные курсы
         </Link>
+        </>}
       </div>
     </div>
   );

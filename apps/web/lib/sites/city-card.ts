@@ -48,7 +48,7 @@ export function isCityActive(city: CityCard): boolean {
   return city.siteCount > 0 && (city.courseCount > 0 || city.groupCount > 0);
 }
 
-export function buildCityCards(sites: SiteForCityAggregation[]): CityCard[] {
+export function buildCityCards(sites: SiteForCityAggregation[], options: {includeInactive?: boolean} = {}): CityCard[] {
   const byCity = new Map<string, SiteForCityAggregation[]>();
 
   for (const site of sites) {
@@ -90,7 +90,7 @@ export function buildCityCards(sites: SiteForCityAggregation[]): CityCard[] {
   }
 
   return cards
-    .filter(isCityActive)
+    .filter(city => options.includeInactive ? city.siteCount > 0 : isCityActive(city))
     .sort((a, b) => {
       const orderA = CITY_META[a.slug]?.sortOrder ?? 99;
       const orderB = CITY_META[b.slug]?.sortOrder ?? 99;

@@ -1,4 +1,5 @@
 import type { EventStatusV2 } from "@/lib/data/v2/entities";
+import { annualBookingNeedsReview } from "./annual-schedule";
 import type { AgendaOfferItem } from "@/lib/offers/agenda";
 import {
   CAPACITY_LABELS,
@@ -240,6 +241,7 @@ export function getScheduleBookingMode(
   status: ScheduleDisplayStatus,
   variant?: Pick<ScheduleVariant, "mosBookingUrl">,
 ): ScheduleBookingMode {
+  if (annualBookingNeedsReview(offer.annual)) return { kind: "disabled", label: "Карточка на проверке" };
   if (offer.annual?.admission === "closed") return { kind: "disabled", label: "Приём закрыт" };
   const statusKey = resolveScheduleStatusKey(offer);
   const cta = SCHEDULE_CTA;

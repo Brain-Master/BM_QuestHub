@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { weeklySlotSchema } from "@/lib/offers/annual-schedule";
-import { annualProgrammeName } from "@/lib/offers/annual-programme-name";
+import { weeklySlotSchema } from "./offers/annual-schedule";
+import { annualProgrammeName } from "./offers/annual-programme-name";
 import type { Quest, Venue } from "@/lib/schemas";
 
 const nullableCount = z.number().int().nonnegative().nullable();
@@ -10,11 +10,14 @@ const group = z.object({
   id:z.string().min(1), groupCode:z.string().nullable(), listingId:z.string().regex(/^\d+$/),
   programme:z.literal("shmi"), title:z.string().min(1), sourceTitle:z.string().optional(), locationId:z.string().min(1),
   teacher:z.string().nullable(), status:z.enum(["open","closed"]),
+  refreshedAt:z.iso.datetime().optional(),refreshError:z.string().regex(/^[A-Z][A-Z0-9_]+$/).optional(),
   totalSeats:nullableCount,freeSeats:nullableCount,ageMin:nullableCount,ageMax:nullableCount,
   lessonPrice:nullableCount,coursePrice:nullableCount,courseStart:date,courseEnd:date,
   slots:z.array(slot).min(1), link:z.url(),linkKind:z.enum(["card","search"]),limitedSource:z.boolean(),
 }).strict().refine(g=>g.courseStart<=g.courseEnd,"Invalid course dates")
   .refine(g=>g.totalSeats===null||g.freeSeats===null||g.freeSeats<=g.totalSeats,"Invalid seats")
+  .refine(g=>g.ageMin===null||g.ageMax===null||g.ageMin<=g.ageMax,"Invalid ages")
+  .refine(g=>new Set(g.slots.map(s=>`${s.weekday}:${s.start}:${s.end}`)).size===g.slots.length,"Duplicate weekly slot")
   .refine(g=>g.linkKind==="card"
     ? /^https:\/\/www\.mos\.ru\/pgu2\/activity\/card\/\d+$/.test(g.link)
     : g.link===`https://www.mos.ru/pgu2/activity/groups?keyword=${g.listingId}`,"Unsafe mos.ru link");
@@ -44,8 +47,8 @@ export function projectAnnualWorkspace(quests: Quest[], venues: Venue[]): YearSc
       const a = o.annual;
       if (!a || !o.weeklySlots?.length || !o.mosBookingUrl) throw Error("Incomplete annual offer");
       const sourceTitle = a.sourceTitle ?? o.scheduleCard?.displayTitle ?? o.shiftLabel;
-      return { id:o.id.startsWith("year:")?o.id.slice(5):o.id,groupCode:a.groupCode,listingId:a.listingId,programme:"shmi",title:annualProgrammeName(sourceTitle).full,sourceTitle,locationId:o.venueSlug,
-        teacher:a.teacher,status:a.admission,totalSeats:a.totalSeats,freeSeats:a.freeSeats,ageMin:a.ageMin,ageMax:a.ageMax,lessonPrice:a.lessonPrice,coursePrice:a.coursePrice,courseStart:o.startDate,courseEnd:o.endDate,slots:o.weeklySlots,link:o.mosBookingUrl,linkKind:a.linkKind,limitedSource:a.limitedSource };
+      return { id:o.id.startsWith("year:")?o.id.slice(5):o.id,groupCode:a.groupCode,listingId:a.listingId,programme:"shmi",title:annualProgrammeName(sourceTitle,a.studyYear).full,sourceTitle,locationId:o.venueSlug,
+        teacher:a.teacher,status:a.admission,refreshedAt:a.refreshedAt,refreshError:a.refreshError,totalSeats:a.totalSeats,freeSeats:a.freeSeats,ageMin:a.ageMin,ageMax:a.ageMax,lessonPrice:a.lessonPrice,coursePrice:a.coursePrice,courseStart:o.startDate,courseEnd:o.endDate,slots:o.weeklySlots,link:o.mosBookingUrl,linkKind:a.linkKind,limitedSource:a.limitedSource };
     }),
   });
 }

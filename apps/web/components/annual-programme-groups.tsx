@@ -5,6 +5,8 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import type { AnnualProgrammeGroup } from "@/lib/offers/annual-programme-groups";
 import type { ScheduleBoardItem } from "@/lib/offers/schedule-board";
+import { OfferBookingAction } from "@/components/offer-booking-action";
+import { itemSchool } from "@/lib/offers/course-finder";
 
 export function AnnualProgrammeGroups({groups,highlightedOfferId,renderGroup}:{groups:AnnualProgrammeGroup[];highlightedOfferId?:string|null;renderGroup:(item:ScheduleBoardItem)=>ReactNode}) {
   return <div className="mb-8 space-y-8" data-testid="annual-programmes">
@@ -16,14 +18,21 @@ export function AnnualProgrammeGroups({groups,highlightedOfferId,renderGroup}:{g
       {programme.campuses.some(c=>c.items.some(i=>i.offer.annual))&&<p className="mb-5 text-sm text-muted-foreground">Даты срезов mos.ru: {[...new Set(programme.campuses.flatMap(c=>c.items.map(i=>i.offer.annual?.asOf).filter(Boolean)))].join(", ")}. Расписание, приём и места не подтверждаются в реальном времени — перед записью проверьте карточку на mos.ru.</p>}
       <div className="space-y-6">{programme.campuses.map(campus=><section key={campus.slug} data-campus={campus.slug} className="min-w-0 space-y-3">
         <header><h3 className="font-semibold">{campus.name}</h3><p className="break-words text-sm text-muted-foreground">{campus.address}</p><Link className="text-sm text-primary underline" href={`/sites/${campus.schoolSlug}/campuses/${campus.slug}/agenda/`}>Расписание этого адреса</Link></header>
-        {campus.items.map(item=><details key={item.offer.id} data-annual-group={item.offer.id} open={highlightedOfferId===item.offer.id||undefined} className="min-w-0 rounded-xl border border-white/10 bg-background/40 open:bg-background/70">
-          <summary className="cursor-pointer rounded-xl p-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
+        {campus.items.map(item=><article key={item.offer.id} data-annual-group={item.offer.id} className="min-w-0 rounded-xl border border-white/10 bg-background/40">
+          <header className="p-4">
             <span className="break-words font-medium">{item.displayTitle}</span>
             <span className="mt-1 block break-words text-sm">{item.timeLabel}</span>
-            <span className="mt-1 block text-xs text-muted-foreground">{item.status.label} · {item.offer.annual?.groupCode?`Группа ${item.offer.annual.groupCode}`:`Занятие ${item.offer.annual?.listingId??item.offer.id}`} · Подробнее и запись</span>
-          </summary>
+            <span className="mt-1 block text-xs text-muted-foreground">{item.status.label} · {item.offer.annual?.groupCode?`Группа ${item.offer.annual.groupCode}`:`Занятие ${item.offer.annual?.listingId??item.offer.id}`}</span>
+          </header>
+          <div className="grid gap-3 px-4 pb-4">{item.variants.map(variant=><div key={variant.id} className="flex min-w-0 flex-wrap items-center justify-between gap-3">
+            <strong className="break-words text-sm">{variant.priceLabel}</strong>
+            <OfferBookingAction quest={item.quest} offer={item.offer} venue={item.venue} schoolSlug={itemSchool(item)} variant={variant} mode={variant.bookingMode} className="min-h-11" />
+          </div>)}</div>
+          <details open={highlightedOfferId===item.offer.id||undefined}>
+          <summary className="min-h-11 cursor-pointer rounded-xl p-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">Подробнее о группе</summary>
           <div className="min-w-0 p-2 sm:p-4">{renderGroup(item)}</div>
-        </details>)}
+          </details>
+        </article>)}
       </section>)}</div>
     </section>)}
   </div>;

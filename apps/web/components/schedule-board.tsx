@@ -215,78 +215,25 @@ export function ScheduleBoard({
     [groups, querySchoolSlug, schoolSlug],
   );
 
-  const statuses = React.useMemo(() => {
-    const unique = Array.from(new Set(boardItems.map((item) => item.status.label)));
-    return [ALL_STATUSES, ...unique];
-  }, [boardItems]);
-
-  const programGroups = React.useMemo(() => {
-    return buildProgramFilterGroups(
-      boardItems.map((item) => ({
-        slug: item.quest.slug,
-        title: item.quest.title,
-        worldSlug: item.quest.worldSlug,
-        worldName: item.world?.name,
-        programLabel: item.programFilterLabel,
-      })),
-    );
-  }, [boardItems]);
-
-  const sites = React.useMemo(() => {
-    const unique = Array.from(
-      new Set(boardItems.map((item) => resolveVenueShortName(item.venue))),
-    ).sort((a, b) => a.localeCompare(b, "ru"));
-    return [ALL_SITES, ...unique];
-  }, [boardItems]);
   const querySite = React.useMemo(() => {
-    if (!querySchoolSlug || schoolSlug) return undefined;
+    if (!querySchoolSlug || querySchoolSlug === "all" || schoolSlug) return undefined;
     const match =
       boardItems.find((item) => item.venue.schoolScopeSlug === querySchoolSlug) ??
       boardItems.find((item) => venueVisibleForSchoolScope(item.venue, querySchoolSlug));
     return match ? resolveVenueShortName(match.venue) : undefined;
   }, [boardItems, querySchoolSlug, schoolSlug]);
-  const activeSite =
-    site === QUERY_SITE && querySite && sites.includes(querySite)
-      ? querySite
-      : sites.includes(site)
-        ? site
-        : ALL_SITES;
+  const activeSite = site === QUERY_SITE ? querySite ?? (querySchoolSlug && querySchoolSlug !== "all" && !schoolSlug ? "Площадка из ссылки не найдена" : ALL_SITES) : site;
   const bookingSchoolSlug = schoolSlug ?? querySchoolSlug;
 
-  const formats = React.useMemo(() => {
-    const unique = Array.from(new Set(boardItems.flatMap(itemFormatTypes))).sort((a, b) =>
-      a.localeCompare(b, "ru"),
-    );
-    return [ALL_FORMATS, ...unique];
-  }, [boardItems]);
-
-  const ages = React.useMemo(() => {
-    const unique = Array.from(
-      new Set(
-        boardItems.flatMap((item) => [
-          item.commonAgeLabel,
-          ...item.variants.map((variant) => variant.ageLabel),
-        ]),
-      ),
-    )
-      .filter((value): value is string => Boolean(value))
-      .sort((a, b) => a.localeCompare(b, "ru", { numeric: true }));
-
-    return unique.length > 1 ? [ALL_AGES, ...unique] : [];
-  }, [boardItems]);
-
-  const showAgeFilter = ages.length > 0;
-  const activeAge = showAgeFilter && ages.includes(age) ? age : ALL_AGES;
-
-  const visibleItems = React.useMemo(() => {
+  const activeAge = age;
+  const matches = React.useCallback((item: ScheduleBoardItem, skip = "") => {
     const selectedProgram = parseProgramFilterValue(program);
-    return boardItems.filter((item) => {
-      if (!showArchived && status === ALL_STATUSES && item.status.isArchivedState && item.offer.id !== queryOfferId) {
+      if (!showArchived && (skip === "status" || status === ALL_STATUSES) && item.status.isArchivedState && item.offer.id !== queryOfferId) {
         return false;
       }
-      if (status !== ALL_STATUSES && item.status.label !== status) return false;
+      if (skip !== "status" && status !== ALL_STATUSES && item.status.label !== status) return false;
       if (!scheduleItemMatchesQuery(item, query)) return false;
-      if (showProgramFilter) {
+      if (showProgramFilter && skip !== "program") {
         if (selectedProgram.kind === "series" && item.quest.worldSlug !== selectedProgram.slug) {
           return false;
         }
@@ -295,14 +242,14 @@ export function ScheduleBoard({
         }
       }
       if (
-        !schoolSlug &&
+        skip !== "site" && !schoolSlug &&
         activeSite !== ALL_SITES &&
         resolveVenueShortName(item.venue) !== activeSite
       ) {
         return false;
       }
-      if (format !== ALL_FORMATS && !itemFormatTypes(item).includes(format)) return false;
-      if (showAgeFilter && activeAge !== ALL_AGES) {
+      if (skip !== "format" && format !== ALL_FORMATS && !itemFormatTypes(item).includes(format)) return false;
+      if (skip !== "age" && activeAge !== ALL_AGES) {
         const itemAges = [
           item.commonAgeLabel,
           ...item.variants.map((variant) => variant.ageLabel),
@@ -310,21 +257,26 @@ export function ScheduleBoard({
         if (!itemAges.includes(activeAge)) return false;
       }
       return true;
-    });
   }, [
     activeAge,
     activeSite,
-    boardItems,
     format,
     program,
     query,
     queryOfferId,
     schoolSlug,
-    showAgeFilter,
     showArchived,
     showProgramFilter,
     status,
   ]);
+  const unique = (values: string[]) => Array.from(new Set(values.filter(Boolean))).sort((a,b)=>a.localeCompare(b,"ru",{numeric:true}));
+  const statuses = [ALL_STATUSES, ...unique(boardItems.filter(item=>matches(item,"status")).map(item=>item.status.label))];
+  const sites = [ALL_SITES, ...unique(boardItems.filter(item=>matches(item,"site")).map(item=>resolveVenueShortName(item.venue)))];
+  const formats = [ALL_FORMATS, ...unique(boardItems.filter(item=>matches(item,"format")).flatMap(itemFormatTypes))];
+  const ages = [ALL_AGES, ...unique(boardItems.filter(item=>matches(item,"age")).flatMap(item=>[item.commonAgeLabel, ...item.variants.map(v=>v.ageLabel)].filter((v):v is string=>Boolean(v))))];
+  const showAgeFilter = ages.length > 1 || activeAge !== ALL_AGES;
+  const programGroups = buildProgramFilterGroups(boardItems.filter(item=>matches(item,"program")).map(item=>({slug:item.quest.slug,title:item.quest.title,worldSlug:item.quest.worldSlug,worldName:item.world?.name,programLabel:item.programFilterLabel})));
+  const visibleItems = React.useMemo(()=>boardItems.filter(item=>matches(item)),[boardItems,matches]);
 
   const visibleGroups = React.useMemo(
     () => groupVisibleItems(groups, visibleItems.filter(item=>item.quest.format!=="year")),

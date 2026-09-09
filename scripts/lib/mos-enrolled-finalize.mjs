@@ -61,14 +61,25 @@ export async function runMosEnrolledFinalize(options) {
     return { ok: false, reason: "manifest_missing", runId };
   }
 
-  const batchesTotal = manifest.batchesTotal ?? 0;
+  const batchesTotal = manifest.batchesTotal;
+  if (!Number.isInteger(batchesTotal) || batchesTotal < 0 || !manifest.byUrl) return {ok:false,reason:"manifest_invalid",runId};
   if (batchesTotal === 0) {
+    if (manifest.urlCount !== 0 || Object.keys(manifest.byUrl).length || !Array.isArray(manifest.archivedGroupIds) || !Array.isArray(manifest.lifecycleErrors)) return {ok:false,reason:"empty_manifest_invalid",runId};
     onProgress?.("[mos-finalize] no batches — idle");
+    const errors = manifest.lifecycleErrors;
+    let stateOk = true, publish = null;
     if (!dryRun) {
-      await resetPipelineRunToIdle();
-      await onSyncFinished({ ok: true, hadChanges: false, runId }, null);
+      const loaded = await loadSyncStateWithMeta();
+      if (!loaded.readOk) return {ok:false,reason:"baseline_read_failed",runId};
+      if (loaded.state.activeRunId && loaded.state.activeRunId !== runId) return {ok:false,reason:"run_changed",runId};
+      const reset = await resetPipelineRunToIdle();
+      if (reset !== true) return {ok:false,reason:"state_reset_failed",runId};
+      const idle = {...loaded.state,runPhase:"idle",activeRunId:null,batchesTotal:0,batchesDone:0,batchesFailed:0,plannerAt:null,lastBatchAt:null,lockUntil:null};
+      const finish = await onSyncFinished({ ok: errors.length === 0, hadChanges: false, runId }, idle);
+      stateOk = finish.stateOk === true;
+      if (stateOk && autoPublishEnabled()) publish = await triggerSheetSyncHot();
     }
-    return { ok: true, runId, batchesTotal: 0, updatedRows: 0, errors: [] };
+    return { ok: errors.length === 0 && stateOk, runId, batchesTotal: 0, updatedRows: 0, archivedGroupIds: manifest.archivedGroupIds, errors, stateOk, publish };
   }
 
   if (!dryRun) {
@@ -83,13 +94,14 @@ export async function runMosEnrolledFinalize(options) {
     loadSyncStateWithMeta(),
   ]);
   const prevSnapshot = loadedSnapshot.snapshot;
+  if (!loadedSnapshot.readOk || !loadedSyncState.readOk) return {ok:false,reason:"baseline_read_failed",runId};
   /** @type {Record<string, { enrolled: number, shiftGroupId: string, formatType: string }>} */
   const nextSnapshot = { ...prevSnapshot };
 
   /** @type {{ range: string, value: string }[]} */
   const pendingWrites = [];
   /** @type {{ url: string, message: string }[]} */
-  const errors = [];
+  const errors = [...(manifest.lifecycleErrors ?? [])];
   /** @type {Array<{ url: string, before: number | null, after: number, delta: number, rows: { shiftGroupId: string, formatType: string }[] }>} */
   const changes = [];
   let updatedRows = 0;
@@ -137,7 +149,7 @@ export async function runMosEnrolledFinalize(options) {
     onProgress?.(`[mos-finalize] cookies saved → ${cookieSave.target}`);
   }
 
-  const ok = errors.length === 0;
+  const ok = errors.length === 0 && batchesFailed === 0;
   let eventSummary = null;
   if (!dryRun && ok && changes.length > 0) {
     try {
@@ -198,7 +210,10 @@ export async function runMosEnrolledFinalize(options) {
       `[mos-finalize] state ok=${stateOk} nextDueAt=${finish.nextDueAt ?? "?"}`,
     );
 
-    if (ok && updatedRows > 0 && autoPublishEnabled()) {
+    // Annual groups are independent of legacy Sheet rows. Their direct-card
+    // refresh must run even when archived legacy cards fail or stay unchanged.
+    // `ok` remains the truthful legacy result; the workflow reports annual coverage.
+    if (autoPublishEnabled()) {
       publish = await triggerSheetSyncHot();
       onProgress?.(
         publish.ok
@@ -209,7 +224,7 @@ export async function runMosEnrolledFinalize(options) {
   }
 
   return {
-    ok,
+    ok: ok && snapshotOk && stateOk,
     skipped: false,
     reason: gate.reason,
     runId,

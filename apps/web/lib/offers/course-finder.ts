@@ -21,11 +21,11 @@ type Query = Pick<URLSearchParams, "get" | "has">;
 const bounded = (value: string | null, fallback = "all") => value === null ? fallback : value.slice(0, 160);
 
 /** A route school is authoritative. Unknown entity IDs are retained and fail closed. */
-export function readFinderState(query: Query, routeSchool?: string, initialVenue?: string): FinderState {
+export function readFinderState(query: Query, routeSchool?: string, initialVenue?: string, embedded = false): FinderState {
   const school = routeSchool ?? bounded(query.get("school"));
   const programme = bounded(query.get("programme"));
   const hasSelection = ["venue", "campus", "programme", "age", "level", "day", "offer"].some(key => query.has(key));
-  const view = query.get("view") === "wizard" ? "wizard" : query.get("view") === "catalogue" || hasSelection || initialVenue || !routeSchool ? "catalogue" : "wizard";
+  const view = query.get("view") === "wizard" ? "wizard" : query.get("view") === "catalogue" || embedded || hasSelection || initialVenue || !routeSchool ? "catalogue" : "wizard";
   const requestedStep = query.get("step");
   const step = query.get("offer") || view === "catalogue" ? "results" : ["school", "campus", "interest", "results"].includes(requestedStep ?? "") ? requestedStep as FinderState["step"] : school === "all" ? "school" : "campus";
   const age = query.get("age");
@@ -53,10 +53,35 @@ export function changeFinderState(state: FinderState, patch: Partial<FinderState
 }
 
 /** Public query only; carries no tracking, credentials or personal child profile. */
-export function finderQuery(state: FinderState): string {
+export function finderQuery(state: FinderState, routeSchool?: string, initialVenue?: string, embedded = false): string {
   const query = new URLSearchParams();
-  for (const [key, value] of Object.entries(state)) if (value !== "") query.set(key, value);
+  for (const key of ["school", "venue", "programme", "level", "age", "day"] as const) {
+    const value = state[key];
+    if (value === "all" || (key === "school" && value === routeSchool) || (key === "venue" && value === initialVenue)) continue;
+    query.set(key, value);
+  }
+  if (state.offer) query.set("offer", state.offer);
+  if (state.method !== "programme") query.set("method", state.method);
+  if (state.grouping !== "venues") query.set("grouping", state.grouping);
+  // Derive defaults through the parser itself, including the school QR entry screen.
+  if (readFinderState(query, routeSchool, initialVenue, embedded).view !== state.view) query.set("view", state.view);
+  if (readFinderState(query, routeSchool, initialVenue, embedded).step !== state.step) query.set("step", state.step);
+  if (readFinderState(query, routeSchool, initialVenue, embedded).completed !== state.completed) query.set("completed", state.completed);
   return query.toString();
+}
+
+export type FinderFacet = "school" | "venue" | "programme" | "level" | "age" | "day";
+
+/** A choice means replacing that filter, not adding it to its old value. */
+export function finderChoiceCount(items: ScheduleBoardItem[], state: FinderState, key: FinderFacet, value: string): number {
+  const next = changeFinderState(state, { [key]: value });
+  next.offer = "";
+  if (key === "school") next.venue = "all";
+  return new Set(items.filter(item => finderItemMatches(item, next)).map(item => item.offer.id)).size;
+}
+
+export function finderChoices(items: ScheduleBoardItem[], state: FinderState, key: FinderFacet, values: string[]): string[] {
+  return values.filter(value => finderChoiceCount(items, state, key, value) > 0);
 }
 
 export function itemSchool(item: ScheduleBoardItem): string {
@@ -65,7 +90,7 @@ export function itemSchool(item: ScheduleBoardItem): string {
 
 export function itemStudyYear(item: ScheduleBoardItem): number | null {
   if (item.quest.slug !== "shmi") return null;
-  return annualProgrammeName(item.offer.annual?.sourceTitle ?? "").studyYear;
+  return annualProgrammeName(item.offer.annual?.sourceTitle ?? "", item.offer.annual?.studyYear).studyYear;
 }
 
 export function finderAgeLabel(item: ScheduleBoardItem): string {
@@ -78,6 +103,7 @@ export function finderAgeLabel(item: ScheduleBoardItem): string {
 
 export function finderItemMatches(item: ScheduleBoardItem, state: FinderState, ignoreVenue = false): boolean {
   if (item.quest.format !== "year") return false;
+  if (item.status.isArchivedState && item.offer.id !== state.offer) return false;
   if (state.school !== "all" && itemSchool(item) !== state.school) return false;
   if (!ignoreVenue && state.venue !== "all" && item.offer.venueSlug !== state.venue) return false;
   if (state.programme !== "all" && item.quest.slug !== state.programme) return false;

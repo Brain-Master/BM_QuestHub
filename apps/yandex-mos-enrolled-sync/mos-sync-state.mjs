@@ -111,7 +111,7 @@ export function normalizeSyncState(raw) {
  */
 export function batchesComplete(state) {
   return (
-    state.batchesTotal > 0 &&
+    (state.batchesTotal > 0 || (state.batchesTotal === 0 && !!state.activeRunId && state.runPhase === "processing")) &&
     state.batchesDone >= state.batchesTotal
   );
 }

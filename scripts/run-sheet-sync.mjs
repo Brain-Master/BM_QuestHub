@@ -46,6 +46,12 @@ if (!tsx) {
 }
 
 const tsconfig = path.join(ROOT, "apps", "web", "tsconfig.json");
+if (tier === "hot") {
+  const refresh = spawnSync(process.execPath, [tsx, "--tsconfig", tsconfig,
+    path.join(ROOT, "scripts", "refresh-annual-from-published.ts")],
+  { cwd: ROOT, stdio: "inherit", env: process.env });
+  if (refresh.status !== 0) process.exit(refresh.status ?? 1);
+}
 const result = spawnSync(
   process.execPath,
   [tsx, "--tsconfig", tsconfig, runner, tier],

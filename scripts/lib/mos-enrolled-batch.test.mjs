@@ -1,0 +1,26 @@
+import {test,mock} from "node:test";
+import assert from "node:assert/strict";
+const noop=async()=>{};
+let requests=0, saved=null;
+let manifest={byUrl:{u:[{shiftGroupId:"old",lifecycle:{start_date:"2000-01-01",end_date:"2000-02-01"}}]},urlBatches:[["u"]]};
+mock.module('./mos-enrolled-cookie-store.mjs',{namedExports:{initMosCookieSession:noop,notifyMosCookiesExpired:noop}});
+mock.module('./mos-sync-failure-alert.mjs',{namedExports:{notifyMosSyncFailure:noop}});
+mock.module('./mos-enrolled-events.mjs',{namedExports:{appendEnrolledEvent:noop,loadEnrolledSnapshotWithMeta:async()=>({readOk:true,snapshot:{}})}});
+mock.module('./mos-enrolled-fetch.mjs',{namedExports:{fetchMosEnrolledCount:async()=>{requests++;return {count:3};}}});
+mock.module('./mos-enrolled-sync.mjs',{namedExports:{FORMATS_SHEET:"Форматы",columnLetter:()=>"C",hotEnrolledTotalForUrl:()=>0}});
+mock.module('./mos-sync-trace.mjs',{namedExports:{mosSyncTrace:()=>{}}});
+mock.module('./mos-sync-state.mjs',{namedExports:{recordBatchProgress:noop}});
+mock.module('./mos-sync-run.mjs',{namedExports:{readBatchResult:async()=>null,readRunManifest:async()=>manifest,writeBatchResult:async(_r,_i,p)=>{saved=p;return true;}}});
+const {processUrlBatch}=await import('./mos-enrolled-batch.mjs');
+test("worker rechecks dates after queue delay, never requests/writes an archived card",async()=>{
+  const options={root:"/test",runId:"r",batchIndex:0,urls:["u"]};
+  const result=await processUrlBatch(options);
+  assert.equal(requests,0);assert.equal(result.ok,true);assert.equal(result.pendingWrites,0);
+  assert.deepEqual(saved.skippedArchivedGroupIds,["old"]);assert.deepEqual(saved.nextSnapshotPartial,{});
+  manifest.byUrl.u.push({shiftGroupId:"future",sheetRow:3,enrolledCol:2,lifecycle:{start_date:"2098-01-01",end_date:"2099-01-01"}});
+  await processUrlBatch(options);assert.equal(requests,1);assert.equal(saved.pendingWrites.length,1);assert.equal(saved.pendingWrites[0].range,"'Форматы'!C3");
+  assert.ok(saved.changes.every(c=>c.rows.every(r=>r.shiftGroupId==="future")));
+  manifest.byUrl.u=[{shiftGroupId:"invalid",lifecycle:{}}];
+  assert.equal((await processUrlBatch(options)).ok,false);assert.equal(requests,1);
+  await assert.rejects(processUrlBatch({...options,urls:["foreign"]}),/MANIFEST_MISMATCH/);
+});

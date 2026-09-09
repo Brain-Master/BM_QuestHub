@@ -1,441 +1,429 @@
 {
   "version": 2,
-  "generatedAt": "2026-09-08T00:00:00.000Z",
+  "generatedAt": "2026-09-09T04:39:35.969Z",
   "source": "annual-csv-integration",
   "integrity": {
-    "contentHash": "sha256:e6782d38b4cb740c934a41809e312adc964e371e0134f3c0d32cf91c164e4b4f"
+    "contentHash": "sha256:aa9dca772afd8f6a502e5deb42089470a4d6729f3ce9e0289485f5f39f4d2413"
   },
   "venues": [
     {
-      "slug": "bm-base-moscow",
-      "name": "База BrainMaster (Москва)",
-      "displayName": "База BrainMaster (Москва)",
-      "type": "bm_base",
-      "address": "Москва, адрес уточняется при записи",
-      "metro": "—",
-      "city": "moscow",
-      "district": "Москва",
-      "directions": [
-        "Выберите смену в расписании и оставьте заявку.\nПосле подтверждения записи мы отправим точный адрес и схему прохода.\nКоординатор подскажет место встречи и порядок допуска."
-      ],
-      "entranceNote": "Адрес базы BrainMaster подтверждаем при записи на конкретную смену.",
-      "contactNote": "Для открытых городских смен детали локации зависят от программы и даты.",
-      "photos": [
-        {
-          "url": "media/venues/photos/bm-base-moscow/01.webp",
-          "alt": "База BrainMaster (Москва)"
-        },
-        {
-          "url": "media/venues/photos/bm-base-moscow/02.webp",
-          "alt": "База BrainMaster (Москва)"
-        },
-        {
-          "url": "media/venues/photos/bm-base-moscow/03.webp",
-          "alt": "База BrainMaster (Москва)"
-        },
-        {
-          "url": "media/venues/photos/bm-base-moscow/04.webp",
-          "alt": "База BrainMaster (Москва)"
-        }
-      ],
-      "listedOnSites": true,
-      "logoUrl": "media/venues/logos/bm-base-moscow.webp"
-    },
-    {
-      "slug": "school-1212-yasenevo",
-      "name": "ГБОУ Школа №1212",
-      "displayName": "Школа №1212",
+      "slug": "school-17-vvedenskogo-28s1",
+      "name": "ГБОУ города Москвы «Школа № 17»",
+      "displayName": "ГБОУ города Москвы «Школа № 17»",
       "type": "school",
-      "address": "Новоясеневский проспект, 24к3",
-      "metro": "Ясенево",
-      "city": "moscow",
-      "district": "Ясенево",
-      "latitude": 55.6039,
-      "longitude": 37.5287,
-      "directions": [
-        "Постройте маршрут до Новоясеневского проспекта, 24к3 и ориентируйтесь на главный вход школы.\nНа входе скажите, что вы на занятия BrainMaster.\nДождитесь координатора BrainMaster в согласованной зоне встречи."
-      ],
-      "entranceNote": "Перед стартом смены подтвердим вход, место встречи и кабинет в корпусе.",
-      "contactNote": "Точный кабинет и порядок прохода отправляем родителям перед началом смены.",
-      "photos": [
-        {
-          "url": "media/venues/photos/school-1212-yasenevo/01.webp",
-          "alt": "ГБОУ Школа №1212"
-        },
-        {
-          "url": "media/venues/photos/school-1212-yasenevo/02.webp",
-          "alt": "ГБОУ Школа №1212"
-        },
-        {
-          "url": "media/venues/photos/school-1212-yasenevo/03.webp",
-          "alt": "ГБОУ Школа №1212"
-        },
-        {
-          "url": "media/venues/photos/school-1212-yasenevo/04.webp",
-          "alt": "ГБОУ Школа №1212"
-        }
-      ],
-      "listedOnSites": true,
-      "schoolScopeSlug": "school-1212",
-      "logoUrl": "media/venues/logos/school-1212.webp"
-    },
-    {
-      "slug": "school-1383-verkhnie-likhobory",
-      "name": "Школа №1383",
-      "displayName": "Школа №1383",
-      "type": "school",
-      "address": "ул. Дубнинская, 7",
-      "metro": "Верхние Лихоборы",
-      "city": "moscow",
-      "district": "Бескудниковский",
-      "latitude": 55.85788,
-      "longitude": 37.56627,
-      "directions": [
-        "Постройте маршрут до ул. Дубнинская, 7 и ориентируйтесь на главный вход школы.\nНа входе скажите, что вы на занятия BrainMaster.\nДождитесь координатора BrainMaster в согласованной зоне встречи."
-      ],
-      "entranceNote": "Перед стартом смены подтвердим вход, место встречи и кабинет в корпусе.",
-      "contactNote": "Точный кабинет и порядок прохода отправляем родителям перед началом смены.",
-      "photos": [
-        {
-          "url": "media/venues/photos/school-1383-verkhnie-likhobory/01.webp",
-          "alt": "Школа №1383"
-        },
-        {
-          "url": "media/venues/photos/school-1383-verkhnie-likhobory/02.webp",
-          "alt": "Школа №1383"
-        },
-        {
-          "url": "media/venues/photos/school-1383-verkhnie-likhobory/03.webp",
-          "alt": "Школа №1383"
-        },
-        {
-          "url": "media/venues/photos/school-1383-verkhnie-likhobory/04.webp",
-          "alt": "Школа №1383"
-        }
-      ],
-      "listedOnSites": true,
-      "schoolScopeSlug": "school-1383",
-      "logoUrl": "media/venues/logos/school-1383.webp"
-    },
-    {
-      "slug": "school-1517-narodnoe-opolchenie",
-      "name": "Школа №1517",
-      "displayName": "Школа №1517",
-      "type": "school",
-      "address": "ул. М. Тухачевского, 58к2",
-      "metro": "Народное Ополчение",
-      "city": "moscow",
-      "district": "Хорошёво-Мнёвники",
-      "latitude": 55.7856,
-      "longitude": 37.4576,
-      "directions": [
-        "Постройте маршрут до ул. М. Тухачевского, 58к2 и ориентируйтесь на главный вход школы.\nНа входе скажите, что вы на занятия BrainMaster.\nДождитесь координатора BrainMaster в согласованной зоне встречи."
-      ],
-      "entranceNote": "Перед стартом смены подтвердим вход, место встречи и кабинет в корпусе.",
-      "contactNote": "Точный кабинет и порядок прохода отправляем родителям перед началом смены.",
-      "photos": [
-        {
-          "url": "media/venues/photos/school-1517-narodnoe-opolchenie/01.webp",
-          "alt": "Школа №1517"
-        },
-        {
-          "url": "media/venues/photos/school-1517-narodnoe-opolchenie/02.webp",
-          "alt": "Школа №1517"
-        },
-        {
-          "url": "media/venues/photos/school-1517-narodnoe-opolchenie/03.webp",
-          "alt": "Школа №1517"
-        },
-        {
-          "url": "media/venues/photos/school-1517-narodnoe-opolchenie/04.webp",
-          "alt": "Школа №1517"
-        }
-      ],
-      "listedOnSites": true,
-      "schoolScopeSlug": "school-1517",
-      "logoUrl": "media/venues/logos/school-1517.webp"
-    },
-    {
-      "slug": "school-17-belyaevo",
-      "name": "Школа №17",
-      "displayName": "Школа №17",
-      "type": "school",
-      "address": "ул. Введенского, 27А",
+      "address": "ул. Введенского, 28, стр. 1",
       "metro": "Беляево",
       "city": "moscow",
       "district": "Коньково",
+      "logoUrl": "/sites/school-17/logo-original.jpg",
+      "latitude": 55.636719,
+      "longitude": 37.531463,
       "directions": [
-        "Постройте маршрут до ул. Введенского, 27А и ориентируйтесь на главный вход школы.\nНа входе скажите, что вы на занятия BrainMaster.\nДождитесь координатора BrainMaster в согласованной зоне встречи."
+        "Выберите корпус и откройте маршрут по его адресу.",
+        "Уточните вход и кабинет у организатора перед первым занятием."
       ],
-      "entranceNote": "Перед стартом смены подтвердим вход, место встречи и кабинет в корпусе.",
-      "contactNote": "Точный кабинет и порядок прохода отправляем родителям перед началом смены.",
+      "entranceNote": "Точка на карте показывает расположение здания. Перед первым занятием уточните у организатора вход и кабинет.",
       "photos": [
         {
-          "url": "media/venues/photos/school-17-belyaevo/01.webp",
-          "alt": "Школа №17"
-        },
-        {
-          "url": "media/venues/photos/school-17-belyaevo/02.webp",
-          "alt": "Школа №17"
-        },
-        {
-          "url": "media/venues/photos/school-17-belyaevo/03.webp",
-          "alt": "Школа №17"
-        },
-        {
-          "url": "media/venues/photos/school-17-belyaevo/04.webp",
-          "alt": "Школа №17"
+          "url": "/sites/school-17/vvedenskogo-28s1-original.jpg",
+          "alt": "ГБОУ города Москвы «Школа № 17». ул. Введенского, 28, стр. 1"
         }
       ],
-      "listedOnSites": true,
-      "schoolScopeSlug": "school-17",
-      "logoUrl": "media/venues/logos/school-17.webp"
-    },
-    {
-      "slug": "school-2103-yasenevo",
-      "name": "Школа №2103",
-      "displayName": "Школа №2103",
-      "type": "school",
-      "address": "Голубинская ул., 13к2",
-      "metro": "Ясенево",
-      "city": "moscow",
-      "district": "Ясенево",
-      "latitude": 55.603,
-      "longitude": 37.5175,
-      "directions": [
-        "Постройте маршрут до Голубинской ул., 13к2 и ориентируйтесь на главный вход школы.\nНа входе скажите, что вы на занятия BrainMaster.\nДождитесь координатора BrainMaster в согласованной зоне встречи."
-      ],
-      "entranceNote": "Перед стартом смены подтвердим вход, место встречи и кабинет в корпусе.",
-      "contactNote": "Точный кабинет и порядок прохода отправляем родителям перед началом смены.",
-      "photos": [
-        {
-          "url": "media/venues/photos/school-2103-yasenevo/01.webp",
-          "alt": "Школа №2103"
-        },
-        {
-          "url": "media/venues/photos/school-2103-yasenevo/02.webp",
-          "alt": "Школа №2103"
-        },
-        {
-          "url": "media/venues/photos/school-2103-yasenevo/03.webp",
-          "alt": "Школа №2103"
-        },
-        {
-          "url": "media/venues/photos/school-2103-yasenevo/04.webp",
-          "alt": "Школа №2103"
-        }
-      ],
-      "listedOnSites": true,
-      "schoolScopeSlug": "school-2103",
-      "logoUrl": "media/venues/logos/school-2103.webp"
-    },
-    {
-      "slug": "school-875-yugo-zapadnaya",
-      "name": "Школа №875",
-      "displayName": "Школа №875",
-      "type": "school",
-      "address": "пр-кт Вернадского, 101, корп. 6",
-      "metro": "Юго-Западная",
-      "city": "moscow",
-      "district": "Проспект Вернадского",
-      "latitude": 55.6632,
-      "longitude": 37.4904,
-      "directions": [
-        "Постройте маршрут до проспекта Вернадского, 101, корп. 6 и ориентируйтесь на главный вход школы.\nНа входе скажите, что вы на занятия BrainMaster.\nДождитесь координатора BrainMaster в согласованной зоне встречи."
-      ],
-      "entranceNote": "Перед стартом смены подтвердим вход, место встречи и кабинет в корпусе.",
-      "contactNote": "Точный кабинет и порядок прохода отправляем родителям перед началом смены.",
-      "photos": [
-        {
-          "url": "media/venues/photos/school-875-yugo-zapadnaya/01.webp",
-          "alt": "Школа №875"
-        },
-        {
-          "url": "media/venues/photos/school-875-yugo-zapadnaya/02.webp",
-          "alt": "Школа №875"
-        },
-        {
-          "url": "media/venues/photos/school-875-yugo-zapadnaya/03.webp",
-          "alt": "Школа №875"
-        },
-        {
-          "url": "media/venues/photos/school-875-yugo-zapadnaya/04.webp",
-          "alt": "Школа №875"
-        }
-      ],
-      "listedOnSites": true,
-      "schoolScopeSlug": "school-875",
-      "logoUrl": "media/venues/logos/school-875.webp"
-    },
-    {
-      "slug": "school-937-orekhovo",
-      "name": "Школа №937",
-      "displayName": "Школа №937",
-      "type": "school",
-      "address": "ул. Маршала Захарова, 25",
-      "metro": "Орехово",
-      "city": "moscow",
-      "district": "Орехово-Борисово",
-      "latitude": 55.619,
-      "longitude": 37.6996,
-      "directions": [
-        "Постройте маршрут до ул. Маршала Захарова, 25 и ориентируйтесь на главный вход школы.\nНа входе скажите, что вы на занятия BrainMaster.\nДождитесь координатора BrainMaster в согласованной зоне встречи."
-      ],
-      "entranceNote": "Перед стартом смены подтвердим вход, место встречи и кабинет в корпусе.",
-      "contactNote": "Точный кабинет и порядок прохода отправляем родителям перед началом смены.",
-      "photos": [
-        {
-          "url": "media/venues/photos/school-937-orekhovo/01.webp",
-          "alt": "Школа №937"
-        },
-        {
-          "url": "media/venues/photos/school-937-orekhovo/02.webp",
-          "alt": "Школа №937"
-        },
-        {
-          "url": "media/venues/photos/school-937-orekhovo/03.webp",
-          "alt": "Школа №937"
-        },
-        {
-          "url": "media/venues/photos/school-937-orekhovo/04.webp",
-          "alt": "Школа №937"
-        }
-      ],
-      "listedOnSites": true,
-      "schoolScopeSlug": "school-937",
-      "logoUrl": "media/venues/logos/school-937.webp"
-    },
-    {
-      "slug": "mduc-ekt-odesskaya",
-      "name": "ГБОУДО «Московский детско-юношеский центр экологии, краеведения и туризма»",
-      "displayName": "МДЮЦ ЭКТ",
-      "type": "school",
-      "address": "ул. Одесская, 12А",
-      "metro": "Каховская",
-      "city": "moscow",
-      "district": "Зюзино",
-      "latitude": 55.6539,
-      "longitude": 37.5984,
-      "directions": [
-        "Постройте маршрут до ул. Одесская, 12А и ориентируйтесь на главный вход.\nНа входе скажите, что вы на занятия BrainMaster.\nДождитесь координатора BrainMaster в согласованной зоне встречи."
-      ],
-      "entranceNote": "Перед стартом смены подтвердим вход, место встречи и кабинет в корпусе.",
-      "contactNote": "Точный кабинет и порядок прохода отправляем родителям перед началом смены.",
-      "photos": [],
-      "listedOnSites": true,
-      "schoolScopeSlug": "mduc-ekt",
-      "logoUrl": "media/venues/logos/school-mduc-ekt.webp"
-    },
-    {
-      "slug": "mduc-ekt-mosfilmovskaya",
-      "name": "ГБОУДО «Московский детско-юношеский центр экологии, краеведения и туризма»",
-      "displayName": "МДЮЦ ЭКТ",
-      "type": "school",
-      "address": "ул. Мосфильмовская, 55к1",
-      "metro": "Минская",
-      "city": "moscow",
-      "district": "Раменки",
-      "latitude": 55.7092,
-      "longitude": 37.4988,
-      "directions": [
-        "Постройте маршрут до ул. Мосфильмовская, 55к1 и ориентируйтесь на главный вход.\nНа входе скажите, что вы на занятия BrainMaster.\nДождитесь координатора BrainMaster в согласованной зоне встречи."
-      ],
-      "entranceNote": "Перед стартом смены подтвердим вход, место встречи и кабинет в корпусе.",
-      "contactNote": "Точный кабинет и порядок прохода отправляем родителям перед началом смены.",
-      "photos": [],
-      "listedOnSites": true,
-      "schoolScopeSlug": "mduc-ekt",
-      "logoUrl": "media/venues/logos/school-mduc-ekt.webp"
-    },
-    {
-      "slug": "school-17-vvedenskogo-28s1",
-      "name": "Школа № 17",
-      "type": "school",
-      "address": "ул. Введенского, 28, стр. 1",
-      "city": "moscow",
-      "logoUrl": "/icon.png",
-      "latitude": 55.6367936,
-      "longitude": 37.5315551,
-      "directions": [],
-      "entranceNote": "Расположение здания отмечено на карте. Вход и кабинет уточните перед занятием.",
-      "photos": [],
       "listedOnSites": true,
       "schoolScopeSlug": "school-17"
     },
     {
       "slug": "school-875-vernadskogo-99k2",
-      "name": "Школа № 875",
+      "name": "ГБОУ города Москвы «Школа № 875»",
+      "displayName": "ГБОУ города Москвы «Школа № 875»",
       "type": "school",
       "address": "проспект Вернадского, 99, корп. 2",
+      "metro": "Юго-Западная",
       "city": "moscow",
-      "logoUrl": "/icon.png",
-      "latitude": 55.6654818,
-      "longitude": 37.4913015,
-      "directions": [],
-      "entranceNote": "Расположение здания отмечено на карте. Вход и кабинет уточните перед занятием.",
-      "photos": [],
+      "district": "Тропарёво-Никулино",
+      "logoUrl": "/sites/school-875/logo-original.jpg",
+      "latitude": 55.665473,
+      "longitude": 37.491217,
+      "directions": [
+        "Выберите корпус и откройте маршрут по его адресу.",
+        "Уточните вход и кабинет у организатора перед первым занятием."
+      ],
+      "entranceNote": "Точка на карте показывает расположение здания. Перед первым занятием уточните у организатора вход и кабинет.",
+      "photos": [
+        {
+          "url": "/sites/school-875/vernadskogo-99k2-original.jpg",
+          "alt": "Вход на территорию корпуса: проспект Вернадского, 99, корп. 2"
+        }
+      ],
       "listedOnSites": true,
       "schoolScopeSlug": "school-875"
     },
     {
       "slug": "school-1212-vilnyusskaya-14",
-      "name": "Школа № 1212",
+      "name": "ГБОУ города Москвы «Школа № 1212»",
+      "displayName": "ГБОУ города Москвы «Школа № 1212»",
       "type": "school",
       "address": "Вильнюсская ул., 14",
+      "metro": "Ясенево",
       "city": "moscow",
-      "logoUrl": "/icon.png",
-      "latitude": 55.5980474,
-      "longitude": 37.5173409,
-      "directions": [],
-      "entranceNote": "Расположение здания отмечено на карте. Вход и кабинет уточните перед занятием.",
-      "photos": [],
+      "district": "Ясенево",
+      "logoUrl": "/sites/school-1212/logo-original.jpg",
+      "latitude": 55.598175,
+      "longitude": 37.516499,
+      "directions": [
+        "Выберите корпус и откройте маршрут по его адресу.",
+        "Уточните вход и кабинет у организатора перед первым занятием."
+      ],
+      "entranceNote": "Точка на карте показывает расположение здания. Перед первым занятием уточните у организатора вход и кабинет.",
+      "photos": [
+        {
+          "url": "/sites/school-1212/vilnyusskaya-14-original.jpg",
+          "alt": "ГБОУ города Москвы «Школа № 1212». Вильнюсская ул., 14"
+        }
+      ],
       "listedOnSites": true,
       "schoolScopeSlug": "school-1212"
     },
     {
       "slug": "school-1212-golubinskaya-21k3",
-      "name": "Школа № 1212",
+      "name": "ГБОУ города Москвы «Школа № 1212»",
+      "displayName": "ГБОУ города Москвы «Школа № 1212»",
       "type": "school",
       "address": "Голубинская ул., 21, корп. 3",
+      "metro": "Ясенево",
       "city": "moscow",
-      "logoUrl": "/icon.png",
-      "latitude": 55.6016376,
-      "longitude": 37.5270587,
-      "directions": [],
-      "entranceNote": "Расположение здания отмечено на карте. Вход и кабинет уточните перед занятием.",
-      "photos": [],
+      "district": "Ясенево",
+      "logoUrl": "/sites/school-1212/logo-original.jpg",
+      "latitude": 55.601513,
+      "longitude": 37.527067,
+      "directions": [
+        "Выберите корпус и откройте маршрут по его адресу.",
+        "Уточните вход и кабинет у организатора перед первым занятием."
+      ],
+      "entranceNote": "Точка на карте показывает расположение здания. Перед первым занятием уточните у организатора вход и кабинет.",
+      "photos": [
+        {
+          "url": "/sites/school-1212/golubinskaya-21k3-facade-original.jpg",
+          "alt": "ГБОУ города Москвы «Школа № 1212». Голубинская ул., 21, корп. 3"
+        }
+      ],
       "listedOnSites": true,
       "schoolScopeSlug": "school-1212"
     },
     {
       "slug": "school-2044-dmitrovskoe-169b",
-      "name": "Школа № 2044",
+      "name": "Школа № 2044 имени Героя Советского Союза А. М. Серебрякова",
+      "displayName": "Школа № 2044 имени Героя Советского Союза А. М. Серебрякова",
       "type": "school",
       "address": "Дмитровское шоссе, 169Б",
+      "metro": "Физтех",
       "city": "moscow",
-      "logoUrl": "/icon.png",
-      "latitude": 55.9321515,
-      "longitude": 37.5405089,
-      "directions": [],
-      "entranceNote": "Расположение здания отмечено на карте. Вход и кабинет уточните перед занятием.",
-      "photos": [],
+      "district": "Северный",
+      "logoUrl": "/sites/school-2044/logo-original.jpg",
+      "latitude": 55.932261,
+      "longitude": 37.541054,
+      "directions": [
+        "Выберите корпус и откройте маршрут по его адресу.",
+        "Уточните вход и кабинет у организатора перед первым занятием."
+      ],
+      "entranceNote": "Точка на карте показывает расположение здания. Перед первым занятием уточните у организатора вход и кабинет.",
+      "photos": [
+        {
+          "url": "/sites/school-2044/dmitrovskoe-169b-original.jpg",
+          "alt": "Школа № 2044 имени Героя Советского Союза А. М. Серебрякова. Дмитровское шоссе, 169Б"
+        }
+      ],
       "listedOnSites": true,
       "schoolScopeSlug": "school-2044"
     },
     {
       "slug": "school-2044-dmitrovskoe-165e-k8",
-      "name": "Школа № 2044",
+      "name": "Школа № 2044 имени Героя Советского Союза А. М. Серебрякова",
+      "displayName": "Школа № 2044 имени Героя Советского Союза А. М. Серебрякова",
       "type": "school",
       "address": "Дмитровское шоссе, 165Е, корп. 8",
+      "metro": "Физтех",
       "city": "moscow",
-      "logoUrl": "/icon.png",
-      "latitude": 55.9267027,
-      "longitude": 37.5423375,
-      "directions": [],
-      "entranceNote": "Расположение здания отмечено на карте. Вход и кабинет уточните перед занятием.",
-      "photos": [],
+      "district": "Северный",
+      "logoUrl": "/sites/school-2044/logo-original.jpg",
+      "latitude": 55.927015,
+      "longitude": 37.542641,
+      "directions": [
+        "Выберите корпус и откройте маршрут по его адресу.",
+        "Уточните вход и кабинет у организатора перед первым занятием."
+      ],
+      "entranceNote": "Точка на карте показывает расположение здания. Перед первым занятием уточните у организатора вход и кабинет.",
+      "photos": [
+        {
+          "url": "/sites/school-2044/dmitrovskoe-165e-k8-original.jpg",
+          "alt": "Школа № 2044 имени Героя Советского Союза А. М. Серебрякова. Дмитровское шоссе, 165Е, корп. 8"
+        }
+      ],
       "listedOnSites": true,
       "schoolScopeSlug": "school-2044"
+    },
+    {
+      "slug": "bm-base-moscow",
+      "name": "Мехвариум — база BrainMaster",
+      "displayName": "Мехвариум — база BrainMaster",
+      "type": "bm_base",
+      "address": "Рязанский проспект, 38",
+      "metro": "—",
+      "city": "moscow",
+      "district": "Рязанский",
+      "logoUrl": "/brand/brainmaster-mark.png",
+      "latitude": 55.71729,
+      "longitude": 37.78857,
+      "directions": [
+        "Следите за объявлением об открытии Мехвариума в каналах BrainMaster."
+      ],
+      "entranceNote": "Площадка ещё не открыта: идёт ремонт. Занятий пока нет, посещение не предусмотрено.",
+      "contactNote": "О дате открытия и начале занятий сообщим отдельно.",
+      "photos": [],
+      "listedOnSites": true
+    },
+    {
+      "slug": "school-1383-verkhnie-likhobory",
+      "name": "ГБОУ города Москвы «Школа № 1383»",
+      "displayName": "ГБОУ города Москвы «Школа № 1383»",
+      "type": "school",
+      "address": "Дубнинская ул., 7",
+      "metro": "Верхние Лихоборы",
+      "city": "moscow",
+      "district": "Бескудниковский",
+      "logoUrl": "/sites/school-1383/logo-original.jpg",
+      "latitude": 55.85783,
+      "longitude": 37.566231,
+      "directions": [
+        "Выберите корпус и откройте маршрут по его адресу.",
+        "Уточните вход и кабинет у организатора перед первым занятием."
+      ],
+      "entranceNote": "Точка на карте показывает расположение здания. Перед первым занятием уточните у организатора вход и кабинет.",
+      "contactNote": "Точный кабинет и порядок прохода отправляем родителям перед началом смены.",
+      "photos": [
+        {
+          "url": "/sites/school-1383/dubninskaya-7-original.jpg",
+          "alt": "ГБОУ города Москвы «Школа № 1383». Дубнинская ул., 7"
+        }
+      ],
+      "listedOnSites": true,
+      "schoolScopeSlug": "school-1383"
+    },
+    {
+      "slug": "school-1517-narodnoe-opolchenie",
+      "name": "ГБОУ города Москвы «Школа № 1517»",
+      "displayName": "ГБОУ города Москвы «Школа № 1517»",
+      "type": "school",
+      "address": "ул. Тухачевского, 58, корп. 2",
+      "metro": "Народное Ополчение",
+      "city": "moscow",
+      "district": "Хорошёво-Мнёвники",
+      "logoUrl": "/sites/school-1517/logo-original.jpg",
+      "latitude": 55.785725,
+      "longitude": 37.457653,
+      "directions": [
+        "Выберите корпус и откройте маршрут по его адресу.",
+        "Уточните вход и кабинет у организатора перед первым занятием."
+      ],
+      "entranceNote": "Точка на карте показывает расположение здания. Перед первым занятием уточните у организатора вход и кабинет.",
+      "contactNote": "Точный кабинет и порядок прохода отправляем родителям перед началом смены.",
+      "photos": [
+        {
+          "url": "/sites/school-1517/tukhachevskogo-58k2-original.jpg",
+          "alt": "ГБОУ города Москвы «Школа № 1517». ул. Тухачевского, 58, корп. 2"
+        }
+      ],
+      "listedOnSites": true,
+      "schoolScopeSlug": "school-1517"
+    },
+    {
+      "slug": "school-2103-yasenevo",
+      "name": "ГБОУ города Москвы «Школа № 2103»",
+      "displayName": "ГБОУ города Москвы «Школа № 2103»",
+      "type": "school",
+      "address": "Голубинская ул., 13, корп. 2",
+      "metro": "Ясенево",
+      "city": "moscow",
+      "district": "Ясенево",
+      "logoUrl": "/sites/school-2103/logo-original.jpg",
+      "latitude": 55.60295,
+      "longitude": 37.517538,
+      "directions": [
+        "Выберите корпус и откройте маршрут по его адресу.",
+        "Уточните вход и кабинет у организатора перед первым занятием."
+      ],
+      "entranceNote": "Точка на карте показывает расположение здания. Перед первым занятием уточните у организатора вход и кабинет.",
+      "contactNote": "Точный кабинет и порядок прохода отправляем родителям перед началом смены.",
+      "photos": [
+        {
+          "url": "/sites/school-2103/golubinskaya-13k2-original.jpg",
+          "alt": "Подход к территории корпуса: Голубинская ул., 13, корп. 2"
+        }
+      ],
+      "listedOnSites": true,
+      "schoolScopeSlug": "school-2103"
+    },
+    {
+      "slug": "school-937-orekhovo",
+      "name": "ГБОУ города Москвы «Школа № 937 имени Героя Российской Федерации А. В. Перова»",
+      "displayName": "ГБОУ города Москвы «Школа № 937 имени Героя Российской Федерации А. В. Перова»",
+      "type": "school",
+      "address": "ул. Маршала Захарова, 25, корп. 2",
+      "metro": "Орехово",
+      "city": "moscow",
+      "district": "Орехово-Борисово",
+      "logoUrl": "/sites/school-937/logo-original.jpg",
+      "latitude": 55.619313,
+      "longitude": 37.701485,
+      "directions": [
+        "Выберите корпус и откройте маршрут по его адресу.",
+        "Уточните вход и кабинет у организатора перед первым занятием."
+      ],
+      "entranceNote": "Точка на карте показывает расположение здания. Перед первым занятием уточните у организатора вход и кабинет.",
+      "contactNote": "Точный кабинет и порядок прохода отправляем родителям перед началом смены.",
+      "photos": [
+        {
+          "url": "/sites/school-937/zakharova-25k2-original.jpg",
+          "alt": "ГБОУ города Москвы «Школа № 937 имени Героя Российской Федерации А. В. Перова». ул. Маршала Захарова, 25, корп. 2"
+        }
+      ],
+      "listedOnSites": true,
+      "schoolScopeSlug": "school-937"
+    },
+    {
+      "slug": "mduc-ekt-odesskaya",
+      "name": "Московский детско-юношеский центр экологии, краеведения и туризма",
+      "displayName": "Московский детско-юношеский центр экологии, краеведения и туризма",
+      "type": "school",
+      "address": "Одесская ул., 12А",
+      "metro": "Каховская",
+      "city": "moscow",
+      "district": "Зюзино",
+      "logoUrl": "/sites/mduc-ekt/logo-original.jpg",
+      "latitude": 55.6577,
+      "longitude": 37.590437,
+      "directions": [
+        "Выберите корпус и откройте маршрут по его адресу.",
+        "Уточните вход и кабинет у организатора перед первым занятием."
+      ],
+      "entranceNote": "Точка на карте показывает расположение здания. Перед первым занятием уточните у организатора вход и кабинет.",
+      "contactNote": "Точный кабинет и порядок прохода отправляем родителям перед началом смены.",
+      "photos": [
+        {
+          "url": "/sites/mduc-ekt/odesskaya-12a-original.jpg",
+          "alt": "Московский детско-юношеский центр экологии, краеведения и туризма. Одесская ул., 12А"
+        }
+      ],
+      "listedOnSites": true,
+      "schoolScopeSlug": "mduc-ekt"
+    },
+    {
+      "slug": "mduc-ekt-mosfilmovskaya",
+      "name": "Московский детско-юношеский центр экологии, краеведения и туризма",
+      "displayName": "Московский детско-юношеский центр экологии, краеведения и туризма",
+      "type": "school",
+      "address": "Мосфильмовская ул., 55, корп. 1",
+      "metro": "Минская",
+      "city": "moscow",
+      "district": "Раменки",
+      "logoUrl": "/sites/mduc-ekt/logo-original.jpg",
+      "latitude": 55.702513,
+      "longitude": 37.495523,
+      "directions": [
+        "Выберите корпус и откройте маршрут по его адресу.",
+        "Уточните вход и кабинет у организатора перед первым занятием."
+      ],
+      "entranceNote": "Точка на карте показывает расположение здания. Перед первым занятием уточните у организатора вход и кабинет.",
+      "contactNote": "Точный кабинет и порядок прохода отправляем родителям перед началом смены.",
+      "photos": [
+        {
+          "url": "/sites/mduc-ekt/mosfilmovskaya-55k1-original.jpg",
+          "alt": "Московский детско-юношеский центр экологии, краеведения и туризма. Мосфильмовская ул., 55, корп. 1"
+        }
+      ],
+      "listedOnSites": true,
+      "schoolScopeSlug": "mduc-ekt"
+    },
+    {
+      "slug": "school-1212-yasenevo",
+      "name": "ГБОУ города Москвы «Школа № 1212»",
+      "displayName": "ГБОУ города Москвы «Школа № 1212»",
+      "type": "school",
+      "address": "Новоясеневский проспект, 24, корп. 3",
+      "metro": "Ясенево",
+      "city": "moscow",
+      "district": "Ясенево",
+      "logoUrl": "/sites/school-1212/logo-original.jpg",
+      "latitude": 55.603857,
+      "longitude": 37.528669,
+      "directions": [
+        "Выберите корпус и откройте маршрут по его адресу.",
+        "Уточните вход и кабинет у организатора перед первым занятием."
+      ],
+      "entranceNote": "Точка на карте показывает расположение здания. Перед первым занятием уточните у организатора вход и кабинет.",
+      "contactNote": "Точный кабинет и порядок прохода отправляем родителям перед началом смены.",
+      "photos": [
+        {
+          "url": "/sites/school-1212/novoyasenevsky-24k3-original.jpg",
+          "alt": "ГБОУ города Москвы «Школа № 1212». Новоясеневский проспект, 24, корп. 3"
+        }
+      ],
+      "listedOnSites": true,
+      "schoolScopeSlug": "school-1212"
+    },
+    {
+      "slug": "school-17-belyaevo",
+      "name": "ГБОУ города Москвы «Школа № 17»",
+      "displayName": "ГБОУ города Москвы «Школа № 17»",
+      "type": "school",
+      "address": "ул. Введенского, 27А",
+      "metro": "Беляево",
+      "city": "moscow",
+      "district": "Коньково",
+      "logoUrl": "/sites/school-17/logo-original.jpg",
+      "latitude": 55.634305,
+      "longitude": 37.534509,
+      "directions": [
+        "Выберите корпус и откройте маршрут по его адресу.",
+        "Уточните вход и кабинет у организатора перед первым занятием."
+      ],
+      "entranceNote": "Точка на карте показывает расположение здания. Перед первым занятием уточните у организатора вход и кабинет.",
+      "contactNote": "Точный кабинет и порядок прохода отправляем родителям перед началом смены.",
+      "photos": [
+        {
+          "url": "/sites/school-17/vvedenskogo-27a-facade-original.jpg",
+          "alt": "ГБОУ города Москвы «Школа № 17». ул. Введенского, 27А"
+        }
+      ],
+      "listedOnSites": true,
+      "schoolScopeSlug": "school-17"
+    },
+    {
+      "slug": "school-875-yugo-zapadnaya",
+      "name": "ГБОУ города Москвы «Школа № 875»",
+      "displayName": "ГБОУ города Москвы «Школа № 875»",
+      "type": "school",
+      "address": "проспект Вернадского, 101, корп. 6",
+      "metro": "Юго-Западная",
+      "city": "moscow",
+      "district": "Тропарёво-Никулино",
+      "logoUrl": "/sites/school-875/logo-original.jpg",
+      "latitude": 55.66348,
+      "longitude": 37.489953,
+      "directions": [
+        "Выберите корпус и откройте маршрут по его адресу.",
+        "Уточните вход и кабинет у организатора перед первым занятием."
+      ],
+      "entranceNote": "Точка на карте показывает расположение здания. Перед первым занятием уточните у организатора вход и кабинет.",
+      "contactNote": "Точный кабинет и порядок прохода отправляем родителям перед началом смены.",
+      "photos": [
+        {
+          "url": "/sites/school-875/vernadskogo-101k6-original.jpg",
+          "alt": "ГБОУ города Москвы «Школа № 875». проспект Вернадского, 101, корп. 6"
+        }
+      ],
+      "listedOnSites": true,
+      "schoolScopeSlug": "school-875"
     }
   ]
 }

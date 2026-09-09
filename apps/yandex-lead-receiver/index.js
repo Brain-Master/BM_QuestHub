@@ -22,6 +22,95 @@ const LEAD_TYPES = new Set(["booking", "waitlist", "mos_assist"]);
 const REGISTRATION_CHANNELS = new Set(["mos_ru", "brainmaster"]);
 const DEFAULT_N8N_TIMEOUT_MS = 2500;
 const OPS_REPORT_TIMEOUT_MS = 2000;
+const HANDLER_BUDGET_MS = 26000;
+const PRIMARY_BUDGET_MS = 22000;
+const PHASE_TIMEOUT_MS = 12000;
+const MAX_RESPONSE_BYTES = 64 * 1024;
+
+function deliveryBudget(requestId = "", timeoutMs = HANDLER_BUDGET_MS) {
+  const startedAt = Date.now();
+  return { requestId, startedAt, deadlineAt: startedAt + timeoutMs, progress: {} };
+}
+
+function deliveryError(phase, code, httpStatus = 0) {
+  return Object.assign(new Error("Lead service unavailable"), { phase, code, httpStatus });
+}
+
+function logDelivery(budget, event, phase, extra = {}) {
+  // Never include URLs, upstream bodies, Error/stack objects, credentials or lead fields.
+  console.info(JSON.stringify({ event, requestId: budget.requestId, phase,
+    elapsedMs: Date.now() - budget.startedAt,
+    remainingMs: Math.max(0, budget.deadlineAt - Date.now()), ...extra }));
+}
+
+async function readLimitedJson(res, phase, signal) {
+  if (!res.body || Number(res.headers.get("content-length")) > MAX_RESPONSE_BYTES) {
+    throw deliveryError(phase, "invalid_response");
+  }
+  const reader = res.body.getReader();
+  const cancel = () => { void reader.cancel().catch(() => {}); };
+  signal.addEventListener("abort", cancel, { once: true });
+  const chunks = [];
+  let bytes = 0;
+  try {
+    for (;;) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      bytes += value.byteLength;
+      if (bytes > MAX_RESPONSE_BYTES) throw deliveryError(phase, "response_too_large");
+      chunks.push(Buffer.from(value));
+    }
+    try { return JSON.parse(Buffer.concat(chunks).toString("utf8")); }
+    catch { throw deliveryError(phase, "invalid_response"); }
+  } finally {
+    signal.removeEventListener("abort", cancel);
+    if (bytes > MAX_RESPONSE_BYTES) cancel();
+    reader.releaseLock();
+  }
+}
+
+async function boundedRequest(phase, url, options, budget, { timeoutMs = PHASE_TIMEOUT_MS, validate, discard = false } = {}) {
+  const remaining = Math.min(timeoutMs, budget.deadlineAt - Date.now());
+  if (remaining <= 0) throw deliveryError(phase, "deadline_exceeded");
+  const controller = new AbortController();
+  let timer;
+  let responseBody;
+  budget.progress[phase] = "unknown";
+  logDelivery(budget, "lead.phase_started", phase);
+  try {
+    const expiry = new Promise((_, reject) => {
+      timer = setTimeout(() => {
+        controller.abort();
+        reject(deliveryError(phase, "upstream_timeout"));
+      }, remaining);
+    });
+    // Race bounds callers too; AbortController cancels the actual HTTP request/body.
+    const operation = (async () => {
+      const res = await fetch(url, { ...options, signal: controller.signal });
+      responseBody = res.body;
+      if (!res.ok) throw deliveryError(phase, "upstream_http", res.status);
+      const json = discard ? undefined : await readLimitedJson(res, phase, controller.signal);
+      if (validate && !validate(json)) throw deliveryError(phase, "invalid_response", res.status);
+      return { status: res.status, json };
+    })();
+    const result = await Promise.race([operation, expiry]);
+    budget.progress[phase] = "confirmed";
+    logDelivery(budget, "lead.phase_confirmed", phase, { httpStatus: result.status });
+    return result;
+  } catch (error) {
+    const safe = controller.signal.aborted ? deliveryError(phase, "upstream_timeout")
+      : error?.phase === phase && ["upstream_http", "invalid_response", "response_too_large", "upstream_timeout"].includes(error.code)
+        ? error : deliveryError(phase, "upstream_network");
+    if (safe.httpStatus >= 400 && safe.httpStatus < 500) budget.progress[phase] = "failed";
+    logDelivery(budget, "lead.phase_failed", phase, { errorCode: safe.code, httpStatus: safe.httpStatus, outcome: budget.progress[phase] });
+    throw safe;
+  } finally {
+    clearTimeout(timer);
+    controller.abort();
+    // Cancel discarded/error bodies. A locked body is cancelled by fetch's signal.
+    if (responseBody && !responseBody.locked) void responseBody.cancel().catch(() => {});
+  }
+}
 
 const LEAD_SNAPSHOT_FIELDS = [
   "leadType",
@@ -333,10 +422,10 @@ function formatTelegramMessage(lead) {
   return blocks.join("\n");
 }
 
-async function sendTelegramLead(lead) {
+async function sendTelegramLead(lead, budget) {
   const token = readEnv("TELEGRAM_BOT_TOKEN", { required: true });
   const chatId = readEnv("TELEGRAM_CHAT_ID", { required: true });
-  const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+  await boundedRequest("telegram", `https://api.telegram.org/bot${token}/sendMessage`, {
     method: "POST",
     headers: JSON_HEADERS,
     body: JSON.stringify({
@@ -345,12 +434,7 @@ async function sendTelegramLead(lead) {
       parse_mode: "HTML",
       disable_web_page_preview: true,
     }),
-  });
-
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`Telegram API ${res.status}: ${text.slice(0, 500)}`);
-  }
+  }, budget, { validate: json => json?.ok === true });
 }
 
 function base64Url(input) {
@@ -369,7 +453,7 @@ function loadGoogleServiceAccount() {
   return account;
 }
 
-async function getGoogleAccessToken() {
+async function getGoogleAccessToken(budget) {
   const account = loadGoogleServiceAccount();
   const now = Math.floor(Date.now() / 1000);
   const header = { alg: "RS256", typ: "JWT" };
@@ -391,16 +475,11 @@ async function getGoogleAccessToken() {
     grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
     assertion,
   });
-  const res = await fetch("https://oauth2.googleapis.com/token", {
+  const { json } = await boundedRequest("google_oauth", "https://oauth2.googleapis.com/token", {
     method: "POST",
     headers: { "content-type": "application/x-www-form-urlencoded" },
     body,
-  });
-
-  const json = await res.json();
-  if (!res.ok || !json.access_token) {
-    throw new Error(`Google OAuth ${res.status}: ${JSON.stringify(json).slice(0, 500)}`);
-  }
+  }, budget, { validate: json => typeof json?.access_token === "string" && json.access_token.length > 0 });
   return json.access_token;
 }
 
@@ -430,29 +509,24 @@ function leadToSheetRow(lead) {
   ];
 }
 
-async function appendLeadToGoogleSheet(lead) {
+async function appendLeadToGoogleSheet(lead, budget) {
   const spreadsheetId = readEnv("GOOGLE_SHEETS_SPREADSHEET_ID", { required: true });
   const range = readEnv("GOOGLE_LEADS_SHEET_RANGE", { required: true });
-  const token = await getGoogleAccessToken();
+  const token = await getGoogleAccessToken(budget);
   const url = new URL(
     `https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(spreadsheetId)}/values/${encodeURIComponent(range)}:append`,
   );
   url.searchParams.set("valueInputOption", "USER_ENTERED");
   url.searchParams.set("insertDataOption", "INSERT_ROWS");
 
-  const res = await fetch(url.toString(), {
+  await boundedRequest("google_sheets", url.toString(), {
     method: "POST",
     headers: {
       ...JSON_HEADERS,
       authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({ values: [leadToSheetRow(lead)] }),
-  });
-
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`Google Sheets API ${res.status}: ${text.slice(0, 500)}`);
-  }
+  }, budget, { validate: json => json?.updates?.updatedRows === 1 });
 }
 
 function readTimeoutMs() {
@@ -461,30 +535,18 @@ function readTimeoutMs() {
   return Math.min(value, 10000);
 }
 
-async function forwardLeadToN8n(lead) {
+async function forwardLeadToN8n(lead, budget = deliveryBudget(lead.requestId)) {
   const url = readEnv("N8N_WEBHOOK_URL");
-  if (!url) return { attempted: false, ok: false };
-
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), readTimeoutMs());
+  if (!url || budget.deadlineAt <= Date.now()) return { attempted: false, ok: false };
   try {
-    const res = await fetch(url, {
+    const res = await boundedRequest("n8n", url, {
       method: "POST",
       headers: JSON_HEADERS,
       body: JSON.stringify({ event: "lead.received", lead }),
-      signal: controller.signal,
-    });
-    if (!res.ok) {
-      const text = await res.text();
-      console.warn(`n8n webhook ${res.status}: ${text.slice(0, 500)}`);
-      return { attempted: true, ok: false, status: res.status };
-    }
+    }, budget, { timeoutMs: readTimeoutMs(), discard: true });
     return { attempted: true, ok: true, status: res.status };
-  } catch (error) {
-    console.warn("n8n webhook failed", error);
+  } catch {
     return { attempted: true, ok: false };
-  } finally {
-    clearTimeout(timeout);
   }
 }
 
@@ -499,15 +561,12 @@ function pickLeadSnapshot(raw) {
   return Object.keys(lead).length > 0 ? lead : undefined;
 }
 
-async function reportOpsEvent(details) {
+async function reportOpsEvent(details, budget = deliveryBudget(details.requestId)) {
   const url = readEnv("OPS_REPORT_URL");
   const token = readEnv("OPS_REPORT_TOKEN");
-  if (!url || !token) return;
-
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), OPS_REPORT_TIMEOUT_MS);
+  if (!url || !token || budget.deadlineAt <= Date.now()) return;
   try {
-    await fetch(url, {
+    await boundedRequest("ops", url, {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -518,21 +577,18 @@ async function reportOpsEvent(details) {
         occurredAt: new Date().toISOString(),
         ...details,
       }),
-      signal: controller.signal,
-    });
-  } catch (error) {
-    console.warn("ops report failed", error);
-  } finally {
-    clearTimeout(timeout);
-  }
+    }, budget, { timeoutMs: OPS_REPORT_TIMEOUT_MS, discard: true });
+  } catch { /* Best effort only; phase diagnostics above remain in Cloud Logging. */ }
 }
 
-async function deliverPrimaryLead(lead) {
-  await sendTelegramLead(lead);
-  await appendLeadToGoogleSheet(lead);
+async function deliverPrimaryLead(lead, budget = deliveryBudget(lead.requestId, PRIMARY_BUDGET_MS)) {
+  await sendTelegramLead(lead, budget);
+  await appendLeadToGoogleSheet(lead, budget);
 }
 
 async function handler(event = {}, context = {}) {
+  const requestId = context.requestId || context.awsRequestId || crypto.randomUUID();
+  const budget = deliveryBudget(requestId);
   const origin = getHeader(event.headers, "origin");
   const method = getMethod(event);
 
@@ -551,8 +607,6 @@ async function handler(event = {}, context = {}) {
     return response(400, { ok: false, error: "Invalid JSON body" }, origin);
   }
 
-  const requestId = context.requestId || context.awsRequestId || crypto.randomUUID();
-
   const validation = validateLeadPayload(payload);
   if (!validation.ok) {
     void reportOpsEvent({
@@ -563,16 +617,19 @@ async function handler(event = {}, context = {}) {
       errorMessage: "Invalid lead payload",
       issues: validation.issues,
       lead: pickLeadSnapshot(payload),
-    });
+    }, budget);
     return response(400, { ok: false, error: "Invalid lead payload", issues: validation.issues }, origin);
   }
 
   const lead = normalizeLead(payload, requestId);
 
   try {
-    await deliverPrimaryLead(lead);
+    await deliverPrimaryLead(lead, { ...budget, deadlineAt: Math.min(budget.deadlineAt, budget.startedAt + PRIMARY_BUDGET_MS) });
   } catch (error) {
-    console.error("Primary lead delivery failed", error);
+    logDelivery(budget, "lead.delivery_failed", error?.phase || "configuration", {
+      errorCode: error?.phase ? error.code : "configuration_error",
+      telegram: budget.progress.telegram || "not_started", sheets: budget.progress.google_sheets || "not_started",
+    });
     void reportOpsEvent({
       event: "lead.server_error",
       requestId,
@@ -580,11 +637,11 @@ async function handler(event = {}, context = {}) {
       errorCode: "delivery_failed",
       errorMessage: "Primary lead delivery failed",
       lead: pickLeadSnapshot(lead),
-    });
-    return response(502, { ok: false, error: "Primary lead delivery failed" }, origin);
+    }, budget);
+    return response(502, { ok: false, error: "Primary lead delivery failed", requestId }, origin);
   }
 
-  const n8n = await forwardLeadToN8n(lead);
+  const n8n = await forwardLeadToN8n(lead, budget);
 
   return response(200, {
     ok: true,
@@ -596,6 +653,8 @@ async function handler(event = {}, context = {}) {
 
 exports.handler = handler;
 exports._internals = {
+  boundedRequest,
+  deliveryBudget,
   appendLeadToGoogleSheet,
   buildTelegramSpoiler,
   deliverPrimaryLead,

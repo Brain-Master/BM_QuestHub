@@ -76,17 +76,6 @@ function normalizeMapColorMode(value: string | null): SitesMapColorMode {
   return value === "site" ? "site" : "default";
 }
 
-function normalizeType(
-  value: string | null,
-  options: SiteTypeOption[],
-): SitesTypeFilterValue {
-  if (value === "school" || value === "bm_base") {
-    return options.some((option) => option.value === value) ? value : "all";
-  }
-
-  return "all";
-}
-
 function normalizeSearch(value: string | null): string {
   return value?.trim().toLocaleLowerCase("ru") ?? "";
 }
@@ -433,6 +422,7 @@ function SiteListStats({ site }: { site: SiteScopeCard }) {
 }
 
 function SiteActions({ site }: { site: SiteScopeCard }) {
+  if (site.shiftCount === 0) return <InactiveSiteActions site={site} />;
   return (
     <div className="mt-auto grid gap-2">
       <Link
@@ -459,6 +449,7 @@ function SiteActions({ site }: { site: SiteScopeCard }) {
 }
 
 function SiteListActions({ site }: { site: SiteScopeCard }) {
+  if (site.shiftCount === 0) return <InactiveSiteActions site={site} />;
   return (
     <div className="grid grid-cols-2 gap-1.5 md:grid-cols-1">
       <Link
@@ -484,6 +475,13 @@ function SiteListActions({ site }: { site: SiteScopeCard }) {
   );
 }
 
+function InactiveSiteActions({site}: {site: SiteScopeCard}) {
+  return <div className="mt-auto grid gap-2">
+    <p className="text-sm text-muted-foreground">{site.slug === "bm-base-moscow" ? "Готовится к открытию · занятий пока нет" : "Сейчас нет групп"}</p>
+    <Link href={buildSiteHref(site.slug)} className={buttonVariants({variant:"outline",size:"sm"})}>О площадке</Link>
+  </div>;
+}
+
 function SiteListCard({
   site,
   showCityInHeader,
@@ -492,7 +490,7 @@ function SiteListCard({
   showCityInHeader: boolean;
 }) {
   return (
-    <article className="group overflow-hidden rounded-2xl border border-white/10 bg-card/55 shadow-lg backdrop-blur-md transition hover:-translate-y-0.5 hover:border-white/15 hover:shadow-xl">
+    <article data-site={site.slug} data-inactive={site.shiftCount === 0 || undefined} className={cn("group overflow-hidden rounded-2xl border border-white/10 bg-card/55 shadow-lg backdrop-blur-md transition hover:-translate-y-0.5 hover:border-white/15 hover:shadow-xl",site.shiftCount === 0 && "grayscale")}>
       <div className="grid gap-2.5 p-2.5 md:grid-cols-[minmax(0,1fr)_12.5rem] md:items-center md:p-3">
         <div className="flex min-w-0 gap-2.5">
           <div className="relative flex w-20 shrink-0 self-stretch overflow-hidden rounded-2xl bg-gradient-to-br from-violet-700/80 via-indigo-700/65 to-cyan-700/60 p-1.5 sm:w-24">
@@ -544,7 +542,8 @@ function SiteCard({
 
   return (
     <article
-      className="group flex min-h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-card/55 shadow-lg backdrop-blur-md transition hover:-translate-y-0.5 hover:border-white/15 hover:shadow-xl"
+      data-site={site.slug} data-inactive={site.shiftCount === 0 || undefined}
+      className={cn("group flex min-h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-card/55 shadow-lg backdrop-blur-md transition hover:-translate-y-0.5 hover:border-white/15 hover:shadow-xl",site.shiftCount === 0 && "grayscale")}
     >
       <div className="relative overflow-hidden bg-gradient-to-br from-violet-700/80 via-indigo-700/65 to-cyan-700/60 p-3.5 sm:p-5">
         <div
@@ -630,40 +629,41 @@ function SitesListSection({
   const selectedCityLabel = cityCards.find((item) => item.slug === city)?.label;
   const showAllCitiesLink = cityCards.length > 1;
 
-  const citySitesWithOpenGroups = useMemo(
-    () => sites.filter((site) => site.city === city && site.shiftCount > 0),
+  const citySites = useMemo(
+    () => sites.filter((site) => site.city === city),
     [city, sites],
   );
+  const citySitesWithOpenGroups = useMemo(() => citySites.filter(site => site.shiftCount > 0), [citySites]);
   const typeOptions = useMemo<SiteTypeOption[]>(() => {
     const values = Array.from(
-      new Set(citySitesWithOpenGroups.map((site) => site.type)),
+      new Set(citySitesWithOpenGroups.filter(site=>siteMatchesQuery(site,normalizedQuery)).map((site) => site.type)),
     ).sort((a, b) => TYPE_LABELS[a].localeCompare(TYPE_LABELS[b], "ru"));
 
     return values.map((value) => ({
       value,
       label: TYPE_LABELS[value],
     }));
-  }, [citySitesWithOpenGroups]);
-  const toolbarTypeOptions = typeOptions.length > 1 ? typeOptions : [];
-  const type = typeOptions.length > 1 ? normalizeType(searchParams.get("type"), typeOptions) : "all";
+  }, [citySitesWithOpenGroups, normalizedQuery]);
+  const toolbarTypeOptions = typeOptions;
+  const type = (searchParams.get("type") || "all") as SitesTypeFilterValue;
   const visibleSites = useMemo(
     () =>
-      citySitesWithOpenGroups
+      citySites
         .filter((site) => type === "all" || site.type === type)
         .filter((site) => siteMatchesQuery(site, normalizedQuery))
         .sort((a, b) => compareSites(a, b, sort)),
-    [citySitesWithOpenGroups, normalizedQuery, sort, type],
+    [citySites, normalizedQuery, sort, type],
   );
   const mapSites = useMemo(
-    () => citySitesWithOpenGroups.filter(siteHasMapLocation),
-    [citySitesWithOpenGroups],
+    () => visibleSites.filter(siteHasMapLocation),
+    [visibleSites],
   );
   const mapPointCount = useMemo(() => positionSitesOnMap(mapSites).length, [mapSites]);
   const mapEnabled = mapSites.length > 0;
   const showCityInHeader = cityCards.length > 1;
   const toolbar = (
     <SitesPageToolbar
-      cityOptions={cityOptions}
+      cityOptions={cityOptions.filter(option=>sites.some(site=>site.city===option.value&&site.shiftCount>0&&(type==="all"||site.type===type)&&siteMatchesQuery(site,normalizedQuery)))}
       city={city}
       query={query}
       sort={sort}
@@ -671,7 +671,7 @@ function SitesListSection({
       mapEnabled={mapEnabled}
       type={type}
       typeOptions={toolbarTypeOptions}
-      totalCount={citySitesWithOpenGroups.length}
+      totalCount={citySites.length}
       visibleCount={visibleSites.length}
       mapPointCount={mapPointCount}
       mapColorMode={mapColorMode}
@@ -844,9 +844,7 @@ export function SiteSelectionGrid({ sites, cityCards }: Props) {
     return <CitySelectionGrid cities={cityCards} />;
   }
 
-  const effectiveCity = cityCards.some((item) => item.slug === requestedCity)
-    ? requestedCity!
-    : cityCards[0]!.slug;
+  const effectiveCity = requestedCity ?? cityCards[0]!.slug;
   const cityOptions = toCityOptions(cityCards);
 
   return (

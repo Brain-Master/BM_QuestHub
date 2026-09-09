@@ -10,6 +10,13 @@ const ORIGINAL_ENV = { ...process.env };
 const ORIGINAL_FETCH = global.fetch;
 const ORIGINAL_CONSOLE_ERROR = console.error;
 const ORIGINAL_CONSOLE_WARN = console.warn;
+const ORIGINAL_CONSOLE_INFO = console.info;
+
+function upstreamSuccess(url) {
+  const body = String(url).includes("oauth2.googleapis.com") ? {access_token:"google-token"}
+    : String(url).includes("sheets.googleapis.com") ? {updates:{updatedRows:1}} : {ok:true};
+  return Response.json(body);
+}
 
 function serviceAccountJson() {
   const { privateKey } = crypto.generateKeyPairSync("rsa", { modulusLength: 2048 });
@@ -74,6 +81,7 @@ test.afterEach(() => {
   global.fetch = ORIGINAL_FETCH;
   console.error = ORIGINAL_CONSOLE_ERROR;
   console.warn = ORIGINAL_CONSOLE_WARN;
+  console.info = ORIGINAL_CONSOLE_INFO;
 });
 
 test("valid lead is sent to Telegram, Google Sheets, and n8n", async () => {
@@ -84,7 +92,7 @@ test("valid lead is sent to Telegram, Google Sheets, and n8n", async () => {
     if (String(url).includes("oauth2.googleapis.com")) {
       return new Response(JSON.stringify({ access_token: "google-token" }), { status: 200 });
     }
-    return new Response(JSON.stringify({ ok: true }), { status: 200 });
+    return upstreamSuccess(url);
   };
 
   const res = await handler(event(leadPayload()), { requestId: "req-1" });
@@ -158,7 +166,7 @@ test("n8n failure does not fail accepted lead", async () => {
     if (String(url).includes("n8n.example")) {
       return new Response("automation down", { status: 503 });
     }
-    return new Response(JSON.stringify({ ok: true }), { status: 200 });
+    return upstreamSuccess(url);
   };
 
   const res = await handler(event(leadPayload()), { requestId: "req-4" });
@@ -259,4 +267,141 @@ test("sheet row contract keeps expected column order", () => {
     "2026-05-28",
     "2026-05-18T10:00:00.000Z",
   ]);
+});
+
+for (const phase of ["telegram", "google_oauth", "google_sheets"]) {
+  for (const hang of ["headers", "body"]) {
+    test(`${phase} timeout during ${hang} cancels request/body without retry`, async () => {
+      console.info = () => {};
+      let calls = 0, aborted = false, cancelled = false, res;
+      global.fetch = async (_url, options) => {
+        calls++;
+        options.signal.addEventListener("abort", () => { aborted = true; }, {once:true});
+        if(hang === "headers") return new Promise((_,reject)=>options.signal.addEventListener("abort",()=>reject(Error("PRIVATE_TOKEN")),{once:true}));
+        res = new Response(new ReadableStream({ start(c) { c.enqueue(new TextEncoder().encode('{"unfinished":')); }, cancel() { cancelled = true; } }));
+        return res;
+      };
+      await assert.rejects(_internals.boundedRequest(phase, "https://example.test", {method:"POST"}, _internals.deliveryBudget("req-timeout", 15)), e=>e.code === "upstream_timeout" && e.phase === phase);
+      assert.equal(calls,1);assert.equal(aborted,true);
+      if(hang === "body"){assert.equal(cancelled,true);await Promise.resolve();assert.equal(res.body.locked,false);}
+    });
+  }
+}
+
+test("shared deadline stops next primary phase, preserving confirmed and not-started outcomes", async () => {
+  setBaseEnv();console.info=()=>{};
+  const budget=_internals.deliveryBudget("req-budget",1000),calls=[];
+  global.fetch=async(url)=>{calls.push(String(url));budget.deadlineAt=Date.now()-1;return upstreamSuccess(url);};
+  await assert.rejects(_internals.deliverPrimaryLead(_internals.normalizeLead(leadPayload(),"req-budget"),budget),e=>e.code==="deadline_exceeded"&&e.phase==="google_oauth");
+  assert.equal(calls.length,1);assert.equal(budget.progress.telegram,"confirmed");assert.equal(budget.progress.google_sheets,undefined);
+});
+
+test("Sheets timeout after confirmed Telegram yields502, unknown append outcome and no retry/n8n", async t => {
+  setBaseEnv();const logs=[],calls=[];console.info=s=>logs.push(s);
+  t.mock.timers.enable({apis:["setTimeout","Date"],now:Date.parse("2026-09-10T00:00:00Z")});
+  let reached;const sheetsStarted=new Promise(r=>{reached=r;});
+  global.fetch=async(url,options)=>{calls.push(String(url));if(String(url).includes("sheets.googleapis.com")){reached();return new Promise((_,reject)=>options.signal.addEventListener("abort",()=>reject(Error("PRIVATE_TOKEN")),{once:true}));}return upstreamSuccess(url);};
+  const pending=handler(event(leadPayload()),{requestId:"req-partial"});
+  await sheetsStarted;t.mock.timers.tick(12000);const res=await pending;
+  assert.equal(res.statusCode,502);assert.equal(JSON.parse(res.body).requestId,"req-partial");
+  assert.equal(calls.filter(u=>u.includes("sheets.googleapis.com")).length,1);assert.equal(calls.some(u=>u.includes("n8n.example")),false);
+  const failure=logs.map(s=>JSON.parse(s)).find(x=>x.event==="lead.delivery_failed");assert.equal(failure.telegram,"confirmed");assert.equal(failure.sheets,"unknown");assert.equal(logs.join("").includes("PRIVATE_TOKEN"),false);
+});
+
+test("accepted primary stays200 when n8n stalls; expired optional budget starts no request", async t => {
+  setBaseEnv();console.info=()=>{};
+  t.mock.timers.enable({apis:["setTimeout","Date"],now:Date.parse("2026-09-10T00:00:00Z")});
+  let reached;const n8nStarted=new Promise(r=>{reached=r;});let calls=0;
+  global.fetch=async(url,options)=>{calls++;if(String(url).includes("n8n.example")){reached();return new Promise((_,reject)=>options.signal.addEventListener("abort",()=>reject(Error("private")),{once:true}));}return upstreamSuccess(url);};
+  const pending=handler(event(leadPayload()),{requestId:"req-optional"});await n8nStarted;t.mock.timers.tick(1000);
+  const res=await pending;assert.equal(res.statusCode,200);assert.equal(JSON.parse(res.body).n8nForwarded,false);
+  const before=calls;assert.deepEqual(await _internals.forwardLeadToN8n({requestId:"expired"},_internals.deliveryBudget("expired",0)),{attempted:false,ok:false});assert.equal(calls,before);
+});
+
+test("upstream error bodies and malformed/missing OAuth tokens never leak or succeed", async () => {
+  setBaseEnv();const logs=[];console.info=(...args)=>logs.push(args.join(" "));console.error=console.info;console.warn=console.info;
+  for(const failure of ["malformed","no-token","http"]){
+    const calls=[];
+    global.fetch=async(url)=>{calls.push(String(url));if(String(url).includes("oauth2.googleapis.com"))return new Response(failure==="malformed"?"PRIVATE_PERSON_TOKEN":JSON.stringify({error:"PRIVATE_PERSON_TOKEN"}),{status:failure==="http"?403:200});return upstreamSuccess(url);};
+    const res=await handler(event(leadPayload({parentName:"PRIVATE_PARENT"})),{requestId:"req-safe"});assert.equal(res.statusCode,502);assert.equal(calls.some(u=>u.includes("sheets.googleapis.com")),false);
+    assert.equal(res.body.includes("PRIVATE"),false);
+  }
+  assert.equal(logs.join("").includes("PRIVATE"),false);assert.equal(logs.join("").includes("telegram-token"),false);
+});
+
+test("bounded response rejects oversized stream; successful requests cancel timers and signal", async () => {
+  console.info=()=>{};let signal;
+  global.fetch=async(_url,opts)=>{signal=opts.signal;return new Response('x'.repeat(65537));};
+  await assert.rejects(_internals.boundedRequest("google_oauth","https://example.test",{},_internals.deliveryBudget()),e=>e.code==="response_too_large");assert.equal(signal.aborted,true);
+  global.fetch=async(_url,opts)=>{signal=opts.signal;return Response.json({ok:true});};
+  const result=await _internals.boundedRequest("telegram","https://example.test",{},_internals.deliveryBudget(),{validate:j=>j.ok===true});assert.equal(result.status,200);assert.equal(signal.aborted,true);
+});
+
+test("annual mos_assist payload and external wire contracts remain compatible", async () => {
+  setBaseEnv();console.info=()=>{};const calls=[];
+  global.fetch=async(url,options)=>{calls.push({url:String(url),options});return upstreamSuccess(url);};
+  const res=await handler(event(leadPayload({leadType:"mos_assist",registrationChannel:"mos_ru",questSlug:"shmi",offerId:"year:К4611-26",venueSlug:"school-1212-vilnyusskaya-14",schoolSlug:"school-1212"})),{requestId:"req-annual"});
+  assert.equal(res.statusCode,200);
+  assert.equal(JSON.parse(calls[0].options.body).parse_mode,"HTML");
+  assert.ok(calls[1].options.body instanceof URLSearchParams);assert.equal(calls[1].options.headers["content-type"],"application/x-www-form-urlencoded");
+  const sheets=new URL(calls[2].url);assert.ok(sheets.pathname.endsWith(":append"));assert.equal(sheets.searchParams.get("valueInputOption"),"USER_ENTERED");assert.equal(sheets.searchParams.get("insertDataOption"),"INSERT_ROWS");assert.equal(JSON.parse(calls[2].options.body).values[0].length,21);
+  assert.equal((await handler(event({},"OPTIONS"))).statusCode,204);assert.equal((await handler(event({},"GET"))).statusCode,405);
+  assert.equal((await handler({httpMethod:"POST",body:"not json"})).statusCode,400);
+});
+
+test("primary response beyond old10s runtime succeeds within new shared budget", async t => {
+  setBaseEnv();console.info=()=>{};
+  t.mock.timers.enable({apis:["setTimeout","Date"],now:Date.parse("2026-09-10T00:00:00Z")});
+  let reached;const telegramStarted=new Promise(r=>{reached=r;});
+  global.fetch=async(url,options)=>{
+    if(String(url).includes("api.telegram.org")){
+      reached();return new Promise((resolve,reject)=>{
+        const timer=setTimeout(()=>resolve(upstreamSuccess(url)),10500);
+        options.signal.addEventListener("abort",()=>{clearTimeout(timer);reject(Error("aborted"));},{once:true});
+      });
+    }
+    return upstreamSuccess(url);
+  };
+  const pending=handler(event(leadPayload()),{requestId:"req-slow-primary"});
+  await telegramStarted;t.mock.timers.tick(10500);
+  assert.equal((await pending).statusCode,200);
+});
+
+test("Telegram HTTP200 with ok:false cannot confirm delivery or start Sheets", async () => {
+  setBaseEnv();console.info=()=>{};const calls=[];
+  global.fetch=async url=>{calls.push(String(url));return String(url).includes("api.telegram.org")?Response.json({ok:false}):upstreamSuccess(url);};
+  assert.equal((await handler(event(leadPayload()))).statusCode,502);
+  assert.equal(calls.some(u=>u.includes("googleapis.com")||u.includes("n8n.example")),false);
+});
+
+test("Sheets must acknowledge exactly one appended row, not an unrelated HTTP200", async () => {
+  setBaseEnv();console.info=()=>{};
+  for(const updatedRows of [undefined,0,2,"1"]){
+    let n8n=false;
+    global.fetch=async url=>{if(String(url).includes("n8n.example"))n8n=true;return String(url).includes("sheets.googleapis.com")?Response.json({updates:{updatedRows}}):upstreamSuccess(url);};
+    assert.equal((await handler(event(leadPayload()))).statusCode,502);assert.equal(n8n,false);
+  }
+});
+
+for(const cutoff of [22000,26000])test(`sequential handler is bounded at ${cutoff}ms across multiple slow phases`,async t=>{
+  setBaseEnv();console.info=()=>{};process.env.N8N_TIMEOUT_MS="10000";
+  t.mock.timers.enable({apis:["setTimeout","Date"],now:Date.parse("2026-09-10T00:00:00Z")});
+  const calls=[];
+  global.fetch=async(url,options)=>{
+    const u=String(url);calls.push(u);
+    const delay=u.includes("api.telegram.org")?11000:u.includes("oauth2.googleapis.com")?10000:0;
+    const hang=cutoff===22000?u.includes("sheets.googleapis.com"):u.includes("n8n.example");
+    if(!delay&&!hang)return upstreamSuccess(url);
+    return new Promise((resolve,reject)=>{
+      const timer=hang?null:setTimeout(()=>resolve(upstreamSuccess(url)),delay);
+      options.signal.addEventListener("abort",()=>{if(timer)clearTimeout(timer);reject(Error("aborted"));},{once:true});
+    });
+  };
+  let complete=false;const pending=handler(event(leadPayload()),{requestId:"req-total"}).then(r=>{complete=true;return r;});
+  const flush=()=>new Promise(resolve=>setImmediate(resolve));
+  await flush();t.mock.timers.tick(11000);await flush();t.mock.timers.tick(10000);await flush();
+  t.mock.timers.tick(cutoff-21000-1);await flush();assert.equal(complete,false);
+  t.mock.timers.tick(1);const result=await pending;assert.equal(result.statusCode,cutoff===22000?502:200);
+  assert.equal(calls.filter(u=>u.includes("sheets.googleapis.com")).length,1);
+  assert.equal(calls.some(u=>u.includes("n8n.example")),cutoff===26000);
 });

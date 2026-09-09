@@ -35,7 +35,7 @@
 .finder button { padding: 9px 14px; }
 .finder button:disabled { cursor: not-allowed; opacity: .65; }
 .finder a { display: inline-flex; align-items: center; min-height: 44px; text-decoration: underline; text-underline-offset: 4px; }
-.finder h1 { font-family: var(--font-heading), sans-serif; font-size: clamp(26px, 3vw, 40px); line-height: 1.15; font-weight: 650; letter-spacing: -.025em; }
+.intro :is(h1, h2) { font-family: var(--font-heading), sans-serif; font-size: clamp(26px, 3vw, 40px); line-height: 1.15; font-weight: 650; letter-spacing: -.025em; }
 .finder h2 { font-size: 20px; font-weight: 600; }
 .finder h3 { font-size: 18px; font-weight: 600; }
 .finder h4 { font-size: 15px; font-weight: 650; }
@@ -99,7 +99,10 @@
 .dayRows { display: grid; gap: 8px; min-width: 0; }
 .slot { border: 1px solid var(--line); border-radius: 14px; background: var(--surface); min-width: 0; }
 .slot[data-selected] { border: 2px solid var(--edge); }
-.slot summary { display: flex; list-style: none; align-items: start; gap: 16px; cursor: pointer; padding: 18px; border-radius: 14px; }
+.slotSummary { display: flex; align-items: start; gap: 16px; padding: 18px 18px 10px; }
+.slot summary { min-height: 44px; cursor: pointer; padding: 10px 18px; border-radius: 14px; font-size: 13px; color: var(--muted); }
+.compactActions { padding: 0 18px 6px; }
+.compactActions .tariff { padding: 8px 0; border: 0; }
 .slot summary::-webkit-details-marker { display: none; }
 .time { width: 68px; flex-shrink: 0; font-size: 19px; font-weight: 700; font-variant-numeric: tabular-nums; }
 .time small { display: block; color: var(--muted); font-size: 12px; font-weight: 400; }
@@ -145,7 +148,9 @@
   .choices strong { font-size: 15px; }
   .steps { gap: 5px; }
   .steps button { flex-direction: column; align-items: start; font-size: 11px; }
-  .slot summary { gap: 10px; flex-wrap: wrap; padding: 14px; }
+  .slotSummary { gap: 10px; flex-wrap: wrap; padding: 14px 14px 8px; }
+  .slot summary { padding: 10px 14px; }
+  .compactActions { padding: 0 14px 4px; }
   .time { width: 58px; font-size: 18px; }
   .slotStatus { flex-basis: 100%; max-width: none; display: flex; align-items: center; justify-content: space-between; }
   .slotStatus small { margin-top: 0; }

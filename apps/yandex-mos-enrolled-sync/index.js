@@ -124,7 +124,7 @@ export async function handler(event = {}) {
       });
     }
 
-    const ok = result.errors.length === 0;
+    const ok = result.ok === true;
     /** @type {Record<string, unknown>} */
     const body = {
       ok,
@@ -172,8 +172,6 @@ export async function handler(event = {}) {
 
     if (
       !dryRun &&
-      ok &&
-      (result.updatedRows ?? 0) > 0 &&
       autoPublishEnabled()
     ) {
       onProgress("[mos-enrolled] dispatching hot sheet-sync (GitHub)…");

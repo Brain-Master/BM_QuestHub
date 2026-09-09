@@ -59,10 +59,6 @@ jobs:
           MOS_ENROLLED_URL_DELAY_MS: ${{ vars.MOS_ENROLLED_URL_DELAY_MS }}
           MOS_ENROLLED_FETCH_TIMEOUT_MS: ${{ vars.MOS_ENROLLED_FETCH_TIMEOUT_MS }}
           MOS_ENROLLED_AUTO_PUBLISH: ${{ inputs.publish && '1' || vars.MOS_ENROLLED_AUTO_PUBLISH }}
-          S3_BUCKET: ${{ secrets.S3_BUCKET }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          S3_ENDPOINT: ${{ vars.S3_ENDPOINT }}
           AWS_DEFAULT_REGION: ru-1
         run: |
           ARGS="--once"
