@@ -1,9 +1,9 @@
 {
   "version": 2,
-  "generatedAt": "2026-05-29T20:14:13.532Z",
-  "source": "google_sheet_cold",
+  "generatedAt": "2026-09-08T00:00:00.000Z",
+  "source": "annual-csv-integration",
   "integrity": {
-    "contentHash": "sha256:5f9eadd34982393a243d21c6a2bd44c5857220e347dad7fc8e53b6f353e3d7d1"
+    "contentHash": "sha256:e6782d38b4cb740c934a41809e312adc964e371e0134f3c0d32cf91c164e4b4f"
   },
   "venues": [
     {
@@ -346,6 +346,96 @@
       "listedOnSites": true,
       "schoolScopeSlug": "mduc-ekt",
       "logoUrl": "media/venues/logos/school-mduc-ekt.webp"
+    },
+    {
+      "slug": "school-17-vvedenskogo-28s1",
+      "name": "Школа № 17",
+      "type": "school",
+      "address": "ул. Введенского, 28, стр. 1",
+      "city": "moscow",
+      "logoUrl": "/icon.png",
+      "latitude": 55.6367936,
+      "longitude": 37.5315551,
+      "directions": [],
+      "entranceNote": "Расположение здания отмечено на карте. Вход и кабинет уточните перед занятием.",
+      "photos": [],
+      "listedOnSites": true,
+      "schoolScopeSlug": "school-17"
+    },
+    {
+      "slug": "school-875-vernadskogo-99k2",
+      "name": "Школа № 875",
+      "type": "school",
+      "address": "проспект Вернадского, 99, корп. 2",
+      "city": "moscow",
+      "logoUrl": "/icon.png",
+      "latitude": 55.6654818,
+      "longitude": 37.4913015,
+      "directions": [],
+      "entranceNote": "Расположение здания отмечено на карте. Вход и кабинет уточните перед занятием.",
+      "photos": [],
+      "listedOnSites": true,
+      "schoolScopeSlug": "school-875"
+    },
+    {
+      "slug": "school-1212-vilnyusskaya-14",
+      "name": "Школа № 1212",
+      "type": "school",
+      "address": "Вильнюсская ул., 14",
+      "city": "moscow",
+      "logoUrl": "/icon.png",
+      "latitude": 55.5980474,
+      "longitude": 37.5173409,
+      "directions": [],
+      "entranceNote": "Расположение здания отмечено на карте. Вход и кабинет уточните перед занятием.",
+      "photos": [],
+      "listedOnSites": true,
+      "schoolScopeSlug": "school-1212"
+    },
+    {
+      "slug": "school-1212-golubinskaya-21k3",
+      "name": "Школа № 1212",
+      "type": "school",
+      "address": "Голубинская ул., 21, корп. 3",
+      "city": "moscow",
+      "logoUrl": "/icon.png",
+      "latitude": 55.6016376,
+      "longitude": 37.5270587,
+      "directions": [],
+      "entranceNote": "Расположение здания отмечено на карте. Вход и кабинет уточните перед занятием.",
+      "photos": [],
+      "listedOnSites": true,
+      "schoolScopeSlug": "school-1212"
+    },
+    {
+      "slug": "school-2044-dmitrovskoe-169b",
+      "name": "Школа № 2044",
+      "type": "school",
+      "address": "Дмитровское шоссе, 169Б",
+      "city": "moscow",
+      "logoUrl": "/icon.png",
+      "latitude": 55.9321515,
+      "longitude": 37.5405089,
+      "directions": [],
+      "entranceNote": "Расположение здания отмечено на карте. Вход и кабинет уточните перед занятием.",
+      "photos": [],
+      "listedOnSites": true,
+      "schoolScopeSlug": "school-2044"
+    },
+    {
+      "slug": "school-2044-dmitrovskoe-165e-k8",
+      "name": "Школа № 2044",
+      "type": "school",
+      "address": "Дмитровское шоссе, 165Е, корп. 8",
+      "city": "moscow",
+      "logoUrl": "/icon.png",
+      "latitude": 55.9267027,
+      "longitude": 37.5423375,
+      "directions": [],
+      "entranceNote": "Расположение здания отмечено на карте. Вход и кабинет уточните перед занятием.",
+      "photos": [],
+      "listedOnSites": true,
+      "schoolScopeSlug": "school-2044"
     }
   ]
 }

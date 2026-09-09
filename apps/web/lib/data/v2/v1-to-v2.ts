@@ -70,6 +70,7 @@ export function venueOfferToEventV2(
 
   return {
     id: offer.id,
+    annual: offer.annual,
     relations: {
       courseId: courseSlug,
       venueId: offer.venueSlug,
@@ -78,7 +79,7 @@ export function venueOfferToEventV2(
       startDate: offer.startDate,
       endDate: offer.endDate,
       timezone: DEFAULT_TIMEZONE,
-      slots: [
+      slots: offer.weeklySlots?.map(s => ({ weekday: s.weekday, label: `${s.weekday}: ${s.start}–${s.end}`, timeRange: { start: s.start, end: s.end } })) ?? [
         {
           label: offer.daySchedule,
           timeRange: { start: offer.startTime, end: offer.endTime },
@@ -102,6 +103,7 @@ export function venueOfferToEventV2(
         offer.mosBookingUrl,
       ),
       allowWaitlist: card?.allowWaitlistWhenSoldOut ?? false,
+      allowBooking: offer.annual?.admission !== "closed",
     },
     presentation: card
       ? {

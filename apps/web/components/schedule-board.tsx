@@ -6,6 +6,8 @@ import { flushSync } from "react-dom";
 
 import { CommunityConnectPanel } from "@/components/community-connect-panel";
 import { MosCapacityDataNotice } from "@/components/mos-capacity-data-notice";
+import { AnnualProgrammeGroups } from "@/components/annual-programme-groups";
+import { groupAnnualProgrammes } from "@/lib/offers/annual-programme-groups";
 import { ScheduleBoardCard, type ScheduleViewMode } from "@/components/schedule-board-card";
 import { ScheduleBoardToolbar } from "@/components/schedule-board-toolbar";
 import { buttonVariants } from "@/components/ui/button";
@@ -207,7 +209,7 @@ export function ScheduleBoard({
     () =>
       groups.flatMap((group) =>
         group.items.map((item) =>
-          buildScheduleBoardItem(item, querySchoolSlug ?? schoolSlug),
+          buildScheduleBoardItem(item, schoolSlug ?? querySchoolSlug),
         ),
       ),
     [groups, querySchoolSlug, schoolSlug],
@@ -279,7 +281,7 @@ export function ScheduleBoard({
   const visibleItems = React.useMemo(() => {
     const selectedProgram = parseProgramFilterValue(program);
     return boardItems.filter((item) => {
-      if (!showArchived && status === ALL_STATUSES && item.status.isArchivedState) {
+      if (!showArchived && status === ALL_STATUSES && item.status.isArchivedState && item.offer.id !== queryOfferId) {
         return false;
       }
       if (status !== ALL_STATUSES && item.status.label !== status) return false;
@@ -316,6 +318,7 @@ export function ScheduleBoard({
     format,
     program,
     query,
+    queryOfferId,
     schoolSlug,
     showAgeFilter,
     showArchived,
@@ -324,9 +327,11 @@ export function ScheduleBoard({
   ]);
 
   const visibleGroups = React.useMemo(
-    () => groupVisibleItems(groups, visibleItems),
+    () => groupVisibleItems(groups, visibleItems.filter(item=>item.quest.format!=="year")),
     [groups, visibleItems],
   );
+
+  const annualGroups = React.useMemo(()=>groupAnnualProgrammes(visibleItems),[visibleItems]);
 
   const hasActiveFilters =
     Boolean(query.trim()) ||
@@ -541,7 +546,9 @@ export function ScheduleBoard({
         onReset={resetFilters}
       />
 
-      {visibleGroups.length === 0 ? (
+      <AnnualProgrammeGroups groups={annualGroups} highlightedOfferId={highlightedOfferId} renderGroup={item=><ScheduleBoardCard item={item} mode={effectiveViewMode} schoolSlug={schoolSlug} bookingSchoolSlug={bookingSchoolSlug} expanded={expandedCardId===item.offer.id} highlighted={highlightedOfferId===item.offer.id} onExpandChange={(expanded,anchor)=>changeExpandedCard(item.offer.id,expanded,anchor)} onNavigate={()=>rememberNavigation(item.offer.id)} />} />
+
+      {visibleItems.length === 0 ? (
         <div
           data-testid="schedule-empty-state"
           className="rounded-2xl border border-dashed border-white/15 bg-card/30 px-6 py-16 text-center"

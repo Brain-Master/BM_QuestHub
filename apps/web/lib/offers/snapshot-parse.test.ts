@@ -18,9 +18,11 @@ describe("parseOffersSnapshot", () => {
       "data",
       "offers-snapshot.json",
     );
-    const raw = JSON.parse(fs.readFileSync(file, "utf8")) as unknown;
+    const raw = JSON.parse(fs.readFileSync(file, "utf8")) as { offersByQuest: Record<string, unknown[]> };
     const snapshot = parseOffersSnapshot(raw);
-    assert.equal(countOffersInSnapshot(snapshot), 19);
+    const expected = Object.values(raw.offersByQuest).reduce((sum, rows) => sum + rows.length, 0);
+    assert.ok(expected > 0);
+    assert.equal(countOffersInSnapshot(snapshot), expected);
   });
 
   it("accepts minimal offer with media/ hero url", () => {

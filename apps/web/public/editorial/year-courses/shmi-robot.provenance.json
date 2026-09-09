@@ -1,0 +1,21 @@
+{
+  "reviewId": "I011",
+  "source": "photo:-221557445:457239683",
+  "sourceIds": [
+    "P007"
+  ],
+  "sourceSha256": "43b6361b626dd3f1a4815c40ea833687703437aab7b4941e04f3cb43927160ab",
+  "description": "Компактный колёсный робот из конструктора с двумя круглыми датчиками спереди.",
+  "exports": [
+    {
+      "file": "shmi-robot-640.webp",
+      "sha256": "2f718cb14f7ecc475330d366d8dff19327808be411ae0c1ed48cea295ae74101"
+    },
+    {
+      "file": "shmi-robot-1280.webp",
+      "sha256": "23f2e1347425330df4e9bc0e880cfa0455a9f562d548bc45b942bbbfabaf96c6"
+    }
+  ],
+  "selection": "Real workshop robot; clear in compact cards; no identifiable faces. Illustrates the programme, not a promise about a specific group.",
+  "publication": "Selected from owner-supplied archive under owner website publication request; independent rights audit not performed."
+}

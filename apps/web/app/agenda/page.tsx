@@ -10,7 +10,7 @@ import {
 } from "@/lib/content/load";
 
 export const metadata: Metadata = {
-  title: "Расписание смен",
+  title: "Расписание занятий и подбор кружка",
 };
 
 export default async function AgendaPage() {

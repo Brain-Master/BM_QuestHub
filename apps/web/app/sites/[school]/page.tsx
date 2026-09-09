@@ -451,13 +451,14 @@ export default async function SchoolPage({ params }: Props) {
               Расписание
             </h2>
             <p className="mt-2 max-w-2xl text-muted-foreground text-sm leading-relaxed">
-              Открытые смены на этой площадке: корпус, адрес, даты, время и доступность мест.
+              Годовые группы и смены на этой площадке: корпус, адрес, дни, время и условия записи.
             </p>
           </div>
         </div>
 
         <Suspense fallback={null}>
           <LiveAgenda
+            embedded
             baseQuests={agendaQuests}
             venues={venues}
             worlds={worlds}

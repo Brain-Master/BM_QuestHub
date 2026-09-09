@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "generatedAt": "2026-05-29T20:14:13.532Z",
-  "source": "google_sheet_cold",
+  "generatedAt": "2026-09-08T00:00:00.000Z",
+  "source": "annual-csv-integration",
   "snapshots": {
     "site": {
       "path": "data/v2/site-config.json"
@@ -11,11 +11,11 @@
     },
     "catalog": {
       "path": "data/v2/catalog-snapshot.json",
-      "contentHash": "sha256:8a2596b044ab7fdf1e1034d51b6318a83b9a3c295ad2c6ea17ff998aaeff81e4"
+      "contentHash": "sha256:a36667ed45d0f09362ac64d5b020cf44acf6b3483981fdd4f652ccadd3c9dc17"
     },
     "map": {
       "path": "data/v2/map-snapshot.json",
-      "contentHash": "sha256:5f9eadd34982393a243d21c6a2bd44c5857220e347dad7fc8e53b6f353e3d7d1"
+      "contentHash": "sha256:e6782d38b4cb740c934a41809e312adc964e371e0134f3c0d32cf91c164e4b4f"
     }
   }
 }

@@ -60,7 +60,7 @@ export function isDisplayableSnapshotGeneratedAt(
 export function isUsableOffersSnapshot(snapshot: OffersSnapshotV1): boolean {
   return (
     snapshot.source !== "missing_or_unreadable" &&
-    countOffersInSnapshot(snapshot) > 0 &&
+    snapshot.source !== "invalid_file" &&
     isDisplayableSnapshotGeneratedAt(snapshot.generatedAt)
   );
 }

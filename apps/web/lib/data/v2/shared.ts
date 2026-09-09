@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { weekdays } from "@/lib/offers/annual-schedule";
 
 export const snapshotIntegritySchema = z.object({
   schemaHash: z.string().optional(),
@@ -16,6 +17,7 @@ export const timeRangeSchema = z.object({
 });
 
 export const scheduleSlotSchema = z.object({
+  weekday: z.enum(weekdays).optional(),
   label: z.string().optional(),
   timeRange: timeRangeSchema.optional(),
 });

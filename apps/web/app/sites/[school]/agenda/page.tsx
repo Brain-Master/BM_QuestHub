@@ -5,7 +5,6 @@ import { ActivityPhotoGallery } from "@/components/activity-photo-gallery";
 import { CommunityConnectPanel } from "@/components/community-connect-panel";
 import { LiveAgenda } from "@/components/live-agenda";
 import { RememberSchoolOnVisit } from "@/components/remember-school-on-visit";
-import { SchoolAgendaHero } from "@/components/school-agenda-hero";
 import { communityConnectCopy } from "@/lib/community-connect-copy";
 import {
   loadQuestsForSchoolAgenda,
@@ -22,7 +21,6 @@ import {
   pageAlternates,
 } from "@/lib/seo/metadata";
 import {
-  resolveSchoolCampusLocations,
   resolveSchoolLandingMedia,
   resolveSchoolLocationSummary,
 } from "@/lib/school-landing-media";
@@ -52,7 +50,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const location = resolveSchoolLocationSummary(school.venues);
   const media = resolveSchoolLandingMedia(school.slug);
   const fullName = school.venues[0]?.name ?? school.name;
-  const title = `Летние смены · ${fullName} · BrainMaster`;
+  const title = `Расписание занятий · ${fullName} · BrainMaster`;
   const description = location
     ? `Расписание инженерных квестов BrainMaster · ${school.name} · ${location}. Запись на mos.ru и предварительные заявки.`
     : `Расписание инженерных квестов BrainMaster для площадки ${school.name}.`;
@@ -96,23 +94,10 @@ export default async function SchoolAgendaPage({ params }: Props) {
   if (!school) notFound();
 
   const media = resolveSchoolLandingMedia(school.slug);
-  const campusLocations = resolveSchoolCampusLocations(school.venues);
-  const schoolFullName = school.venues[0]?.name ?? school.name;
-  const videoPosterUrl =
-    media.videoPosterUrl ??
-    media.activityGallery[0]?.url;
 
   return (
     <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:py-10">
       <RememberSchoolOnVisit slug={school.slug} name={school.name} />
-
-      <SchoolAgendaHero
-        schoolShortName={school.name}
-        schoolFullName={schoolFullName}
-        campusLocations={campusLocations}
-        videoFileUrl={media.videoFileUrl}
-        videoPosterUrl={videoPosterUrl}
-      />
 
       <LiveAgenda
         baseQuests={quests}

@@ -10,6 +10,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { triggerContentDeploy } from "./deploy-hook.mjs";
+import { annualOverlayArgs } from "../../scripts/annual-publish-tier.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const NODE = process.execPath;
@@ -56,6 +57,10 @@ async function main() {
     run("export YAML", "scripts/export-yaml-to-snapshots.mjs");
   }
 
+  run("preserve annual programmes", "apps/web/node_modules/tsx/dist/cli.mjs", [
+    "--tsconfig", path.join(ROOT, "apps/web/tsconfig.json"),
+    path.join(ROOT, "scripts/integrate-year-schedule.ts"), ...annualOverlayArgs(tier),
+  ]);
   run("validate snapshots", "scripts/validate-public-snapshot.mjs");
   runMake("scripts-s3-deps");
   runMake(hotOnly ? "s3-sync-data-hot" : "s3-sync-data-cold");

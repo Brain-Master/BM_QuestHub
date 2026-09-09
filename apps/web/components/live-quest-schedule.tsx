@@ -27,6 +27,8 @@ function LiveQuestScheduleInner({
 }: Props) {
   const searchParams = useSearchParams();
   const showSnapshotTime = isSnapshotStampVisible(searchParams);
+  const schoolSlug = searchParams.get("school")?.trim() || undefined;
+  const venueSlug = searchParams.get("venue")?.trim() || undefined;
 
   const { quests, status, liveEnabled, snapshotGeneratedAt } = useLiveSchedule(
     baseQuests,
@@ -46,9 +48,9 @@ function LiveQuestScheduleInner({
         quests: [quest],
         venues,
         worlds,
-      }),
+      }).filter(item=>(!venueSlug || item.offer.venueSlug===venueSlug) && (!schoolSlug || (item.venue.schoolScopeSlug??item.venue.slug)===schoolSlug)),
     );
-  }, [quests, venues, worlds, questSlug]);
+  }, [quests, venues, worlds, questSlug, schoolSlug, venueSlug]);
 
   return (
     <>
@@ -58,6 +60,7 @@ function LiveQuestScheduleInner({
         </div>
       ) : null}
       <ScheduleBoard
+        schoolSlug={schoolSlug}
         groups={groups}
         title="Площадки и запись"
         description="Если для смены ещё нет карточки mos.ru, кнопка открывает форму заявки в модальном окне."

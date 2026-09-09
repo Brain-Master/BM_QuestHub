@@ -34,7 +34,9 @@ export type ScheduleDisplayStatus =
   | "Можно присоединиться"
   | "Мест нет"
   | "Завершено"
-  | "Отменено";
+  | "Отменено"
+  | "Приём закрыт";
+// Admission is a dated source fact, separate from lifecycle status.
 
 export type ScheduleBookingMode =
   | { kind: "form"; label: string }
@@ -221,6 +223,7 @@ export function getScheduleDisplayStatus(
   offer: VenueOffer,
   now = new Date(),
 ): ScheduleDisplayStatus {
+  if (offer.annual?.admission === "closed" && !isOfferAutoArchived(offer, now)) return "Приём закрыт";
   return eventStatusLabel(resolveScheduleStatusKey(offer, now)) as ScheduleDisplayStatus;
 }
 
@@ -228,6 +231,7 @@ export function getScheduleStatusVariant(
   offer: VenueOffer,
   now = new Date(),
 ): ScheduleStatusVariant {
+  if (offer.annual?.admission === "closed") return "default";
   return eventStatusVariant(resolveScheduleStatusKey(offer, now));
 }
 
@@ -236,6 +240,7 @@ export function getScheduleBookingMode(
   status: ScheduleDisplayStatus,
   variant?: Pick<ScheduleVariant, "mosBookingUrl">,
 ): ScheduleBookingMode {
+  if (offer.annual?.admission === "closed") return { kind: "disabled", label: "Приём закрыт" };
   const statusKey = resolveScheduleStatusKey(offer);
   const cta = SCHEDULE_CTA;
 
@@ -286,9 +291,10 @@ function parseIsoDate(iso: string): Date | null {
   return new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
 }
 
-function buildQuestHref(questSlug: string, offerId: string, schoolSlug?: string): string {
+function buildQuestHref(questSlug: string, offerId: string, schoolSlug?: string, venueSlug?: string): string {
   const params = new URLSearchParams();
   if (schoolSlug) params.set("school", schoolSlug);
+  if (venueSlug) params.set("venue", venueSlug);
   params.set("offer", offerId);
   const query = params.toString();
   return `/quests/${questSlug}${query ? `?${query}` : ""}#schedule-offers`;
@@ -400,25 +406,26 @@ export function buildScheduleBoardItem(
   item: AgendaOfferItem,
   schoolSlug?: string,
   now = new Date(),
+  resolveMedia = coalesceScheduleMediaImage,
 ): ScheduleBoardItem {
   const { offer, quest, world } = item;
   const card = offer.scheduleCard;
   const statusKey = resolveScheduleStatusKey(offer, now);
-  const statusLabel = eventStatusLabel(statusKey) as ScheduleDisplayStatus;
+  const statusLabel = getScheduleDisplayStatus(offer, now);
   const capacity = getScheduleCapacity(offer);
   const variants = normalizeVariants(offer, statusKey, statusLabel);
   const commonAgeLabel = getCommonAgeLabel(variants, card?.ageLabel ?? quest.ageLabel);
   const questHeroFallback = questHeroMediaImage(quest);
-  const hero = coalesceScheduleMediaImage(
+  const hero = resolveMedia(
     card?.media?.hero ?? card?.media?.fallback ?? null,
     questHeroFallback,
   );
-  const compact = coalesceScheduleMediaImage(
+  const compact = resolveMedia(
     card?.media?.compact ?? null,
     hero ?? questHeroFallback,
   );
   const fallbackFromQuest = quest.catalogTagline ?? quest.tagline;
-  const questHref = buildQuestHref(quest.slug, offer.id, schoolSlug);
+  const questHref = buildQuestHref(quest.slug, offer.id, schoolSlug, quest.format === "year" ? offer.venueSlug : undefined);
   const dateLabel = card?.shortDate ?? formatScheduleDateRange(offer.startDate, offer.endDate);
   const primaryVariant = variants[0];
   const programNameH1 = card?.programNameH1?.trim() || null;
@@ -437,11 +444,11 @@ export function buildScheduleBoardItem(
     shortDateLabel: dateLabel,
     shiftNumber: card?.shiftNumber ?? null,
     locationNote: card?.locationNote ?? null,
-    programFilterLabel: card?.programFilterLabel ?? (joinedProgram || quest.title),
+    programFilterLabel: quest.format === "year" ? quest.title : card?.programFilterLabel ?? (joinedProgram || quest.title),
     commonAgeLabel,
     tags: card?.tags.length ? card.tags : [world?.name ?? quest.worldSlug],
     dateLabel,
-    timeLabel: primaryVariant?.time ?? `${offer.startTime}–${offer.endTime}`,
+    timeLabel: offer.weeklySlots?.map(s => `${s.weekday}: ${s.start}–${s.end}`).join("; ") ?? primaryVariant?.time ?? `${offer.startTime}–${offer.endTime}`,
     formatType: primaryVariant?.type ?? offer.shiftLabel,
     formatNote: primaryVariant?.note ?? null,
     mosRuCode: card?.mosRuCode ?? primaryVariant?.mosRuCode ?? null,
@@ -458,7 +465,7 @@ export function buildScheduleBoardItem(
     },
     status: {
       label: statusLabel,
-      variant: eventStatusVariant(statusKey),
+      variant: getScheduleStatusVariant(offer, now),
       isArchivedState: statusKey === "finished" || statusKey === "cancelled",
       isSoldOut: statusKey === "sold_out",
       isPlanning: statusKey === "planning",
