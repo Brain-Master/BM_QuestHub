@@ -9,6 +9,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { loadDotEnv, loadRepoEnv } from "./load-dotenv.mjs";
+import { annualOverlayArgs } from "./annual-publish-tier.mjs";
 
 const ROOT = loadRepoEnv();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -55,4 +56,12 @@ const result = spawnSync(
   },
 );
 
-process.exit(result.status ?? 1);
+if (result.status !== 0) process.exit(result.status ?? 1);
+
+// Retain the reviewed CSV-backed annual groups/venues after the Sheets refresh.
+// The compiler validates the joined bundle but writes only the selected tier.
+const overlay = spawnSync(process.execPath, [
+  tsx, "--tsconfig", tsconfig,
+  path.join(ROOT, "scripts", "integrate-year-schedule.ts"), ...annualOverlayArgs(tier),
+], { cwd: ROOT, stdio: "inherit", env: process.env });
+process.exit(overlay.status ?? 1);

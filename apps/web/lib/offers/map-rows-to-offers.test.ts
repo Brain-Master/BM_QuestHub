@@ -11,6 +11,7 @@ const venueSlugs = new Set(["school-2103-yasenevo"]);
 
 function baseRow(overrides: Partial<SheetRow> = {}): SheetRow {
   return {
+    shift_group_id: "fixture-shift",
     program_name_h1: "Мехвариум",
     program_name_h2: "Лаборатория Кинетических Монстров",
     quest_slug: "mekhvarium-laboratoriya-kineticheskih-monstrov",
@@ -113,7 +114,7 @@ describe("consolidateOffersByShiftGroup", () => {
   it("keeps distinct shifts separate", () => {
     const a = mapSheetRowToVenueOffer(baseRow(), venueSlugs);
     const b = mapSheetRowToVenueOffer(
-      baseRow({ start_date: "2026-06-01", end_date: "2026-06-05" }),
+      baseRow({ shift_group_id: "fixture-second-shift", start_date: "2026-06-01", end_date: "2026-06-05" }),
       venueSlugs,
     );
     assert.ok("ok" in a && "ok" in b);

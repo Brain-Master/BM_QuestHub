@@ -1,4 +1,6 @@
 import { expect, test } from "@playwright/test";
+import { mock } from "node:test";
+import { createScheduleMediaCoalescer } from "../lib/media/schedule-media-coalesce";
 
 import { placeVariantsInFooter } from "../components/schedule-board-card-compact";
 import {
@@ -9,10 +11,11 @@ import {
   getScheduleDisplayStatus,
 } from "../lib/offers/schedule-board";
 import { resolveRegistrationFlow } from "../lib/registration-flow";
-import { leadSchema, type VenueOffer } from "../lib/schemas";
+import { z } from "zod";
+import { leadSchema, venueOfferSchema, venueSchema, type VenueOffer } from "../lib/schemas";
 
-function offer(overrides: Partial<VenueOffer> = {}): VenueOffer {
-  return {
+function offer(overrides: Partial<z.input<typeof venueOfferSchema>> = {}): VenueOffer {
+  return venueOfferSchema.parse({
     id: "test-offer",
     venueSlug: "test-venue",
     shiftLabel: "Тестовая смена",
@@ -27,11 +30,13 @@ function offer(overrides: Partial<VenueOffer> = {}): VenueOffer {
     enrolled: 0,
     maxCapacity: 20,
     ...overrides,
-  };
+  });
 }
 
 test.describe("Schedule Board data rules", () => {
   const now = new Date("2026-05-20T12:00:00");
+  test.beforeEach(() => mock.timers.enable({ apis: ["Date"], now }));
+  test.afterEach(() => mock.timers.reset());
 
   test("sold-out can become waitlist when data allows it", () => {
     const item = offer({
@@ -213,6 +218,9 @@ test.describe("Schedule Board data rules", () => {
   });
 
   test("schedule card uses quest hero when shift media url is a placeholder ingest", () => {
+    const resolveMedia = createScheduleMediaCoalescer([
+      { output: "media/venues/photos/bm-base-moscow/01.webp", sha256: "36cf1bf584511668873f66ede0feeb27da3cc5aba66e99fe8a1a4b50a0342291" },
+    ]);
     const boardItem = buildScheduleBoardItem({
       offer: offer({
         scheduleCard: {
@@ -225,6 +233,7 @@ test.describe("Schedule Board data rules", () => {
         },
       }),
       quest: {
+        format: "intensive",
         slug: "cyber-rhythm",
         title: "Киберритм",
         worldSlug: "cyber-rhythm",
@@ -232,14 +241,14 @@ test.describe("Schedule Board data rules", () => {
         tagline: "Тест",
         heroImageUrl: "media/quests/cyber-rhythm/hero.webp",
       },
-      venue: {
+      venue: venueSchema.parse({
         slug: "test-venue",
         name: "Тестовая площадка",
         type: "school",
         address: "Тестовый адрес",
-      },
+      }),
       world: null,
-    });
+    }, undefined, now, resolveMedia);
 
     expect(boardItem.media.hero?.url).toBe("media/quests/cyber-rhythm/hero.webp");
     expect(boardItem.media.compact?.url).toBe("media/quests/cyber-rhythm/hero.webp");
@@ -274,18 +283,19 @@ test.describe("Schedule Board data rules", () => {
     const boardItem = buildScheduleBoardItem({
       offer: item,
       quest: {
+        format: "intensive",
         slug: "test",
         title: "Тестовая программа",
         worldSlug: "test-world",
         ageLabel: "6–13 лет",
         tagline: "Тест",
       },
-      venue: {
+      venue: venueSchema.parse({
         slug: "test-venue",
         name: "Тестовая площадка",
         type: "school",
         address: "Тестовый адрес",
-      },
+      }),
       world: null,
     });
 
@@ -328,18 +338,19 @@ test.describe("Schedule Board data rules", () => {
     const boardItem = buildScheduleBoardItem({
       offer: item,
       quest: {
+        format: "intensive",
         slug: "test",
         title: "Тестовая программа",
         worldSlug: "test-world",
         ageLabel: "6–13 лет",
         tagline: "Тест",
       },
-      venue: {
+      venue: venueSchema.parse({
         slug: "test-venue",
         name: "Тестовая площадка",
         type: "school",
         address: "Тестовый адрес",
-      },
+      }),
       world: null,
     });
 

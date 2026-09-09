@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { annualMetadataSchema } from "@/lib/offers/annual-schedule";
 
 import {
   publicBadgeSchema,
@@ -108,6 +109,7 @@ export const eventVariantV2Schema = z.object({
 });
 
 export const eventV2Schema = z.object({
+  annual: annualMetadataSchema.optional(),
   id: z.string().min(1),
   slug: z.string().optional(),
   relations: z.object({

@@ -66,6 +66,7 @@ export function SiteFooter() {
           </Link>
           <span className="text-muted-foreground text-xs">
             © {new Date().getFullYear()} BrainMaster
+            <br />Координаты новых площадок: © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>
           </span>
         </div>
       </div>

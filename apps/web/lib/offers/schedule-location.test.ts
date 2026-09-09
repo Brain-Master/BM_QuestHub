@@ -14,6 +14,9 @@ const venue: Venue = {
   address: "ул. Введенского, 28",
   metro: "Беляево",
   city: "moscow",
+  directions: [],
+  photos: [],
+  listedOnSites: true,
 };
 
 describe("resolveScheduleAddress", () => {
@@ -25,7 +28,7 @@ describe("resolveScheduleAddress", () => {
   });
 
   it("falls back to venue address when override is missing or blank", () => {
-    assert.equal(resolveScheduleAddress(venue, {}), "ул. Введенского, 28");
+    assert.equal(resolveScheduleAddress(venue, { addressOverride: undefined }), "ул. Введенского, 28");
     assert.equal(resolveScheduleAddress(venue, { addressOverride: "   " }), "ул. Введенского, 28");
     assert.equal(resolveScheduleAddress(venue, null), "ул. Введенского, 28");
   });

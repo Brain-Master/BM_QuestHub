@@ -21,9 +21,9 @@ function normalizeMediaUrlKey(url: string): string {
   return trimmed;
 }
 
-function knownPlaceholderOutputUrls(): Set<string> {
+function knownPlaceholderOutputUrls(entries: readonly { output?: string; sha256?: string }[]): Set<string> {
   const urls = new Set<string>();
-  for (const entry of Object.values(mediaIngestManifest.entries)) {
+  for (const entry of entries) {
     if (!entry.output || !entry.sha256) continue;
     if (!PLACEHOLDER_SOURCE_SHA256.has(entry.sha256)) continue;
     urls.add(normalizeMediaUrlKey(entry.output));
@@ -31,7 +31,7 @@ function knownPlaceholderOutputUrls(): Set<string> {
   return urls;
 }
 
-const placeholderOutputUrls = knownPlaceholderOutputUrls();
+const placeholderOutputUrls = knownPlaceholderOutputUrls(Object.values(mediaIngestManifest.entries));
 
 /** True when URL points at a gray placeholder listed in the ingest manifest. */
 export function isPlaceholderMediaUrl(url: string | undefined): boolean {
@@ -57,4 +57,11 @@ export function coalesceScheduleMediaImage(
     return image;
   }
   return questFallback;
+}
+
+/** Build the same resolver from an explicit manifest, including isolated test fixtures. */
+export function createScheduleMediaCoalescer(entries: readonly { output?: string; sha256?: string }[]) {
+  const placeholders = knownPlaceholderOutputUrls(entries);
+  return (image: ScheduleMediaImage | null | undefined, fallback: ScheduleMediaImage | null): ScheduleMediaImage | null =>
+    image?.url?.trim() && !placeholders.has(normalizeMediaUrlKey(image.url)) ? image : fallback;
 }

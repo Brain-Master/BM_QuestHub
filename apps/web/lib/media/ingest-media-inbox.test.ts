@@ -80,6 +80,7 @@ function minimalBundle(): ColdSnapshotBundle {
           address: "Addr",
           listedOnSites: true,
           directions: [],
+          photos: [],
           schoolScopeSlug: "demo-school",
         },
       ],

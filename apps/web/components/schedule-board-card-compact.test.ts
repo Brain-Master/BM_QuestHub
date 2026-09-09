@@ -3,7 +3,7 @@ import { describe, it } from "node:test";
 
 import { placeVariantsInFooter } from "./schedule-board-card-compact";
 import { buildScheduleBoardItem } from "../lib/offers/schedule-board";
-import type { VenueOffer } from "../lib/schemas";
+import { venueOfferSchema, venueSchema, type VenueOffer } from "../lib/schemas";
 
 function offerWithVariants(count: number): VenueOffer {
   const variants = Array.from({ length: count }, (_, index) => ({
@@ -15,7 +15,7 @@ function offerWithVariants(count: number): VenueOffer {
     ageLabel: "6–13 лет",
   }));
 
-  return {
+  return venueOfferSchema.parse({
     id: "test-offer",
     venueSlug: "test-venue",
     shiftLabel: "Тестовая смена",
@@ -34,7 +34,7 @@ function offerWithVariants(count: number): VenueOffer {
       tags: [],
       variants,
     },
-  };
+  });
 }
 
 describe("placeVariantsInFooter", () => {
@@ -54,18 +54,19 @@ describe("buildScheduleBoardItem with multiple variants", () => {
     const boardItem = buildScheduleBoardItem({
       offer: offerWithVariants(3),
       quest: {
+        format: "intensive",
         slug: "test",
         title: "Тестовая программа",
         worldSlug: "test-world",
         ageLabel: "6–13 лет",
         tagline: "Тест",
       },
-      venue: {
+      venue: venueSchema.parse({
         slug: "test-venue",
         name: "Тестовая площадка",
         type: "school",
         address: "Тестовый адрес",
-      },
+      }),
       world: null,
     });
 

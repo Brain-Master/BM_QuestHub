@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generatedAt": "2026-05-29T15:43:02.124Z",
-  "source": "google_sheet",
+  "generatedAt": "2026-09-08T00:00:00.000Z",
+  "source": "annual-csv-integration",
   "offersByQuest": {
     "mekhvarium-laboratoriya-kineticheskih-monstrov": [
       {
@@ -18,7 +18,7 @@
         "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/843883",
         "includedNote": "Формат интенсива.\n\nВозраст: 6–15 лет\n\nКод карточки mos.ru: 2445955",
         "sheetStatus": "Идёт набор",
-        "enrolled": 5,
+        "enrolled": 3,
         "maxCapacity": 12,
         "scheduleCard": {
           "displayTitle": "Мехвариум: Лаборатория Кинетических Монстров",
@@ -52,7 +52,7 @@
               "ageLabel": "6–15 лет",
               "mosRuCode": "2445955",
               "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/843883",
-              "enrolled": 5,
+              "enrolled": 3,
               "registrationChannel": "mos_ru",
               "allowPreliminaryRegistration": true
             }
@@ -83,7 +83,7 @@
         "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/847271",
         "includedNote": "Формат интенсива. Контакт: Халаджан Г.А.\n\nВозраст: 6–13 лет",
         "sheetStatus": "Идёт набор",
-        "enrolled": 5,
+        "enrolled": 4,
         "maxCapacity": 20,
         "scheduleCard": {
           "displayTitle": "Мехвариум: Лаборатория Инженерных Монстров",
@@ -127,7 +127,7 @@
               "ageLabel": "6–13 лет",
               "mosRuCode": "2448205",
               "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/847271",
-              "enrolled": 5,
+              "enrolled": 4,
               "registrationChannel": "mos_ru",
               "allowPreliminaryRegistration": true
             }
@@ -158,7 +158,7 @@
         "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/847888",
         "includedNote": "Формат интенсива.\n\nВозраст: 6–15 лет\n\nКод карточки mos.ru: 2448595",
         "sheetStatus": "Идёт набор",
-        "enrolled": 15,
+        "enrolled": 14,
         "maxCapacity": 15,
         "scheduleCard": {
           "displayTitle": "Мехвариум: Лаборатория Кинетических Монстров",
@@ -192,7 +192,7 @@
               "ageLabel": "6–15 лет",
               "mosRuCode": "2448595",
               "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/847888",
-              "enrolled": 15,
+              "enrolled": 14,
               "registrationChannel": "mos_ru",
               "allowPreliminaryRegistration": true
             }
@@ -223,6 +223,7 @@
         "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/853150",
         "includedNote": "Возраст: 6–15 лет\n\nКод карточки mos.ru: 2451655",
         "sheetStatus": "Идёт набор",
+        "enrolled": 6,
         "maxCapacity": 12,
         "scheduleCard": {
           "displayTitle": "Мехвариум: Лаборатория Кинетических Монстров",
@@ -254,6 +255,7 @@
               "ageLabel": "6–15 лет",
               "mosRuCode": "2451655",
               "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/853150",
+              "enrolled": 6,
               "registrationChannel": "mos_ru",
               "allowPreliminaryRegistration": false
             }
@@ -284,7 +286,7 @@
         "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/840243",
         "includedNote": "Формат полного дня. Питание (завтрак, обед, полдник).\n\nВозраст: 6–13 лет\n\nКод карточки mos.ru: 2440640",
         "sheetStatus": "Идёт набор",
-        "enrolled": 23,
+        "enrolled": 24,
         "maxCapacity": 20,
         "scheduleCard": {
           "displayTitle": "Мехвариум: Лаборатория Кинетических Монстров",
@@ -318,7 +320,7 @@
               "ageLabel": "6–13 лет",
               "mosRuCode": "2440640",
               "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/840243",
-              "enrolled": 23,
+              "enrolled": 24,
               "registrationChannel": "mos_ru",
               "allowPreliminaryRegistration": false
             }
@@ -349,7 +351,7 @@
         "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/841885",
         "includedNote": "Формат интенсива. Корпус ШО-3.\n\nВозраст: 7–15 лет\n\nКод карточки mos.ru: 2444383",
         "sheetStatus": "Идёт набор",
-        "enrolled": 10,
+        "enrolled": 1,
         "maxCapacity": 20,
         "scheduleCard": {
           "displayTitle": "Мехвариум: Лаборатория Кинетических Монстров",
@@ -384,7 +386,7 @@
               "ageLabel": "7–15 лет",
               "mosRuCode": "2444383",
               "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/841885",
-              "enrolled": 10,
+              "enrolled": 1,
               "registrationChannel": "mos_ru",
               "allowPreliminaryRegistration": false
             },
@@ -428,7 +430,7 @@
         "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/843884",
         "includedNote": "Укороченная смена (4 дня). Формат интенсива.\n\nВозраст: 6–15 лет\n\nКод карточки mos.ru: 2445956",
         "sheetStatus": "Идёт набор",
-        "enrolled": 5,
+        "enrolled": 6,
         "maxCapacity": 12,
         "scheduleCard": {
           "displayTitle": "Мехвариум: Мастерская Гидравлических Монстров",
@@ -462,7 +464,7 @@
               "ageLabel": "6–15 лет",
               "mosRuCode": "2445956",
               "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/843884",
-              "enrolled": 5,
+              "enrolled": 6,
               "registrationChannel": "mos_ru",
               "allowPreliminaryRegistration": true
             }
@@ -493,7 +495,7 @@
         "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/847283",
         "includedNote": "Укороченная смена (4 дня). Формат интенсива. Контакт: Халаджан Г.А.\n\nВозраст: 6–13 лет",
         "sheetStatus": "Идёт набор",
-        "enrolled": 1,
+        "enrolled": 2,
         "maxCapacity": 20,
         "scheduleCard": {
           "displayTitle": "Мехвариум: Мастерская Гидравлических Монстров",
@@ -537,9 +539,73 @@
               "ageLabel": "6–13 лет",
               "mosRuCode": "2448210",
               "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/847283",
-              "enrolled": 1,
+              "enrolled": 2,
               "registrationChannel": "mos_ru",
               "allowPreliminaryRegistration": true
+            }
+          ],
+          "media": {
+            "hero": {
+              "url": "media/quests/mekhvarium-masterskaya-gidravlicheskih-monstrov/hero.webp",
+              "alt": "Мехвариум: Мастерская Гидравлических Монстров"
+            },
+            "compact": {
+              "url": "media/quests/mekhvarium-masterskaya-gidravlicheskih-monstrov/hero.webp",
+              "alt": "Мехвариум: Мастерская Гидравлических Монстров"
+            }
+          }
+        }
+      },
+      {
+        "id": "sheet:mekhvarium-masterskaya-gidravlicheskih-monstrov:school-1212-yasenevo:2026-06-08:2026-06-11",
+        "venueSlug": "school-1212-yasenevo",
+        "shiftLabel": "Мехвариум: Мастерская Гидравлических Монстров · Школа №1212",
+        "startDate": "2026-06-08",
+        "endDate": "2026-06-11",
+        "startTime": "9:00",
+        "endTime": "12:30",
+        "dateRange": "08.06.2026 — 11.06.2026",
+        "daySchedule": "Ежедневно: 9:00–12:30",
+        "priceLabel": "6 800 ₽",
+        "mosBookingUrl": null,
+        "includedNote": "2 смена; К4455-26\n\nВозраст: 6–12 лет\n\nКод карточки mos.ru: 2454479",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 0,
+        "maxCapacity": 25,
+        "scheduleCard": {
+          "displayTitle": "Мехвариум: Мастерская Гидравлических Монстров",
+          "description": "«КиберЛагерь Мехвариум: Мастерская Гидравлических Монстров» — укрощаем силу воды! За время интенсива ребята станут агентами секретного бюро и создадут свою Монстро-Станцию! Электричество отменяется — механизмы работают исключительно на силе гидравлики. Из шприцев, силиконовых трубок и дерева дети соберут кран-лифт, мощный пресс, клешню-манипулятор и балансировочный 3D-лабиринт. Включаем инженерию на максимум!",
+          "teacherName": "Толмачова Василиса Владимировна",
+          "tags": [
+            "Офлайн",
+            "Гидравлика"
+          ],
+          "addressOverride": "Новоясеневский пр-кт, 24к3",
+          "programNameH1": "Мехвариум",
+          "programNameH2": "Мастерская Гидравлических Монстров",
+          "programFilterLabel": "Мехвариум: Мастерская Гидравлических Монстров",
+          "ageLabel": "6–12 лет",
+          "formatType": "Интенсив (4 дня)",
+          "formatTime": "Пн-Чт, 9:00 – 12:30",
+          "formatNote": "Укороченная смена (4 дня). Формат интенсива.",
+          "mosRuCode": "2454479",
+          "status": "Идёт набор",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "school-1212-yasenevo:2026-06-08:интенсив-4-дня",
+              "type": "Интенсив (4 дня)",
+              "time": "Пн-Чт, 9:00 – 12:30",
+              "priceLabel": "6 800 ₽",
+              "note": "Укороченная смена (4 дня). Формат интенсива.",
+              "ageLabel": "6–12 лет",
+              "mosRuCode": "2454479",
+              "enrolled": 0,
+              "registrationChannel": "mos_ru",
+              "allowPreliminaryRegistration": false
             }
           ],
           "media": {
@@ -568,7 +634,7 @@
         "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/847913",
         "includedNote": "Формат интенсива.\n\nВозраст: 6–15 лет\n\nКод карточки mos.ru: 2448613",
         "sheetStatus": "Идёт набор",
-        "enrolled": 9,
+        "enrolled": 12,
         "maxCapacity": 15,
         "scheduleCard": {
           "displayTitle": "Мехвариум: Мастерская Гидравлических Монстров",
@@ -602,7 +668,7 @@
               "ageLabel": "6–15 лет",
               "mosRuCode": "2448613",
               "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/847913",
-              "enrolled": 9,
+              "enrolled": 12,
               "registrationChannel": "mos_ru",
               "allowPreliminaryRegistration": true
             }
@@ -633,6 +699,7 @@
         "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/853205",
         "includedNote": "Возраст: 6–15 лет\n\nКод карточки mos.ru: 2451690",
         "sheetStatus": "Идёт набор",
+        "enrolled": 1,
         "maxCapacity": 12,
         "scheduleCard": {
           "displayTitle": "Мехвариум: Мастерская Гидравлических Монстров",
@@ -664,6 +731,7 @@
               "ageLabel": "6–15 лет",
               "mosRuCode": "2451690",
               "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/853205",
+              "enrolled": 1,
               "registrationChannel": "mos_ru",
               "allowPreliminaryRegistration": false
             }
@@ -694,7 +762,7 @@
         "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/841892",
         "includedNote": "Укороченная смена (4 дня). Формат интенсива. Корпус ШО-3.\n\nВозраст: 7–15 лет\n\nКод карточки mos.ru: 2444393",
         "sheetStatus": "Идёт набор",
-        "enrolled": 5,
+        "enrolled": 7,
         "maxCapacity": 20,
         "scheduleCard": {
           "displayTitle": "Мехвариум: Мастерская Гидравлических Монстров",
@@ -729,7 +797,7 @@
               "ageLabel": "7–15 лет",
               "mosRuCode": "2444393",
               "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/841892",
-              "enrolled": 5,
+              "enrolled": 7,
               "registrationChannel": "mos_ru",
               "allowPreliminaryRegistration": false
             },
@@ -771,7 +839,7 @@
         "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/842914",
         "includedNote": "Укороченная смена (4 дня). Формат интенсива\n\nВозраст: 6–14 лет\n\nКод карточки mos.ru: 2445152",
         "sheetStatus": "Идёт набор",
-        "enrolled": 1,
+        "enrolled": 2,
         "maxCapacity": 15,
         "scheduleCard": {
           "displayTitle": "Мехвариум: Кинетические + Гидравлические Монстры",
@@ -805,7 +873,7 @@
               "ageLabel": "6–14 лет",
               "mosRuCode": "2445152",
               "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/842914",
-              "enrolled": 1,
+              "enrolled": 2,
               "registrationChannel": "mos_ru",
               "allowPreliminaryRegistration": true
             }
@@ -978,6 +1046,7 @@
         "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/853210",
         "includedNote": "Возраст: 6–15 лет\n\nКод карточки mos.ru: 2451687",
         "sheetStatus": "Идёт набор",
+        "enrolled": 0,
         "maxCapacity": 12,
         "scheduleCard": {
           "displayTitle": "Minecraft: Пробуждение Стражей",
@@ -1009,6 +1078,7 @@
               "ageLabel": "6–15 лет",
               "mosRuCode": "2451687",
               "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/853210",
+              "enrolled": 0,
               "registrationChannel": "mos_ru",
               "allowPreliminaryRegistration": false
             }
@@ -1118,7 +1188,7 @@
         "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/843887",
         "includedNote": "Формат интенсива.\n\nВозраст: 6–15 лет\n\nКод карточки mos.ru: 2445959",
         "sheetStatus": "Идёт набор",
-        "enrolled": 4,
+        "enrolled": 5,
         "maxCapacity": 12,
         "scheduleCard": {
           "displayTitle": "КиберРитм: Инженерия Звука",
@@ -1152,7 +1222,7 @@
               "ageLabel": "6–15 лет",
               "mosRuCode": "2445959",
               "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/843887",
-              "enrolled": 4,
+              "enrolled": 5,
               "registrationChannel": "mos_ru",
               "allowPreliminaryRegistration": true
             }
@@ -1183,7 +1253,7 @@
         "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/848078",
         "includedNote": "Формат интенсива.\n\nВозраст: 6–15 лет\n\nКод карточки mos.ru: 2448701",
         "sheetStatus": "Идёт набор",
-        "enrolled": 3,
+        "enrolled": 5,
         "maxCapacity": 15,
         "scheduleCard": {
           "displayTitle": "КиберРитм: Инженерия Звука",
@@ -1217,7 +1287,7 @@
               "ageLabel": "6–15 лет",
               "mosRuCode": "2448701",
               "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/848078",
-              "enrolled": 3,
+              "enrolled": 5,
               "registrationChannel": "mos_ru",
               "allowPreliminaryRegistration": true
             }
@@ -1325,7 +1395,7 @@
         "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/842871",
         "includedNote": "Формат интенсива\n\nВозраст: 6–14 лет\n\nКод карточки mos.ru: 2445194",
         "sheetStatus": "Идёт набор",
-        "enrolled": 7,
+        "enrolled": 6,
         "maxCapacity": 15,
         "scheduleCard": {
           "displayTitle": "КиберРитм + Minecraft: Пробуждение Стража",
@@ -1359,7 +1429,7 @@
               "ageLabel": "6–14 лет",
               "mosRuCode": "2445194",
               "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/842871",
-              "enrolled": 7,
+              "enrolled": 6,
               "registrationChannel": "mos_ru",
               "allowPreliminaryRegistration": true
             }
@@ -1454,6 +1524,82 @@
         }
       },
       {
+        "id": "sheet:minecraft-taina-drevnih-inzhenerov:school-1212-yasenevo:2026-06-15:2026-06-19",
+        "venueSlug": "school-1212-yasenevo",
+        "shiftLabel": "Minecraft: Тайна Древних Инженеров · Школа №1212",
+        "startDate": "2026-06-15",
+        "endDate": "2026-06-19",
+        "startTime": "9:00",
+        "endTime": "16:30",
+        "dateRange": "15.06.2026 — 19.06.2026",
+        "daySchedule": "Ежедневно: 9:00–16:30",
+        "priceLabel": "15 300 ₽",
+        "mosBookingUrl": null,
+        "includedNote": "3 смена\n\nВозраст: 6–12 лет\n\nКод карточки mos.ru: 2454481",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 0,
+        "maxCapacity": 30,
+        "scheduleCard": {
+          "displayTitle": "Minecraft: Тайна Древних Инженеров",
+          "description": "«Minecraft: Тайна Древних Инженеров» — переносим игру в реальность! За 5 дней интенсива дети скрафтят свой алмазный меч, спроектируют 3D-базу и освоят магию электроники! Ребята изучат TinkerCAD, научатся безопасно паять и соберут главный артефакт — переливающуюся Redstone-жилу. Активируйте портал в полезное лето!",
+          "teacherName": "Толмачова Василиса Владимировна",
+          "tags": [
+            "Офлайн",
+            "IT и Электроника"
+          ],
+          "addressOverride": "Новоясеневский пр-кт, 24к3",
+          "programNameH1": "Minecraft",
+          "programNameH2": "Тайна Древних Инженеров",
+          "programFilterLabel": "Minecraft: Тайна Древних Инженеров",
+          "ageLabel": "6–12 лет",
+          "formatType": "Полный день",
+          "formatTime": "Пн-Пт, 9:00 – 16:30",
+          "formatNote": "Питание: завтрак, обед, полдник",
+          "mosRuCode": "2454481",
+          "status": "Идёт набор",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "school-1212-yasenevo:2026-06-15:полный-день",
+              "type": "Полный день",
+              "time": "Пн-Пт, 9:00 – 16:30",
+              "priceLabel": "15 300 ₽",
+              "note": "Питание: завтрак, обед, полдник",
+              "ageLabel": "6–12 лет",
+              "mosRuCode": "2454481",
+              "enrolled": 0,
+              "registrationChannel": "mos_ru",
+              "allowPreliminaryRegistration": false
+            },
+            {
+              "id": "school-1212-yasenevo:2026-06-15:интенсив-полдня",
+              "type": "Интенсив (полдня)",
+              "time": "Пн-Пт, 9:00 – 13:30",
+              "priceLabel": "8 900 ₽",
+              "note": "Пн–Чт 9:00–12:30, Пт 9:00–13:30",
+              "ageLabel": "6–12 лет",
+              "mosRuCode": "2454480",
+              "enrolled": 0,
+              "registrationChannel": "mos_ru",
+              "allowPreliminaryRegistration": false
+            }
+          ],
+          "media": {
+            "hero": {
+              "url": "media/quests/minecraft-taina-drevnih-inzhenerov/hero.webp",
+              "alt": "Minecraft: Тайна Древних Инженеров"
+            },
+            "compact": {
+              "url": "media/quests/minecraft-taina-drevnih-inzhenerov/hero.webp",
+              "alt": "Minecraft: Тайна Древних Инженеров"
+            }
+          }
+        }
+      },
+      {
         "id": "sheet:minecraft-taina-drevnih-inzhenerov:school-17-belyaevo:2026-06-15:2026-06-19",
         "venueSlug": "school-17-belyaevo",
         "shiftLabel": "Minecraft: Тайна Древних Инженеров · Школа №17",
@@ -1467,7 +1613,7 @@
         "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/847929",
         "includedNote": "Формат интенсива.\n\nВозраст: 6–15 лет\n\nКод карточки mos.ru: 2448626",
         "sheetStatus": "Идёт набор",
-        "enrolled": 9,
+        "enrolled": 15,
         "maxCapacity": 15,
         "scheduleCard": {
           "displayTitle": "Minecraft: Тайна Древних Инженеров",
@@ -1501,7 +1647,7 @@
               "ageLabel": "6–15 лет",
               "mosRuCode": "2448626",
               "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/847929",
-              "enrolled": 9,
+              "enrolled": 15,
               "registrationChannel": "mos_ru",
               "allowPreliminaryRegistration": true
             }
@@ -1532,6 +1678,7 @@
         "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/853173",
         "includedNote": "Возраст: 6–15 лет\n\nКод карточки mos.ru: 2451662",
         "sheetStatus": "Идёт набор",
+        "enrolled": 1,
         "maxCapacity": 12,
         "scheduleCard": {
           "displayTitle": "Minecraft: Тайна Древних Инженеров",
@@ -1563,6 +1710,7 @@
               "ageLabel": "6–15 лет",
               "mosRuCode": "2451662",
               "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/853173",
+              "enrolled": 1,
               "registrationChannel": "mos_ru",
               "allowPreliminaryRegistration": false
             }
@@ -1577,6 +1725,3169 @@
               "alt": "Minecraft: Тайна Древних Инженеров"
             }
           }
+        }
+      }
+    ],
+    "shmi": [
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Понедельник",
+            "start": "14:40",
+            "end": "15:25"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "Школа Молодого IT-Инженера БрэйнМастер (ШМИ1) Группа 1 (платно)",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2535009",
+          "groupCode": "К4953-26",
+          "admission": "open",
+          "teacher": "Мартынова Анна Александровна",
+          "ageMin": 6,
+          "ageMax": 13,
+          "totalSeats": 12,
+          "freeSeats": 12,
+          "lessonPrice": 1000,
+          "coursePrice": 35000,
+          "linkKind": "search",
+          "limitedSource": false
+        },
+        "id": "year:К4953-26",
+        "venueSlug": "school-17-vvedenskogo-28s1",
+        "shiftLabel": "ШМИ · 1-й год",
+        "startDate": "2026-09-14",
+        "endDate": "2027-05-31",
+        "startTime": "14:40",
+        "endTime": "15:25",
+        "dateRange": "2026-09-14 — 2027-05-31",
+        "daySchedule": "Понедельник: 14:40–15:25",
+        "priceLabel": "1000 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/groups?keyword=2535009",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 0,
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "ШМИ · 1-й год",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Мартынова Анна Александровна",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "6–13 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К4953-26:main",
+              "type": "Годовая группа",
+              "time": "Понедельник: 14:40–15:25",
+              "priceLabel": "1000 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Понедельник",
+            "start": "15:35",
+            "end": "16:20"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "Школа Молодого IT-Инженера БрэйнМастер (ШМИ1) Группа 2 (платно)",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2535133",
+          "groupCode": "К4954-26",
+          "admission": "open",
+          "teacher": "Мартынова Анна Александровна",
+          "ageMin": 6,
+          "ageMax": 13,
+          "totalSeats": 12,
+          "freeSeats": 12,
+          "lessonPrice": 1000,
+          "coursePrice": 35000,
+          "linkKind": "search",
+          "limitedSource": false
+        },
+        "id": "year:К4954-26",
+        "venueSlug": "school-17-vvedenskogo-28s1",
+        "shiftLabel": "ШМИ · 1-й год",
+        "startDate": "2026-09-14",
+        "endDate": "2027-05-31",
+        "startTime": "15:35",
+        "endTime": "16:20",
+        "dateRange": "2026-09-14 — 2027-05-31",
+        "daySchedule": "Понедельник: 15:35–16:20",
+        "priceLabel": "1000 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/groups?keyword=2535133",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 0,
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "ШМИ · 1-й год",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Мартынова Анна Александровна",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "6–13 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К4954-26:main",
+              "type": "Годовая группа",
+              "time": "Понедельник: 15:35–16:20",
+              "priceLabel": "1000 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Понедельник",
+            "start": "16:30",
+            "end": "17:15"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "Школа Молодого IT-Инженера БрэйнМастер (ШМИ1) Группа 3 (платно)",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2535164",
+          "groupCode": "К4955-26",
+          "admission": "open",
+          "teacher": "Мартынова Анна Александровна",
+          "ageMin": 6,
+          "ageMax": 13,
+          "totalSeats": 12,
+          "freeSeats": 12,
+          "lessonPrice": 1000,
+          "coursePrice": 35000,
+          "linkKind": "search",
+          "limitedSource": false
+        },
+        "id": "year:К4955-26",
+        "venueSlug": "school-17-vvedenskogo-28s1",
+        "shiftLabel": "ШМИ · 1-й год",
+        "startDate": "2026-09-14",
+        "endDate": "2027-05-31",
+        "startTime": "16:30",
+        "endTime": "17:15",
+        "dateRange": "2026-09-14 — 2027-05-31",
+        "daySchedule": "Понедельник: 16:30–17:15",
+        "priceLabel": "1000 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/groups?keyword=2535164",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 0,
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "ШМИ · 1-й год",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Мартынова Анна Александровна",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "6–13 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К4955-26:main",
+              "type": "Годовая группа",
+              "time": "Понедельник: 16:30–17:15",
+              "priceLabel": "1000 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Среда",
+            "start": "14:40",
+            "end": "15:25"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "Школа Молодого IT-Инженера БрэйнМастер (ШМИ2) Группа 1 (платно)",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2535246",
+          "groupCode": "К4956-26",
+          "admission": "open",
+          "teacher": "Толмачева Василиса Владимировна",
+          "ageMin": 6,
+          "ageMax": 13,
+          "totalSeats": 12,
+          "freeSeats": 11,
+          "lessonPrice": 1000,
+          "coursePrice": 35000,
+          "linkKind": "search",
+          "limitedSource": false
+        },
+        "id": "year:К4956-26",
+        "venueSlug": "school-17-vvedenskogo-28s1",
+        "shiftLabel": "ШМИ · 2-й год",
+        "startDate": "2026-09-14",
+        "endDate": "2027-05-31",
+        "startTime": "14:40",
+        "endTime": "15:25",
+        "dateRange": "2026-09-14 — 2027-05-31",
+        "daySchedule": "Среда: 14:40–15:25",
+        "priceLabel": "1000 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/groups?keyword=2535246",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 1,
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "ШМИ · 2-й год",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Толмачева Василиса Владимировна",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "6–13 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К4956-26:main",
+              "type": "Годовая группа",
+              "time": "Среда: 14:40–15:25",
+              "priceLabel": "1000 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Среда",
+            "start": "15:35",
+            "end": "16:20"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "Школа Молодого IT-Инженера БрэйнМастер (ШМИ2) Группа 2 (платно)",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2535266",
+          "groupCode": "К4957-26",
+          "admission": "open",
+          "teacher": "Толмачева Василиса Владимировна",
+          "ageMin": 6,
+          "ageMax": 13,
+          "totalSeats": 12,
+          "freeSeats": 12,
+          "lessonPrice": 1000,
+          "coursePrice": 35000,
+          "linkKind": "search",
+          "limitedSource": false
+        },
+        "id": "year:К4957-26",
+        "venueSlug": "school-17-vvedenskogo-28s1",
+        "shiftLabel": "ШМИ · 2-й год",
+        "startDate": "2026-09-14",
+        "endDate": "2027-05-31",
+        "startTime": "15:35",
+        "endTime": "16:20",
+        "dateRange": "2026-09-14 — 2027-05-31",
+        "daySchedule": "Среда: 15:35–16:20",
+        "priceLabel": "1000 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/groups?keyword=2535266",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 0,
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "ШМИ · 2-й год",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Толмачева Василиса Владимировна",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "6–13 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К4957-26:main",
+              "type": "Годовая группа",
+              "time": "Среда: 15:35–16:20",
+              "priceLabel": "1000 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Среда",
+            "start": "16:30",
+            "end": "17:15"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "Школа Молодого IT-Инженера БрэйнМастер (ШМИ2) Группа 3 (платно)",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2535323",
+          "groupCode": "К4958-26",
+          "admission": "open",
+          "teacher": "Толмачева Василиса Владимировна",
+          "ageMin": 6,
+          "ageMax": 13,
+          "totalSeats": 12,
+          "freeSeats": 12,
+          "lessonPrice": 1000,
+          "coursePrice": 35000,
+          "linkKind": "search",
+          "limitedSource": false
+        },
+        "id": "year:К4958-26",
+        "venueSlug": "school-17-vvedenskogo-28s1",
+        "shiftLabel": "ШМИ · 2-й год",
+        "startDate": "2026-09-14",
+        "endDate": "2027-05-31",
+        "startTime": "16:30",
+        "endTime": "17:15",
+        "dateRange": "2026-09-14 — 2027-05-31",
+        "daySchedule": "Среда: 16:30–17:15",
+        "priceLabel": "1000 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/groups?keyword=2535323",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 0,
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "ШМИ · 2-й год",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Толмачева Василиса Владимировна",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "6–13 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К4958-26:main",
+              "type": "Годовая группа",
+              "time": "Среда: 16:30–17:15",
+              "priceLabel": "1000 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Вторник",
+            "start": "14:30",
+            "end": "15:15"
+          },
+          {
+            "weekday": "Четверг",
+            "start": "14:30",
+            "end": "15:15"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "Школа молодого IT инженера 1-М",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2463216",
+          "groupCode": "К1981-26",
+          "admission": "open",
+          "teacher": "Мартынова Ирина Валерьевна",
+          "ageMin": 6,
+          "ageMax": 8,
+          "totalSeats": 20,
+          "freeSeats": 13,
+          "lessonPrice": 900,
+          "coursePrice": 64800,
+          "linkKind": "search",
+          "limitedSource": false
+        },
+        "id": "year:К1981-26",
+        "venueSlug": "school-875-vernadskogo-99k2",
+        "shiftLabel": "ШМИ",
+        "startDate": "2026-09-01",
+        "endDate": "2027-05-31",
+        "startTime": "14:30",
+        "endTime": "15:15",
+        "dateRange": "2026-09-01 — 2027-05-31",
+        "daySchedule": "Вторник: 14:30–15:15; Четверг: 14:30–15:15",
+        "priceLabel": "900 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/groups?keyword=2463216",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 7,
+        "maxCapacity": 20,
+        "scheduleCard": {
+          "displayTitle": "ШМИ",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Мартынова Ирина Валерьевна",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "6–8 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К1981-26:main",
+              "type": "Годовая группа",
+              "time": "Вторник: 14:30–15:15; Четверг: 14:30–15:15",
+              "priceLabel": "900 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Четверг",
+            "start": "14:30",
+            "end": "15:15"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "Школа Молодого IT-Инженера 1-2 (1-6 классы)",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2533414",
+          "groupCode": "К4613-26",
+          "admission": "open",
+          "teacher": "Васильев Иван Алексеевич",
+          "ageMin": 6,
+          "ageMax": 14,
+          "totalSeats": 10,
+          "freeSeats": 7,
+          "lessonPrice": 1000,
+          "coursePrice": 45000,
+          "linkKind": "search",
+          "limitedSource": false
+        },
+        "id": "year:К4613-26",
+        "venueSlug": "school-1212-vilnyusskaya-14",
+        "shiftLabel": "ШМИ",
+        "startDate": "2026-09-01",
+        "endDate": "2027-05-31",
+        "startTime": "14:30",
+        "endTime": "15:15",
+        "dateRange": "2026-09-01 — 2027-05-31",
+        "daySchedule": "Четверг: 14:30–15:15",
+        "priceLabel": "1000 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/groups?keyword=2533414",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 3,
+        "maxCapacity": 10,
+        "scheduleCard": {
+          "displayTitle": "ШМИ",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Васильев Иван Алексеевич",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "6–14 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К4613-26:main",
+              "type": "Годовая группа",
+              "time": "Четверг: 14:30–15:15",
+              "priceLabel": "1000 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Четверг",
+            "start": "15:30",
+            "end": "16:15"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "Школа Молодого IT-Инженера 1-2 (1-6 классы)",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2533414",
+          "groupCode": "К4611-26",
+          "admission": "open",
+          "teacher": "Васильев Иван Алексеевич",
+          "ageMin": 6,
+          "ageMax": 14,
+          "totalSeats": 10,
+          "freeSeats": 10,
+          "lessonPrice": 1000,
+          "coursePrice": 45000,
+          "linkKind": "search",
+          "limitedSource": false
+        },
+        "id": "year:К4611-26",
+        "venueSlug": "school-1212-vilnyusskaya-14",
+        "shiftLabel": "ШМИ",
+        "startDate": "2026-09-01",
+        "endDate": "2027-03-31",
+        "startTime": "15:30",
+        "endTime": "16:15",
+        "dateRange": "2026-09-01 — 2027-03-31",
+        "daySchedule": "Четверг: 15:30–16:15",
+        "priceLabel": "1000 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/groups?keyword=2533414",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 0,
+        "maxCapacity": 10,
+        "scheduleCard": {
+          "displayTitle": "ШМИ",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Васильев Иван Алексеевич",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "6–14 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К4611-26:main",
+              "type": "Годовая группа",
+              "time": "Четверг: 15:30–16:15",
+              "priceLabel": "1000 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Четверг",
+            "start": "16:30",
+            "end": "17:15"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "Школа Молодого IT-Инженера 1-2 (1-6 классы)",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2533414",
+          "groupCode": "К4615-26",
+          "admission": "open",
+          "teacher": "Васильев Иван Алексеевич",
+          "ageMin": 6,
+          "ageMax": 14,
+          "totalSeats": 10,
+          "freeSeats": 10,
+          "lessonPrice": 1000,
+          "coursePrice": 45000,
+          "linkKind": "search",
+          "limitedSource": false
+        },
+        "id": "year:К4615-26",
+        "venueSlug": "school-1212-vilnyusskaya-14",
+        "shiftLabel": "ШМИ",
+        "startDate": "2026-09-01",
+        "endDate": "2027-05-31",
+        "startTime": "16:30",
+        "endTime": "17:15",
+        "dateRange": "2026-09-01 — 2027-05-31",
+        "daySchedule": "Четверг: 16:30–17:15",
+        "priceLabel": "1000 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/groups?keyword=2533414",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 0,
+        "maxCapacity": 10,
+        "scheduleCard": {
+          "displayTitle": "ШМИ",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Васильев Иван Алексеевич",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "6–14 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К4615-26:main",
+              "type": "Годовая группа",
+              "time": "Четверг: 16:30–17:15",
+              "priceLabel": "1000 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Понедельник",
+            "start": "14:20",
+            "end": "15:05"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "Школа Молодого IT-Инженера 3 (1-6 классы)",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2533899",
+          "groupCode": "К4617-26",
+          "admission": "open",
+          "teacher": "Васильев Иван Алексеевич",
+          "ageMin": 6,
+          "ageMax": 14,
+          "totalSeats": 10,
+          "freeSeats": 7,
+          "lessonPrice": 1000,
+          "coursePrice": 45000,
+          "linkKind": "search",
+          "limitedSource": false
+        },
+        "id": "year:К4617-26",
+        "venueSlug": "school-1212-golubinskaya-21k3",
+        "shiftLabel": "ШМИ",
+        "startDate": "2026-09-01",
+        "endDate": "2027-05-31",
+        "startTime": "14:20",
+        "endTime": "15:05",
+        "dateRange": "2026-09-01 — 2027-05-31",
+        "daySchedule": "Понедельник: 14:20–15:05",
+        "priceLabel": "1000 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/groups?keyword=2533899",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 3,
+        "maxCapacity": 10,
+        "scheduleCard": {
+          "displayTitle": "ШМИ",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Васильев Иван Алексеевич",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "6–14 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К4617-26:main",
+              "type": "Годовая группа",
+              "time": "Понедельник: 14:20–15:05",
+              "priceLabel": "1000 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Понедельник",
+            "start": "15:20",
+            "end": "16:05"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "Школа Молодого IT-Инженера 3 (1-6 классы)",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2533899",
+          "groupCode": "К4618-26",
+          "admission": "open",
+          "teacher": "Васильев Иван Алексеевич",
+          "ageMin": 6,
+          "ageMax": 14,
+          "totalSeats": 10,
+          "freeSeats": 10,
+          "lessonPrice": 1000,
+          "coursePrice": 45000,
+          "linkKind": "search",
+          "limitedSource": false
+        },
+        "id": "year:К4618-26",
+        "venueSlug": "school-1212-golubinskaya-21k3",
+        "shiftLabel": "ШМИ",
+        "startDate": "2026-09-01",
+        "endDate": "2027-05-31",
+        "startTime": "15:20",
+        "endTime": "16:05",
+        "dateRange": "2026-09-01 — 2027-05-31",
+        "daySchedule": "Понедельник: 15:20–16:05",
+        "priceLabel": "1000 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/groups?keyword=2533899",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 0,
+        "maxCapacity": 10,
+        "scheduleCard": {
+          "displayTitle": "ШМИ",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Васильев Иван Алексеевич",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "6–14 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К4618-26:main",
+              "type": "Годовая группа",
+              "time": "Понедельник: 15:20–16:05",
+              "priceLabel": "1000 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Понедельник",
+            "start": "16:20",
+            "end": "17:05"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "Школа Молодого IT-Инженера 3 (1-6 классы)",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2533899",
+          "groupCode": "К4619-26",
+          "admission": "open",
+          "teacher": "Васильев Иван Алексеевич",
+          "ageMin": 6,
+          "ageMax": 14,
+          "totalSeats": 10,
+          "freeSeats": 9,
+          "lessonPrice": 1000,
+          "coursePrice": 45000,
+          "linkKind": "search",
+          "limitedSource": false
+        },
+        "id": "year:К4619-26",
+        "venueSlug": "school-1212-golubinskaya-21k3",
+        "shiftLabel": "ШМИ",
+        "startDate": "2026-09-01",
+        "endDate": "2027-05-31",
+        "startTime": "16:20",
+        "endTime": "17:05",
+        "dateRange": "2026-09-01 — 2027-05-31",
+        "daySchedule": "Понедельник: 16:20–17:05",
+        "priceLabel": "1000 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/groups?keyword=2533899",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 1,
+        "maxCapacity": 10,
+        "scheduleCard": {
+          "displayTitle": "ШМИ",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Васильев Иван Алексеевич",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "6–14 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К4619-26:main",
+              "type": "Годовая группа",
+              "time": "Понедельник: 16:20–17:05",
+              "priceLabel": "1000 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Понедельник",
+            "start": "13:50",
+            "end": "14:35"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "\"Школа молодого ИТ-инженера\" (2026-2027 уч.год)",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2523369",
+          "groupCode": "К2371-26",
+          "admission": "open",
+          "teacher": "Халаджан Геворк Арменович",
+          "ageMin": 6,
+          "ageMax": 12,
+          "totalSeats": 12,
+          "freeSeats": 5,
+          "lessonPrice": 1000,
+          "coursePrice": 36000,
+          "linkKind": "card",
+          "limitedSource": false
+        },
+        "id": "year:К2371-26",
+        "venueSlug": "school-1383-verkhnie-likhobory",
+        "shiftLabel": "ШМИ",
+        "startDate": "2026-09-07",
+        "endDate": "2027-05-31",
+        "startTime": "13:50",
+        "endTime": "14:35",
+        "dateRange": "2026-09-07 — 2027-05-31",
+        "daySchedule": "Понедельник: 13:50–14:35",
+        "priceLabel": "1000 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/968382",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 7,
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "ШМИ",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Халаджан Геворк Арменович",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "6–12 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К2371-26:main",
+              "type": "Годовая группа",
+              "time": "Понедельник: 13:50–14:35",
+              "priceLabel": "1000 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Понедельник",
+            "start": "14:50",
+            "end": "15:35"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "\"Школа молодого ИТ-инженера\" (2026-2027 уч.год)",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2523369",
+          "groupCode": "К2372-26",
+          "admission": "open",
+          "teacher": "Халаджан Геворк Арменович",
+          "ageMin": 6,
+          "ageMax": 12,
+          "totalSeats": 12,
+          "freeSeats": 10,
+          "lessonPrice": 1000,
+          "coursePrice": 36000,
+          "linkKind": "card",
+          "limitedSource": false
+        },
+        "id": "year:К2372-26",
+        "venueSlug": "school-1383-verkhnie-likhobory",
+        "shiftLabel": "ШМИ",
+        "startDate": "2026-09-01",
+        "endDate": "2027-05-31",
+        "startTime": "14:50",
+        "endTime": "15:35",
+        "dateRange": "2026-09-01 — 2027-05-31",
+        "daySchedule": "Понедельник: 14:50–15:35",
+        "priceLabel": "1000 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/968382",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 2,
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "ШМИ",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Халаджан Геворк Арменович",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "6–12 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К2372-26:main",
+              "type": "Годовая группа",
+              "time": "Понедельник: 14:50–15:35",
+              "priceLabel": "1000 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Понедельник",
+            "start": "15:50",
+            "end": "16:35"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "\"Школа молодого ИТ-инженера\" (2026-2027 уч.год)",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2523369",
+          "groupCode": "К2377-26",
+          "admission": "open",
+          "teacher": "Халаджан Геворк Арменович",
+          "ageMin": 6,
+          "ageMax": 12,
+          "totalSeats": 12,
+          "freeSeats": 7,
+          "lessonPrice": 1000,
+          "coursePrice": 36000,
+          "linkKind": "card",
+          "limitedSource": false
+        },
+        "id": "year:К2377-26",
+        "venueSlug": "school-1383-verkhnie-likhobory",
+        "shiftLabel": "ШМИ",
+        "startDate": "2026-09-07",
+        "endDate": "2027-05-31",
+        "startTime": "15:50",
+        "endTime": "16:35",
+        "dateRange": "2026-09-07 — 2027-05-31",
+        "daySchedule": "Понедельник: 15:50–16:35",
+        "priceLabel": "1000 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/968382",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 5,
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "ШМИ",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Халаджан Геворк Арменович",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "6–12 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К2377-26:main",
+              "type": "Годовая группа",
+              "time": "Понедельник: 15:50–16:35",
+              "priceLabel": "1000 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Понедельник",
+            "start": "16:50",
+            "end": "17:35"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "\"Школа молодого ИТ-инженера\" (2026-2027 уч.год)",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2523369",
+          "groupCode": "К2380-26",
+          "admission": "open",
+          "teacher": "Халаджан Геворк Арменович",
+          "ageMin": 6,
+          "ageMax": 12,
+          "totalSeats": 12,
+          "freeSeats": 8,
+          "lessonPrice": 1000,
+          "coursePrice": 36000,
+          "linkKind": "card",
+          "limitedSource": false
+        },
+        "id": "year:К2380-26",
+        "venueSlug": "school-1383-verkhnie-likhobory",
+        "shiftLabel": "ШМИ",
+        "startDate": "2026-09-07",
+        "endDate": "2027-05-31",
+        "startTime": "16:50",
+        "endTime": "17:35",
+        "dateRange": "2026-09-07 — 2027-05-31",
+        "daySchedule": "Понедельник: 16:50–17:35",
+        "priceLabel": "1000 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/968382",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 4,
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "ШМИ",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Халаджан Геворк Арменович",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "6–12 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К2380-26:main",
+              "type": "Годовая группа",
+              "time": "Понедельник: 16:50–17:35",
+              "priceLabel": "1000 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Понедельник",
+            "start": "17:50",
+            "end": "18:35"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "\"Школа молодого ИТ-инженера\" (2026-2027 уч.год)",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2523369",
+          "groupCode": "К2378-26",
+          "admission": "open",
+          "teacher": "Халаджан Геворк Арменович",
+          "ageMin": 6,
+          "ageMax": 12,
+          "totalSeats": 12,
+          "freeSeats": 12,
+          "lessonPrice": 1000,
+          "coursePrice": 36000,
+          "linkKind": "card",
+          "limitedSource": false
+        },
+        "id": "year:К2378-26",
+        "venueSlug": "school-1383-verkhnie-likhobory",
+        "shiftLabel": "ШМИ",
+        "startDate": "2026-09-07",
+        "endDate": "2027-05-31",
+        "startTime": "17:50",
+        "endTime": "18:35",
+        "dateRange": "2026-09-07 — 2027-05-31",
+        "daySchedule": "Понедельник: 17:50–18:35",
+        "priceLabel": "1000 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/968382",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 0,
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "ШМИ",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Халаджан Геворк Арменович",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "6–12 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К2378-26:main",
+              "type": "Годовая группа",
+              "time": "Понедельник: 17:50–18:35",
+              "priceLabel": "1000 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Вторник",
+            "start": "13:50",
+            "end": "14:35"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "\"Школа молодого ИТ-инженера\" (2026-2027 уч.год)",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2523369",
+          "groupCode": "К2373-26",
+          "admission": "closed",
+          "teacher": "Халаджан Геворк Арменович",
+          "ageMin": 6,
+          "ageMax": 12,
+          "totalSeats": 12,
+          "freeSeats": 0,
+          "lessonPrice": 1000,
+          "coursePrice": 36000,
+          "linkKind": "card",
+          "limitedSource": false
+        },
+        "id": "year:К2373-26",
+        "venueSlug": "school-1383-verkhnie-likhobory",
+        "shiftLabel": "ШМИ",
+        "startDate": "2026-09-07",
+        "endDate": "2027-05-31",
+        "startTime": "13:50",
+        "endTime": "14:35",
+        "dateRange": "2026-09-07 — 2027-05-31",
+        "daySchedule": "Вторник: 13:50–14:35",
+        "priceLabel": "1000 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/968382",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 12,
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "ШМИ",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Халаджан Геворк Арменович",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "6–12 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К2373-26:main",
+              "type": "Годовая группа",
+              "time": "Вторник: 13:50–14:35",
+              "priceLabel": "1000 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Вторник",
+            "start": "14:50",
+            "end": "15:35"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "\"Школа молодого ИТ-инженера\" (2026-2027 уч.год)",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2523369",
+          "groupCode": "К2374-26",
+          "admission": "open",
+          "teacher": "Халаджан Геворк Арменович",
+          "ageMin": 6,
+          "ageMax": 12,
+          "totalSeats": 12,
+          "freeSeats": 7,
+          "lessonPrice": 1000,
+          "coursePrice": 36000,
+          "linkKind": "card",
+          "limitedSource": false
+        },
+        "id": "year:К2374-26",
+        "venueSlug": "school-1383-verkhnie-likhobory",
+        "shiftLabel": "ШМИ",
+        "startDate": "2026-09-07",
+        "endDate": "2027-05-31",
+        "startTime": "14:50",
+        "endTime": "15:35",
+        "dateRange": "2026-09-07 — 2027-05-31",
+        "daySchedule": "Вторник: 14:50–15:35",
+        "priceLabel": "1000 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/968382",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 5,
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "ШМИ",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Халаджан Геворк Арменович",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "6–12 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К2374-26:main",
+              "type": "Годовая группа",
+              "time": "Вторник: 14:50–15:35",
+              "priceLabel": "1000 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Вторник",
+            "start": "15:50",
+            "end": "16:35"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "\"Школа молодого ИТ-инженера\" (2026-2027 уч.год)",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2523369",
+          "groupCode": "К2375-26",
+          "admission": "open",
+          "teacher": "Халаджан Геворк Арменович",
+          "ageMin": 6,
+          "ageMax": 12,
+          "totalSeats": 12,
+          "freeSeats": 4,
+          "lessonPrice": 1000,
+          "coursePrice": 36000,
+          "linkKind": "card",
+          "limitedSource": false
+        },
+        "id": "year:К2375-26",
+        "venueSlug": "school-1383-verkhnie-likhobory",
+        "shiftLabel": "ШМИ",
+        "startDate": "2026-09-07",
+        "endDate": "2027-05-31",
+        "startTime": "15:50",
+        "endTime": "16:35",
+        "dateRange": "2026-09-07 — 2027-05-31",
+        "daySchedule": "Вторник: 15:50–16:35",
+        "priceLabel": "1000 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/968382",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 8,
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "ШМИ",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Халаджан Геворк Арменович",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "6–12 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К2375-26:main",
+              "type": "Годовая группа",
+              "time": "Вторник: 15:50–16:35",
+              "priceLabel": "1000 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Вторник",
+            "start": "16:50",
+            "end": "17:35"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "\"Школа молодого ИТ-инженера\" (2026-2027 уч.год)",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2523369",
+          "groupCode": "К2379-26",
+          "admission": "open",
+          "teacher": "Халаджан Геворк Арменович",
+          "ageMin": 6,
+          "ageMax": 12,
+          "totalSeats": 12,
+          "freeSeats": 6,
+          "lessonPrice": 1000,
+          "coursePrice": 36000,
+          "linkKind": "card",
+          "limitedSource": false
+        },
+        "id": "year:К2379-26",
+        "venueSlug": "school-1383-verkhnie-likhobory",
+        "shiftLabel": "ШМИ",
+        "startDate": "2026-09-07",
+        "endDate": "2027-05-31",
+        "startTime": "16:50",
+        "endTime": "17:35",
+        "dateRange": "2026-09-07 — 2027-05-31",
+        "daySchedule": "Вторник: 16:50–17:35",
+        "priceLabel": "1000 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/968382",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 6,
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "ШМИ",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Халаджан Геворк Арменович",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "6–12 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К2379-26:main",
+              "type": "Годовая группа",
+              "time": "Вторник: 16:50–17:35",
+              "priceLabel": "1000 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Вторник",
+            "start": "17:50",
+            "end": "18:35"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "\"Школа молодого ИТ-инженера\" (2026-2027 уч.год)",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2523369",
+          "groupCode": "К2376-26",
+          "admission": "open",
+          "teacher": "Халаджан Геворк Арменович",
+          "ageMin": 6,
+          "ageMax": 12,
+          "totalSeats": 12,
+          "freeSeats": 6,
+          "lessonPrice": 1000,
+          "coursePrice": 36000,
+          "linkKind": "card",
+          "limitedSource": false
+        },
+        "id": "year:К2376-26",
+        "venueSlug": "school-1383-verkhnie-likhobory",
+        "shiftLabel": "ШМИ",
+        "startDate": "2026-09-07",
+        "endDate": "2027-05-31",
+        "startTime": "17:50",
+        "endTime": "18:35",
+        "dateRange": "2026-09-07 — 2027-05-31",
+        "daySchedule": "Вторник: 17:50–18:35",
+        "priceLabel": "1000 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/968382",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 6,
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "ШМИ",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Халаджан Геворк Арменович",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "6–12 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К2376-26:main",
+              "type": "Годовая группа",
+              "time": "Вторник: 17:50–18:35",
+              "priceLabel": "1000 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Вторник",
+            "start": "14:50",
+            "end": "15:35"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "Научно - исследовательский клуб 1517. Школа Молодого IT-Инженера(1 год обучения)(1 группа)",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2415012",
+          "groupCode": null,
+          "admission": "closed",
+          "teacher": null,
+          "ageMin": null,
+          "ageMax": null,
+          "totalSeats": null,
+          "freeSeats": null,
+          "lessonPrice": null,
+          "coursePrice": null,
+          "linkKind": "search",
+          "limitedSource": true
+        },
+        "id": "year:listing:2415012",
+        "venueSlug": "school-1517-narodnoe-opolchenie",
+        "shiftLabel": "ШМИ · 1-й год",
+        "startDate": "2026-09-01",
+        "endDate": "2027-05-31",
+        "startTime": "14:50",
+        "endTime": "15:35",
+        "dateRange": "2026-09-01 — 2027-05-31",
+        "daySchedule": "Вторник: 14:50–15:35",
+        "priceLabel": "Стоимость уточняется",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/groups?keyword=2415012",
+        "sheetStatus": "Идёт набор",
+        "scheduleCard": {
+          "displayTitle": "ШМИ · 1-й год",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "Уточните у школы",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:listing:2415012:main",
+              "type": "Годовая группа",
+              "time": "Вторник: 14:50–15:35",
+              "priceLabel": "Стоимость уточняется"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Вторник",
+            "start": "15:45",
+            "end": "16:30"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "Научно - исследовательский клуб 1517. Школа Молодого IT-Инженера (1 год обучения)группа 2",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2521004",
+          "groupCode": "К7648-26",
+          "admission": "closed",
+          "teacher": "Хмельков Д.А.",
+          "ageMin": 6,
+          "ageMax": 13,
+          "totalSeats": 12,
+          "freeSeats": 0,
+          "lessonPrice": 810,
+          "coursePrice": 32400,
+          "linkKind": "card",
+          "limitedSource": false
+        },
+        "id": "year:К7648-26",
+        "venueSlug": "school-1517-narodnoe-opolchenie",
+        "shiftLabel": "ШМИ · 1-й год",
+        "startDate": "2026-09-01",
+        "endDate": "2027-05-31",
+        "startTime": "15:45",
+        "endTime": "16:30",
+        "dateRange": "2026-09-01 — 2027-05-31",
+        "daySchedule": "Вторник: 15:45–16:30",
+        "priceLabel": "810 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/964768",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 12,
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "ШМИ · 1-й год",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Хмельков Д.А.",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "6–13 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К7648-26:main",
+              "type": "Годовая группа",
+              "time": "Вторник: 15:45–16:30",
+              "priceLabel": "810 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Вторник",
+            "start": "16:40",
+            "end": "17:25"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "Научно - исследовательский клуб 1517. Школа Молодого IT-Инженера (2 год обучения) 1 группа",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2521221",
+          "groupCode": "К7651-26",
+          "admission": "open",
+          "teacher": "Хмельков Д.А.",
+          "ageMin": 6,
+          "ageMax": 13,
+          "totalSeats": 12,
+          "freeSeats": 2,
+          "lessonPrice": 950,
+          "coursePrice": 38000,
+          "linkKind": "card",
+          "limitedSource": false
+        },
+        "id": "year:К7651-26",
+        "venueSlug": "school-1517-narodnoe-opolchenie",
+        "shiftLabel": "ШМИ · 2-й год",
+        "startDate": "2026-09-01",
+        "endDate": "2027-05-31",
+        "startTime": "16:40",
+        "endTime": "17:25",
+        "dateRange": "2026-09-01 — 2027-05-31",
+        "daySchedule": "Вторник: 16:40–17:25",
+        "priceLabel": "950 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/965306",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 10,
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "ШМИ · 2-й год",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Хмельков Д.А.",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "6–13 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К7651-26:main",
+              "type": "Годовая группа",
+              "time": "Вторник: 16:40–17:25",
+              "priceLabel": "950 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Четверг",
+            "start": "14:50",
+            "end": "15:35"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "Научно - исследовательский клуб 1517. Школа Молодого IT-Инженера (2-ой год обучения) (2 группа)",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2542312",
+          "groupCode": null,
+          "admission": "closed",
+          "teacher": null,
+          "ageMin": null,
+          "ageMax": null,
+          "totalSeats": null,
+          "freeSeats": null,
+          "lessonPrice": null,
+          "coursePrice": null,
+          "linkKind": "search",
+          "limitedSource": true
+        },
+        "id": "year:listing:2542312",
+        "venueSlug": "school-1517-narodnoe-opolchenie",
+        "shiftLabel": "ШМИ · 2-й год",
+        "startDate": "2026-09-05",
+        "endDate": "2027-05-31",
+        "startTime": "14:50",
+        "endTime": "15:35",
+        "dateRange": "2026-09-05 — 2027-05-31",
+        "daySchedule": "Четверг: 14:50–15:35",
+        "priceLabel": "Стоимость уточняется",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/groups?keyword=2542312",
+        "sheetStatus": "Идёт набор",
+        "scheduleCard": {
+          "displayTitle": "ШМИ · 2-й год",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "Уточните у школы",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:listing:2542312:main",
+              "type": "Годовая группа",
+              "time": "Четверг: 14:50–15:35",
+              "priceLabel": "Стоимость уточняется"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Четверг",
+            "start": "15:45",
+            "end": "16:30"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "Научно - исследовательский клуб 1517. Школа Молодого IT-Инженера(1 год обучения)(3 группа)",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2542356",
+          "groupCode": "К7733-26",
+          "admission": "closed",
+          "teacher": "Хмельков Даниил Антонович",
+          "ageMin": 6,
+          "ageMax": 13,
+          "totalSeats": 12,
+          "freeSeats": 0,
+          "lessonPrice": 810,
+          "coursePrice": 32400,
+          "linkKind": "card",
+          "limitedSource": false
+        },
+        "id": "year:К7733-26",
+        "venueSlug": "school-1517-narodnoe-opolchenie",
+        "shiftLabel": "ШМИ · 1-й год",
+        "startDate": "2026-09-04",
+        "endDate": "2027-05-31",
+        "startTime": "15:45",
+        "endTime": "16:30",
+        "dateRange": "2026-09-04 — 2027-05-31",
+        "daySchedule": "Четверг: 15:45–16:30",
+        "priceLabel": "810 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/1000157",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 12,
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "ШМИ · 1-й год",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Хмельков Даниил Антонович",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "6–13 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К7733-26:main",
+              "type": "Годовая группа",
+              "time": "Четверг: 15:45–16:30",
+              "priceLabel": "810 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Среда",
+            "start": "14:00",
+            "end": "14:45"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "Школа Молодого IT-Инженера BrainMaster 5-6 класс. Робототехника.",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2548561",
+          "groupCode": "К4055-26",
+          "admission": "open",
+          "teacher": "Халаджан Геворк Арменович",
+          "ageMin": 10,
+          "ageMax": 13,
+          "totalSeats": 12,
+          "freeSeats": 12,
+          "lessonPrice": 1000,
+          "coursePrice": 36000,
+          "linkKind": "search",
+          "limitedSource": false
+        },
+        "id": "year:К4055-26",
+        "venueSlug": "school-2044-dmitrovskoe-169b",
+        "shiftLabel": "ШМИ · робототехника · 5–6 классы",
+        "startDate": "2026-09-07",
+        "endDate": "2027-05-31",
+        "startTime": "14:00",
+        "endTime": "14:45",
+        "dateRange": "2026-09-07 — 2027-05-31",
+        "daySchedule": "Среда: 14:00–14:45",
+        "priceLabel": "1000 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/groups?keyword=2548561",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 0,
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "ШМИ · робототехника · 5–6 классы",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Халаджан Геворк Арменович",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "10–13 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К4055-26:main",
+              "type": "Годовая группа",
+              "time": "Среда: 14:00–14:45",
+              "priceLabel": "1000 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Среда",
+            "start": "15:00",
+            "end": "15:45"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "Школа Молодого IT-Инженера BrainMaster 5-6 класс-2. Робототехника.",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2549841",
+          "groupCode": "К4069-26",
+          "admission": "open",
+          "teacher": "Халаджан Геворк Арменович",
+          "ageMin": 10,
+          "ageMax": 13,
+          "totalSeats": 12,
+          "freeSeats": 10,
+          "lessonPrice": 1000,
+          "coursePrice": 36000,
+          "linkKind": "search",
+          "limitedSource": false
+        },
+        "id": "year:К4069-26",
+        "venueSlug": "school-2044-dmitrovskoe-169b",
+        "shiftLabel": "ШМИ · робототехника · 5–6 классы",
+        "startDate": "2026-09-07",
+        "endDate": "2027-05-31",
+        "startTime": "15:00",
+        "endTime": "15:45",
+        "dateRange": "2026-09-07 — 2027-05-31",
+        "daySchedule": "Среда: 15:00–15:45",
+        "priceLabel": "1000 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/groups?keyword=2549841",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 2,
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "ШМИ · робототехника · 5–6 классы",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Халаджан Геворк Арменович",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "10–13 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К4069-26:main",
+              "type": "Годовая группа",
+              "time": "Среда: 15:00–15:45",
+              "priceLabel": "1000 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Среда",
+            "start": "16:00",
+            "end": "16:45"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "Школа Молодого IT-Инженера BrainMaster 5-6 класс-3. Робототехника.",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2549842",
+          "groupCode": "К4070-26",
+          "admission": "open",
+          "teacher": "Халаджан Геворк Арменович",
+          "ageMin": 10,
+          "ageMax": 13,
+          "totalSeats": 12,
+          "freeSeats": 12,
+          "lessonPrice": 1000,
+          "coursePrice": 36000,
+          "linkKind": "search",
+          "limitedSource": false
+        },
+        "id": "year:К4070-26",
+        "venueSlug": "school-2044-dmitrovskoe-169b",
+        "shiftLabel": "ШМИ · робототехника · 5–6 классы",
+        "startDate": "2026-09-07",
+        "endDate": "2027-05-31",
+        "startTime": "16:00",
+        "endTime": "16:45",
+        "dateRange": "2026-09-07 — 2027-05-31",
+        "daySchedule": "Среда: 16:00–16:45",
+        "priceLabel": "1000 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/groups?keyword=2549842",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 0,
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "ШМИ · робототехника · 5–6 классы",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Халаджан Геворк Арменович",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "10–13 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К4070-26:main",
+              "type": "Годовая группа",
+              "time": "Среда: 16:00–16:45",
+              "priceLabel": "1000 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Пятница",
+            "start": "14:00",
+            "end": "14:45"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "Школа Молодого IT-Инженера BrainMaster 5-6 класс-4. Робототехника.",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2549843",
+          "groupCode": "К4071-26",
+          "admission": "open",
+          "teacher": "Халаджан Геворк Арменович",
+          "ageMin": 10,
+          "ageMax": 13,
+          "totalSeats": 12,
+          "freeSeats": 12,
+          "lessonPrice": 1000,
+          "coursePrice": 36000,
+          "linkKind": "search",
+          "limitedSource": false
+        },
+        "id": "year:К4071-26",
+        "venueSlug": "school-2044-dmitrovskoe-169b",
+        "shiftLabel": "ШМИ · робототехника · 5–6 классы",
+        "startDate": "2026-09-07",
+        "endDate": "2027-05-31",
+        "startTime": "14:00",
+        "endTime": "14:45",
+        "dateRange": "2026-09-07 — 2027-05-31",
+        "daySchedule": "Пятница: 14:00–14:45",
+        "priceLabel": "1000 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/groups?keyword=2549843",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 0,
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "ШМИ · робототехника · 5–6 классы",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Халаджан Геворк Арменович",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "10–13 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К4071-26:main",
+              "type": "Годовая группа",
+              "time": "Пятница: 14:00–14:45",
+              "priceLabel": "1000 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Пятница",
+            "start": "15:00",
+            "end": "15:45"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "Школа Молодого IT-Инженера BrainMaster 5-6 класс-5. Робототехника.",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2549844",
+          "groupCode": "К4072-26",
+          "admission": "open",
+          "teacher": "Халаджан Геворк Арменович",
+          "ageMin": 10,
+          "ageMax": 13,
+          "totalSeats": 12,
+          "freeSeats": 12,
+          "lessonPrice": 1000,
+          "coursePrice": 36000,
+          "linkKind": "search",
+          "limitedSource": false
+        },
+        "id": "year:К4072-26",
+        "venueSlug": "school-2044-dmitrovskoe-169b",
+        "shiftLabel": "ШМИ · робототехника · 5–6 классы",
+        "startDate": "2026-09-07",
+        "endDate": "2027-05-31",
+        "startTime": "15:00",
+        "endTime": "15:45",
+        "dateRange": "2026-09-07 — 2027-05-31",
+        "daySchedule": "Пятница: 15:00–15:45",
+        "priceLabel": "1000 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/groups?keyword=2549844",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 0,
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "ШМИ · робототехника · 5–6 классы",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Халаджан Геворк Арменович",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "10–13 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К4072-26:main",
+              "type": "Годовая группа",
+              "time": "Пятница: 15:00–15:45",
+              "priceLabel": "1000 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Пятница",
+            "start": "16:00",
+            "end": "16:45"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "Школа Молодого IT-Инженера BrainMaster 5-6 класс-6. Робототехника.",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2549845",
+          "groupCode": "К4073-26",
+          "admission": "open",
+          "teacher": "Халаджан Геворк Арменович",
+          "ageMin": 10,
+          "ageMax": 13,
+          "totalSeats": 12,
+          "freeSeats": 12,
+          "lessonPrice": 1000,
+          "coursePrice": 36000,
+          "linkKind": "search",
+          "limitedSource": false
+        },
+        "id": "year:К4073-26",
+        "venueSlug": "school-2044-dmitrovskoe-169b",
+        "shiftLabel": "ШМИ · робототехника · 5–6 классы",
+        "startDate": "2026-09-07",
+        "endDate": "2027-05-31",
+        "startTime": "16:00",
+        "endTime": "16:45",
+        "dateRange": "2026-09-07 — 2027-05-31",
+        "daySchedule": "Пятница: 16:00–16:45",
+        "priceLabel": "1000 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/groups?keyword=2549845",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 0,
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "ШМИ · робототехника · 5–6 классы",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Халаджан Геворк Арменович",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "10–13 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К4073-26:main",
+              "type": "Годовая группа",
+              "time": "Пятница: 16:00–16:45",
+              "priceLabel": "1000 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Вторник",
+            "start": "14:00",
+            "end": "14:45"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "Школа Молодого IT-Инженера BrainMaster 1-4 класс. Робототехника.",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2548560",
+          "groupCode": "К4045-26",
+          "admission": "open",
+          "teacher": "Любченко Ирина Сергеевна",
+          "ageMin": 6,
+          "ageMax": 11,
+          "totalSeats": 12,
+          "freeSeats": 12,
+          "lessonPrice": 1000,
+          "coursePrice": 36000,
+          "linkKind": "search",
+          "limitedSource": false
+        },
+        "id": "year:К4045-26",
+        "venueSlug": "school-2044-dmitrovskoe-165e-k8",
+        "shiftLabel": "ШМИ · робототехника · 1–4 классы",
+        "startDate": "2026-09-07",
+        "endDate": "2027-05-31",
+        "startTime": "14:00",
+        "endTime": "14:45",
+        "dateRange": "2026-09-07 — 2027-05-31",
+        "daySchedule": "Вторник: 14:00–14:45",
+        "priceLabel": "1000 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/groups?keyword=2548560",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 0,
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "ШМИ · робототехника · 1–4 классы",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Любченко Ирина Сергеевна",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "6–11 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К4045-26:main",
+              "type": "Годовая группа",
+              "time": "Вторник: 14:00–14:45",
+              "priceLabel": "1000 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Вторник",
+            "start": "15:00",
+            "end": "15:45"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "Школа Молодого IT-Инженера BrainMaster 1-4 класс. Робототехника.",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2548560",
+          "groupCode": "К4046-26",
+          "admission": "open",
+          "teacher": "Любченко Ирина Сергеевна",
+          "ageMin": 6,
+          "ageMax": 11,
+          "totalSeats": 12,
+          "freeSeats": 12,
+          "lessonPrice": 1000,
+          "coursePrice": 36000,
+          "linkKind": "search",
+          "limitedSource": false
+        },
+        "id": "year:К4046-26",
+        "venueSlug": "school-2044-dmitrovskoe-165e-k8",
+        "shiftLabel": "ШМИ · робототехника · 1–4 классы",
+        "startDate": "2026-09-07",
+        "endDate": "2027-05-31",
+        "startTime": "15:00",
+        "endTime": "15:45",
+        "dateRange": "2026-09-07 — 2027-05-31",
+        "daySchedule": "Вторник: 15:00–15:45",
+        "priceLabel": "1000 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/groups?keyword=2548560",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 0,
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "ШМИ · робототехника · 1–4 классы",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Любченко Ирина Сергеевна",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "6–11 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К4046-26:main",
+              "type": "Годовая группа",
+              "time": "Вторник: 15:00–15:45",
+              "priceLabel": "1000 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Вторник",
+            "start": "15:00",
+            "end": "15:45"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "Школа Молодого IT-Инженера BrainMaster 1-4 класс-2. Робототехника.",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2549789",
+          "groupCode": "К4061-26",
+          "admission": "open",
+          "teacher": "Любченко Ирина Сергеевна",
+          "ageMin": 6,
+          "ageMax": 11,
+          "totalSeats": 12,
+          "freeSeats": 12,
+          "lessonPrice": 1000,
+          "coursePrice": 36000,
+          "linkKind": "search",
+          "limitedSource": false
+        },
+        "id": "year:К4061-26",
+        "venueSlug": "school-2044-dmitrovskoe-165e-k8",
+        "shiftLabel": "ШМИ · робототехника · 1–4 классы",
+        "startDate": "2026-09-07",
+        "endDate": "2027-05-31",
+        "startTime": "15:00",
+        "endTime": "15:45",
+        "dateRange": "2026-09-07 — 2027-05-31",
+        "daySchedule": "Вторник: 15:00–15:45",
+        "priceLabel": "1000 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/groups?keyword=2549789",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 0,
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "ШМИ · робототехника · 1–4 классы",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Любченко Ирина Сергеевна",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "6–11 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К4061-26:main",
+              "type": "Годовая группа",
+              "time": "Вторник: 15:00–15:45",
+              "priceLabel": "1000 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Вторник",
+            "start": "16:00",
+            "end": "16:45"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "Школа Молодого IT-Инженера BrainMaster 1-4 класс. Робототехника.",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2548560",
+          "groupCode": "К4048-26",
+          "admission": "open",
+          "teacher": "Любченко Ирина Сергеевна",
+          "ageMin": 6,
+          "ageMax": 11,
+          "totalSeats": 12,
+          "freeSeats": 12,
+          "lessonPrice": 1000,
+          "coursePrice": 36000,
+          "linkKind": "search",
+          "limitedSource": false
+        },
+        "id": "year:К4048-26",
+        "venueSlug": "school-2044-dmitrovskoe-165e-k8",
+        "shiftLabel": "ШМИ · робототехника · 1–4 классы",
+        "startDate": "2026-09-07",
+        "endDate": "2027-05-31",
+        "startTime": "16:00",
+        "endTime": "16:45",
+        "dateRange": "2026-09-07 — 2027-05-31",
+        "daySchedule": "Вторник: 16:00–16:45",
+        "priceLabel": "1000 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/groups?keyword=2548560",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 0,
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "ШМИ · робототехника · 1–4 классы",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Любченко Ирина Сергеевна",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "6–11 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К4048-26:main",
+              "type": "Годовая группа",
+              "time": "Вторник: 16:00–16:45",
+              "priceLabel": "1000 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Вторник",
+            "start": "16:00",
+            "end": "16:45"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "Школа Молодого IT-Инженера BrainMaster 1-4 класс-3. Робототехника.",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2549788",
+          "groupCode": "К4062-26",
+          "admission": "open",
+          "teacher": "Любченко Ирина Сергеевна",
+          "ageMin": 6,
+          "ageMax": 11,
+          "totalSeats": 12,
+          "freeSeats": 12,
+          "lessonPrice": 1000,
+          "coursePrice": 36000,
+          "linkKind": "search",
+          "limitedSource": false
+        },
+        "id": "year:К4062-26",
+        "venueSlug": "school-2044-dmitrovskoe-165e-k8",
+        "shiftLabel": "ШМИ · робототехника · 1–4 классы",
+        "startDate": "2026-09-07",
+        "endDate": "2027-05-31",
+        "startTime": "16:00",
+        "endTime": "16:45",
+        "dateRange": "2026-09-07 — 2027-05-31",
+        "daySchedule": "Вторник: 16:00–16:45",
+        "priceLabel": "1000 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/groups?keyword=2549788",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 0,
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "ШМИ · робототехника · 1–4 классы",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Любченко Ирина Сергеевна",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "6–11 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К4062-26:main",
+              "type": "Годовая группа",
+              "time": "Вторник: 16:00–16:45",
+              "priceLabel": "1000 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Среда",
+            "start": "14:00",
+            "end": "14:45"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "Школа Молодого IT-Инженера BrainMaster 1-4 класс. Робототехника.",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2548560",
+          "groupCode": "К4049-26",
+          "admission": "open",
+          "teacher": "Любченко Ирина Сергеевна",
+          "ageMin": 6,
+          "ageMax": 11,
+          "totalSeats": 12,
+          "freeSeats": 12,
+          "lessonPrice": 1000,
+          "coursePrice": 36000,
+          "linkKind": "search",
+          "limitedSource": false
+        },
+        "id": "year:К4049-26",
+        "venueSlug": "school-2044-dmitrovskoe-165e-k8",
+        "shiftLabel": "ШМИ · робототехника · 1–4 классы",
+        "startDate": "2026-09-07",
+        "endDate": "2027-05-31",
+        "startTime": "14:00",
+        "endTime": "14:45",
+        "dateRange": "2026-09-07 — 2027-05-31",
+        "daySchedule": "Среда: 14:00–14:45",
+        "priceLabel": "1000 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/groups?keyword=2548560",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 0,
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "ШМИ · робототехника · 1–4 классы",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Любченко Ирина Сергеевна",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "6–11 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К4049-26:main",
+              "type": "Годовая группа",
+              "time": "Среда: 14:00–14:45",
+              "priceLabel": "1000 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Среда",
+            "start": "14:00",
+            "end": "14:45"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "Школа Молодого IT-Инженера BrainMaster 1-4 класс-4. Робототехника.",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2549787",
+          "groupCode": "К4063-26",
+          "admission": "open",
+          "teacher": "Любченко Ирина Сергеевна",
+          "ageMin": 6,
+          "ageMax": 11,
+          "totalSeats": 12,
+          "freeSeats": 12,
+          "lessonPrice": 1000,
+          "coursePrice": 36000,
+          "linkKind": "search",
+          "limitedSource": false
+        },
+        "id": "year:К4063-26",
+        "venueSlug": "school-2044-dmitrovskoe-165e-k8",
+        "shiftLabel": "ШМИ · робототехника · 1–4 классы",
+        "startDate": "2026-09-07",
+        "endDate": "2027-05-31",
+        "startTime": "14:00",
+        "endTime": "14:45",
+        "dateRange": "2026-09-07 — 2027-05-31",
+        "daySchedule": "Среда: 14:00–14:45",
+        "priceLabel": "1000 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/groups?keyword=2549787",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 0,
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "ШМИ · робототехника · 1–4 классы",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Любченко Ирина Сергеевна",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "6–11 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К4063-26:main",
+              "type": "Годовая группа",
+              "time": "Среда: 14:00–14:45",
+              "priceLabel": "1000 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Среда",
+            "start": "15:00",
+            "end": "15:45"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "Школа Молодого IT-Инженера BrainMaster 1-4 класс. Робототехника.",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2548560",
+          "groupCode": "К4050-26",
+          "admission": "open",
+          "teacher": "Любченко Ирина Сергеевна",
+          "ageMin": 6,
+          "ageMax": 11,
+          "totalSeats": 12,
+          "freeSeats": 12,
+          "lessonPrice": 1000,
+          "coursePrice": 36000,
+          "linkKind": "search",
+          "limitedSource": false
+        },
+        "id": "year:К4050-26",
+        "venueSlug": "school-2044-dmitrovskoe-165e-k8",
+        "shiftLabel": "ШМИ · робототехника · 1–4 классы",
+        "startDate": "2026-09-07",
+        "endDate": "2027-05-31",
+        "startTime": "15:00",
+        "endTime": "15:45",
+        "dateRange": "2026-09-07 — 2027-05-31",
+        "daySchedule": "Среда: 15:00–15:45",
+        "priceLabel": "1000 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/groups?keyword=2548560",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 0,
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "ШМИ · робототехника · 1–4 классы",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Любченко Ирина Сергеевна",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "6–11 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К4050-26:main",
+              "type": "Годовая группа",
+              "time": "Среда: 15:00–15:45",
+              "priceLabel": "1000 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Среда",
+            "start": "15:00",
+            "end": "15:45"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "Школа Молодого IT-Инженера BrainMaster 1-4 класс-5. Робототехника.",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2549786",
+          "groupCode": "К4064-26",
+          "admission": "open",
+          "teacher": "Любченко Ирина Сергеевна",
+          "ageMin": 6,
+          "ageMax": 11,
+          "totalSeats": 12,
+          "freeSeats": 12,
+          "lessonPrice": 1000,
+          "coursePrice": 36000,
+          "linkKind": "search",
+          "limitedSource": false
+        },
+        "id": "year:К4064-26",
+        "venueSlug": "school-2044-dmitrovskoe-165e-k8",
+        "shiftLabel": "ШМИ · робототехника · 1–4 классы",
+        "startDate": "2026-09-07",
+        "endDate": "2027-05-31",
+        "startTime": "15:00",
+        "endTime": "15:45",
+        "dateRange": "2026-09-07 — 2027-05-31",
+        "daySchedule": "Среда: 15:00–15:45",
+        "priceLabel": "1000 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/groups?keyword=2549786",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 0,
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "ШМИ · робототехника · 1–4 классы",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Любченко Ирина Сергеевна",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "6–11 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К4064-26:main",
+              "type": "Годовая группа",
+              "time": "Среда: 15:00–15:45",
+              "priceLabel": "1000 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Среда",
+            "start": "16:00",
+            "end": "16:45"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "Школа Молодого IT-Инженера BrainMaster 1-4 класс. Робототехника.",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2548560",
+          "groupCode": "К4051-26",
+          "admission": "open",
+          "teacher": "Любченко Ирина Сергеевна",
+          "ageMin": 6,
+          "ageMax": 11,
+          "totalSeats": 12,
+          "freeSeats": 12,
+          "lessonPrice": 1000,
+          "coursePrice": 36000,
+          "linkKind": "search",
+          "limitedSource": false
+        },
+        "id": "year:К4051-26",
+        "venueSlug": "school-2044-dmitrovskoe-165e-k8",
+        "shiftLabel": "ШМИ · робототехника · 1–4 классы",
+        "startDate": "2026-09-07",
+        "endDate": "2027-05-31",
+        "startTime": "16:00",
+        "endTime": "16:45",
+        "dateRange": "2026-09-07 — 2027-05-31",
+        "daySchedule": "Среда: 16:00–16:45",
+        "priceLabel": "1000 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/groups?keyword=2548560",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 0,
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "ШМИ · робототехника · 1–4 классы",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Любченко Ирина Сергеевна",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "6–11 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К4051-26:main",
+              "type": "Годовая группа",
+              "time": "Среда: 16:00–16:45",
+              "priceLabel": "1000 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Среда",
+            "start": "16:00",
+            "end": "16:45"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "Школа Молодого IT-Инженера BrainMaster 1-4 класс-6. Робототехника.",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2549784",
+          "groupCode": "К4065-26",
+          "admission": "open",
+          "teacher": "Любченко Ирина Сергеевна",
+          "ageMin": 6,
+          "ageMax": 11,
+          "totalSeats": 12,
+          "freeSeats": 12,
+          "lessonPrice": 1000,
+          "coursePrice": 36000,
+          "linkKind": "search",
+          "limitedSource": false
+        },
+        "id": "year:К4065-26",
+        "venueSlug": "school-2044-dmitrovskoe-165e-k8",
+        "shiftLabel": "ШМИ · робототехника · 1–4 классы",
+        "startDate": "2026-09-07",
+        "endDate": "2027-05-31",
+        "startTime": "16:00",
+        "endTime": "16:45",
+        "dateRange": "2026-09-07 — 2027-05-31",
+        "daySchedule": "Среда: 16:00–16:45",
+        "priceLabel": "1000 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/groups?keyword=2549784",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 0,
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "ШМИ · робототехника · 1–4 классы",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Любченко Ирина Сергеевна",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "6–11 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К4065-26:main",
+              "type": "Годовая группа",
+              "time": "Среда: 16:00–16:45",
+              "priceLabel": "1000 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Пятница",
+            "start": "14:00",
+            "end": "14:45"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "Школа Молодого IT-Инженера BrainMaster 1-4 класс. Робототехника.",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2548560",
+          "groupCode": "К4052-26",
+          "admission": "open",
+          "teacher": "Любченко Ирина Сергеевна",
+          "ageMin": 6,
+          "ageMax": 11,
+          "totalSeats": 12,
+          "freeSeats": 12,
+          "lessonPrice": 1000,
+          "coursePrice": 36000,
+          "linkKind": "search",
+          "limitedSource": false
+        },
+        "id": "year:К4052-26",
+        "venueSlug": "school-2044-dmitrovskoe-165e-k8",
+        "shiftLabel": "ШМИ · робототехника · 1–4 классы",
+        "startDate": "2026-09-07",
+        "endDate": "2027-05-31",
+        "startTime": "14:00",
+        "endTime": "14:45",
+        "dateRange": "2026-09-07 — 2027-05-31",
+        "daySchedule": "Пятница: 14:00–14:45",
+        "priceLabel": "1000 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/groups?keyword=2548560",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 0,
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "ШМИ · робототехника · 1–4 классы",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Любченко Ирина Сергеевна",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "6–11 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К4052-26:main",
+              "type": "Годовая группа",
+              "time": "Пятница: 14:00–14:45",
+              "priceLabel": "1000 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Пятница",
+            "start": "14:00",
+            "end": "14:45"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "Школа Молодого IT-Инженера BrainMaster 1-4 класс-7. Робототехника.",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2549783",
+          "groupCode": "К4066-26",
+          "admission": "open",
+          "teacher": "Любченко Ирина Сергеевна",
+          "ageMin": 6,
+          "ageMax": 11,
+          "totalSeats": 12,
+          "freeSeats": 12,
+          "lessonPrice": 1000,
+          "coursePrice": 36000,
+          "linkKind": "search",
+          "limitedSource": false
+        },
+        "id": "year:К4066-26",
+        "venueSlug": "school-2044-dmitrovskoe-165e-k8",
+        "shiftLabel": "ШМИ · робототехника · 1–4 классы",
+        "startDate": "2026-09-07",
+        "endDate": "2027-05-31",
+        "startTime": "14:00",
+        "endTime": "14:45",
+        "dateRange": "2026-09-07 — 2027-05-31",
+        "daySchedule": "Пятница: 14:00–14:45",
+        "priceLabel": "1000 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/groups?keyword=2549783",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 0,
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "ШМИ · робототехника · 1–4 классы",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Любченко Ирина Сергеевна",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "6–11 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К4066-26:main",
+              "type": "Годовая группа",
+              "time": "Пятница: 14:00–14:45",
+              "priceLabel": "1000 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Пятница",
+            "start": "15:00",
+            "end": "15:45"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "Школа Молодого IT-Инженера BrainMaster 1-4 класс. Робототехника.",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2548560",
+          "groupCode": "К4053-26",
+          "admission": "open",
+          "teacher": "Любченко Ирина Сергеевна",
+          "ageMin": 6,
+          "ageMax": 11,
+          "totalSeats": 12,
+          "freeSeats": 12,
+          "lessonPrice": 1000,
+          "coursePrice": 36000,
+          "linkKind": "search",
+          "limitedSource": false
+        },
+        "id": "year:К4053-26",
+        "venueSlug": "school-2044-dmitrovskoe-165e-k8",
+        "shiftLabel": "ШМИ · робототехника · 1–4 классы",
+        "startDate": "2026-09-07",
+        "endDate": "2027-05-31",
+        "startTime": "15:00",
+        "endTime": "15:45",
+        "dateRange": "2026-09-07 — 2027-05-31",
+        "daySchedule": "Пятница: 15:00–15:45",
+        "priceLabel": "1000 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/groups?keyword=2548560",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 0,
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "ШМИ · робототехника · 1–4 классы",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Любченко Ирина Сергеевна",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "6–11 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К4053-26:main",
+              "type": "Годовая группа",
+              "time": "Пятница: 15:00–15:45",
+              "priceLabel": "1000 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Пятница",
+            "start": "15:00",
+            "end": "15:45"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "Школа Молодого IT-Инженера BrainMaster 1-4 класс-8. Робототехника.",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2549782",
+          "groupCode": "К4067-26",
+          "admission": "open",
+          "teacher": "Любченко Ирина Сергеевна",
+          "ageMin": 6,
+          "ageMax": 11,
+          "totalSeats": 12,
+          "freeSeats": 12,
+          "lessonPrice": 1000,
+          "coursePrice": 36000,
+          "linkKind": "search",
+          "limitedSource": false
+        },
+        "id": "year:К4067-26",
+        "venueSlug": "school-2044-dmitrovskoe-165e-k8",
+        "shiftLabel": "ШМИ · робототехника · 1–4 классы",
+        "startDate": "2026-09-07",
+        "endDate": "2027-05-31",
+        "startTime": "15:00",
+        "endTime": "15:45",
+        "dateRange": "2026-09-07 — 2027-05-31",
+        "daySchedule": "Пятница: 15:00–15:45",
+        "priceLabel": "1000 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/groups?keyword=2549782",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 0,
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "ШМИ · робототехника · 1–4 классы",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Любченко Ирина Сергеевна",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "6–11 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К4067-26:main",
+              "type": "Годовая группа",
+              "time": "Пятница: 15:00–15:45",
+              "priceLabel": "1000 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Пятница",
+            "start": "16:00",
+            "end": "16:45"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "Школа Молодого IT-Инженера BrainMaster 1-4 класс. Робототехника.",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2548560",
+          "groupCode": "К4054-26",
+          "admission": "open",
+          "teacher": "Любченко Ирина Сергеевна",
+          "ageMin": 6,
+          "ageMax": 11,
+          "totalSeats": 12,
+          "freeSeats": 12,
+          "lessonPrice": 1000,
+          "coursePrice": 36000,
+          "linkKind": "search",
+          "limitedSource": false
+        },
+        "id": "year:К4054-26",
+        "venueSlug": "school-2044-dmitrovskoe-165e-k8",
+        "shiftLabel": "ШМИ · робототехника · 1–4 классы",
+        "startDate": "2026-09-07",
+        "endDate": "2027-05-31",
+        "startTime": "16:00",
+        "endTime": "16:45",
+        "dateRange": "2026-09-07 — 2027-05-31",
+        "daySchedule": "Пятница: 16:00–16:45",
+        "priceLabel": "1000 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/groups?keyword=2548560",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 0,
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "ШМИ · робототехника · 1–4 классы",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Любченко Ирина Сергеевна",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "6–11 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К4054-26:main",
+              "type": "Годовая группа",
+              "time": "Пятница: 16:00–16:45",
+              "priceLabel": "1000 ₽ / занятие"
+            }
+          ]
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Пятница",
+            "start": "16:00",
+            "end": "16:45"
+          }
+        ],
+        "annual": {
+          "sourceTitle": "Школа Молодого IT-Инженера BrainMaster 1-4 класс-9. Робототехника.",
+          "asOf": "2026-09-08",
+          "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+          "listingId": "2549781",
+          "groupCode": "К4068-26",
+          "admission": "open",
+          "teacher": "Любченко Ирина Сергеевна",
+          "ageMin": 6,
+          "ageMax": 11,
+          "totalSeats": 12,
+          "freeSeats": 12,
+          "lessonPrice": 1000,
+          "coursePrice": 36000,
+          "linkKind": "search",
+          "limitedSource": false
+        },
+        "id": "year:К4068-26",
+        "venueSlug": "school-2044-dmitrovskoe-165e-k8",
+        "shiftLabel": "ШМИ · робототехника · 1–4 классы",
+        "startDate": "2026-09-07",
+        "endDate": "2027-05-31",
+        "startTime": "16:00",
+        "endTime": "16:45",
+        "dateRange": "2026-09-07 — 2027-05-31",
+        "daySchedule": "Пятница: 16:00–16:45",
+        "priceLabel": "1000 ₽ / занятие",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/groups?keyword=2549781",
+        "sheetStatus": "Идёт набор",
+        "enrolled": 0,
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "ШМИ · робототехника · 1–4 классы",
+          "description": "Данные mos.ru на 2026-09-08. Условия и наличие мест проверьте перед записью.",
+          "teacherName": "Любченко Ирина Сергеевна",
+          "tags": [
+            "Годовая программа",
+            "Срез 2026-09-08"
+          ],
+          "ageLabel": "6–11 лет",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "year:К4068-26:main",
+              "type": "Годовая группа",
+              "time": "Пятница: 16:00–16:45",
+              "priceLabel": "1000 ₽ / занятие"
+            }
+          ]
         }
       }
     ]

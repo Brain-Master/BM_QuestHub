@@ -86,10 +86,12 @@ function eventToVenueOffer(event: EventV2): VenueOffer {
     return `${d}.${m}.${y}`;
   };
   const dateRange = `${fmt(event.schedule.startDate)} — ${fmt(event.schedule.endDate)}`;
-  const daySchedule = slot?.label ?? `Ежедневно: ${startTime}–${endTime}`;
+  const daySchedule = event.schedule.slots.map(s => s.label ?? (s.timeRange ? `${s.timeRange.start}–${s.timeRange.end}` : "Время уточняется")).join("; ") || `Ежедневно: ${startTime}–${endTime}`;
 
   return {
     id: event.id,
+    annual: event.annual,
+    weeklySlots: event.schedule.slots.some(s => s.weekday) ? event.schedule.slots.flatMap(s => s.weekday && s.timeRange ? [{ weekday: s.weekday, start: s.timeRange.start, end: s.timeRange.end }] : []) : undefined,
     venueSlug: event.relations.venueId,
     shiftLabel:
       event.presentation?.titleOverride ??

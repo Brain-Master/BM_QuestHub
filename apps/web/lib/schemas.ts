@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { annualMetadataSchema, weeklySlotSchema } from "@/lib/offers/annual-schedule";
 
 import {
   isValidChildAgeYears,
@@ -192,6 +193,8 @@ export type ScheduleCard = z.infer<typeof scheduleCardSchema>;
 export type RegistrationChannel = z.infer<typeof registrationChannelSchema>;
 
 export const venueOfferSchema = z.object({
+  weeklySlots: z.array(weeklySlotSchema).min(1).optional(),
+  annual: annualMetadataSchema.optional(),
   id: z.string(),
   venueSlug: z.string(),
   shiftLabel: z.string(),
