@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import {
   ArrowDown,
   ArrowUp,
@@ -92,7 +92,6 @@ export function SitesPageToolbar({
   mapColorMode,
   variant = "default",
 }: Props) {
-  const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [filtersOpen, setFiltersOpen] = useState(variant === "default");
@@ -107,11 +106,11 @@ export function SitesPageToolbar({
       }
     }
     const queryString = params.toString();
-    router.push(queryString ? `${pathname}?${queryString}` : pathname, { scroll: false });
+    window.history.pushState(null, "", queryString ? `${pathname}?${queryString}` : pathname);
   }
 
-  const showCitySelector = cityOptions.length > 1;
-  const showTypeSelector = typeOptions.length > 0;
+  const showCitySelector = cityOptions.length > 1 || !cityOptions.some(o=>o.value===city);
+  const showTypeSelector = typeOptions.length > 0 || type !== "all";
   const isMapPanel = variant === "mapPanel";
   const [activeSortKey, activeSortDirection] = sort.split("-") as [
     (typeof SORT_OPTIONS)[number]["key"],
@@ -123,7 +122,7 @@ export function SitesPageToolbar({
     return `${key}-${direction}` as SitesSortValue;
   }
 
-  const hasActiveFilters = Boolean(query.trim()) || type !== "all" || sort !== "activity-desc";
+  const hasActiveFilters = Boolean(query.trim()) || type !== "all" || sort !== "activity-desc" || !cityOptions.some(o=>o.value===city);
   const activeFilterCount =
     (query.trim() ? 1 : 0) + (type !== "all" ? 1 : 0) + (sort !== "activity-desc" ? 1 : 0);
   const panelId = `sites-filters-${variant}`;
@@ -132,7 +131,7 @@ export function SitesPageToolbar({
     activeFilterCount > 0 ? `Активно: ${activeFilterCount}` : "Поиск, тип и сортировка";
 
   function resetFilters() {
-    pushNext({ q: null, type: null, sort: null });
+    pushNext({ q: null, type: null, sort: null, city: null });
   }
 
   const viewSwitcher = (
@@ -197,6 +196,7 @@ export function SitesPageToolbar({
               onChange={(event) => pushNext({ city: event.target.value })}
               className="h-9 min-w-0 rounded-lg border border-white/10 bg-black/20 px-3 text-foreground outline-none transition focus-visible:ring-2 focus-visible:ring-ring"
             >
+              {!cityOptions.some(o=>o.value===city)&&<option value={city} disabled>Выбранный город — нет групп</option>}
               {cityOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
@@ -213,7 +213,6 @@ export function SitesPageToolbar({
             </span>
             <select
               value={type}
-              disabled={typeOptions.length <= 1}
               onChange={(event) =>
                 pushNext({
                   type: event.target.value === "all" ? null : event.target.value,
@@ -222,6 +221,7 @@ export function SitesPageToolbar({
               className="h-9 min-w-0 rounded-lg border border-white/10 bg-black/20 px-3 text-foreground outline-none transition disabled:cursor-not-allowed disabled:opacity-60 focus-visible:ring-2 focus-visible:ring-ring"
             >
               <option value="all">Все типы</option>
+              {type!=="all"&&!typeOptions.some(o=>o.value===type)&&<option value={type} disabled>Выбранный тип — нет групп</option>}
               {typeOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}

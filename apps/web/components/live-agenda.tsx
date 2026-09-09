@@ -71,15 +71,17 @@ function LiveAgendaInner({
   const showSkeleton = liveEnabled && status === "loading" && groups.length === 0;
   const annualItems = useMemo(() => buildAgendaItems({ quests, venues, worlds })
     .filter(item => item.quest.format === "year"), [quests, venues, worlds]);
-  const intensiveGroups = useMemo(() => groups.map(group => ({ ...group, items: group.items.filter(item => item.quest.format !== "year") })).filter(group => group.items.length), [groups]);
+  const intensiveGroups = useMemo(() => invalidSchoolQuery ? [] : groups.map(group => ({ ...group, items: group.items.filter(item => item.quest.format !== "year") })).filter(group => group.items.length), [groups, invalidSchoolQuery]);
   const selectedIntensive = !invalidSchoolQuery && intensiveGroups.some(group => group.items.some(item => item.offer.id === searchParams.get("offer")));
 
-  // The school overview already owns its H1/map. Keep its embedded summary, not a second full-page wizard.
+  // The same day/group cards as the agenda, with an H2 and catalogue entry on profiles.
   if (embedded) return <div className="space-y-4">
     <Link className="inline-flex min-h-11 items-center text-primary underline" href={`/sites/${schoolSlug}/agenda/`}>Подобрать кружок пошагово →</Link>
-    <p className="text-sm text-muted-foreground" role="status">{status === "error" ? "Не удалось обновить расписание. Показаны доступные сохранённые данные." : status === "loading" ? "Загружаем расписание…" : "Данные по загруженному срезу; актуальные места уточняйте на mos.ru."}</p>
-    <OfferAgenda groups={groups} schoolSlug={effectiveSchoolSlug} schoolName={schoolName} allAgendaHref={allAgendaHref} sitesHref={sitesHref}
+    <CourseFinder embedded items={annualItems} quests={quests} venues={venues} schoolSlug={schoolSlug} venueSlug={venueSlug}
+      status={status} isValidating={isValidating} snapshotGeneratedAt={snapshotGeneratedAt} onRefresh={refresh} />
+    <details><summary className="min-h-11 cursor-pointer py-3">Квесты и смены · расписание и архив</summary><OfferAgenda groups={intensiveGroups} schoolSlug={effectiveSchoolSlug} schoolName={schoolName} allAgendaHref={allAgendaHref} sitesHref={sitesHref}
       snapshotGeneratedAt={snapshotGeneratedAt} showSnapshotTime={showSnapshotTime} hideTitle hideCommunityPanel={hideCommunityPanel} />
+    </details>
   </div>;
 
   return (

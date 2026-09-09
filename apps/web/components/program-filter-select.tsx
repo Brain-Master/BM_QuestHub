@@ -48,6 +48,7 @@ export function ProgramFilterSelect({
       </SelectTrigger>
       <SelectContent className="min-w-[280px]">
         <SelectItem value={ALL_PROGRAM_FILTER_VALUE}>{allLabel}</SelectItem>
+        {value !== ALL_PROGRAM_FILTER_VALUE && !groups.some(g=>g.value===value||g.programs.some(p=>p.value===value)) && <SelectItem value={value} disabled>Выбранная программа — нет подходящих групп</SelectItem>}
         {groups.map((group) => (
           <SelectGroup key={group.value}>
             <SelectItem value={group.value} className="font-medium">

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 
 import { Activity, CalendarDays, MapPin, School, Shapes, Users } from "lucide-react";
 
@@ -22,7 +22,7 @@ import {
   makeSeriesProgramFilterValue,
 } from "@/lib/program-filter-options";
 import { getSchoolScopes } from "@/lib/offers/agenda";
-import { filterQuestsForSchool } from "@/lib/school-scope";
+import { filterCatalog, type CatalogSearchParams } from "@/lib/catalog-filters";
 import type { Quest, Venue, World } from "@/lib/schemas";
 import { buildSiteHref } from "@/lib/sites/site-route";
 
@@ -40,7 +40,6 @@ const ALL_VALUE = "all";
 const DEFAULT_CATALOG_STATUS = "active";
 
 export function CatalogToolbar({ quests, venues, worlds, fixedSchool }: Props) {
-  const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -56,24 +55,16 @@ export function CatalogToolbar({ quests, venues, worlds, fixedSchool }: Props) {
   }, [searchParams]);
 
   const effectiveSchool = fixedSchool?.slug ?? school;
-  const scopedQuests = useMemo(
-    () =>
-      effectiveSchool
-        ? filterQuestsForSchool(quests, venues, effectiveSchool)
-        : quests,
-    [effectiveSchool, quests, venues],
-  );
-  const programGroups = useMemo(
-    () => buildProgramFilterGroups(scopedQuests, worlds),
-    [scopedQuests, worlds],
-  );
-  const schoolScopes = useMemo(() => getSchoolScopes(venues), [venues]);
-  const ages = useMemo(() => {
-    const unique = Array.from(new Set(scopedQuests.map((q) => q.ageLabel))).sort(
+  const current = {format, program, age, status, school:effectiveSchool};
+  const facet = (patch:CatalogSearchParams) => filterCatalog(quests,venues,{...current,...patch});
+  const programGroups = buildProgramFilterGroups(facet({program:ALL_PROGRAM_FILTER_VALUE}),worlds);
+  const allSchools = getSchoolScopes(venues);
+  const schoolScopes = allSchools.filter(scope=>facet({school:scope.slug}).length > 0);
+  const formats = ["intensive","year"].filter(format=>facet({format}).length > 0);
+  const statuses = ["active","archived"].filter(status=>facet({status}).length > 0);
+  const ages = [ALL_VALUE, ...Array.from(new Set(facet({age:ALL_VALUE}).map(q=>q.ageLabel))).sort(
       (a, b) => a.localeCompare(b, "ru", { numeric: true }),
-    );
-    return [ALL_VALUE, ...unique];
-  }, [scopedQuests]);
+    )];
 
   const activeFiltersCount = [
     program !== ALL_PROGRAM_FILTER_VALUE,
@@ -99,7 +90,7 @@ export function CatalogToolbar({ quests, venues, worlds, fixedSchool }: Props) {
       }
     }
     const qs = params.toString();
-    router.push(qs ? `${pathname}?${qs}` : pathname);
+    window.history.pushState(null, "", qs ? `${pathname}?${qs}` : pathname);
   }
 
   return (
@@ -153,6 +144,7 @@ export function CatalogToolbar({ quests, venues, worlds, fixedSchool }: Props) {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value={ALL_VALUE}>Все площадки</SelectItem>
+              {school && school !== ALL_VALUE && !schoolScopes.some(s=>s.slug===school) && <SelectItem value={school} disabled>{allSchools.find(s=>s.slug===school)?.name ?? "Площадка из ссылки"} — нет групп</SelectItem>}
               {schoolScopes.map((scope) => (
                 <SelectItem key={scope.slug} value={scope.slug}>
                   {scope.name}
@@ -177,8 +169,8 @@ export function CatalogToolbar({ quests, venues, worlds, fixedSchool }: Props) {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value={ALL_VALUE}>Все форматы</SelectItem>
-            <SelectItem value="intensive">Интенсив 5 дней</SelectItem>
-            <SelectItem value="year">Годовой трек</SelectItem>
+            {formats.map(f=><SelectItem key={f} value={f}>{f==="year"?"Годовой трек":"Интенсив 5 дней"}</SelectItem>)}
+            {format!==ALL_VALUE&&!formats.includes(format)&&<SelectItem value={format} disabled>Выбранный формат — нет групп</SelectItem>}
           </SelectContent>
         </Select>
       </label>
@@ -196,6 +188,7 @@ export function CatalogToolbar({ quests, venues, worlds, fixedSchool }: Props) {
             <SelectValue placeholder="Возраст" />
           </SelectTrigger>
           <SelectContent>
+            {!ages.includes(age)&&<SelectItem value={age} disabled>{age} — нет групп</SelectItem>}
             {ages.map((value) => (
               <SelectItem key={value} value={value}>
                 {value === ALL_VALUE ? "Все возрасты" : value}
@@ -218,9 +211,9 @@ export function CatalogToolbar({ quests, venues, worlds, fixedSchool }: Props) {
             <SelectValue placeholder="Статус" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value={DEFAULT_CATALOG_STATUS}>Активные</SelectItem>
             <SelectItem value={ALL_VALUE}>Все статусы</SelectItem>
-            <SelectItem value="archived">Архивные</SelectItem>
+            {statuses.map(s=><SelectItem key={s} value={s}>{s==="active"?"Активные":"Архивные"}</SelectItem>)}
+            {status!==ALL_VALUE&&!statuses.includes(status)&&<SelectItem value={status} disabled>{status==="active"?"Активные":"Архивные"} — нет групп</SelectItem>}
           </SelectContent>
         </Select>
       </label>
@@ -231,7 +224,7 @@ export function CatalogToolbar({ quests, venues, worlds, fixedSchool }: Props) {
           variant="outline"
           size="sm"
           className="border-white/10 bg-transparent hover:bg-white/5"
-          onClick={() => router.push(pathname)}
+          onClick={() => window.history.pushState(null, "", pathname)}
         >
           Сбросить фильтры
         </Button>

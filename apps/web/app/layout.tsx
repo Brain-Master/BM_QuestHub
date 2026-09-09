@@ -9,7 +9,8 @@ import { HostScopeBootstrap } from "@/components/host-scope-bootstrap";
 import { ScrollToTopButton } from "@/components/scroll-to-top-button";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
-import { loadWorlds } from "@/lib/content/load";
+import { loadWorlds, loadQuestsForSchoolAgenda, loadVenues } from "@/lib/content/load";
+import { getSchoolScopes } from "@/lib/offers/agenda";
 import { loadSiteConfig } from "@/lib/data/site-config-loader";
 
 const bodySans = Manrope({
@@ -40,7 +41,9 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [worlds, siteConfig] = await Promise.all([loadWorlds(), loadSiteConfig()]);
+  const [worlds, siteConfig, quests, venues] = await Promise.all([loadWorlds(), loadSiteConfig(), loadQuestsForSchoolAgenda(), loadVenues()]);
+  const scopeByVenue = Object.fromEntries(venues.map(v=>[v.slug,v.schoolScopeSlug??v.slug]));
+  const schoolAliases = Object.fromEntries(getSchoolScopes(venues).flatMap(s=>s.routeSlugs.map(slug=>[slug,s.slug])));
 
   return (
     <html
@@ -53,7 +56,7 @@ export default async function RootLayout({
         <HostScopeBootstrap />
         <ConsentGatedAnalytics />
         <CookieConsentBanner />
-        <SiteHeader worlds={worlds} navigation={siteConfig.navigation} />
+        <SiteHeader worlds={worlds} navigation={siteConfig.navigation} baseQuests={quests.filter(q=>q.slug==="shmi")} scopeByVenue={scopeByVenue} schoolAliases={schoolAliases} />
         <div className="flex flex-1 flex-col">{children}</div>
         <ScrollToTopButton />
         <SiteFooter />

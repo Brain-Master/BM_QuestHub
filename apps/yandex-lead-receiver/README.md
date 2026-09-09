@@ -24,6 +24,39 @@ The function returns `200 OK` only after Telegram and Google Sheets succeed.
 n8n failures are logged and returned as `n8nForwarded: false`, but do not fail
 the lead.
 
+## Delivery deadlines and failure evidence
+
+Deployment requires **30s function execution timeout** (the prior10s configuration
+has confirmed execution timeouts in Cloud Logging). The handler has one26s wall
+clock budget starting at entry; the primary sequence shares22s and each request
+gets at most12s or its remaining primary budget. This includes headers **and**
+response bodies. Bodies are bounded to64KiB. HTTP error bodies are discarded,
+not copied into logs. Do not deploy this handler with the old10s runtime limit.
+
+Telegram JSON must confirm `ok:true`; Sheets append must confirm one updated row.
+The OAuth request remains form-urlencoded; the Sheet row and21-column contract
+are unchanged. There are no automatic non-idempotent POST retries.
+
+n8n uses `min(N8N_TIMEOUT_MS, remaining handler budget)` and is skipped when no
+budget remains. Ops uses at most2s within the same deadline and remains best
+effort. Neither changes the primary result. All timers are cleared and requests
+and response streams are cancelled on expiry.
+
+Cloud logs contain only requestId, fixed phase/event/error code, timing, HTTP
+status and outcomes. No lead fields, upstream response, endpoint/token, JWT or
+Error stack is logged. The502 response includes requestId for correlation.
+`confirmed` means an accepted response was observed; `unknown` means delivery
+could have happened despite a lost response. Missing subsequent phase means
+`not_started`. RequestId is **not idempotency**: a manual retry after a timeout
+can duplicate a previously accepted Telegram message or Sheet row. This narrow
+deadline repair does not introduce a persistent deduplication store.
+
+Validation uses abort-aware HTTP fakes and controlled clocks, including a10.5s
+primary response that exceeded the old runtime, stalled headers/body, shared
+deadline exhaustion, partial delivery, optional n8n failure and log redaction.
+Mocks do not prove real production delivery; that requires a separately approved
+test lead plus readback or a correlated real application.
+
 ## Environment
 
 See `.env.example` for the full list.

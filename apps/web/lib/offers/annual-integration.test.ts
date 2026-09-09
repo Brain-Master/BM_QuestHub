@@ -4,19 +4,63 @@ import { test } from "node:test";
 import { questSchema, venueSchema, worldSchema } from "../schemas";
 import { getSchoolScopes } from "./agenda";
 import { buildSiteScopeCards } from "../sites/scope-card";
-import { getScheduleBookingMode, getScheduleDisplayStatus, getScheduleCapacity } from "./schedule-board";
+import { getScheduleBookingMode, getScheduleDisplayStatus, getScheduleCapacity, resolveScheduleStatusKey } from "./schedule-board";
 import { projectAnnualWorkspace } from "../year-schedule";
 import { offersSnapshotV1ToScheduleV2 } from "../data/v2/v1-to-v2";
 import { scheduleV2ToOffersSnapshotV1 } from "../data/v2/v2-to-v1";
 import { scheduleSnapshotV2Schema } from "../data/v2/site-snapshot";
 import { parseOffersSnapshot, isUsableOffersSnapshot } from "./snapshot-parse";
-import { weeklySlotSchema } from "./annual-schedule";
+import { weeklySlotSchema, annualMetadataSchema, annualMosRefreshSchema, annualBookingNeedsReview } from "./annual-schedule";
 import { fetchOffersSnapshotClient, publicOffersSnapshotUrl } from "./snapshot-client";
+import {schoolProfiles} from "../../content/school-profiles";
 
 const read = (file: string) => JSON.parse(fs.readFileSync(file, "utf8"));
 const snapshot = parseOffersSnapshot(read("data/offers-snapshot.json"));
 const venues = venueSchema.array().parse(read("data/v2/map-snapshot.json").venues);
 const quests = questSchema.array().parse(read("data/v2/catalog-snapshot.json").courses.map((q: {slug:string}) => ({...q, offers:snapshot.offersByQuest[q.slug]??[]})));
+test("nine school profiles have sourced media; the owner-confirmed base adds no fabricated photo or classes",()=>{
+  assert.equal(Object.keys(schoolProfiles).length,10);
+  let campuses=0;
+  for(const [id,profile] of Object.entries(schoolProfiles)){
+    if(profile.preparing){assert.equal(id,'bm-base-moscow');assert.equal(profile.nameSource,'owner:2026-09-09');continue;}
+    assert.ok(profile.nameSource.startsWith('https://'));assert.ok(fs.existsSync(`public${profile.logoUrl}`));
+    assert.ok(!profile.logoUrl.includes('/venues/logos/'));
+    for(const [slug,campus] of Object.entries(profile.campuses)){
+      campuses++;const venue=venues.find(v=>v.slug===slug);assert.ok(venue,slug);
+      assert.equal(venue.schoolScopeSlug,id);assert.equal(venue.address,campus.address);
+      assert.equal(venue.latitude,campus.latitude);assert.equal(venue.longitude,campus.longitude);
+      assert.ok(campus.photoUrl&&fs.existsSync(`public${campus.photoUrl}`));
+      assert.equal(venue.photos?.[0]?.url,campus.photoUrl);
+    }
+  }
+  assert.equal(campuses,15);
+});
+test('owner-confirmed teachers replace portal placeholders in six1212 groups and pin school17 by study year',()=>{
+  const annual=snapshot.offersByQuest.shmi;
+  const school1212=annual.filter(o=>o.venueSlug.startsWith('school-1212-'));
+  const school17=annual.filter(o=>o.venueSlug.startsWith('school-17-'));
+  assert.equal(school1212.length,6);assert.equal(school17.length,6);
+  for(const o of [...school1212,...school17]){
+    const teacher=o.venueSlug.startsWith('school-17-')&&o.annual?.studyYear===1?'Мартынова Анна Александровна':'Толмачева Василиса Владимировна';
+    assert.equal(o.annual?.teacher,teacher);assert.equal(o.scheduleCard?.teacherName,teacher);
+  }
+  const original=read('content/year-schedule.generated.json');
+  assert.ok(original.groups.some((g:{teacher:string})=>g.teacher?.includes('Васильев')),'raw source is preserved');
+  const base=venues.find(v=>v.slug==='bm-base-moscow');assert.ok(base);
+  assert.equal(base.name,'Мехвариум — база BrainMaster');assert.equal(base.address,'Рязанский проспект, 38');
+  assert.match(base.entranceNote??'',/ещё не открыта/);assert.match(base.contactNote??'',/дате открытия/);
+  assert.equal(quests.filter(q=>q.activeInCampaign).flatMap(q=>q.offers).filter(o=>o.venueSlug===base.slug&&!['finished','cancelled'].includes(resolveScheduleStatusKey(o))).length,0);
+  assert.equal(base.photos.length,0);assert.equal(base.logoUrl,'/brand/brainmaster-mark.png');
+});
+test("reviewed profiles retain the seven pre-existing metro/district fields not replaced by new source facts",()=>{
+  for(const [slug,context] of Object.entries({
+    'school-1383-verkhnie-likhobory':{district:'Бескудниковский'},
+    'school-1517-narodnoe-opolchenie':{district:'Хорошёво-Мнёвники'},
+    'school-937-orekhovo':{district:'Орехово-Борисово'},
+    'mduc-ekt-odesskaya':{metro:'Каховская',district:'Зюзино'},
+    'mduc-ekt-mosfilmovskaya':{metro:'Минская',district:'Раменки'},
+  }))for(const [key,value] of Object.entries(context))assert.equal(venues.find(v=>v.slug===slug)?.[key as 'metro'|'district'],value,`${slug}.${key}`);
+});
 
 test("shared catalogue projects all annual groups and exact campuses", () => {
   const view = projectAnnualWorkspace(quests, venues);
@@ -34,6 +78,32 @@ test("shared catalogue projects all annual groups and exact campuses", () => {
     assert.equal(group.totalSeats,null);
     assert.equal(group.freeSeats,null);
   }
+});
+
+test("reviewed school2044 identity and both exact campus coordinates survive compilation",()=>{
+  const school=venues.filter(v=>v.schoolScopeSlug==='school-2044');
+  assert.equal(school.length,2);
+  for(const v of school){assert.match(v.name,/имени Героя Советского Союза А\. М\. Серебрякова/);assert.equal(v.displayName,v.name);assert.equal(v.photos.length,1);assert.equal(v.metro,'Физтех');assert.match(v.logoUrl??'',/school-2044\/logo-original/);}
+  assert.deepEqual(school.map(v=>[v.latitude,v.longitude]),[[55.932261,37.541054],[55.927015,37.542641]]);
+});
+test("live registry validates 43 exact distinct identities, preserves 8 unresolved groups without claiming success",()=>{
+  const r=annualMosRefreshSchema.parse(read('content/annual-mos-refresh.generated.json'));
+  assert.equal(Object.keys(r.groups).length,43);assert.equal(new Set(Object.values(r.groups).map(g=>g.cardId)).size,43);
+  assert.equal(r.expectedGroups,51);assert.equal(r.ok,false);
+  const updated=snapshot.offersByQuest.shmi.filter(o=>o.annual?.refreshedAt);
+  assert.equal(updated.length,43);
+  for(const o of updated){assert.equal(o.annual?.linkKind,'card');assert.match(o.mosBookingUrl??'',/^https:\/\/www\.mos\.ru\/pgu2\/activity\/card\/\d+$/);assert.ok(o.annual?.groupCode);assert.notEqual(o.annual?.lessonPrice,null);}
+  assert.equal(annualMosRefreshSchema.safeParse({...r,ok:true}).success,false);
+  assert.equal(annualMetadataSchema.safeParse({...updated[0].annual,ageMin:14,ageMax:7}).success,false);
+  const unresolved=snapshot.offersByQuest.shmi.filter(o=>o.annual?.refreshError==='MOS_GROUP_NOT_FOUND');
+  assert.equal(unresolved.length,8);
+  for(const o of unresolved)assert.deepEqual(getScheduleBookingMode(o,'Идёт набор'),{kind:'disabled',label:'Карточка на проверке'});
+  for(const code of ['MOS_AMBIGUOUS_GROUP','MOS_GROUP_MISMATCH','MOS_CARD_MISMATCH','MOS_LISTING_MISMATCH','MOS_IDENTITY_CHANGED','MOS_LOCATION_REVIEW_REQUIRED','MOS_FUTURE_UNKNOWN_ERROR']){
+    assert.equal(annualBookingNeedsReview({refreshError:code}),true);
+    const o={...updated[0],annual:{...updated[0].annual!,refreshError:code}};
+    assert.equal(getScheduleBookingMode(o,'Идёт набор').kind,'disabled');
+  }
+  for(const code of ['MOS_TIMEOUT','MOS_HTTP_503','MOS_PARTIAL_FIELDS'])assert.equal(annualBookingNeedsReview({refreshError:code}),false);
 });
 
 test("V1/V2 round trip preserves all weekly slots and dated metadata", () => {

@@ -37,6 +37,7 @@ import {
   buildYandexMapWidgetSrc,
 } from "@/lib/sites/yandex-map";
 import { cn } from "@/lib/utils";
+import { getSchoolProfile } from "@/content/school-profiles";
 
 type Props = {
   params: Promise<{ school: string }>;
@@ -113,6 +114,7 @@ export default async function SchoolPage({ params }: Props) {
   if (!school) notFound();
 
   const site = buildSiteScopeCards({
+    includeInactive: true,
     scopes: [school],
     quests,
     venues,
@@ -130,6 +132,7 @@ export default async function SchoolPage({ params }: Props) {
   });
   const siteQuests = filterQuestsForSchool(quests, venues, school.slug);
   const sitePhotos = uniqueSitePhotos(site);
+  const profile = getSchoolProfile(school.slug);
   const heroEyebrow =
     site.name !== site.fullName ? site.name : "Площадка BrainMaster";
   const mapCampusCount = site.campuses.filter((campus) => hasCoordinates(campus)).length;
@@ -141,9 +144,17 @@ export default async function SchoolPage({ params }: Props) {
       <PortalHero
         eyebrow={heroEyebrow}
         title={site.fullName}
-        description={`${site.locationSummary}. Посмотрите адрес, откройте карту и перейдите к расписанию или курсам этой площадки.`}
+        description={profile?.description ?? `${site.locationSummary}. Посмотрите адрес, откройте карту и перейдите к расписанию или курсам этой площадки.`}
         aside={
           <div className="grid gap-3 rounded-3xl border border-white/10 bg-black/20 p-4 text-sm backdrop-blur">
+            {profile && <div className="flex flex-wrap items-center gap-3">
+              <Image src={profile.logoUrl} alt={`Эмблема: ${profile.name}`} width={80} height={80} className="rounded-xl bg-white object-contain" />
+              <div className="grid gap-2">
+                {profile.website && <a href={profile.website} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center underline underline-offset-4">Официальный сайт ↗</a>}
+                {profile.telegram && <a href={profile.telegram} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center underline underline-offset-4">Канал площадки ↗</a>}
+              </div>
+            </div>}
+            {profile?.preparing && <p role="note" className="rounded-xl border border-slate-400/30 bg-slate-800 p-3 text-slate-100">Готовится к открытию. Идёт ремонт, занятий пока нет.</p>}
             <div>
               <p className="text-cyan-100/70 text-xs uppercase tracking-[0.16em]">
                 Сейчас доступно
@@ -395,8 +406,7 @@ export default async function SchoolPage({ params }: Props) {
                 Фото площадки
               </h2>
               <p className="mt-2 text-muted-foreground text-sm leading-relaxed">
-                Фото помогают заранее узнать вход, холл и учебный кабинет. Показываем
-                только согласованные материалы.
+                {profile ? "Фотографии зданий помогают узнать нужный корпус. Точный вход и кабинет уточните перед первым занятием." : "Фото помогают заранее узнать вход, холл и учебный кабинет. Показываем только согласованные материалы."}
               </p>
             </div>
           </div>
@@ -428,6 +438,7 @@ export default async function SchoolPage({ params }: Props) {
                   })()}
                   <figcaption className="px-3 py-2 text-muted-foreground text-xs">
                     {photo.alt ?? photo.campusName}
+                    {profile && Object.values(profile.campuses).filter(c => c.photoUrl === photo.url).map(c => <a key={c.photoUrl} href={c.mapUrl} target="_blank" rel="noopener noreferrer" className="mt-1 flex min-h-11 items-center underline">Источник фото: Яндекс Карты ↗</a>)}
                   </figcaption>
                 </figure>
               ))}

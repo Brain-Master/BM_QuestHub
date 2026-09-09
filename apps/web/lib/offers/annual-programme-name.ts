@@ -1,9 +1,9 @@
 /** Presentation policy; never infer study year from school, grade or group numbers. */
-export function annualProgrammeName(sourceTitle: string) {
+export function annualProgrammeName(sourceTitle: string, confirmedYear?: 1 | 2 | 3) {
   const normalized = sourceTitle.normalize("NFKC");
   const markedYear = normalized.match(/ШМИ\s*[-–]?\s*([1-3])(?!\d)/iu)?.[1];
-  const explicitYear = normalized.match(/([1-3])\s*(?:[-–]?\s*(?:й|ый|ой))?\s*год(?:а)?\s+обучения/iu)?.[1];
-  const studyYear = markedYear ?? explicitYear ?? null;
+  const explicitYear = normalized.match(/([1-3])\s*(?:[-–]?\s*(?:й|ый|ой))?\s*год(?:а)?(?:\s+обучения|\s*\))/iu)?.[1];
+  const studyYear = confirmedYear === undefined ? markedYear ?? explicitYear ?? null : String(confirmedYear);
   const robotics = /робототехник/iu.test(normalized);
   const grades = robotics ? normalized.match(/([1-9])\s*[-–]\s*([1-9])\s*класс/iu) : null;
   const qualifiers = [

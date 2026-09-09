@@ -12,6 +12,7 @@ import { mosEnrolledSyncEnabled } from "./mos-enrolled-enabled.mjs";
 import { patchPlannerRunStarted } from "./mos-sync-state.mjs";
 import { writeRunManifest } from "./mos-sync-run.mjs";
 import { sendYmqMessages } from "./mos-ymq.mjs";
+import { currentMosRows, sheetGroupLifecycles } from "./mos-group-lifecycle.mjs";
 
 function enrolledBatchSize() {
   const n = Number(process.env.MOS_ENROLLED_BATCH_SIZE || 8);
@@ -66,7 +67,10 @@ export async function runMosEnrolledPlan(options) {
   const token = await getToken();
   const { spreadsheetId, range } = hotConfig();
   const grid = await fetchFormatsGrid(token, spreadsheetId, range);
-  const { byUrl, skippedRows } = collectFormatsByMosUrl(grid);
+  const collected = collectFormatsByMosUrl(grid);
+  const groupGrid = await fetchFormatsGrid(token, spreadsheetId, process.env.GOOGLE_SHEETS_HOT_RANGE_GROUPS?.trim() || "'Группы'!A:AZ");
+  const selection = currentMosRows(collected.byUrl, sheetGroupLifecycles(groupGrid));
+  const { byUrl } = selection, { skippedRows } = collected;
   const urls = [...byUrl.keys()].sort();
   const batchSize = enrolledBatchSize();
   const urlBatches = chunkUrls(urls, batchSize);
@@ -86,6 +90,10 @@ export async function runMosEnrolledPlan(options) {
     urlCount: urls.length,
     skippedRows,
     byUrl: serializeByUrl(byUrl),
+    urlBatches,
+    lifecycleDate: selection.lifecycleDate,
+    archivedGroupIds: selection.archivedGroupIds,
+    lifecycleErrors: selection.errors,
   };
 
   if (!dryRun) {
@@ -101,6 +109,10 @@ export async function runMosEnrolledPlan(options) {
       };
     }
 
+    // Workers must never race a later counter reset from the planner.
+    const stateOk = await patchPlannerRunStarted({ runId, batchesTotal });
+    if (!stateOk) return {ok:false,reason:"planner_state_write_failed",runId,batchesTotal,urlCount:urls.length};
+
     const messages = urlBatches.map((batchUrls, batchIndex) => ({
       runId,
       batchIndex,
@@ -112,10 +124,6 @@ export async function runMosEnrolledPlan(options) {
       onProgress?.(`[mos-plan] enqueued ${messages.length} YMQ message(s)`);
     }
 
-    const stateOk = await patchPlannerRunStarted({ runId, batchesTotal });
-    if (!stateOk) {
-      onProgress?.("[mos-plan] WARN planner state patch failed (S3)");
-    }
   }
 
   return {

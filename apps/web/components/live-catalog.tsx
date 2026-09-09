@@ -35,7 +35,7 @@ export function LiveCatalog({
       ) : null}
       {status === "error" ? (
         <p className="mb-4 text-amber-200/90 text-sm" role="status">
-          Не удалось обновить расписание с CDN — показаны курсы без смен.
+          Не удалось обновить расписание. Доступные сохранённые данные могут быть устаревшими; отсутствие групп пока не подтверждено.
         </p>
       ) : null}
       <CatalogPageClient
@@ -44,7 +44,7 @@ export function LiveCatalog({
         worlds={worlds}
         fixedSchool={fixedSchool}
         title={title}
-        emptyMessage={emptyMessage}
+        emptyMessage={status === "loading" ? "Проверяем наличие групп…" : status === "error" ? "Источник расписания недоступен. Попробуйте обновить страницу." : emptyMessage}
       />
     </div>
   );

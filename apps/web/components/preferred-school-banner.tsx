@@ -35,9 +35,6 @@ export function PreferredSchoolBanner({ mode }: Props) {
   return (
     <aside className="mb-8 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-primary/25 bg-primary/10 px-5 py-4 text-sm">
       <div>
-        <p className="font-medium text-foreground">
-          Сейчас показаны все {mode === "agenda" ? "смены" : "курсы"} BrainMaster.
-        </p>
         <p className="mt-1 text-muted-foreground">
           Для вас сохранена площадка {preferred.name}.{" "}
           <Link href={href} className="font-medium text-primary hover:text-primary/80">

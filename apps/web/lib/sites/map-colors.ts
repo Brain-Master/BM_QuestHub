@@ -1,5 +1,10 @@
 import type { SiteScopeCard } from "@/lib/sites/scope-card";
 
+export const INACTIVE_MAP_MARKER_COLOR = "#94a3b8";
+export function campusHasNoGroups(site: SiteScopeCard, campus: SiteScopeCard["campuses"][number]): boolean {
+  return (campus.shiftCount ?? site.shiftCount) === 0;
+}
+
 const GOLDEN_ANGLE = 137.508;
 const BASE_HUE = 24;
 
@@ -12,6 +17,7 @@ function hashSlug(value: string): number {
 }
 
 export function getSiteMapColor(site: SiteScopeCard): string {
+  if (site.shiftCount === 0) return INACTIVE_MAP_MARKER_COLOR;
   if (site.mapColor) return site.mapColor;
 
   const hue = (hashSlug(site.slug) * GOLDEN_ANGLE + BASE_HUE) % 360;
@@ -26,7 +32,7 @@ export function buildSiteMapColorMap(sites: SiteScopeCard[]): Map<string, string
   return new Map(
     uniqueSites.map((site, index) => {
       const hue = (BASE_HUE + index * GOLDEN_ANGLE) % 360;
-      return [site.slug, site.mapColor ?? `hsl(${hue.toFixed(0)} 82% 56%)`];
+      return [site.slug, site.shiftCount === 0 ? INACTIVE_MAP_MARKER_COLOR : site.mapColor ?? `hsl(${hue.toFixed(0)} 82% 56%)`];
     }),
   );
 }

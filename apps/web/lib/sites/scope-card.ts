@@ -2,7 +2,7 @@ import type { SchoolScope } from "@/lib/offers/agenda";
 import type { Quest, Venue, World } from "@/lib/schemas";
 import { pluralizeRuLabel } from "@/lib/i18n/pluralize-ru";
 import { buildAgendaItems } from "@/lib/offers/agenda";
-import { filterQuestsForSchool } from "@/lib/school-scope";
+import { resolveScheduleStatusKey } from "@/lib/offers/schedule-board";
 import { resolveCampusHeadline } from "@/lib/sites/campus-label";
 import { DEFAULT_CITY, getCityLabel } from "@/lib/sites/city-card";
 
@@ -10,6 +10,8 @@ export { DEFAULT_CITY };
 
 export type SiteCampus = {
   slug: string;
+  /** Current groups at this exact address, not across the whole school. */
+  shiftCount?: number;
   name: string;
   headline: string;
   address: string;
@@ -81,21 +83,24 @@ export function buildSiteScopeCards(params: {
   worlds: World[];
   /** When true, keep sites with courses even if schedule rows are not loaded yet. */
   scheduleLoading?: boolean;
+  /** Profile/QR identity survives even when no current groups are available. */
+  includeInactive?: boolean;
 }): SiteScopeCard[] {
   const scheduleLoading = params.scheduleLoading ?? false;
   return params.scopes
     .map((scope) => {
       const primaryVenue = scope.venues[0];
       const city = primaryVenue?.city ?? DEFAULT_CITY;
-      const scopedQuests = filterQuestsForSchool(params.quests, params.venues, scope.slug);
+      const scopeVenues = new Set(scope.venues.map(v=>v.slug));
       const scopedAgendaItems = buildAgendaItems({
-        quests: params.quests,
+        quests: params.quests.filter(q=>q.activeInCampaign),
         venues: params.venues,
         worlds: params.worlds,
-        schoolSlug: scope.slug,
-      });
+      }).filter(item=>scopeVenues.has(item.venue.slug) && !["finished","cancelled"].includes(resolveScheduleStatusKey(item.offer)));
+      const scopedQuests = params.quests.filter(q=>scopedAgendaItems.some(item=>item.quest.slug===q.slug));
       const campuses = scope.venues.map((venue) => ({
         slug: venue.slug,
+        shiftCount: scopedAgendaItems.filter(item => item.venue.slug === venue.slug).length,
         name: venue.name,
         headline: resolveCampusHeadline(scope.venues, venue),
         address: venue.address,
@@ -146,9 +151,9 @@ export function buildSiteScopeCards(params: {
       };
     })
     .filter((card) => {
+      if (params.includeInactive) return true;
       if (!card.listedOnSites) return false;
       if (scheduleLoading) return card.courseCount > 0;
-      return card.courseCount > 0 || card.shiftCount > 0;
+      return card.shiftCount > 0;
     });
 }
-

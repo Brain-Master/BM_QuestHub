@@ -1,4 +1,5 @@
 import { GoogleAuth } from "google-auth-library";
+import { currentMosRows, sheetGroupLifecycles, groupLifecycle } from "./mos-group-lifecycle.mjs";
 
 import {
   initMosCookieSession,
@@ -257,10 +258,13 @@ export async function syncMosEnrolledFromPortal(options) {
   const token = await getToken();
   const { spreadsheetId, range } = hotConfig();
   const grid = await fetchFormatsGrid(token, spreadsheetId, range);
-  const { byUrl, skippedRows } = collectFormatsByMosUrl(grid);
+  const collected = collectFormatsByMosUrl(grid);
+  const groupGrid = await fetchFormatsGrid(token, spreadsheetId, process.env.GOOGLE_SHEETS_HOT_RANGE_GROUPS?.trim() || "'Группы'!A:AZ");
+  const selection = currentMosRows(collected.byUrl, sheetGroupLifecycles(groupGrid));
+  const { byUrl } = selection, { skippedRows } = collected;
 
   const delayMs = Number(process.env.MOS_ENROLLED_URL_DELAY_MS || 400);
-  const errors = [];
+  const errors = [...selection.errors];
   let authAlertSent = false;
   let updatedRows = 0;
   let unchanged = 0;
@@ -277,9 +281,7 @@ export async function syncMosEnrolledFromPortal(options) {
   const prevSnapshot = loadedSnapshot.snapshot;
   const snapshotReadOk = loadedSnapshot.readOk;
   if (!snapshotReadOk) {
-    onProgress?.(
-      "[mos-enrolled] WARN enrolled snapshot S3 read failed (timeout?) — deltas may be wrong",
-    );
+    throw Error("MOS_BASELINE_READ_FAILED");
   }
   /** @type {Record<string, { enrolled: number, shiftGroupId: string, formatType: string }>} */
   const nextSnapshot = { ...prevSnapshot };
@@ -302,8 +304,14 @@ export async function syncMosEnrolledFromPortal(options) {
    * @param {string} url
    */
   async function processOneUrl(url) {
-    const bucket = byUrl.get(url);
-    if (!bucket) return;
+    const planned = byUrl.get(url);
+    if (!planned) { errors.push({url,message:"MOS_ROWS_MISSING"}); return; }
+    const bucket = {...planned, rows: planned.rows.filter(row => {
+      const result = groupLifecycle(row.lifecycle);
+      if (result.state === "unknown") errors.push({url,message:result.reason});
+      return result.state === "current" || result.state === "future";
+    })};
+    if (!bucket.rows.length) return;
 
     const hotTotal = hotEnrolledTotalForUrl(
       bucket.rows.map((row) => ({ enrolled: row.enrolled })),
@@ -496,10 +504,11 @@ export async function syncMosEnrolledFromPortal(options) {
   }
 
   return {
-    ok,
+    ok: ok && snapshotOk && stateOk,
     skipped: false,
     reason: gate.reason,
     urls: urls.length,
+    archivedGroupIds: selection.archivedGroupIds,
     updatedRows: dryRun ? 0 : updatedRows,
     wouldUpdateRows: dryRun ? pendingWrites.length : undefined,
     unchanged,

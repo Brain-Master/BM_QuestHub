@@ -59,6 +59,7 @@ export function useLiveSchedule(
     isValidating,
     refresh: () => void mutate(),
     liveEnabled: enabled,
+    hasLiveSnapshot: Boolean(data && isUsableOffersSnapshot(data)),
     snapshotGeneratedAt: (() => {
       const liveAt =
         data && isUsableOffersSnapshot(data) ? data.generatedAt : null;

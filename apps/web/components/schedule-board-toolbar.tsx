@@ -270,6 +270,7 @@ export function ScheduleBoardToolbar({
                 <SelectValue placeholder="Площадка" />
               </SelectTrigger>
               <SelectContent>
+                {!sites.includes(site) && <SelectItem value={site} disabled>{site} — нет групп</SelectItem>}
                 {sites.map((s) => (
                   <SelectItem key={s} value={s}>
                     {s}
@@ -298,6 +299,7 @@ export function ScheduleBoardToolbar({
               <SelectValue placeholder="Формат" />
             </SelectTrigger>
             <SelectContent>
+              {!formats.includes(format) && <SelectItem value={format} disabled>{format} — нет групп</SelectItem>}
               {formats.map((f) => (
                 <SelectItem key={f} value={f}>
                   {f}
@@ -326,6 +328,7 @@ export function ScheduleBoardToolbar({
                 <SelectValue placeholder="Возраст" />
               </SelectTrigger>
               <SelectContent>
+                {!ages.includes(age) && <SelectItem value={age} disabled>{age} — нет групп</SelectItem>}
                 {ages.map((a) => (
                   <SelectItem key={a} value={a}>
                     {a}
@@ -354,6 +357,7 @@ export function ScheduleBoardToolbar({
               <SelectValue placeholder="Статус" />
             </SelectTrigger>
             <SelectContent>
+              {!statuses.includes(status) && <SelectItem value={status} disabled>{status} — нет групп</SelectItem>}
               {statuses.map((s) => (
                 <SelectItem key={s} value={s}>
                   {s}

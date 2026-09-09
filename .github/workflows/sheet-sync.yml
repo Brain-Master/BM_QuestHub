@@ -12,6 +12,10 @@ on:
           - hot
           - cold
 
+concurrency:
+  group: sheet-sync-publication
+  cancel-in-progress: false
+
 jobs:
   sync:
     runs-on: ubuntu-latest
@@ -43,6 +47,11 @@ jobs:
 
       - name: Sync from Google Sheets
         env:
+          S3_BUCKET: ${{ secrets.S3_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          S3_ENDPOINT: ${{ vars.S3_ENDPOINT }}
+          AWS_DEFAULT_REGION: ru-central1
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
           GOOGLE_SHEETS_HOT_SPREADSHEET_ID: ${{ vars.GOOGLE_SHEETS_HOT_SPREADSHEET_ID }}
           GOOGLE_SHEETS_HOT_RANGE_GROUPS: "'Группы'!A:AZ"
@@ -64,6 +73,18 @@ jobs:
           S3_ENDPOINT: ${{ vars.S3_ENDPOINT }}
           AWS_DEFAULT_REGION: ru-central1
         run: node scripts/run-s3-sync.mjs data-hot
+
+      - name: Archive annual card refresh evidence
+        if: always() && inputs.tier == 'hot'
+        uses: actions/upload-artifact@v4
+        with:
+          name: annual-mos-refresh
+          path: apps/web/content/annual-mos-refresh.generated.json
+          retention-days: 30
+
+      - name: Require complete annual refresh coverage
+        if: inputs.tier == 'hot'
+        run: node -e 'const r = require("./apps/web/content/annual-mos-refresh.generated.json"); if (!r.ok) { console.error(`Annual refresh incomplete ${r.verifiedGroups}/${r.expectedGroups}; validated last-known values preserved`); process.exit(1); }'
 
       - name: Upload cold catalog to S3
         if: inputs.tier == 'cold'
