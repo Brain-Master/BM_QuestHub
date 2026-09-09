@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-labelledby="title">
+  <title id="title">Мехвариум — инженерное пространство</title>
+  <desc>Веб-адаптация компактного знака по эскизу владельца от 10 сентября 2026 года; не исходный вектор брендбука.</desc>
+  <defs>
+    <linearGradient id="green" x1="24" y1="24" x2="138" y2="136" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#19c94f"/>
+      <stop offset="1" stop-color="#0eb647"/>
+    </linearGradient>
+  </defs>
+  <g fill="url(#green)">
+    <path d="M20 136 104 24H144L60 136Z"/>
+    <path d="M24 24H60L78 48 58 76Z"/>
+    <path d="M102 88 138 136H100L82 112Z"/>
+  </g>
+</svg>
