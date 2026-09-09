@@ -50,7 +50,10 @@ test('owner-confirmed teachers replace portal placeholders in six1212 groups and
   assert.equal(base.name,'Мехвариум — база BrainMaster');assert.equal(base.address,'Рязанский проспект, 38');
   assert.match(base.entranceNote??'',/ещё не открыта/);assert.match(base.contactNote??'',/дате открытия/);
   assert.equal(quests.filter(q=>q.activeInCampaign).flatMap(q=>q.offers).filter(o=>o.venueSlug===base.slug&&!['finished','cancelled'].includes(resolveScheduleStatusKey(o))).length,0);
-  assert.equal(base.photos.length,0);assert.equal(base.logoUrl,'/brand/brainmaster-mark.png');
+  assert.equal(base.photos.length,0);assert.equal(base.logoUrl,'/sites/bm-base-moscow/mechvarium-mark.svg');
+  const mark=fs.readFileSync(`public${base.logoUrl}`,'utf8');
+  assert.match(mark,/viewBox="0 0 160 160"/);assert.match(mark,/Мехвариум/);
+  assert.doesNotMatch(mark,/<script|<image|<foreignObject|\shref=/i);
 });
 test("reviewed profiles retain the seven pre-existing metro/district fields not replaced by new source facts",()=>{
   for(const [slug,context] of Object.entries({

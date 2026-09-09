@@ -3,7 +3,7 @@ type CampusProfile = {address:string; latitude:number; longitude:number; metro?:
 type SchoolProfile = {name:string; website?:string; telegram?:string; logoUrl:string; description:string; verifiedAt:string; nameSource:string; preparing?:boolean; campuses:Record<string,CampusProfile>};
 export const schoolProfiles: Record<string,SchoolProfile> = {
   "bm-base-moscow": {
-    name:"Мехвариум — база BrainMaster",logoUrl:"/brand/brainmaster-mark.png",preparing:true,
+    name:"Мехвариум — база BrainMaster",logoUrl:"/sites/bm-base-moscow/mechvarium-mark.svg",preparing:true,
     description:"Готовим к открытию собственную базу BrainMaster «Мехвариум» на Рязанском проспекте, 38. Сейчас идёт ремонт и подготовка пространства. Площадка ещё не открыта, занятия и набор пока не проводятся. О начале работы сообщим отдельно.",
     verifiedAt:"2026-09-09",nameSource:"owner:2026-09-09",
     campuses:{"bm-base-moscow":{address:"Рязанский проспект, 38",latitude:55.71729,longitude:37.78857,district:"Рязанский",mapUrl:"https://yandex.ru/maps/?pt=37.78857,55.71729&z=17&l=map"}},

@@ -15,7 +15,7 @@
     },
     "map": {
       "path": "data/v2/map-snapshot.json",
-      "contentHash": "sha256:aa9dca772afd8f6a502e5deb42089470a4d6729f3ce9e0289485f5f39f4d2413"
+      "contentHash": "sha256:152e999f1d323cdfa0c20ceb9cebd18f550905e5e3b538f9cd28fd6e441ee7c5"
     }
   }
 }

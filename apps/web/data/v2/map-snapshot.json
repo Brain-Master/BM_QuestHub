@@ -3,7 +3,7 @@
   "generatedAt": "2026-09-09T04:39:35.969Z",
   "source": "annual-csv-integration",
   "integrity": {
-    "contentHash": "sha256:aa9dca772afd8f6a502e5deb42089470a4d6729f3ce9e0289485f5f39f4d2413"
+    "contentHash": "sha256:152e999f1d323cdfa0c20ceb9cebd18f550905e5e3b538f9cd28fd6e441ee7c5"
   },
   "venues": [
     {
@@ -171,7 +171,7 @@
       "metro": "—",
       "city": "moscow",
       "district": "Рязанский",
-      "logoUrl": "/brand/brainmaster-mark.png",
+      "logoUrl": "/sites/bm-base-moscow/mechvarium-mark.svg",
       "latitude": 55.71729,
       "longitude": 37.78857,
       "directions": [
