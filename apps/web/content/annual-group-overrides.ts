@@ -20,3 +20,10 @@ export const reviewedGroupCodes: Record<string, string> = {
   "listing:2415012": "К7419-26",
   "listing:2542312": "К7732-26",
 };
+
+/** Owner-confirmed 2026-09-21: exact 2103 groups, 1000 RUB / 1 academic hour. */
+const school2103PricedGroups = new Set(['К3015-26','К3016-26','К3020-26','К3021-26','К3022-26','К3024-26','К3025-26','К3026-26','К3027-26']);
+export function reviewedLessonPrice(schoolSlug: string, groupCode: string | null) {
+  return schoolSlug === 'school-2103' && groupCode !== null && school2103PricedGroups.has(groupCode)
+    ? {rubles:1000,minutes:45,source:'owner:2026-09-21' as const} : undefined;
+}

@@ -11,14 +11,14 @@ const catalog=read("data/v2/catalog-snapshot.json");
 const offers=parseOffersSnapshot(read("data/offers-snapshot.json"));
 const quests=questSchema.array().parse(catalog.courses.map((q:{slug:string})=>({...q,offers:offers.offersByQuest[q.slug]??[]})));
 const items=buildAgendaItems({quests,venues:venueSchema.array().parse(read("data/v2/map-snapshot.json").venues),worlds:worldSchema.array().parse(catalog.worlds)}).map(i=>buildScheduleBoardItem(i,undefined,new Date("2026-09-09")));
-test("30 school source names collapse into one programme, not 51 course cards",()=>{
+test("school source names collapse into one programme, not 60 course cards",()=>{
  const groups=groupAnnualProgrammes(items);
  assert.equal(groups.length,1);assert.equal(groups[0].slug,"shmi");
  assert.equal(groups[0].title,"Школа Молодого IT-Инженера");
- assert.equal(groups[0].campuses.length,8);
+ assert.equal(groups[0].campuses.length,10);
  const rows=groups.flatMap(g=>g.campuses.flatMap(c=>c.items));
- assert.equal(rows.length,51);assert.equal(new Set(rows.map(r=>r.offer.id)).size,51);
- assert.equal(rows.flatMap(r=>r.offer.weeklySlots??[]).length,52);
+ assert.equal(rows.length,60);assert.equal(new Set(rows.map(r=>r.offer.id)).size,60);
+ assert.equal(rows.flatMap(r=>r.offer.weeklySlots??[]).length,61);
  for(const r of rows){assert.ok(r.offer.mosBookingUrl);assert.equal(r.programFilterLabel,"Школа Молодого IT-Инженера");assert.ok(!r.displayTitle.includes("(платно)"));}
 });
 test("four canonical programmes remain distinct even with identical presentation titles",()=>{

@@ -28,10 +28,13 @@ export const annualMetadataSchema = z.object({
   ageMin: count, ageMax: count,
   totalSeats: count, freeSeats: count,
   lessonPrice: count, coursePrice: count,
+  sourceLessonPrice: count.optional(),
+  lessonPriceSource: z.literal('owner:2026-09-21').optional(),
   linkKind: z.enum(["card", "search"]),
   limitedSource: z.boolean(),
 }).strict().refine(m => m.totalSeats === null || m.freeSeats === null || m.freeSeats <= m.totalSeats, "Invalid annual capacity")
-  .refine(m => m.ageMin === null || m.ageMax === null || m.ageMin <= m.ageMax, "Invalid annual ages");
+  .refine(m => m.ageMin === null || m.ageMax === null || m.ageMin <= m.ageMax, "Invalid annual ages")
+  .refine(m => (m.lessonPriceSource === undefined) === (m.sourceLessonPrice === undefined), "Incomplete price provenance");
 
 export const annualMosCardSchema = z.object({
   cardId: z.string().regex(/^\d+$/), listingId: z.string().regex(/^\d+$/), groupCode: z.string().min(1),

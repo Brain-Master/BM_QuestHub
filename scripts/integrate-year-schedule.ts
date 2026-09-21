@@ -6,7 +6,7 @@ import crypto from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { annualLocations, annualWorld } from "../apps/web/content/year-integration";
 import { getSchoolProfile, reviewedCampusProfile } from "../apps/web/content/school-profiles";
-import { reviewedStudyYear, reviewedGroupCodes, reviewedTeacher } from "../apps/web/content/annual-group-overrides";
+import { reviewedStudyYear, reviewedGroupCodes, reviewedTeacher, reviewedLessonPrice } from "../apps/web/content/annual-group-overrides";
 import { annualMosRefreshSchema } from "../apps/web/lib/offers/annual-schedule";
 import { yearPrograms } from "../apps/web/content/year-programs";
 import { projectAnnualWorkspace, yearScheduleSchema } from "../apps/web/lib/year-schedule";
@@ -126,7 +126,9 @@ const annualOffers = source.groups.map(original => {
   const g = live ? { ...original, ...live, teacher, title: original.title, linkKind: "card" as const,
     limitedSource: [live.ageMin,live.ageMax,live.lessonPrice,live.coursePrice,live.totalSeats,live.freeSeats,teacher].some(v=>v===null) } : {...original, teacher};
   const weekly = g.slots.map(s => `${s.weekday}: ${s.start}–${s.end}`).join("; ");
-  const price = g.lessonPrice === null ? "Стоимость уточняется" : `${g.lessonPrice} ₽ / занятие`;
+  const reviewedPrice = reviewedLessonPrice(location.schoolScopeSlug, g.groupCode);
+  const effectiveLessonPrice = reviewedPrice?.rubles ?? g.lessonPrice;
+  const price = reviewedPrice ? "1 000 ₽ / занятие · 1 акад. час (45 мин)" : g.lessonPrice === null ? "Стоимость уточняется" : `${g.lessonPrice} ₽ / занятие`;
   const name = annualProgrammeName(g.title, studyYear);
   return venueOfferSchema.parse({ id: `year:${g.id}`, venueSlug: location.slug, shiftLabel: name.short,
     startDate: g.courseStart, endDate: g.courseEnd, startTime: g.slots[0].start, endTime: g.slots[0].end,
@@ -136,11 +138,12 @@ const annualOffers = source.groups.map(original => {
       teacherSourceConflict: !!live?.teacher && !!teacher && live.teacher.split(" ")[0] !== teacher.split(" ")[0],
       asOf: source.asOf, sourceSha256: source.sourceSha256, listingId: g.listingId, groupCode: g.groupCode,
       admission: g.status, teacher: g.teacher, ageMin: g.ageMin, ageMax: g.ageMax, totalSeats: g.totalSeats, freeSeats: g.freeSeats,
-      lessonPrice: g.lessonPrice, coursePrice: g.coursePrice, linkKind: g.linkKind, limitedSource: g.limitedSource },
+      lessonPrice: effectiveLessonPrice, coursePrice: g.coursePrice, linkKind: g.linkKind, limitedSource: g.limitedSource,
+      ...(reviewedPrice ? {sourceLessonPrice:g.lessonPrice,lessonPriceSource:reviewedPrice.source} : {}) },
     sheetStatus: "Идёт набор",
     enrolled: g.totalSeats !== null && g.freeSeats !== null && g.totalSeats > 0 ? g.totalSeats - g.freeSeats : undefined,
     maxCapacity: g.totalSeats !== null && g.totalSeats > 0 ? g.totalSeats : undefined,
-    scheduleCard: { displayTitle: name.short, teacherName: g.teacher, description: `Данные mos.ru на ${live?.refreshedAt.slice(0,10) ?? source.asOf}. Условия и наличие мест проверьте перед записью.`,
+    scheduleCard: { displayTitle: name.short, teacherName: g.teacher, description: `Данные mos.ru на ${live?.refreshedAt.slice(0,10) ?? source.asOf}. ${reviewedPrice ? "Стоимость подтверждена BrainMaster: 1 000 ₽ за занятие (1 академический час, 45 минут). " : ""}Условия и наличие мест проверьте перед записью.`,
       ageLabel: g.ageMin === null || g.ageMax === null ? "Уточните у школы" : `${g.ageMin}–${g.ageMax} лет`,
       tags: ["Годовая программа", `Срез ${source.asOf}`], registrationChannel: "mos_ru", allowWaitlistWhenSoldOut: false,
       variants: [{ id: `year:${g.id}:main`, type: "Годовая группа", time: weekly, priceLabel: price }] },

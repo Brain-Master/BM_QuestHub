@@ -9,7 +9,7 @@ test("explicit source levels have one short/full naming policy", () => {
   for(const title of ["ШМИ2", "1517 (2-ой год обучения) (2 группа)"]) assert.equal(annualProgrammeName(title).studyYear,2);
 });
 test("school, grade, group and academic-year digits are never inferred as study year", () => {
-  for(const title of ['1383. "Школа молодого ИТ-инженера" (2026-2027 уч.год)',"Школа Молодого IT-Инженера 1-2 (1-6 классы)","Школа Молодого IT-Инженера 3 (1-6 классы)","Школа молодого IT инженера 1-М","ШМИ Группа 1"]) {
+  for(const title of ['Школа Молодого IT-Инженера ШО-3 (26-27 уч.г.)','11 год обучения','12 год обучения','13 год обучения','1383. "Школа молодого ИТ-инженера" (2026-2027 уч.год)',"Школа Молодого IT-Инженера 1-2 (1-6 классы)","Школа Молодого IT-Инженера 3 (1-6 классы)","Школа молодого IT инженера 1-М","ШМИ Группа 1"]) {
     assert.equal(annualProgrammeName(title).studyYear,null);
     assert.equal(annualProgrammeName(title).short,"ШМИ");
   }

@@ -43,6 +43,19 @@ test('owner teacher assignments survive later portal refresh facts and repeated 
  f.write('offers-snapshot.json',hot);
  for(let i=0;i<2;i++){const r=f.compile('hot');assert.equal(r.status,0,r.stderr);for(const row of f.read('offers-snapshot.json').offersByQuest.shmi.filter(o=>o.venueSlug.startsWith('school-1212-'))){assert.equal(row.annual.teacher,'Толмачева Василиса Владимировна');assert.equal(row.scheduleCard.teacherName,row.annual.teacher);assert.equal(row.annual.refreshedAt,'2026-09-10T12:00:00.000Z');}}
 });
+test('school2103 compiler reapplies owner1000 after newer raw price recovery, without contaminating the raw fact',t=>{
+  const f=fixture(t),hot=f.read('offers-snapshot.json');
+  const row=hot.offersByQuest.shmi.find(o=>o.id==='year:К3015-26');assert.ok(row);
+  row.annual.refreshedAt='2026-09-24T12:00:00.000Z';row.annual.sourceLessonPrice=900;
+  row.annual.lessonPrice=1000;f.write('offers-snapshot.json',hot);
+  for(let i=0;i<2;i++){
+    const r=f.compile('hot');assert.equal(r.status,0,r.stderr);
+    const next=f.read('offers-snapshot.json').offersByQuest.shmi.find(o=>o.id===row.id);
+    assert.equal(next.annual.sourceLessonPrice,900);assert.equal(next.annual.lessonPrice,1000);
+    assert.equal(next.priceLabel,'1 000 ₽ / занятие · 1 акад. час (45 мин)');
+    assert.equal(next.scheduleCard.variants[0].priceLabel,next.priceLabel);
+  }
+});
 test('real hot compiler preserves updated/deleted legacy rows, new annual IDs and newer refresh time; never writes cold',t=>{
   const f=fixture(t),hot=f.read('offers-snapshot.json');
   const [legacy]=Object.keys(hot.offersByQuest).filter(k=>k!=='shmi');
@@ -50,13 +63,13 @@ test('real hot compiler preserves updated/deleted legacy rows, new annual IDs an
   hot.offersByQuest[legacy][0].priceLabel='Обновлённая стоимость';
   const extra={...structuredClone(hot.offersByQuest.shmi[0]),id:'year:another-reviewed-source'};
   hot.offersByQuest.shmi=[extra]; // Sheets refresh no longer contains the 51 CSV rows.
-  hot.generatedAt='2026-09-10T12:00:00.000Z';f.write('offers-snapshot.json',hot);
+  hot.generatedAt='2026-09-24T12:00:00.000Z';f.write('offers-snapshot.json',hot);
   const before=f.contents(),r=f.compile('hot');assert.equal(r.status,0,r.stderr);
   const after=f.read('offers-snapshot.json');
   assert.deepEqual(after.offersByQuest[legacy],hot.offersByQuest[legacy]);
   assert.equal(after.generatedAt,hot.generatedAt);
   assert.deepEqual(after.offersByQuest.shmi.find(o=>o.id===extra.id),extra);
-  assert.equal(after.offersByQuest.shmi.length,52);
+  assert.equal(after.offersByQuest.shmi.length,61);
   for(const [key,bytes] of Object.entries(before))if(key!=='offers-snapshot.json')assert.equal(f.contents()[key],bytes,key);
   const frozen=f.contents();assert.equal(f.compile('hot').status,0);assert.deepEqual(f.contents(),frozen);assert.equal(f.compile('hot',true).status,0);
 });
@@ -65,14 +78,14 @@ test('real cold compiler restores annual catalogue after refresh, keeps each new
   catalog.courses=catalog.courses.filter(c=>!['shmi','it-academy','projects','olympiad-league'].includes(c.slug));
   catalog.worlds=catalog.worlds.filter(w=>w.slug!=='brainmaster-engineering');
   map.venues=map.venues.filter(v=>!v.slug.includes('school-2044'));
-  catalog.generatedAt='2026-09-11T11:00:00.000Z';map.generatedAt='2026-09-12T12:00:00.000Z';manifest.generatedAt='2026-09-13T13:00:00.000Z';
+  catalog.generatedAt='2026-09-24T11:00:00.000Z';map.generatedAt='2026-09-25T12:00:00.000Z';manifest.generatedAt='2026-09-26T13:00:00.000Z';
   catalog.courses[0].tagline='Обновлённое описание';
   f.write('v2/catalog-snapshot.json',catalog);f.write('v2/map-snapshot.json',map);f.write('v2/site-manifest.json',manifest);
   const before=f.contents(),r=f.compile('cold');assert.equal(r.status,0,r.stderr);
   assert.equal(f.contents()['offers-snapshot.json'],before['offers-snapshot.json']);
   assert.deepEqual(f.read('v2/catalog-snapshot.json').courses[0],catalog.courses[0]);
   assert.equal(f.read('v2/catalog-snapshot.json').courses.length,9);
-  assert.equal(f.read('v2/map-snapshot.json').venues.length,16);
+  assert.equal(f.read('v2/map-snapshot.json').venues.length,17);
   assert.equal(f.read('v2/catalog-snapshot.json').generatedAt,catalog.generatedAt);
   assert.equal(f.read('v2/map-snapshot.json').generatedAt,map.generatedAt);
   assert.equal(f.read('v2/site-manifest.json').generatedAt,manifest.generatedAt);

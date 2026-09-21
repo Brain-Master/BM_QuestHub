@@ -1,7 +1,7 @@
 {
   "version": 1,
   "asOf": "2026-09-08",
-  "sourceSha256": "ecf2aa67d7490a5de15e1242ec333ac3c3b34ccc52167c4f0fcee474d98f8de7",
+  "sourceSha256": "23b9dbb84ccb2e2eb577efaf94ecdca1c952603ab5ea6ebb9cb5b68d6c594c97",
   "locations": [
     {
       "id": "LOC-001",
@@ -50,6 +50,18 @@
       "school": "Школа № 2044",
       "address": "г. Москва, вн.тер. м.о. Северный, Дмитровское ш., д. 165Е, к. 8",
       "metro": "Физтех (12 мин); Новодачная (20 мин); Долгопрудная (37 мин)"
+    },
+    {
+      "id": "LOC-009",
+      "school": "Школа № 2103",
+      "address": "г. Москва, вн.тер. м.о. Ясенево, Голубинская ул., д. 13, к. 2",
+      "metro": "Ясенево"
+    },
+    {
+      "id": "LOC-010",
+      "school": "Школа № 2103",
+      "address": "г. Москва, вн.тер. м.о. Ясенево, Голубинская ул., д. 5, к. 4",
+      "metro": "Ясенево"
     }
   ],
   "groups": [
@@ -1484,6 +1496,258 @@
       ],
       "link": "https://www.mos.ru/pgu2/activity/groups?keyword=2549781",
       "linkKind": "search",
+      "limitedSource": false
+    },
+    {
+      "id": "К3015-26",
+      "groupCode": "К3015-26",
+      "listingId": "2560824",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера BrainMaster_ШО-4__1й год_1 группа (26-27 уч.г.)",
+      "locationId": "LOC-009",
+      "teacher": "Матвеева Юлия Константиновна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 12,
+      "ageMin": 6,
+      "ageMax": 8,
+      "lessonPrice": 888,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-14",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Понедельник",
+          "start": "14:00",
+          "end": "14:45"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/card/1029263",
+      "linkKind": "card",
+      "limitedSource": false
+    },
+    {
+      "id": "К3016-26",
+      "groupCode": "К3016-26",
+      "listingId": "2560824",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера BrainMaster_ШО-4__1й год_2 группа (26-27 уч.г.)",
+      "locationId": "LOC-009",
+      "teacher": "Матвеева Юлия Константиновна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 10,
+      "ageMin": 6,
+      "ageMax": 8,
+      "lessonPrice": 888,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-14",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Понедельник",
+          "start": "15:00",
+          "end": "15:45"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/card/1029267",
+      "linkKind": "card",
+      "limitedSource": false
+    },
+    {
+      "id": "К3020-26",
+      "groupCode": "К3020-26",
+      "listingId": "2560863",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера BrainMaster_ШО-3__1-й год_1 группа (26-27 уч.г.)",
+      "locationId": "LOC-010",
+      "teacher": "Матвеева Юлия Константиновна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 11,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 888,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-14",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Понедельник",
+          "start": "14:00",
+          "end": "14:45"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/card/1029383",
+      "linkKind": "card",
+      "limitedSource": false
+    },
+    {
+      "id": "К3021-26",
+      "groupCode": "К3021-26",
+      "listingId": "2560863",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера BrainMaster_ШО-3__1-й год _2 группа (26-27 уч.г.)",
+      "locationId": "LOC-010",
+      "teacher": "Матвеева Юлия Константиновна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 10,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 888,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-14",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Среда",
+          "start": "14:00",
+          "end": "14:45"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/card/1029384",
+      "linkKind": "card",
+      "limitedSource": false
+    },
+    {
+      "id": "К3022-26",
+      "groupCode": "К3022-26",
+      "listingId": "2560874",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера BrainMaster_ШО-3__2-й год_1 группа (26-27 уч.г.)",
+      "locationId": "LOC-010",
+      "teacher": "Матвеева Юлия Константиновна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 11,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 888,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-14",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Понедельник",
+          "start": "16:00",
+          "end": "16:45"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/card/1029393",
+      "linkKind": "card",
+      "limitedSource": false
+    },
+    {
+      "id": "К3024-26",
+      "groupCode": "К3024-26",
+      "listingId": "2560874",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера BrainMaster_ШО-3__2-й год_2 группа (26-27 уч.г.)",
+      "locationId": "LOC-010",
+      "teacher": "Матвеева Юлия Константиновна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 11,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 888,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-14",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Вторник",
+          "start": "14:00",
+          "end": "14:45"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/card/1029398",
+      "linkKind": "card",
+      "limitedSource": false
+    },
+    {
+      "id": "К3025-26",
+      "groupCode": "К3025-26",
+      "listingId": "2560874",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера BrainMaster_ШО-3__2-й год_3 группа (26-27 уч.г.)",
+      "locationId": "LOC-010",
+      "teacher": "Матвеева Юлия Константиновна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 10,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 888,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-14",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Вторник",
+          "start": "15:00",
+          "end": "15:45"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/card/1029402",
+      "linkKind": "card",
+      "limitedSource": false
+    },
+    {
+      "id": "К3026-26",
+      "groupCode": "К3026-26",
+      "listingId": "2560883",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера BrainMaster_ШО-3__3-й год_1 группа (26-27 уч.г.)",
+      "locationId": "LOC-010",
+      "teacher": "Матвеева Юлия Константиновна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 10,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 888,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-14",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Понедельник",
+          "start": "15:00",
+          "end": "15:45"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/card/1029407",
+      "linkKind": "card",
+      "limitedSource": false
+    },
+    {
+      "id": "К3027-26",
+      "groupCode": "К3027-26",
+      "listingId": "2560883",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера BrainMaster_ШО-3__3-й год_2 группа (26-27 уч.г.)",
+      "locationId": "LOC-010",
+      "teacher": "Матвеева Юлия Константиновна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 9,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 888,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-14",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Вторник",
+          "start": "16:00",
+          "end": "16:45"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/card/1029412",
+      "linkKind": "card",
       "limitedSource": false
     }
   ]

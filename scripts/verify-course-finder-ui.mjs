@@ -43,18 +43,18 @@ try {
    a11y.push({label,violations:report.violations,incomplete:report.incomplete.map(item=>({id:item.id,nodes:item.nodes.length}))});
    assert.deepEqual(report.violations.map(v=>({id:v.id,nodes:v.nodes.map(n=>n.target)})),[],label);
  }
- await goto('/agenda/');await count(51);
- assert.equal(await finder.getByRole('combobox',{name:'Площадка',exact:true}).locator('option:not([disabled])').count(),7);
+ await goto('/agenda/');await count(60);
+ assert.equal(await finder.getByRole('combobox',{name:'Площадка',exact:true}).locator('option:not([disabled])').count(),8);
  assert.equal(await finder.getByRole('combobox',{name:'Программа',exact:true}).locator('option:not([disabled])').count(),2);
- assert.equal(await page.locator('[data-campus]').count(),8);
- assert.equal(await page.locator('[data-annual-group]').count(),52);
- assert.equal(new Set(await page.locator('[data-annual-group]').evaluateAll(rows=>rows.map(row=>row.dataset.annualGroup))).size,51);
+ assert.equal(await page.locator('[data-campus]').count(),10);
+ assert.equal(await page.locator('[data-annual-group]').count(),61);
+ assert.equal(new Set(await page.locator('[data-annual-group]').evaluateAll(rows=>rows.map(row=>row.dataset.annualGroup))).size,60);
  await finder.getByRole('button',{name:'По программам',exact:true}).click();
  assert.equal(await page.locator('[data-programme="shmi"]').count(),1);
  assert.equal(await page.locator('[data-weekday]').count(),new Set(annual.flatMap(offer=>offer.weeklySlots.map(slot=>slot.weekday))).size);
  await scan('dark full schedule');
  await page.screenshot({path:output+'/full-desktop.png'});
- checks.push('Real data: 51 unique groups, 52 weekday rows, eight campuses, one canonical SHMI programme');
+ checks.push('Real data: 60 unique groups, 61 weekday rows, ten campuses, one canonical SHMI programme');
 
  await goto('/agenda/');
  const compact=page.locator('[data-annual-group]').filter({has:page.locator('button:not([disabled])')}).first();
@@ -69,7 +69,7 @@ try {
  await page.reload({waitUntil:'networkidle'});
  const nav=page.getByRole('navigation',{name:'Основная навигация'});
  await expect(nav.getByRole('link',{name:'Расписание',exact:true})).toHaveAttribute('href','/agenda/');
- await nav.getByRole('link',{name:'Расписание',exact:true}).click();await count(51);
+ await nav.getByRole('link',{name:'Расписание',exact:true}).click();await count(60);
  const annualMenu=nav.locator('summary').filter({hasText:'Годовые курсы'});
  await annualMenu.focus();await page.keyboard.press('Enter');
  const shmiMenu=nav.locator('summary').filter({hasText:'Школа Молодого IT-Инженера'});
@@ -347,7 +347,9 @@ try {
  for(const view of ['grid','list']){
    await page.goto(base+`/sites/?view=${view}`,{waitUntil:'networkidle'});
    await expect(page.locator('article[data-site]')).toHaveCount(10);
-   const inactive=page.locator('article[data-site][data-inactive="true"]');await expect(inactive).toHaveCount(4);
+   const inactive=page.locator('article[data-site][data-inactive="true"]');await expect(inactive).toHaveCount(3);
+   await expect(page.locator('article[data-site="school-2103"]')).toHaveCount(1);
+   await expect(page.locator('article[data-site="school-2103"][data-inactive="true"]')).toHaveCount(0);
    for(const card of await inactive.all()){
      assert.equal(await card.evaluate(el=>getComputedStyle(el).filter),'grayscale(1)');
      await expect(card.getByRole('link',{name:'О площадке',exact:true})).toBeVisible();
@@ -395,7 +397,7 @@ try {
  await page.getByRole('searchbox').fill('zz-no-group-match');
  assert.equal(await page.getByRole('combobox',{name:'Адрес',exact:true}).locator('option:not([disabled])').count(),1);
  await page.getByRole('button',{name:'Сбросить фильтры',exact:true}).click();
- assert.equal(await page.locator('[data-group-id]').count(),51);
+ assert.equal(await page.locator('[data-group-id]').count(),60);
  checks.push('Annual table facets honor school/search; only two 2044 addresses and zero irrelevant options under empty search');
  await page.goto(base+'/catalog/?school=school-2044',{waitUntil:'networkidle'});
  const formatFilter=page.getByTestId('catalog-format-filter');

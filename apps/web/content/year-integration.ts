@@ -11,6 +11,8 @@ export const annualLocations = [
   { sourceId: "LOC-006", slug: "school-1517-narodnoe-opolchenie", schoolScopeSlug: "school-1517", address: "ул. Маршала Тухачевского, 58, корп. 2", latitude: 55.7857335, longitude: 37.4572437, source: "https://www.openstreetmap.org/way/27546292", existing: true },
   { sourceId: "LOC-007", slug: "school-2044-dmitrovskoe-169b", schoolScopeSlug: "school-2044", address: "Дмитровское шоссе, 169Б", latitude: 55.9321515, longitude: 37.5405089, source: "https://www.openstreetmap.org/relation/15552197", existing: false },
   { sourceId: "LOC-008", slug: "school-2044-dmitrovskoe-165e-k8", schoolScopeSlug: "school-2044", address: "Дмитровское шоссе, 165Е, корп. 8", latitude: 55.9267027, longitude: 37.5423375, source: "https://www.openstreetmap.org/way/70952813", existing: false },
+  { sourceId: "LOC-009", slug: "school-2103-yasenevo", schoolScopeSlug: "school-2103", address: "Голубинская ул., 13, корп. 2", latitude: 55.602950, longitude: 37.517538, source: "https://yandex.com/maps/org/shkola_2103_shkolnoye_otdeleniye_korpus_4/1021683301/", existing: true },
+  { sourceId: "LOC-010", slug: "school-2103-golubinskaya-5k4", schoolScopeSlug: "school-2103", address: "Голубинская ул., 5, корп. 4", latitude: 55.604812, longitude: 37.517989, source: "https://yandex.com/maps/org/shkola_2103_shkolnoye_otdeleniye_korpus_3/1379658584/", existing: false },
 ] as const;
 
 export const annualWorld = {

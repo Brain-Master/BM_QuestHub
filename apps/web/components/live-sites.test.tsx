@@ -39,7 +39,7 @@ for(const scenario of ['loading-unknown','error-unknown','ready-empty','error-ca
     assert.equal(html.includes('Данные о группах пока недоступны'),unknown);
     assert.equal(html.includes('Не удалось обновить расписание'),error);
     assert.equal(html.includes('Загружаем актуальное'),scenario==='loading-unknown');
-    assert.equal((html.match(/<article[^>]*data-inactive="true"/g)??[]).length,unknown?0:emptyKnown?10:4);
+    assert.equal((html.match(/<article[^>]*data-inactive="true"/g)??[]).length,unknown?0:emptyKnown?10:3);
     if(unknown)assert.equal(html.includes('Сейчас нет групп'),false);
   });
 }

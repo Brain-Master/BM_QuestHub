@@ -5,6 +5,7 @@ import hashlib
 import io
 import json
 import re
+import subprocess
 import zipfile
 from datetime import date
 from pathlib import Path
@@ -143,6 +144,12 @@ def main():
     action.add_argument('--check', action='store_true')
     args = parser.parse_args()
     result = read_archive(args.archive)
+    # Use the same exact-preimage composition as the one-time registry transition.
+    # No network: the checked-in, sanitized nine-card supplement is authoritative.
+    composed = subprocess.run(['node', str(ROOT / 'scripts/compose-school-2103.mjs')],
+                              input=json.dumps(result, ensure_ascii=False), text=True,
+                              capture_output=True, check=True)
+    result = json.loads(composed.stdout)
     content = json.dumps(result, ensure_ascii=False, indent=2) + '\n'
     if args.check:
         require(OUTPUT.read_text() == content, 'Generated projection drift')
