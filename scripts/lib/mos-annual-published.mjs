@@ -24,7 +24,11 @@ export function restorePublishedAnnual(registry, offers, {asOf, venueByGroup, st
     // The public teacher is editorially reconciled, not the API's persons field.
     // Identity, location, source title and original API teacher stay in the registry.
     for (const key of ["ageMin", "ageMax", "totalSeats", "freeSeats", "lessonPrice", "coursePrice"]) {
-      previous[key] = a[key]; // A newer explicit unknown must not resurrect an older value.
+      // Editorial prices are not portal facts. Preserve an explicit raw unknown too.
+      if (key === 'lessonPrice' && a.lessonPriceSource) {
+        if (!Object.hasOwn(a,'sourceLessonPrice')) throw Error('ANNUAL_SOURCE_PRICE_MISSING');
+        previous[key] = a.sourceLessonPrice;
+      } else previous[key] = a[key];
     }
     Object.assign(previous, { courseStart: offer.startDate, courseEnd: offer.endDate,
       slots: structuredClone(offer.weeklySlots), status: a.admission, refreshedAt: a.refreshedAt });

@@ -1,9 +1,9 @@
 {
   "version": 2,
-  "generatedAt": "2026-09-09T04:39:35.969Z",
+  "generatedAt": "2026-09-21T12:07:11.930Z",
   "source": "annual-csv-integration",
   "integrity": {
-    "contentHash": "sha256:152e999f1d323cdfa0c20ceb9cebd18f550905e5e3b538f9cd28fd6e441ee7c5"
+    "contentHash": "sha256:44a5a0a934fcd5d66a9db75c617cfd68094e17ee2133b37ff5c3193b8d5bab46"
   },
   "venues": [
     {
@@ -161,6 +161,27 @@
       ],
       "listedOnSites": true,
       "schoolScopeSlug": "school-2044"
+    },
+    {
+      "slug": "school-2103-golubinskaya-5k4",
+      "name": "ГБОУ города Москвы «Школа № 2103»",
+      "displayName": "ГБОУ города Москвы «Школа № 2103»",
+      "type": "school",
+      "address": "Голубинская ул., 5, корп. 4",
+      "metro": "Ясенево",
+      "city": "moscow",
+      "district": "Ясенево",
+      "logoUrl": "/sites/school-2103/logo-original.jpg",
+      "latitude": 55.604812,
+      "longitude": 37.517989,
+      "directions": [
+        "Выберите корпус и откройте маршрут по его адресу.",
+        "Уточните вход и кабинет у организатора перед первым занятием."
+      ],
+      "entranceNote": "Точка на карте показывает расположение здания. Перед первым занятием уточните у организатора вход и кабинет.",
+      "photos": [],
+      "listedOnSites": true,
+      "schoolScopeSlug": "school-2103"
     },
     {
       "slug": "bm-base-moscow",

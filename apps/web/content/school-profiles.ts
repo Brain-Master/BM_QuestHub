@@ -22,9 +22,10 @@ export const schoolProfiles: Record<string,SchoolProfile> = {
   },
   "school-2103": {
     name:"ГБОУ города Москвы «Школа № 2103»",website:"https://sch2103uz.mskobr.ru/",logoUrl:"/sites/school-2103/logo-original.jpg",
-    description:"Школьное отделение, корпус № 4 школы № 2103, находится на Голубинской улице, 13, корп. 2, в Ясеневе. Страница сохраняет информацию о площадке и её адресе. Наличие занятий BrainMaster проверяйте в расписании ниже: сама карточка площадки не означает открытый набор.",
-    verifiedAt:"2026-09-09",nameSource:"https://t.me/school2103",
-    campuses:{"school-2103-yasenevo":{address:"Голубинская ул., 13, корп. 2",latitude:55.602950,longitude:37.517538,metro:"Ясенево",district:"Ясенево",mapUrl:"https://yandex.com/maps/org/shkola_2103_shkolnoye_otdeleniye_korpus_4/1021683301/",photoUrl:"/sites/school-2103/golubinskaya-13k2-original.jpg",photoAlt:"Подход к территории корпуса: Голубинская ул., 13, корп. 2"}},
+    description:"Годовые занятия Школы Молодого IT-Инженера BrainMaster проходят в двух корпусах школы № 2103 в Ясеневе. На Голубинской улице, 13, корп. 2 — ШМИ-1; на Голубинской улице, 5, корп. 4 — ШМИ-1, ШМИ-2 и ШМИ-3. Переключайте корпуса, чтобы сравнить дни и время. Одно занятие длится 45 минут (1 академический час) и стоит 1 000 ₽.",
+    verifiedAt:"2026-09-21",nameSource:"https://t.me/school2103",
+    campuses:{"school-2103-yasenevo":{address:"Голубинская ул., 13, корп. 2",latitude:55.602950,longitude:37.517538,metro:"Ясенево",district:"Ясенево",mapUrl:"https://yandex.com/maps/org/shkola_2103_shkolnoye_otdeleniye_korpus_4/1021683301/",photoUrl:"/sites/school-2103/golubinskaya-13k2-original.jpg",photoAlt:"Подход к территории корпуса: Голубинская ул., 13, корп. 2"},
+      "school-2103-golubinskaya-5k4":{address:"Голубинская ул., 5, корп. 4",latitude:55.604812,longitude:37.517989,metro:"Ясенево",district:"Ясенево",mapUrl:"https://yandex.com/maps/org/shkola_2103_shkolnoye_otdeleniye_korpus_3/1379658584/"}},
   },
   "school-937": {
     name:"ГБОУ города Москвы «Школа № 937 имени Героя Российской Федерации А. В. Перова»",logoUrl:"/sites/school-937/logo-original.jpg",

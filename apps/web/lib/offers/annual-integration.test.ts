@@ -29,11 +29,11 @@ test("nine school profiles have sourced media; the owner-confirmed base adds no 
       campuses++;const venue=venues.find(v=>v.slug===slug);assert.ok(venue,slug);
       assert.equal(venue.schoolScopeSlug,id);assert.equal(venue.address,campus.address);
       assert.equal(venue.latitude,campus.latitude);assert.equal(venue.longitude,campus.longitude);
-      assert.ok(campus.photoUrl&&fs.existsSync(`public${campus.photoUrl}`));
-      assert.equal(venue.photos?.[0]?.url,campus.photoUrl);
+      if(slug==='school-2103-golubinskaya-5k4') assert.equal(venue.photos.length,0,'no invented photo of a different campus');
+      else {assert.ok(campus.photoUrl&&fs.existsSync(`public${campus.photoUrl}`));assert.equal(venue.photos?.[0]?.url,campus.photoUrl);}
     }
   }
-  assert.equal(campuses,15);
+  assert.equal(campuses,16);
 });
 test('owner-confirmed teachers replace portal placeholders in six1212 groups and pin school17 by study year',()=>{
   const annual=snapshot.offersByQuest.shmi;
@@ -67,9 +67,9 @@ test("reviewed profiles retain the seven pre-existing metro/district fields not 
 
 test("shared catalogue projects all annual groups and exact campuses", () => {
   const view = projectAnnualWorkspace(quests, venues);
-  assert.equal(view.groups.length,51);
-  assert.equal(view.groups.flatMap(g=>g.slots).length,52);
-  assert.equal(view.locations.length,8);
+  assert.equal(view.groups.length,60);
+  assert.equal(view.groups.flatMap(g=>g.slots).length,61);
+  assert.equal(view.locations.length,10);
   assert.equal(view.groups.filter(g=>g.status==="closed").length,5);
   assert.equal(quests.filter(q=>q.format==="year").length,4);
   for(const location of view.locations) {
@@ -89,12 +89,12 @@ test("reviewed school2044 identity and both exact campus coordinates survive com
   for(const v of school){assert.match(v.name,/имени Героя Советского Союза А\. М\. Серебрякова/);assert.equal(v.displayName,v.name);assert.equal(v.photos.length,1);assert.equal(v.metro,'Физтех');assert.match(v.logoUrl??'',/school-2044\/logo-original/);}
   assert.deepEqual(school.map(v=>[v.latitude,v.longitude]),[[55.932261,37.541054],[55.927015,37.542641]]);
 });
-test("live registry validates 43 exact distinct identities, preserves 8 unresolved groups without claiming success",()=>{
+test("live registry validates 52 exact distinct identities, preserves 8 unresolved groups without claiming success",()=>{
   const r=annualMosRefreshSchema.parse(read('content/annual-mos-refresh.generated.json'));
-  assert.equal(Object.keys(r.groups).length,43);assert.equal(new Set(Object.values(r.groups).map(g=>g.cardId)).size,43);
-  assert.equal(r.expectedGroups,51);assert.equal(r.ok,false);
+  assert.equal(Object.keys(r.groups).length,52);assert.equal(new Set(Object.values(r.groups).map(g=>g.cardId)).size,52);
+  assert.equal(r.expectedGroups,60);assert.equal(r.ok,false);
   const updated=snapshot.offersByQuest.shmi.filter(o=>o.annual?.refreshedAt);
-  assert.equal(updated.length,43);
+  assert.equal(updated.length,52);
   for(const o of updated){assert.equal(o.annual?.linkKind,'card');assert.match(o.mosBookingUrl??'',/^https:\/\/www\.mos\.ru\/pgu2\/activity\/card\/\d+$/);assert.ok(o.annual?.groupCode);assert.notEqual(o.annual?.lessonPrice,null);}
   assert.equal(annualMosRefreshSchema.safeParse({...r,ok:true}).success,false);
   assert.equal(annualMetadataSchema.safeParse({...updated[0].annual,ageMin:14,ageMax:7}).success,false);
@@ -127,10 +127,10 @@ test("negative boundary: malformed slots and orphan campus fail", () => {
   assert.throws(()=>projectAnnualWorkspace(quests,[]),/Unknown location/);
 });
 
-test("shared site/map selectors include all eight campuses and closed groups cannot book", () => {
+test("shared site/map selectors include all ten campuses and closed groups cannot book", () => {
   const cards=buildSiteScopeCards({scopes:getSchoolScopes(venues),quests,venues,worlds:worldSchema.array().parse(read("data/v2/catalog-snapshot.json").worlds)});
   const annual=projectAnnualWorkspace(quests,venues);
-  assert.equal(new Set(annual.locations.map(l=>l.schoolScopeSlug)).size,6);
+  assert.equal(new Set(annual.locations.map(l=>l.schoolScopeSlug)).size,7);
   for(const location of annual.locations) {
     const card=cards.find(c=>c.slug===location.schoolScopeSlug);
     assert.ok(card);
