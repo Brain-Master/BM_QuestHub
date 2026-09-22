@@ -1,6 +1,7 @@
 "use strict";
 
 const crypto = require("node:crypto");
+const { createMosClickHandler } = require("./mos-booking-click");
 
 const JSON_HEADERS = {
   "content-type": "application/json; charset=utf-8",
@@ -43,8 +44,8 @@ function logDelivery(budget, event, phase, extra = {}) {
     remainingMs: Math.max(0, budget.deadlineAt - Date.now()), ...extra }));
 }
 
-async function readLimitedJson(res, phase, signal) {
-  if (!res.body || Number(res.headers.get("content-length")) > MAX_RESPONSE_BYTES) {
+async function readLimitedJson(res, phase, signal, maxBytes = MAX_RESPONSE_BYTES) {
+  if (!res.body || Number(res.headers.get("content-length")) > maxBytes) {
     throw deliveryError(phase, "invalid_response");
   }
   const reader = res.body.getReader();
@@ -57,19 +58,19 @@ async function readLimitedJson(res, phase, signal) {
       const { value, done } = await reader.read();
       if (done) break;
       bytes += value.byteLength;
-      if (bytes > MAX_RESPONSE_BYTES) throw deliveryError(phase, "response_too_large");
+      if (bytes > maxBytes) throw deliveryError(phase, "response_too_large");
       chunks.push(Buffer.from(value));
     }
     try { return JSON.parse(Buffer.concat(chunks).toString("utf8")); }
     catch { throw deliveryError(phase, "invalid_response"); }
   } finally {
     signal.removeEventListener("abort", cancel);
-    if (bytes > MAX_RESPONSE_BYTES) cancel();
+    if (bytes > maxBytes) cancel();
     reader.releaseLock();
   }
 }
 
-async function boundedRequest(phase, url, options, budget, { timeoutMs = PHASE_TIMEOUT_MS, validate, discard = false } = {}) {
+async function boundedRequest(phase, url, options, budget, { timeoutMs = PHASE_TIMEOUT_MS, validate, discard = false, maxResponseBytes = MAX_RESPONSE_BYTES } = {}) {
   const remaining = Math.min(timeoutMs, budget.deadlineAt - Date.now());
   if (remaining <= 0) throw deliveryError(phase, "deadline_exceeded");
   const controller = new AbortController();
@@ -89,7 +90,7 @@ async function boundedRequest(phase, url, options, budget, { timeoutMs = PHASE_T
       const res = await fetch(url, { ...options, signal: controller.signal });
       responseBody = res.body;
       if (!res.ok) throw deliveryError(phase, "upstream_http", res.status);
-      const json = discard ? undefined : await readLimitedJson(res, phase, controller.signal);
+      const json = discard ? undefined : await readLimitedJson(res, phase, controller.signal, maxResponseBytes);
       if (validate && !validate(json)) throw deliveryError(phase, "invalid_response", res.status);
       return { status: res.status, json };
     })();
@@ -290,7 +291,7 @@ function escapeHtml(value) {
 
 function leadTypeTitle(leadType) {
   const titles = {
-    mos_assist: "Запись через mos.ru",
+    mos_assist: "Контакты для помощи с записью на mos.ru",
     waitlist: "Заявка в лист ожидания",
     booking: "Новая заявка на бронирование",
   };
@@ -586,6 +587,8 @@ async function deliverPrimaryLead(lead, budget = deliveryBudget(lead.requestId, 
   await appendLeadToGoogleSheet(lead, budget);
 }
 
+const handleMosClick = createMosClickHandler({ boundedRequest, deliveryBudget, readEnv, response });
+
 async function handler(event = {}, context = {}) {
   const requestId = context.requestId || context.awsRequestId || crypto.randomUUID();
   const budget = deliveryBudget(requestId);
@@ -601,10 +604,18 @@ async function handler(event = {}, context = {}) {
   }
 
   let payload;
+  if (typeof event.body === "string" && Buffer.byteLength(event.body, event.isBase64Encoded ? "base64" : "utf8") > 64 * 1024)
+    return response(413, { ok: false, error: "Request too large" }, origin);
   try {
     payload = parseJsonBody(event);
   } catch {
     return response(400, { ok: false, error: "Invalid JSON body" }, origin);
+  }
+
+  if (payload && typeof payload === "object" && Object.hasOwn(payload, "event")) {
+    if (!/^application\/json(?:\s*;|$)/i.test(getHeader(event.headers, "content-type")))
+      return response(415, { ok: false, error: "JSON content type required" }, origin);
+    return handleMosClick(payload, origin, requestId);
   }
 
   const validation = validateLeadPayload(payload);

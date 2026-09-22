@@ -154,7 +154,7 @@ test.describe("Schedule Board data rules", () => {
     });
   });
 
-  test("mos offers collect an assist lead before external registration", () => {
+  test("mos offers expose a voluntary assist flow independent of external registration", () => {
     const flow = resolveRegistrationFlow({
       bookingMode: {
         kind: "mos",
@@ -167,13 +167,16 @@ test.describe("Schedule Board data rules", () => {
     expect(flow).toMatchObject({
       kind: "mos_assist",
       leadType: "mos_assist",
-      title: "Запись через mos.ru",
-      submitLabel: "Перейти к записи на mos.ru",
+      title: "Оставить контакты — по желанию",
+      submitLabel: "Отправить контакты",
     });
     expect(flow.noticeText).toContain("mos.ru");
-    expect(flow.fallbackTitle).toBe("Продолжите запись на mos.ru");
-    expect(flow.fallbackText).toContain("mos.ru");
-    expect(flow.fallbackText).toContain("+7 (977) 967-88-00");
+    expect(flow.noticeText).toContain("Данные о записи с mos.ru приходят с задержкой");
+    expect(flow.noticeText).toContain("не бронирует место");
+    expect(flow.noticeText).toContain("не даёт приоритета в очереди mos.ru");
+    expect(flow.successText).toContain("Анкета не заменяет запись на портале");
+    expect(flow.fallbackTitle).toBeUndefined();
+    expect(flow.fallbackText).toBeUndefined();
   });
 
   test("waitlist flow explains that preliminary registration is not a booking", () => {

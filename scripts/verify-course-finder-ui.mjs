@@ -25,7 +25,7 @@ try {
      mockedFailureReports.push({errorCode:payload.errorCode,httpStatus:payload.httpStatus});
      return route.fulfill({status:204,body:''});
    }
-   if(request.method()==='POST'&&payload?.offerId&&payload?.source==='bm-questhub-static'){
+   if(request.method()==='POST'&&request.url()===siteConfig.brand.contacts.leadSubmitUrl&&payload?.offerId&&payload?.source==='bm-questhub-static'&&!payload?.event){
      bookingCalls.push(payload);
      await new Promise(resolve=>setTimeout(resolve,700));
      return bookingResponse===0?route.abort():route.fulfill({status:bookingResponse,json:{ok:bookingResponse===200}});
@@ -57,10 +57,10 @@ try {
  checks.push('Real data: 60 unique groups, 61 weekday rows, ten campuses, one canonical SHMI programme');
 
  await goto('/agenda/');
- const compact=page.locator('[data-annual-group]').filter({has:page.locator('button:not([disabled])')}).first();
+ const compact=page.locator('[data-annual-group]').filter({has:page.locator('[data-mos-booking-link]')}).first();
  await expect(compact.locator('details')).not.toHaveAttribute('open');
  await expect(compact.locator('[data-booking-variant] strong').first()).toBeVisible();
- const compactBook=compact.locator('[data-booking-variant] button').first();
+ const compactBook=compact.locator('[data-booking-variant] [data-mos-booking-link]').first();
  await expect(compactBook).toBeVisible();await compactBook.click();
  await expect(page.getByRole('dialog')).toBeVisible();
  await page.keyboard.press('Escape');await expect(compactBook).toBeFocused();
@@ -215,8 +215,9 @@ try {
    await goto(`/agenda/?offer=${encodeURIComponent(openOffer.id)}&venue=${openVenue.slug}`);
    const row=page.locator('[data-selected="true"]').first();
    const variant=row.locator('[data-booking-variant]').first(),variantId=await variant.getAttribute('data-booking-variant');
-   const trigger=variant.getByRole('button');await trigger.click();
+   const trigger=variant.getByRole('link',{name:/Записаться на mos.ru/});await trigger.click();
    const dialog=page.getByRole('dialog');await expect(dialog).toBeVisible();
+   await dialog.getByRole('button',{name:'Заполнить анкету',exact:true}).click();
    await expect(dialog.getByRole('checkbox')).not.toBeChecked();
    await dialog.getByLabel('Имя родителя').fill('Тестовый Родитель');
    await dialog.getByLabel('Телефон').fill('+79991234567');
@@ -226,7 +227,14 @@ try {
    await submit.click();assert.equal(bookingCalls.length,beforeCalls,'No submission without consent');
    await dialog.getByRole('checkbox').check();await submit.click();
    await expect(submit).toBeDisabled();
-   await expect(dialog.getByTestId(response===200?'mos-success':'mos-success-fallback')).toBeVisible();
+   if(response===200)await expect(dialog.getByTestId('mos-success')).toBeVisible();
+   else{
+     await expect(dialog.getByTestId('booking-submit-error')).toBeVisible();
+     await expect(dialog.getByLabel('Имя родителя')).toHaveValue('Тестовый Родитель');
+     await expect(dialog.getByRole('checkbox')).toBeChecked();
+     await expect(dialog.getByRole('link',{name:/На mos.ru без анкеты/})).toBeVisible();
+     await expect(submit).toBeEnabled();
+   }
    assert.equal(bookingCalls.length,beforeCalls+1);
    const payload=bookingCalls.at(-1);
    assert.equal(payload.offerId,openOffer.id);assert.equal(payload.variantId,variantId);

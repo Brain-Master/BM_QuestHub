@@ -1,4 +1,5 @@
 import siteConfig from "@/data/v2/site-config.json";
+import { MOS_BOOKING_COPY } from "@/content/mos-booking-copy";
 
 import { applyTemplate } from "@/lib/data/template";
 import { SCHEDULE_CTA } from "@/lib/offers/schedule-dictionaries";
@@ -53,7 +54,7 @@ export function resolveRegistrationFlow({
   const vars = templateVars(registrationChannel);
 
   if (bookingMode.kind === "mos") {
-    const copy = flowCopy.mosAssist;
+    const copy = MOS_BOOKING_COPY;
     return {
       kind: "mos_assist",
       title: copy.title,
@@ -62,8 +63,6 @@ export function resolveRegistrationFlow({
       submitLabel: copy.submitLabel,
       successTitle: copy.successTitle,
       successText: copy.successText,
-      fallbackTitle: copy.fallbackTitle,
-      fallbackText: applyTemplate(copy.fallbackText, vars),
       leadType: "mos_assist",
       registrationChannel: "mos_ru",
     };

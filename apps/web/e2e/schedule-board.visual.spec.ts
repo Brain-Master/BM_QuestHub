@@ -143,16 +143,17 @@ test.describe("Schedule Board visual regression", () => {
     await page.goto(QUEST_PATH);
     await stabilizeScheduleBoard(page);
 
-    const formButton = page.getByRole("button", {
+    const firstCard = page.getByTestId('schedule-card').first();
+    const formButton = firstCard.locator('[data-mos-booking-link]').or(firstCard.getByRole("button", {
       name: /Записаться|В лист ожидания|Узнать о старте|Предварительная заявка/,
-    });
-    if ((await formButton.count()) === 0) {
-      test.skip(true, "No form booking CTA on the quest schedule page.");
-    }
-
+    }));
+    await expect(formButton.first()).toBeVisible();
     await formButton.first().click();
     const dialog = page.getByRole("dialog");
     await expect(dialog).toBeVisible();
+    if (await formButton.first().getAttribute('data-mos-booking-link')) {
+      await dialog.getByRole('button', { name: 'Заполнить анкету', exact: true }).click();
+    }
     await expect(dialog.getByTestId("booking-summary")).toBeVisible();
 
     await expect(dialog).toHaveScreenshot("booking-form-modal-mobile.png", {
