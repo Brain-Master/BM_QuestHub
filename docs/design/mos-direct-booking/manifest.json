@@ -1,0 +1,13 @@
+{
+  "version": "1.0.0",
+  "project": "BrainMaster QuestHub — direct mos.ru booking",
+  "mode": "evolution",
+  "interaction": "hybrid",
+  "scope": "product-surface",
+  "required_files": ["README.md", "brief.md", "input-evidence.md", "decision-log.md", "brandbook.md", "tokens.json", "audit.md", "handoff/designer.md", "handoff/developer.md", "qa/validation-report.md"],
+  "masters": {"interface": "apps/web/components/offer-booking-action.tsx", "copy": "apps/web/content/mos-booking-copy.ts", "notification": "apps/yandex-lead-receiver/mos-booking-click.js"},
+  "expected_raster_sizes": {},
+  "exports": "Local browser screenshots in /tmp/questhub-mos-direct-qa; QA exports, not masters",
+  "validation_commands": ["npm --prefix apps/yandex-lead-receiver test", "npm --prefix apps/web run check", "node scripts/verify-mos-direct-booking.mjs", "node scripts/verify-course-finder-ui.mjs", "node scripts/verify-school-2103-ui.mjs", "make secret-scan"],
+  "deferred_external_checks": ["Production deployment", "Approved real Telegram and optional-lead readback", "Parent usability/conversion study", "Full accessibility audit"]
+}

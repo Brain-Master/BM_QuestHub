@@ -1,13 +1,10 @@
 "use client";
 
-import * as React from "react";
 import { ExternalLink } from "lucide-react";
 
 import { CommunityVkFollowHint } from "@/components/community-vk-follow-hint";
 import { SupportContactStack } from "@/components/support-contact-stack";
 import { cn } from "@/lib/utils";
-
-const MOS_AUTO_OPEN_DELAY_SECONDS = 3;
 
 type Props = {
   mosUrl: string;
@@ -24,44 +21,12 @@ export function MosBookingSuccess({
   text,
   onOpenMos,
 }: Props) {
-  const [secondsLeft, setSecondsLeft] = React.useState(MOS_AUTO_OPEN_DELAY_SECONDS);
-  const [autoOpenEnabled] = React.useState(() => {
-    if (typeof window === "undefined") return false;
-    return !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  });
-  const [hasOpened, setHasOpened] = React.useState(false);
-  const openedRef = React.useRef(false);
-
   const resolvedTitle = title ?? (contactsSaved ? "Контакты получены" : "Продолжите запись на mos.ru");
   const resolvedText =
     text ??
     (contactsSaved
       ? "Дальше нужно оформить запись и договор на портале mos.ru. Если оформление окажется сложным, мы поможем пройти его до конца."
       : "Оформите запись на портале mos.ru — кнопка ниже. Если понадобится помощь, свяжитесь с нами.");
-
-  const openMos = React.useCallback(() => {
-    if (openedRef.current) return;
-    openedRef.current = true;
-    setHasOpened(true);
-    onOpenMos?.();
-    window.open(mosUrl, "_blank", "noopener,noreferrer");
-  }, [mosUrl, onOpenMos]);
-
-  const shouldAutoOpen = contactsSaved && autoOpenEnabled;
-
-  React.useEffect(() => {
-    if (!shouldAutoOpen || openedRef.current) return;
-    if (secondsLeft <= 0) {
-      openMos();
-      return;
-    }
-
-    const timer = window.setTimeout(() => {
-      setSecondsLeft((current) => current - 1);
-    }, 1000);
-
-    return () => window.clearTimeout(timer);
-  }, [shouldAutoOpen, openMos, secondsLeft]);
 
   return (
     <div
@@ -79,9 +44,12 @@ export function MosBookingSuccess({
       <SupportContactStack />
       <CommunityVkFollowHint />
 
-      <button
-        type="button"
-        onClick={openMos}
+      <a
+        href={mosUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={onOpenMos}
+        onAuxClick={(event) => { if (event.button === 1) onOpenMos?.(); }}
         className={cn(
           "inline-flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-cyan-600 to-blue-600 py-3.5 font-bold text-white shadow-[0_0_20px_rgba(8,145,178,0.3)] transition-all",
           "hover:from-cyan-500 hover:to-blue-500 hover:shadow-[0_0_25px_rgba(8,145,178,0.5)]",
@@ -89,17 +57,11 @@ export function MosBookingSuccess({
       >
         Подать заявку на mos.ru
         <ExternalLink className="size-4" aria-hidden />
-      </button>
+      </a>
 
-      {shouldAutoOpen && !hasOpened ? (
-        <p className="text-slate-500 text-xs">
-          Автоматически откроем mos.ru через {Math.max(secondsLeft, 0)} сек.
+        <p className="text-slate-400 text-xs">
+          Ссылка откроется в новой вкладке. Если вы уже записались, повторять запись не нужно.
         </p>
-      ) : (
-        <p className="text-slate-500 text-xs">
-          Нажмите кнопку, чтобы открыть mos.ru в новой вкладке.
-        </p>
-      )}
     </div>
   );
 }

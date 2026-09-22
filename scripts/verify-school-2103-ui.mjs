@@ -24,7 +24,7 @@ try{
  async function count(n){await expect(page.getByTestId('finder-count')).toHaveText(String(n));await expect(slots).toHaveCount(n);}
  async function correctPrices(n){await count(n);for(const slot of await slots.all()){
    await expect(slot.getByText('1 000 ₽ / занятие · 1 акад. час (45 мин)',{exact:true})).toBeVisible();
-   await expect(slot.getByRole('button',{name:/Записаться/})).toBeVisible();
+   await expect(slot.getByRole('link',{name:/Записаться на mos.ru/})).toBeVisible();
    assert.ok(!(await slot.innerText()).includes('888'));
  }}
  await go('/agenda/');await expect(page.getByTestId('finder-count')).toHaveText('60');

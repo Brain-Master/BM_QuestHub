@@ -1,0 +1,13 @@
+{
+  "version":"2.1.0",
+  "project":"BrainMaster MOS transition",
+  "mode":"evolution",
+  "scope":"product-surface",
+  "interaction":"autonomous",
+  "required_files":["README.md","brief.md","input-evidence.md","decision-log.md","brandbook.md","tokens.json","audit.md","handoff/designer.md","handoff/developer.md","qa/validation-report.md"],
+  "masters":["apps/web/components/offer-booking-action.tsx","apps/web/components/mos-booking-countdown.tsx","apps/web/content/mos-booking-copy.ts"],
+  "exports":"local PNG/JSON in /tmp/questhub-mos-compact-qa",
+  "expected_raster_sizes":{},
+  "validation_commands":["npm --prefix apps/web run check","node scripts/verify-mos-direct-booking.mjs","node scripts/verify-course-finder-ui.mjs","make secret-scan"],
+  "deferred_external_checks":["Production deployment","Real delivery readback","Parent usability","Screen-reader manual audit"]
+}

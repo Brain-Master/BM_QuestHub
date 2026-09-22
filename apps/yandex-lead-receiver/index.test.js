@@ -207,7 +207,7 @@ test("formatTelegramMessage renders mos_assist lead for humans", () => {
   const text = _internals.formatTelegramMessage(lead);
   const visible = stripSpoiler(text);
 
-  assert.match(visible, /Запись через mos\.ru/);
+  assert.match(visible, /Контакты для помощи с записью на mos\.ru/);
   assert.match(visible, /Тестировой Тестян/);
   assert.match(visible, /кулебяка · 111/);
   assert.match(visible, /Мехвариум: лаборатория кинетических монстров/);

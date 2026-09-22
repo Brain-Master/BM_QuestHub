@@ -53,11 +53,11 @@ const fieldLabelClass =
   "text-slate-400 text-sm font-medium [&>span]:text-white/90";
 
 const fieldInputClass =
-  "h-auto rounded-lg border-slate-700 bg-[#0B1120] px-4 py-2.5 text-sm text-white shadow-none placeholder:text-slate-600 focus-visible:border-cyan-500 focus-visible:ring-1 focus-visible:ring-cyan-500 dark:bg-[#0B1120] dark:disabled:bg-[#0B1120]/60";
+  "h-auto rounded-lg border-slate-700 bg-[#0B1120] px-4 py-2.5 text-sm text-white shadow-none placeholder:text-slate-400 focus-visible:border-cyan-500 focus-visible:ring-1 focus-visible:ring-cyan-500 dark:bg-[#0B1120] dark:disabled:bg-[#0B1120]/60";
 
-function FieldError({ message }: { message?: string }) {
+function FieldError({ message, id }: { message?: string; id?: string }) {
   if (!message) return null;
-  return <p className="text-destructive text-xs">{message}</p>;
+  return <p id={id} role="alert" className="text-destructive text-xs">{message}</p>;
 }
 
 function BookingSummaryCard({ summary }: { summary: BookingFormSummary }) {
@@ -70,15 +70,15 @@ function BookingSummaryCard({ summary }: { summary: BookingFormSummary }) {
       <p className="mb-3 font-bold text-white leading-tight">{summary.questTitle}</p>
       <dl className="flex flex-col gap-1.5 text-slate-300 text-sm">
         <div className="flex items-center justify-between gap-3">
-          <dt className="text-slate-500">Даты:</dt>
+          <dt className="text-slate-400">Даты:</dt>
           <dd className="text-right">{summary.dates}</dd>
         </div>
         <div className="flex items-center justify-between gap-3">
-          <dt className="text-slate-500">Формат:</dt>
+          <dt className="text-slate-400">Формат:</dt>
           <dd className="text-right font-medium">{summary.format}</dd>
         </div>
         <div className="mt-0.5 flex items-center justify-between gap-3 border-slate-800 border-t pt-1.5">
-          <dt className="text-slate-500">К оплате:</dt>
+          <dt className="text-slate-400">К оплате:</dt>
           <dd className="font-bold text-white">{summary.priceLabel}</dd>
         </div>
       </dl>
@@ -175,11 +175,12 @@ export function BookingForm({
             placeholder="Иван Иванов"
             className={fieldInputClass}
             aria-invalid={Boolean(form.formState.errors.parentName)}
+            aria-describedby={form.formState.errors.parentName ? "parentName-error" : undefined}
             {...form.register("parentName", {
               setValueAs: normalizePersonName,
             })}
           />
-          <FieldError message={form.formState.errors.parentName?.message} />
+          <FieldError id="parentName-error" message={form.formState.errors.parentName?.message} />
         </div>
 
         <div className="grid gap-1.5">
@@ -192,12 +193,15 @@ export function BookingForm({
             render={({ field }) => (
               <Input
                 id="contact"
+                ref={field.ref}
+                name={field.name}
                 type="tel"
                 autoComplete="tel"
                 inputMode="tel"
                 placeholder="+7 (999) 000-00-00"
                 className={fieldInputClass}
                 aria-invalid={Boolean(form.formState.errors.contact)}
+                aria-describedby={form.formState.errors.contact ? "contact-error" : undefined}
                 value={field.value}
                 onChange={(event) => {
                   field.onChange(formatRuPhoneInput(event.target.value));
@@ -209,7 +213,7 @@ export function BookingForm({
               />
             )}
           />
-          <FieldError message={form.formState.errors.contact?.message} />
+          <FieldError id="contact-error" message={form.formState.errors.contact?.message} />
         </div>
       </div>
 
@@ -224,11 +228,12 @@ export function BookingForm({
             placeholder="Петя Иванов"
             className={fieldInputClass}
             aria-invalid={Boolean(form.formState.errors.childName)}
+            aria-describedby={form.formState.errors.childName ? "childName-error" : undefined}
             {...form.register("childName", {
               setValueAs: normalizePersonName,
             })}
           />
-          <FieldError message={form.formState.errors.childName?.message} />
+          <FieldError id="childName-error" message={form.formState.errors.childName?.message} />
         </div>
 
         <div className="grid gap-1.5">
@@ -242,18 +247,19 @@ export function BookingForm({
             placeholder="9"
             className={fieldInputClass}
             aria-invalid={Boolean(form.formState.errors.childAge)}
+            aria-describedby={form.formState.errors.childAge ? "childAge-error" : undefined}
             {...form.register("childAge", {
               setValueAs: (value) => value.replace(/\D/g, "").slice(0, 2),
             })}
           />
-          <FieldError message={form.formState.errors.childAge?.message} />
+          <FieldError id="childAge-error" message={form.formState.errors.childAge?.message} />
         </div>
       </div>
 
       <div className="grid gap-1.5">
         <Label htmlFor="comment" className={fieldLabelClass}>
           Комментарий{" "}
-          <span className="font-normal text-slate-500">(необязательно)</span>
+          <span className="font-normal text-slate-400">(необязательно)</span>
         </Label>
         <textarea
           id="comment"
@@ -275,6 +281,7 @@ export function BookingForm({
             render={({ field }) => (
               <Checkbox
                 id="consent"
+                aria-describedby={form.formState.errors.consent ? "consent-error" : undefined}
                 checked={field.value}
                 onCheckedChange={(v) => field.onChange(v === true)}
                 className="mt-0.5 shrink-0 border-slate-600 data-checked:border-cyan-500 data-checked:bg-cyan-600"
@@ -306,8 +313,8 @@ export function BookingForm({
             .
           </Label>
         </div>
-        <FieldError message={form.formState.errors.consent?.message} />
-        <BookingSubmitError message={form.formState.errors.root?.message} />
+        <FieldError id="consent-error" message={form.formState.errors.consent?.message} />
+        <div role="alert"><BookingSubmitError message={form.formState.errors.root?.message} /></div>
 
         <button
           type="submit"

@@ -6,6 +6,7 @@ import type { Quest, Venue } from "@/lib/schemas";
 import { useLiveSchedule } from "@/lib/offers/use-live-schedule";
 import { annualBookingNeedsReview } from "@/lib/offers/annual-schedule";
 import Link from "next/link";
+import { notifyMosBookingClick } from "@/lib/mos-booking-click";
 
 const days=["Понедельник","Вторник","Среда","Четверг","Пятница","Суббота","Воскресенье"];
 const dateLabel=(date:string)=>date.split("-").reverse().join(".");
@@ -49,6 +50,8 @@ export function YearSchedule({baseQuests,venues}:{baseQuests:Quest[];venues:Venu
     {filtered.length===0?<div className="ys-empty"><h3>Таких групп в выгрузке нет</h3><p>Выберите другой день или школу либо сбросьте фильтры.</p><button type="button" className="yc-button" onClick={reset}>Показать все группы</button></div>:
     <div className="ys-grid">{filtered.map(g=>{
       const place=locations.get(g.locationId); if(!place)return null;
+      const sourceQuest=live.quests.find(q=>q.offers.some(o=>o.id===`year:${g.id}`&&o.venueSlug===g.locationId));
+      const notify=()=>{if(sourceQuest)notifyMosBookingClick({questSlug:sourceQuest.slug,offerId:`year:${g.id}`,venueSlug:g.locationId});};
       return <article key={g.id} className="ys-card" data-group-id={g.id}>
         <div className="ys-card-top"><span className={g.status==="open"?"ys-open":"ys-closed"}>{annualBookingNeedsReview(g)?"Карточка на проверке":g.status==="open"?"Приём открыт":"Приём закрыт"}</span><span className="ys-asof">на {dateLabel(g.refreshedAt?.slice(0,10)??data.asOf)}</span></div>
         <p className="yc-label"><Link href={`/sites/${place.schoolScopeSlug}/`}>{place.school} ↗</Link></p><h3>{g.title}</h3>
@@ -61,7 +64,7 @@ export function YearSchedule({baseQuests,venues}:{baseQuests:Quest[];venues:Venu
         <div><dt>Свободно</dt><dd>{g.freeSeats===null||g.totalSeats===null?"Количество мест не подтверждено":`${g.freeSeats} из ${g.totalSeats} на ${dateLabel(data.asOf)}`}</dd></div></dl>
         {g.limitedSource&&<p className="ys-limited">Данные группы неполные. Возраст, педагога, стоимость и вместимость уточните у школы.</p>}
         {g.refreshError&&<p>Последняя проверка карточки не удалась. Показаны последние подтверждённые сведения.</p>}
-        <div className="ys-card-bottom"><p>Номер занятия: {g.listingId}{g.groupCode&&<span className="ys-secondary">Группа: {g.groupCode}</span>}</p>{annualBookingNeedsReview(g)?<span className="ys-secondary">Прямая карточка группы пока не подтверждена</span>:<a className="ys-action" href={g.link} target="_blank" rel="noopener noreferrer">{g.linkKind==="card"?"Карточка на mos.ru":"Найти на mos.ru"} <span aria-hidden>↗</span><span className="sr-only"> — {g.listingId}, новое окно</span></a>}</div>
+        <div className="ys-card-bottom"><p>Номер занятия: {g.listingId}{g.groupCode&&<span className="ys-secondary">Группа: {g.groupCode}</span>}</p>{annualBookingNeedsReview(g)?<span className="ys-secondary">Прямая карточка группы пока не подтверждена</span>:<a className="ys-action" href={g.link} target="_blank" rel="noopener noreferrer" onClick={notify} onAuxClick={e=>{if(e.button===1)notify();}}>{g.linkKind==="card"?"Карточка на mos.ru":"Найти на mos.ru"} <span aria-hidden>↗</span><span className="sr-only"> — {g.listingId}, новое окно</span></a>}</div>
       </article>;
     })}</div>}
     <p className="yc-note">Нет подходящего времени? <Link className="yc-link" href="/year-courses/shmi/">Узнайте больше о ШМИ</Link> или обсудите группу с командой BrainMaster.</p>

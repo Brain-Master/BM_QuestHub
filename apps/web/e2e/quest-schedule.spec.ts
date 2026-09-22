@@ -109,31 +109,29 @@ test.describe("Quest schedule", () => {
     const formButtons = firstCard.getByRole("button", {
       name: /Записаться|В лист ожидания|Узнать о старте|Предварительная заявка/,
     });
-    if ((await formButtons.count()) > 0) {
-      await formButtons.first().click();
-      const dialog = page.getByRole("dialog");
-      await expect(dialog).toBeVisible();
-      await expect(dialog).toContainText(
-        /Запись через mos\.ru|Оформление заявки|Заявка в лист ожидания/,
-      );
-      await expect(dialog.getByTestId("booking-summary")).toBeVisible();
-      await expect(dialog.getByTestId("booking-flow-notice")).toBeVisible();
-      await expect(dialog.getByLabel("Имя родителя")).toBeVisible();
-      await expect(
-        dialog.getByRole("link", {
-          name: "обработку персональных данных",
-        }),
-      ).toHaveAttribute("href", "/legal/personal-data-consent/");
-      await expect(
-        dialog.getByRole("button", {
-          name: /Перейти к записи на mos\.ru|Забронировать место|Оставить заявку на уведомление/,
-        }),
-      ).toBeVisible();
-      return;
+    const action = firstCard.locator('[data-mos-booking-link]').or(formButtons).first();
+    await expect(action).toBeVisible();
+    await action.click();
+    const dialog = page.getByRole("dialog");
+    await expect(dialog).toBeVisible();
+    if (await action.getAttribute('data-mos-booking-link')) {
+      await dialog.getByRole('button', { name: 'Заполнить анкету', exact: true }).click();
     }
-
+    await expect(dialog).toContainText(
+      /Оставить контакты — по желанию|Оформление заявки|Заявка в лист ожидания/,
+    );
+    await expect(dialog.getByTestId("booking-summary")).toBeVisible();
+    await expect(dialog.getByTestId("booking-flow-notice")).toBeVisible();
+    await expect(dialog.getByLabel("Имя родителя")).toBeVisible();
     await expect(
-      firstCard.getByRole("button", { name: /Записаться|mos\.ru/i }).first(),
+      dialog.getByRole("link", {
+        name: "согласие на обработку персональных данных",
+      }),
+    ).toHaveAttribute("href", "/legal/personal-data-consent/");
+    await expect(
+      dialog.getByRole("button", {
+        name: /Отправить контакты|Забронировать место|Оставить заявку на уведомление/,
+      }),
     ).toBeVisible();
   });
 });

@@ -118,7 +118,7 @@
 .tariffs { display: grid; gap: 12px; }
 .tariff { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; padding-top: 12px; border-top: 1px solid var(--line); }
 .tariff > span { display: grid; gap: 4px; }
-.tariff button { min-height: 44px; white-space: normal; background: var(--accent); color: #243326; }
+.tariff :is(button, [data-mos-booking-link]) { min-height: 44px; white-space: normal; background: var(--accent); color: #243326; }
 .muted, .footnote { color: var(--muted); }
 .footnote { font-size: 12px; margin-top: 24px !important; }
 .empty { padding: 28px; border: 1px dashed var(--line); border-radius: 16px; }
