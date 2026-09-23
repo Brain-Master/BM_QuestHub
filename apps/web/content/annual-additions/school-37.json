@@ -1,0 +1,267 @@
+{
+  "version": 1,
+  "reviewedAt": "2026-09-22",
+  "baseSourceSha256": "23b9dbb84ccb2e2eb577efaf94ecdca1c952603ab5ea6ebb9cb5b68d6c594c97",
+  "locations": [
+    {
+      "id": "LOC-012",
+      "school": "Школа № 37",
+      "address": "г. Москва, вн.тер. м.о. Раменки, Мичуринский пр-кт, д. 28",
+      "metro": "Раменки"
+    }
+  ],
+  "groups": [
+    {
+      "locationId": "LOC-012",
+      "cardId": "1019233",
+      "listingId": "2553800",
+      "groupCode": "К2763-26",
+      "title": "ШМИ начинающие (СР 14:15-15:00) 2026-2027",
+      "address": "г. Москва, вн.тер. м.о. Раменки, Мичуринский пр-кт, д. 28",
+      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 37\"",
+      "teacher": "Серегина Мария Владимировна",
+      "totalSeats": 12,
+      "freeSeats": 5,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 1375,
+      "coursePrice": 49500,
+      "courseStart": "2026-09-14",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Среда",
+          "start": "14:15",
+          "end": "15:00"
+        }
+      ],
+      "status": "open",
+      "link": "https://www.mos.ru/pgu2/activity/card/1019233",
+      "refreshedAt": "2026-09-22T19:33:23.062Z"
+    },
+    {
+      "locationId": "LOC-012",
+      "cardId": "1019236",
+      "listingId": "2553800",
+      "groupCode": "К2764-26",
+      "title": "ШМИ начинающие (СР 15:15-16:00) 2026-2027",
+      "address": "г. Москва, вн.тер. м.о. Раменки, Мичуринский пр-кт, д. 28",
+      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 37\"",
+      "teacher": "Серегина Мария Владимировна",
+      "totalSeats": 12,
+      "freeSeats": 8,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 1375,
+      "coursePrice": 49500,
+      "courseStart": "2026-09-14",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Среда",
+          "start": "15:15",
+          "end": "16:00"
+        }
+      ],
+      "status": "open",
+      "link": "https://www.mos.ru/pgu2/activity/card/1019236",
+      "refreshedAt": "2026-09-22T19:33:24.255Z"
+    },
+    {
+      "locationId": "LOC-012",
+      "cardId": "1019244",
+      "listingId": "2553800",
+      "groupCode": "К2765-26",
+      "title": "ШМИ продолжающие (СР 16:15-17:00) 2026-2027",
+      "address": "г. Москва, вн.тер. м.о. Раменки, Мичуринский пр-кт, д. 28",
+      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 37\"",
+      "teacher": "Серегина Мария Владимировна",
+      "totalSeats": 12,
+      "freeSeats": 9,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 1375,
+      "coursePrice": 49500,
+      "courseStart": "2026-09-14",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Среда",
+          "start": "16:15",
+          "end": "17:00"
+        }
+      ],
+      "status": "open",
+      "link": "https://www.mos.ru/pgu2/activity/card/1019244",
+      "refreshedAt": "2026-09-22T19:33:24.476Z"
+    },
+    {
+      "locationId": "LOC-012",
+      "cardId": "1019286",
+      "listingId": "2553800",
+      "groupCode": "К2766-26",
+      "title": "ШМИ начинающие (ЧТ 14:15-15:00) 2026-2027",
+      "address": "г. Москва, вн.тер. м.о. Раменки, Мичуринский пр-кт, д. 28",
+      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 37\"",
+      "teacher": "Серегина Мария Владимировна",
+      "totalSeats": 12,
+      "freeSeats": 9,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 1375,
+      "coursePrice": 49500,
+      "courseStart": "2026-09-14",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Четверг",
+          "start": "14:15",
+          "end": "15:00"
+        }
+      ],
+      "status": "open",
+      "link": "https://www.mos.ru/pgu2/activity/card/1019286",
+      "refreshedAt": "2026-09-22T19:33:24.702Z"
+    },
+    {
+      "locationId": "LOC-012",
+      "cardId": "1019288",
+      "listingId": "2553800",
+      "groupCode": "К2767-26",
+      "title": "ШМИ начинающие (ЧТ 15:15-16:00) 2026-2027",
+      "address": "г. Москва, вн.тер. м.о. Раменки, Мичуринский пр-кт, д. 28",
+      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 37\"",
+      "teacher": "Серегина Мария Владимировна",
+      "totalSeats": 12,
+      "freeSeats": 11,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 1375,
+      "coursePrice": 49500,
+      "courseStart": "2026-09-14",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Четверг",
+          "start": "15:15",
+          "end": "16:00"
+        }
+      ],
+      "status": "open",
+      "link": "https://www.mos.ru/pgu2/activity/card/1019288",
+      "refreshedAt": "2026-09-22T19:33:24.972Z"
+    },
+    {
+      "locationId": "LOC-012",
+      "cardId": "1019293",
+      "listingId": "2553800",
+      "groupCode": "К2768-26",
+      "title": "ШМИ продолжающие (ЧТ 16:15-17:00) 2026-2027",
+      "address": "г. Москва, вн.тер. м.о. Раменки, Мичуринский пр-кт, д. 28",
+      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 37\"",
+      "teacher": "Серегина Мария Владимировна",
+      "totalSeats": 12,
+      "freeSeats": 8,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 1375,
+      "coursePrice": 49500,
+      "courseStart": "2026-09-14",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Четверг",
+          "start": "16:15",
+          "end": "17:00"
+        }
+      ],
+      "status": "open",
+      "link": "https://www.mos.ru/pgu2/activity/card/1019293",
+      "refreshedAt": "2026-09-22T19:33:25.158Z"
+    },
+    {
+      "locationId": "LOC-012",
+      "cardId": "1019299",
+      "listingId": "2553800",
+      "groupCode": "К2769-26",
+      "title": "ШМИ начинающие (ПТ 14:15-15:00) 2026-2027",
+      "address": "г. Москва, вн.тер. м.о. Раменки, Мичуринский пр-кт, д. 28",
+      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 37\"",
+      "teacher": "Серегина Мария Владимировна",
+      "totalSeats": 12,
+      "freeSeats": 9,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 1375,
+      "coursePrice": 49500,
+      "courseStart": "2026-09-14",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Пятница",
+          "start": "14:15",
+          "end": "15:00"
+        }
+      ],
+      "status": "open",
+      "link": "https://www.mos.ru/pgu2/activity/card/1019299",
+      "refreshedAt": "2026-09-22T19:33:25.376Z"
+    },
+    {
+      "locationId": "LOC-012",
+      "cardId": "1019455",
+      "listingId": "2553800",
+      "groupCode": "К2770-26",
+      "title": "ШМИ начинающие (ПТ 15:15-16:00) 2026-2027",
+      "address": "г. Москва, вн.тер. м.о. Раменки, Мичуринский пр-кт, д. 28",
+      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 37\"",
+      "teacher": "Серегина Мария Владимировна",
+      "totalSeats": 12,
+      "freeSeats": 9,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 1375,
+      "coursePrice": 49500,
+      "courseStart": "2026-09-14",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Пятница",
+          "start": "15:15",
+          "end": "16:00"
+        }
+      ],
+      "status": "open",
+      "link": "https://www.mos.ru/pgu2/activity/card/1019455",
+      "refreshedAt": "2026-09-22T19:33:25.685Z"
+    },
+    {
+      "locationId": "LOC-012",
+      "cardId": "1019466",
+      "listingId": "2553800",
+      "groupCode": "К2771-26",
+      "title": "ШМИ продолжающие (ПТ 16:15-17:00) 2026-2027",
+      "address": "г. Москва, вн.тер. м.о. Раменки, Мичуринский пр-кт, д. 28",
+      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 37\"",
+      "teacher": "Серегина Мария Владимировна",
+      "totalSeats": 12,
+      "freeSeats": 6,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 1375,
+      "coursePrice": 49500,
+      "courseStart": "2026-09-14",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Пятница",
+          "start": "16:15",
+          "end": "17:00"
+        }
+      ],
+      "status": "open",
+      "link": "https://www.mos.ru/pgu2/activity/card/1019466",
+      "refreshedAt": "2026-09-22T19:33:25.908Z"
+    }
+  ]
+}

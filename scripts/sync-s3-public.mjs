@@ -23,6 +23,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { S3_YC_ENDPOINT, S3_YC_REGION } from "./lib/s3-storage.mjs";
+import { AVAILABILITY_KEY, LEASE_KEY } from "./lib/mos-live-capacity-store.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const WEB = path.join(ROOT, "apps", "web");
@@ -157,6 +158,7 @@ async function syncTarget(name, config, bucket) {
 
   const args = ["s3", "sync", local, remote, ...baseArgs];
   if (config.delete) args.push("--delete");
+  if (name === "static") for (const key of [AVAILABILITY_KEY, LEASE_KEY]) args.push("--exclude", key);
 
   console.log(`[sync-s3-public] ${name}: ${local} -> ${remote}`);
   runAws(args);

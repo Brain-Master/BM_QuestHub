@@ -1,0 +1,10 @@
+.capacity { display:grid; gap:.35rem; width:min(100%,26rem); min-width:0; color:var(--capacity-ink,#e8edf5); font-size:.82rem; line-height:1.45; }
+.compact { width:min(100%,23rem); }
+.numbers { display:flex; flex-wrap:wrap; justify-content:space-between; gap:.25rem 1rem; }
+.free { color:var(--capacity-free,#86efc4); }
+.full { color:var(--capacity-full,#ffb4b4); }
+.track { height:.4rem; width:100%; border-radius:1rem; background:#465166; }
+.fill,.fullFill { display:block; height:100%; max-width:100%; border-radius:inherit; background:#86efc4; }
+.fullFill { background:#ffb4b4; }
+.note { color:var(--capacity-note,#c0c9d8); font-size:.72rem; overflow-wrap:anywhere; }
+@media (forced-colors:active) { .track { border:1px solid CanvasText; } .fill,.fullFill { background:Highlight; forced-color-adjust:none; } }

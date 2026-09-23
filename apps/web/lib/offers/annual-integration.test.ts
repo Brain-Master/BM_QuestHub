@@ -18,8 +18,8 @@ const read = (file: string) => JSON.parse(fs.readFileSync(file, "utf8"));
 const snapshot = parseOffersSnapshot(read("data/offers-snapshot.json"));
 const venues = venueSchema.array().parse(read("data/v2/map-snapshot.json").venues);
 const quests = questSchema.array().parse(read("data/v2/catalog-snapshot.json").courses.map((q: {slug:string}) => ({...q, offers:snapshot.offersByQuest[q.slug]??[]})));
-test("nine school profiles have sourced media; the owner-confirmed base adds no fabricated photo or classes",()=>{
-  assert.equal(Object.keys(schoolProfiles).length,10);
+test("school profiles retain exact-campus sourced media; base and2103 await real photos",()=>{
+  assert.equal(Object.keys(schoolProfiles).length,11);
   let campuses=0;
   for(const [id,profile] of Object.entries(schoolProfiles)){
     if(profile.preparing){assert.equal(id,'bm-base-moscow');assert.equal(profile.nameSource,'owner:2026-09-09');continue;}
@@ -33,13 +33,13 @@ test("nine school profiles have sourced media; the owner-confirmed base adds no 
       else {assert.ok(campus.photoUrl&&fs.existsSync(`public${campus.photoUrl}`));assert.equal(venue.photos?.[0]?.url,campus.photoUrl);}
     }
   }
-  assert.equal(campuses,16);
+  assert.equal(campuses,18);
 });
-test('owner-confirmed teachers replace portal placeholders in six1212 groups and pin school17 by study year',()=>{
+test('owner-confirmed teachers replace portal placeholders in seven1212 groups and pin school17 by study year',()=>{
   const annual=snapshot.offersByQuest.shmi;
   const school1212=annual.filter(o=>o.venueSlug.startsWith('school-1212-'));
   const school17=annual.filter(o=>o.venueSlug.startsWith('school-17-'));
-  assert.equal(school1212.length,6);assert.equal(school17.length,6);
+  assert.equal(school1212.length,7);assert.equal(school17.length,6);
   for(const o of [...school1212,...school17]){
     const teacher=o.venueSlug.startsWith('school-17-')&&o.annual?.studyYear===1?'Мартынова Анна Александровна':'Толмачева Василиса Владимировна';
     assert.equal(o.annual?.teacher,teacher);assert.equal(o.scheduleCard?.teacherName,teacher);
@@ -55,11 +55,11 @@ test('owner-confirmed teachers replace portal placeholders in six1212 groups and
   assert.match(mark,/viewBox="0 0 160 160"/);assert.match(mark,/Мехвариум/);
   assert.doesNotMatch(mark,/<script|<image|<foreignObject|\shref=/i);
 });
-test("reviewed profiles retain the seven pre-existing metro/district fields not replaced by new source facts",()=>{
+test("reviewed profiles retain context;937 district is clarified from its exact address",()=>{
   for(const [slug,context] of Object.entries({
     'school-1383-verkhnie-likhobory':{district:'Бескудниковский'},
     'school-1517-narodnoe-opolchenie':{district:'Хорошёво-Мнёвники'},
-    'school-937-orekhovo':{district:'Орехово-Борисово'},
+    'school-937-orekhovo':{district:'Орехово-Борисово Северное'},
     'mduc-ekt-odesskaya':{metro:'Каховская',district:'Зюзино'},
     'mduc-ekt-mosfilmovskaya':{metro:'Минская',district:'Раменки'},
   }))for(const [key,value] of Object.entries(context))assert.equal(venues.find(v=>v.slug===slug)?.[key as 'metro'|'district'],value,`${slug}.${key}`);
@@ -67,10 +67,12 @@ test("reviewed profiles retain the seven pre-existing metro/district fields not 
 
 test("shared catalogue projects all annual groups and exact campuses", () => {
   const view = projectAnnualWorkspace(quests, venues);
-  assert.equal(view.groups.length,60);
-  assert.equal(view.groups.flatMap(g=>g.slots).length,61);
-  assert.equal(view.locations.length,10);
-  assert.equal(view.groups.filter(g=>g.status==="closed").length,5);
+  assert.equal(view.groups.length,70);
+  assert.equal(view.groups.flatMap(g=>g.slots).length,71);
+  assert.equal(view.locations.length,12);
+  const registry=annualMosRefreshSchema.parse(read('content/annual-mos-refresh.generated.json'));
+  assert.deepEqual(view.groups.filter(g=>g.status==="closed").map(g=>g.id).sort(),
+    Object.entries(registry.groups).filter(([,g])=>g.status==='closed').map(([id])=>id).sort());
   assert.equal(quests.filter(q=>q.format==="year").length,4);
   for(const location of view.locations) {
     assert.ok(location.schoolScopeSlug);
@@ -89,12 +91,12 @@ test("reviewed school2044 identity and both exact campus coordinates survive com
   for(const v of school){assert.match(v.name,/имени Героя Советского Союза А\. М\. Серебрякова/);assert.equal(v.displayName,v.name);assert.equal(v.photos.length,1);assert.equal(v.metro,'Физтех');assert.match(v.logoUrl??'',/school-2044\/logo-original/);}
   assert.deepEqual(school.map(v=>[v.latitude,v.longitude]),[[55.932261,37.541054],[55.927015,37.542641]]);
 });
-test("live registry validates 52 exact distinct identities, preserves 8 unresolved groups without claiming success",()=>{
+test("live registry validates 66 exact distinct identities, preserves 8 unresolved groups without claiming success",()=>{
   const r=annualMosRefreshSchema.parse(read('content/annual-mos-refresh.generated.json'));
-  assert.equal(Object.keys(r.groups).length,52);assert.equal(new Set(Object.values(r.groups).map(g=>g.cardId)).size,52);
-  assert.equal(r.expectedGroups,60);assert.equal(r.ok,false);
+  assert.equal(Object.keys(r.groups).length,66);assert.equal(new Set(Object.values(r.groups).map(g=>g.cardId)).size,66);
+  assert.equal(r.expectedGroups,74);assert.equal(r.ok,false);
   const updated=snapshot.offersByQuest.shmi.filter(o=>o.annual?.refreshedAt);
-  assert.equal(updated.length,52);
+  assert.equal(updated.length,66);
   for(const o of updated){assert.equal(o.annual?.linkKind,'card');assert.match(o.mosBookingUrl??'',/^https:\/\/www\.mos\.ru\/pgu2\/activity\/card\/\d+$/);assert.ok(o.annual?.groupCode);assert.notEqual(o.annual?.lessonPrice,null);}
   assert.equal(annualMosRefreshSchema.safeParse({...r,ok:true}).success,false);
   assert.equal(annualMetadataSchema.safeParse({...updated[0].annual,ageMin:14,ageMax:7}).success,false);
@@ -127,10 +129,10 @@ test("negative boundary: malformed slots and orphan campus fail", () => {
   assert.throws(()=>projectAnnualWorkspace(quests,[]),/Unknown location/);
 });
 
-test("shared site/map selectors include all ten campuses and closed groups cannot book", () => {
+test("shared site/map selectors include all twelve campuses and closed groups cannot book", () => {
   const cards=buildSiteScopeCards({scopes:getSchoolScopes(venues),quests,venues,worlds:worldSchema.array().parse(read("data/v2/catalog-snapshot.json").worlds)});
   const annual=projectAnnualWorkspace(quests,venues);
-  assert.equal(new Set(annual.locations.map(l=>l.schoolScopeSlug)).size,7);
+  assert.equal(new Set(annual.locations.map(l=>l.schoolScopeSlug)).size,9);
   for(const location of annual.locations) {
     const card=cards.find(c=>c.slug===location.schoolScopeSlug);
     assert.ok(card);

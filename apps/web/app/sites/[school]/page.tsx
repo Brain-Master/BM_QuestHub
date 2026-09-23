@@ -37,6 +37,7 @@ import {
   buildYandexMapWidgetSrc,
 } from "@/lib/sites/yandex-map";
 import { cn } from "@/lib/utils";
+import { BRAINMASTER_SUPPORT_PHONE, BRAINMASTER_SUPPORT_PHONE_HREF, BRAINMASTER_SUPPORT_TELEGRAM_URL } from "@/lib/site-contact";
 import { getSchoolProfile } from "@/content/school-profiles";
 
 type Props = {
@@ -69,7 +70,7 @@ function uniqueSitePhotos(site: { campuses: SiteCampus[] }) {
     .flatMap((campus) =>
       campus.photos.map((photo) => ({
         ...photo,
-        campusName: campus.name,
+        campusName: campus.address,
       })),
     )
     .filter((photo) => {
@@ -97,6 +98,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `Площадка · ${fullName}`,
     description: `Адрес, карта и расписание BrainMaster для площадки ${school.name}.`,
+    alternates: { canonical: `/sites/${school.slug}/` },
   };
 }
 
@@ -131,8 +133,11 @@ export default async function SchoolPage({ params }: Props) {
     campuses: site.campuses,
   });
   const siteQuests = filterQuestsForSchool(quests, venues, school.slug);
-  const sitePhotos = uniqueSitePhotos(site);
   const profile = getSchoolProfile(school.slug);
+  const profileOrder = Object.keys(profile?.campuses ?? {});
+  const sortedCampuses = [...site.campuses].sort((a,b) =>
+    (b.shiftCount ?? 0) - (a.shiftCount ?? 0) || profileOrder.indexOf(a.slug) - profileOrder.indexOf(b.slug));
+  const sitePhotos = uniqueSitePhotos({...site, campuses:sortedCampuses});
   const heroEyebrow =
     site.name !== site.fullName ? site.name : "Площадка BrainMaster";
   const mapCampusCount = site.campuses.filter((campus) => hasCoordinates(campus)).length;
@@ -148,7 +153,7 @@ export default async function SchoolPage({ params }: Props) {
         aside={
           <div className="grid gap-3 rounded-3xl border border-white/10 bg-black/20 p-4 text-sm backdrop-blur">
             {profile && <div className="flex flex-wrap items-center gap-3">
-              <Image src={profile.logoUrl} alt={`Эмблема: ${profile.name}`} width={80} height={80} className="rounded-xl bg-white object-contain" />
+              <Image src={profile.logoUrl} alt={profile.logoAlt ?? `Эмблема: ${profile.name}`} width={80} height={80} className="rounded-xl bg-white object-contain" />
               <div className="grid gap-2">
                 {profile.website && <a href={profile.website} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center underline underline-offset-4">Официальный сайт ↗</a>}
                 {profile.telegram && <a href={profile.telegram} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center underline underline-offset-4">Канал площадки ↗</a>}
@@ -157,7 +162,7 @@ export default async function SchoolPage({ params }: Props) {
             {profile?.preparing && <p role="note" className="rounded-xl border border-slate-400/30 bg-slate-800 p-3 text-slate-100">Готовится к открытию. Идёт ремонт, занятий пока нет.</p>}
             <div>
               <p className="text-cyan-100/70 text-xs uppercase tracking-[0.16em]">
-                Сейчас доступно
+                В загруженном расписании
               </p>
               <div className="mt-3 grid grid-cols-2 gap-2">
                 <div className="rounded-2xl border border-white/10 bg-white/[0.06] p-3 text-center">
@@ -198,7 +203,12 @@ export default async function SchoolPage({ params }: Props) {
         showBadges={false}
       />
 
-      <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(22rem,26rem)]">
+      <nav aria-label="Разделы площадки" className="mb-6 flex flex-wrap gap-2">
+        {[["#venue-schedule", "Расписание"], ["#venue-addresses", "Адреса и как пройти"], ["#venue-photos", "Фотографии"], ["#venue-contact", "Связаться"]].map(([href, label]) => (
+          <a key={href} href={href} className={cn(buttonVariants({variant:"outline",size:"sm"}), "min-h-11")}>{label}</a>
+        ))}
+      </nav>
+      <section id="venue-addresses" className="grid scroll-mt-24 gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(22rem,26rem)]">
         <div className="rounded-[1.5rem] border border-white/10 bg-card/50 p-5 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)] backdrop-blur-md sm:p-6">
           <div className="flex items-start gap-3">
             <span className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-primary/15 text-primary">
@@ -209,15 +219,15 @@ export default async function SchoolPage({ params }: Props) {
                 Адрес и корпуса
               </h2>
               <p className="mt-2 max-w-2xl text-muted-foreground text-sm leading-relaxed">
-                Проверьте адрес, ближайшее метро и схему прохода. Если у корпуса
-                есть пропускной режим, актуальные детали встречи подтвердим перед
-                стартом смены.
+                Проверьте адрес выбранной группы. Точки на карте обозначают здания,
+                а не согласованные входы. Порядок прохода и доступность входа
+                для маломобильных посетителей уточните у организатора до поездки.
               </p>
             </div>
           </div>
 
           <div className="mt-6 grid gap-3">
-            {site.campuses.map((campus) => {
+            {sortedCampuses.map((campus) => {
               const campusHref = buildYandexMapsHref({
                 siteName: site.name,
                 campuses: [campus],
@@ -226,8 +236,10 @@ export default async function SchoolPage({ params }: Props) {
               return (
                 <article
                   key={campus.slug}
-                  className="rounded-2xl border border-white/10 bg-black/15 p-4"
+                  data-campus={campus.slug}
+                  className={cn("rounded-2xl border border-white/10 p-4", campus.shiftCount ? "bg-black/15" : "bg-slate-800/40")}
                 >
+                  <p className="mb-3 text-sm text-muted-foreground">{campus.shiftCount ? `Групп в расписании: ${campus.shiftCount}` : "В загруженном расписании групп нет"}</p>
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                     <div className="min-w-0">
                       <p className="font-medium text-foreground">{campus.headline}</p>
@@ -265,6 +277,7 @@ export default async function SchoolPage({ params }: Props) {
                       <ExternalLink className="size-3.5" aria-hidden />
                     </Link>
                   </div>
+                  {(campus.shiftCount ?? 0) > 0 && <Link href={`/sites/${site.slug}/agenda/?venue=${encodeURIComponent(campus.slug)}&view=catalogue`} className="mt-3 inline-flex min-h-11 items-center text-primary underline underline-offset-4">Расписание этого корпуса →</Link>}
                   <div className="mt-4 grid gap-3 border-white/10 border-t pt-4">
                     <div className="flex items-start gap-2 rounded-xl bg-white/[0.04] p-3 text-sm">
                       <DoorOpen className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden />
@@ -350,8 +363,8 @@ export default async function SchoolPage({ params }: Props) {
                 Что проходит на площадке
               </h2>
               <p className="mt-2 max-w-2xl text-muted-foreground text-sm leading-relaxed">
-                Здесь собраны активные курсы и открытые смены для этой локации,
-                чтобы можно было выбрать площадку и сразу перейти к записи.
+                Программы из загруженного расписания. Статус набора, стоимость
+                и свободные места смотрите у конкретной группы.
               </p>
             </div>
           </div>
@@ -366,12 +379,12 @@ export default async function SchoolPage({ params }: Props) {
               </p>
               <p className="mt-1 text-muted-foreground text-sm">
                 {siteQuests.slice(0, 3).map((quest) => quest.title).join(", ") ||
-                  "Список обновляется"}
+                  "Групп пока нет"}
               </p>
             </div>
             <div className="rounded-2xl border border-white/10 bg-black/15 p-4">
               <p className="text-muted-foreground text-xs uppercase tracking-[0.16em]">
-                Открытые группы
+                Группы в расписании
               </p>
               <p className="mt-2 font-heading text-3xl font-semibold text-foreground">
                 {site.shiftCount}
@@ -396,7 +409,7 @@ export default async function SchoolPage({ params }: Props) {
           </div>
         </div>
 
-        <aside className="rounded-[1.5rem] border border-white/10 bg-card/50 p-5 shadow-[0_24px_90px_rgba(2,6,23,0.28)] backdrop-blur-md sm:p-6">
+        <aside id="venue-photos" className="scroll-mt-24 rounded-[1.5rem] border border-white/10 bg-card/50 p-5 shadow-[0_24px_90px_rgba(2,6,23,0.28)] backdrop-blur-md sm:p-6">
           <div className="flex items-start gap-3">
             <span className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-cyan-200/10 text-cyan-100">
               <Camera className="size-5" aria-hidden />
@@ -438,7 +451,8 @@ export default async function SchoolPage({ params }: Props) {
                   })()}
                   <figcaption className="px-3 py-2 text-muted-foreground text-xs">
                     {photo.alt ?? photo.campusName}
-                    {profile && Object.values(profile.campuses).filter(c => c.photoUrl === photo.url).map(c => <a key={c.photoUrl} href={c.mapUrl} target="_blank" rel="noopener noreferrer" className="mt-1 flex min-h-11 items-center underline">Источник фото: Яндекс Карты ↗</a>)}
+                    <span className="block">{photo.campusName}</span>
+                    {profile && Object.values(profile.campuses).filter(c => c.photoUrl === photo.url).map(c => <a key={c.photoUrl} href={c.photoSource ?? c.mapUrl} target="_blank" rel="noopener noreferrer" className="mt-1 flex min-h-11 items-center underline">Источник фото: Яндекс Карты ↗</a>)}
                   </figcaption>
                 </figure>
               ))}
@@ -446,13 +460,13 @@ export default async function SchoolPage({ params }: Props) {
           ) : (
             <div className="mt-5 rounded-2xl border border-dashed border-white/15 bg-black/15 p-4 text-muted-foreground text-sm leading-relaxed">
               Фотографии добавим после согласования с площадкой. До визита
-              ориентируйтесь на адрес, карту и схему прохода выше.
+              ориентируйтесь на адрес и карту выше; порядок прохода уточните у организатора.
             </div>
           )}
         </aside>
       </section>
 
-      <section className="mt-6 rounded-[1.5rem] border border-white/10 bg-card/50 p-5 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)] backdrop-blur-md sm:p-6">
+      <section id="venue-schedule" className="mt-6 scroll-mt-24 rounded-[1.5rem] border border-white/10 bg-card/50 p-5 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)] backdrop-blur-md sm:p-6">
         <div className="flex items-start gap-3">
           <span className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-primary/15 text-primary">
             <CalendarDays className="size-5" aria-hidden />
@@ -481,6 +495,16 @@ export default async function SchoolPage({ params }: Props) {
             hideCommunityPanel
           />
         </Suspense>
+      </section>
+
+      <section id="venue-contact" className="mt-6 scroll-mt-24 rounded-3xl border border-white/10 bg-card/50 p-5 sm:p-6">
+        <h2 className="font-heading text-xl font-semibold">{profile?.preparing ? "О будущем открытии" : "Перед первым занятием"}</h2>
+        <p className="mt-2 max-w-2xl text-sm text-muted-foreground">{profile?.preparing ? "Площадка ещё не открыта. По вопросам будущего пространства напишите BrainMaster; посещение и запись на занятия пока не предусмотрены." : "Уточните у BrainMaster вход, кабинет, порядок прохода и встречи ребёнка. Фото здания не подтверждает доступность конкретного входа."}</p>
+        <div className="mt-4 flex flex-wrap gap-3">
+          <a href={BRAINMASTER_SUPPORT_PHONE_HREF} className={cn(buttonVariants({variant:"outline"}), "min-h-11")}>Позвонить: {BRAINMASTER_SUPPORT_PHONE}</a>
+          <a href={BRAINMASTER_SUPPORT_TELEGRAM_URL} target="_blank" rel="noopener noreferrer" className={cn(buttonVariants({variant:"outline"}), "min-h-11")}>Написать BrainMaster ↗</a>
+        </div>
+        {profile && <p className="mt-4 text-xs text-muted-foreground">Сведения о площадке проверены: {profile.verifiedAt}. Это не дата обновления расписания. <a className="underline" href={profile.nameSource.startsWith("https://") ? profile.nameSource : BRAINMASTER_SUPPORT_TELEGRAM_URL} target="_blank" rel="noopener noreferrer">Источник сведений ↗</a></p>}
       </section>
 
       <CommunityConnectPanel

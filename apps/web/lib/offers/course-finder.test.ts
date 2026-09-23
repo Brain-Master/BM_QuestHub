@@ -21,11 +21,11 @@ const annual = items.filter(item => finderItemMatches(item, all));
 test("catalogue and site choices require actual nonarchived groups in exact campus scope", () => {
   assert.deepEqual(filterCatalog(quests,venues,{}).map(q=>q.slug),["shmi"]);
   assert.equal(filterCatalog(quests,venues,{school:"missing"}).length,0);
-  assert.equal(filterCatalog(quests,venues,{school:"school-937"}).length,0);
-  assert.equal(filterCatalog(quests,venues,{school:"school-2044"})[0].offers.length,23);
+  assert.equal(filterCatalog(quests,venues,{school:"school-937"})[0].offers.length,4);
+  assert.equal(filterCatalog(quests,venues,{school:"school-2044"})[0].offers.length,19);
   assert.ok(filterCatalog(quests,venues,{status:"archived"}).length>0);
   const cards=buildSiteScopeCards({scopes:getSchoolScopes(venues),quests,venues,worlds:worldSchema.array().parse(catalog.worlds)});
-  assert.equal(cards.length,7);assert.equal(cards.reduce((sum,c)=>sum+c.shiftCount,0),60);
+  assert.equal(cards.length,9);assert.equal(cards.reduce((sum,c)=>sum+c.shiftCount,0),70);
   assert.ok(cards.every(c=>c.shiftCount>0));
 });
 
@@ -44,14 +44,15 @@ test("facets hide zero groups, preserve independent conditions and count identit
   assert.deepEqual(finderChoices(items, all, "programme", quests.map(q => q.slug)), ["shmi"]);
   const state = { ...all, school: "school-2044", programme: "shmi" };
   assert.deepEqual(finderChoices(items, state, "level", ["1", "2", "3"]), ["1"]);
-  assert.ok(!finderChoices(items, all, "school", ["school-2044", "school-937"]).includes("school-937"));
+  assert.ok(finderChoices(items, all, "school", ["school-2044", "school-937"]).includes("school-937"));
+  assert.ok(!finderChoices(items, all, "school", ["bm-base-moscow"]).includes("bm-base-moscow"));
   for (const key of ["school", "venue", "programme", "level", "age", "day"] as const) {
     const candidates = key === "school" ? ["school-2044", "school-1383"] : key === "venue" ? venues.map(v=>v.slug) : key === "programme" ? ["shmi", "projects"] : ["1", "2", "3", "11"];
     for (const value of finderChoices(items, state, key, candidates)) assert.ok(finderChoiceCount(items, state, key, value) > 0);
   }
   const withCampus = { ...state, venue: "school-2044-dmitrovskoe-169b" };
   assert.ok(finderChoiceCount(items, withCampus, "school", "school-1383") > 0);
-  assert.equal(finderChoiceCount([...annual, ...annual], state, "school", "school-2044"), 23);
+  assert.equal(finderChoiceCount([...annual, ...annual], state, "school", "school-2044"), 19);
 });
 
 test("school QR starts at all campuses; general agenda is a full catalogue", () => {
@@ -82,22 +83,24 @@ test("direct offer skips questions; numeric parameters are allowlisted", () => {
   const state = readFinderState(new URLSearchParams("age=-99&day=8&programme=shmi&level=2044"));
   assert.equal(state.age, "all"); assert.equal(state.day, "all"); assert.equal(state.level, "all");
 });
-test("60 real groups expand to 61 weekly slots without changing identities", () => {
-  assert.equal(annual.length, 60);
+test("70 active groups expand to 71 weekly slots; four removed groups retain history", () => {
+  assert.equal(annual.length, 70);
   const rows = groupFinderWeek(annual).flatMap(day => day.rows);
-  assert.equal(rows.length, 61); assert.equal(new Set(rows.map(row => row.item.offer.id)).size, 60);
-  assert.equal(new Set(rows.map(row => row.key)).size, 61);
+  assert.equal(rows.length, 71); assert.equal(new Set(rows.map(row => row.item.offer.id)).size, 70);
+  assert.equal(new Set(rows.map(row => row.key)).size, 71);
   assert.deepEqual(rows.filter(row => row.item.offer.id === "year:К1981-26").map(row => row.key.split(":").slice(2, 3)[0]), ["Вторник", "Четверг"]);
-  assert.equal(new Set(annual.map(item => item.venue.slug)).size, 10);
-  assert.equal(annual.filter(item => item.offer.annual?.admission === "closed").length, 5);
+  assert.equal(new Set(annual.map(item => item.venue.slug)).size, 12);
+  const registry=JSON.parse(fs.readFileSync('content/annual-mos-refresh.generated.json','utf8')) as {groups:Record<string,{status:string}>};
+  assert.deepEqual(annual.filter(item => item.offer.annual?.admission === "closed").map(item=>item.offer.id).sort(),
+    Object.entries(registry.groups).filter(([,g])=>g.status==='closed').map(([id])=>`year:${id}`).sort());
   assert.ok(annual.filter(item => item.offer.annual?.admission === "closed").every(item => item.variants.every(variant => variant.bookingMode.kind === "disabled")));
 });
 test("canonical programme registry includes empty programmes; study years never inferred", () => {
   assert.equal(quests.filter(quest => quest.format === "year").length, 4);
   for (const programme of ["projects", "it-academy", "olympiad-league"]) assert.equal(items.filter(item => finderItemMatches(item, { ...all, programme })).length, 0);
-  // Owner confirms all 23 school2044 groups are first year; exact mos cards
-  // explicitly supply the ten school1383 years. Seven ambiguous source titles stay unknown.
-  assert.deepEqual([1, 2, 3, null].map(year => annual.filter(item => itemStudyYear(item) === year).length), [37, 12, 4, 7]);
+  // Owner confirms all 19 remaining school2044 groups are first year; exact mos cards
+  // explicitly supply the ten school1383 years. Owner confirmed1212/937; one remaining ambiguous source title stays unknown.
+  assert.deepEqual([1, 2, 3, null].map(year => annual.filter(item => itemStudyYear(item) === year).length), [46, 19, 4, 1]);
   assert.ok(annual.filter(item=>item.venue.schoolScopeSlug==='school-2044').every(item=>itemStudyYear(item)===1));
   assert.deepEqual(annual.filter(item=>itemStudyYear(item)===3).map(item=>item.offer.id).sort(),['year:К2376-26','year:К2380-26','year:К3026-26','year:К3027-26']);
 });

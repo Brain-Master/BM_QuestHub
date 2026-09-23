@@ -1,11 +1,26 @@
+"use client";
+
+import { useSyncExternalStore } from 'react';
 import type { ScheduleCapacityView } from "@/lib/offers/schedule-board";
 import { cn } from "@/lib/utils";
+import s from "./schedule-capacity-indicator.module.css";
+
+const clockSnapshot=()=>Math.floor(Date.now()/60_000)*60_000;
+const serverClockSnapshot=()=>0;
+function subscribeClock(notify:()=>void) {
+  const timer=setInterval(notify,60_000);
+  return ()=>clearInterval(timer);
+}
 
 type Props = {
   capacity: ScheduleCapacityView;
   archived?: boolean;
   compact?: boolean;
   className?: string;
+  checkedAt?: string;
+  sourceDate?: string;
+  failed?: boolean;
+  showUnknown?: boolean;
 };
 
 export function ScheduleCapacityIndicator({
@@ -13,42 +28,34 @@ export function ScheduleCapacityIndicator({
   archived = false,
   compact = false,
   className,
+  checkedAt, sourceDate, failed = false, showUnknown = false,
 }: Props) {
-  if (!capacity || archived) return null;
+  const clock=useSyncExternalStore(subscribeClock,clockSnapshot,serverClockSnapshot);
+  if (archived || (!capacity && !showUnknown)) return null;
+  const stale = !!checkedAt && clock-Date.parse(checkedAt)>15*60_000;
+  const date = checkedAt ? new Date(checkedAt).toLocaleString("ru-RU", {
+    timeZone:"Europe/Moscow", day:"2-digit", month:"2-digit", hour:"2-digit", minute:"2-digit",
+  }) : sourceDate;
 
   return (
     <div
       data-testid="schedule-capacity"
-      className={cn(
-        "inline-flex items-center gap-2.5 rounded-full border bg-black/22 px-2.5 py-1.5 font-bold text-[0.78rem] tracking-wide whitespace-nowrap shadow-[0_0_20px_color-mix(in_oklch,currentColor_14%,transparent)] backdrop-blur-md",
-        capacity.isSoldOut
-          ? "border-[color:var(--schedule-capacity-full)]/35 text-[color:var(--schedule-capacity-full)]"
-          : capacity.isLow
-            ? "border-[color:var(--schedule-capacity-low)]/35 text-[color:var(--schedule-capacity-low)]"
-            : "border-[color:var(--schedule-capacity-open)]/30 text-[color:var(--schedule-capacity-open)]",
-        className,
-      )}
+      className={cn(s.capacity, compact && s.compact, className)}
     >
-      <div
-        className={cn(
-          "hidden overflow-hidden rounded-full border border-white/15 bg-white/12 sm:block",
-          compact ? "h-2.5 w-24" : "h-3 w-36",
-        )}
-        aria-hidden
-      >
-        <div
-          className={cn(
-            "h-full min-w-1 rounded-full transition-[width] duration-300 shadow-[0_0_10px_currentColor]",
-            capacity.isSoldOut
-              ? "bg-[color:var(--schedule-capacity-full)]"
-              : capacity.isLow
-                ? "bg-[color:var(--schedule-capacity-low)]"
-                : "bg-[color:var(--schedule-capacity-open)]",
-          )}
-          style={{ width: `${capacity.percent}%` }}
-        />
-      </div>
-      <span>{capacity.label}</span>
+      {capacity ? <>
+        <div className={s.numbers}>
+          <strong className={capacity.isSoldOut?s.full:s.free}>{capacity.isSoldOut?"Свободных мест нет":`Свободно ${capacity.left} из ${capacity.total}`}</strong>
+          <span className={s.note}>занято {capacity.booked}</span>
+        </div>
+        <div role="meter" aria-label="Занятые места в группе" aria-valuemin={0}
+          aria-valuemax={capacity.total} aria-valuenow={capacity.booked}
+          aria-valuetext={`Занято ${capacity.booked} из ${capacity.total}, свободно ${capacity.left}`}
+          className={s.track}>
+          <span className={capacity.isSoldOut?s.fullFill:s.fill} style={{width:`${capacity.percent}%`}} />
+        </div>
+      </> : <span className={s.note}>Количество мест не указано на mos.ru</span>}
+      {date && <small className={s.note}>mos.ru · {checkedAt?"проверено":"данные от"} {date}{checkedAt?" МСК":""}</small>}
+      {(failed||stale) && <small className={s.note}>{failed?"Обновление не удалось.":"Данные требуют повторной проверки."} Наличие мест проверьте на mos.ru.</small>}
     </div>
   );
 }

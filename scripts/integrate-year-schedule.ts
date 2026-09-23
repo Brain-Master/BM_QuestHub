@@ -4,9 +4,10 @@ import path from "node:path";
 import os from "node:os";
 import crypto from "node:crypto";
 import { fileURLToPath } from "node:url";
-import { annualLocations, annualWorld } from "../apps/web/content/year-integration";
+import { annualLocations, annualWorld, reviewedStandaloneVenues } from "../apps/web/content/year-integration";
 import { getSchoolProfile, reviewedCampusProfile } from "../apps/web/content/school-profiles";
-import { reviewedStudyYear, reviewedGroupCodes, reviewedTeacher, reviewedLessonPrice } from "../apps/web/content/annual-group-overrides";
+import { reviewedStudyYear, reviewedGroupCodes, reviewedTeacher, reviewedLessonPrice, reviewedAges } from "../apps/web/content/annual-group-overrides";
+import { isRetiredAnnualGroup } from "../apps/web/content/annual-retirements.mjs";
 import { annualMosRefreshSchema } from "../apps/web/lib/offers/annual-schedule";
 import { yearPrograms } from "../apps/web/content/year-programs";
 import { projectAnnualWorkspace, yearScheduleSchema } from "../apps/web/lib/year-schedule";
@@ -61,7 +62,7 @@ if (refresh) {
     return [g.id,location.slug];
   }));
   const studyYearByGroup=Object.fromEntries(source.groups.map(g=>[g.id,
-    reviewedStudyYear(annualLocations.find(l=>l.sourceId===g.locationId)!.schoolScopeSlug) ?? annualProgrammeName(refresh?.groups[g.id]?.title ?? g.title).studyYear]));
+    reviewedStudyYear(annualLocations.find(l=>l.sourceId===g.locationId)!.schoolScopeSlug, g.groupCode) ?? annualProgrammeName(refresh?.groups[g.id]?.title ?? g.title).studyYear]));
   // This boundary is necessary even for direct local/manual compilation.
   // Unknown compatible rows remain byte-identical in retainedShmi below.
   try {
@@ -99,6 +100,18 @@ const venues = annualLocations.filter(l => !l.existing).map(l => {
 for (const l of annualLocations.filter(l => l.existing)) {
   if (!map.venues.some((v: { slug: string; schoolScopeSlug?: string }) => v.slug === l.slug && v.schoolScopeSlug === l.schoolScopeSlug)) throw Error(`Existing venue mismatch ${l.slug}`);
 }
+for (const campus of reviewedStandaloneVenues) {
+  if (venues.some(v => v.slug === campus.slug)) continue;
+  // Preserve all existing compatibility fields if this campus already exists.
+  const previous = map.venues.find((v:{slug:string}) => v.slug === campus.slug);
+  if (previous && previous.schoolScopeSlug !== campus.schoolScopeSlug) throw Error(`Standalone venue scope mismatch ${campus.slug}`);
+  if (previous) continue; // the ordinary reviewed-profile overlay below owns it
+  venues.push(venueSchema.parse({
+    slug:campus.slug, schoolScopeSlug:campus.schoolScopeSlug,
+    type:"school", city:"moscow", listedOnSites:true, directions:[], photos:[],
+    ...reviewedCampusProfile(campus.schoolScopeSlug,campus.slug),
+  }));
+}
 // Reviewed profiles own only explicitly returned presentation/location fields.
 // Existing IDs, routing, colours and unrelated source facts are retained.
 for (const original of map.venues) {
@@ -119,12 +132,13 @@ const annualOffers = source.groups.map(original => {
   const location = annualLocations.find(l => l.sourceId === original.locationId);
   if (!location) throw Error(`Unmapped group address ${original.id}`);
   const parsedYear = annualProgrammeName(live?.title ?? original.title).studyYear;
-  const studyYear = reviewedStudyYear(location.schoolScopeSlug) ?? (parsedYear === 1 || parsedYear === 2 || parsedYear === 3 ? parsedYear : undefined);
+  const studyYear = reviewedStudyYear(location.schoolScopeSlug, original.groupCode) ?? (parsedYear === 1 || parsedYear === 2 || parsedYear === 3 ? parsedYear : undefined);
   const expectedCode = reviewedGroupCodes[original.id] ?? original.groupCode;
   if (live && (live.listingId !== original.listingId || live.groupCode !== expectedCode)) throw Error(`Annual identity mismatch: ${original.id}`);
-  const teacher = reviewedTeacher(location.schoolScopeSlug, studyYear) ?? original.teacher ?? (live?.title.match(/Хмельков\s+Д\.?\s*А\.?/u) ? "Хмельков Д. А." : live?.teacher ?? null);
+  const teacher = reviewedTeacher(location.schoolScopeSlug, studyYear, original.groupCode) ?? original.teacher ?? (live?.title.match(/Хмельков\s+Д\.?\s*А\.?/u) ? "Хмельков Д. А." : live?.teacher ?? null);
   const g = live ? { ...original, ...live, teacher, title: original.title, linkKind: "card" as const,
     limitedSource: [live.ageMin,live.ageMax,live.lessonPrice,live.coursePrice,live.totalSeats,live.freeSeats,teacher].some(v=>v===null) } : {...original, teacher};
+  Object.assign(g, reviewedAges(location.schoolScopeSlug, original.groupCode));
   const weekly = g.slots.map(s => `${s.weekday}: ${s.start}–${s.end}`).join("; ");
   const reviewedPrice = reviewedLessonPrice(location.schoolScopeSlug, g.groupCode);
   const effectiveLessonPrice = reviewedPrice?.rubles ?? g.lessonPrice;
@@ -145,6 +159,7 @@ const annualOffers = source.groups.map(original => {
     maxCapacity: g.totalSeats !== null && g.totalSeats > 0 ? g.totalSeats : undefined,
     scheduleCard: { displayTitle: name.short, teacherName: g.teacher, description: `Данные mos.ru на ${live?.refreshedAt.slice(0,10) ?? source.asOf}. ${reviewedPrice ? "Стоимость подтверждена BrainMaster: 1 000 ₽ за занятие (1 академический час, 45 минут). " : ""}Условия и наличие мест проверьте перед записью.`,
       ageLabel: g.ageMin === null || g.ageMax === null ? "Уточните у школы" : `${g.ageMin}–${g.ageMax} лет`,
+      ...(isRetiredAnnualGroup(original) ? { isArchived: true } : {}),
       tags: ["Годовая программа", `Срез ${source.asOf}`], registrationChannel: "mos_ru", allowWaitlistWhenSoldOut: false,
       variants: [{ id: `year:${g.id}:main`, type: "Годовая группа", time: weekly, priceLabel: price }] },
   });

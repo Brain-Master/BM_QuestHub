@@ -145,8 +145,8 @@ def main():
     args = parser.parse_args()
     result = read_archive(args.archive)
     # Use the same exact-preimage composition as the one-time registry transition.
-    # No network: the checked-in, sanitized nine-card supplement is authoritative.
-    composed = subprocess.run(['node', str(ROOT / 'scripts/compose-school-2103.mjs')],
+    # No network: only explicitly reviewed public supplements, in revision order.
+    composed = subprocess.run(['node', str(ROOT / 'scripts/compose-annual-additions.mjs')],
                               input=json.dumps(result, ensure_ascii=False), text=True,
                               capture_output=True, check=True)
     result = json.loads(composed.stdout)

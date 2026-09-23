@@ -1,15 +1,32 @@
 /** Owner-confirmed curriculum facts, 2026-09-09. Not inferred from pupil age. */
-export function reviewedStudyYear(schoolSlug: string): 1 | undefined {
-  return schoolSlug === "school-2044" ? 1 : undefined;
+import {reviewedAnnualAge} from './annual-owner-ages.mjs';
+const school37Years: Record<string, 1 | 2> = {
+  'К2763-26':1, 'К2764-26':1, 'К2765-26':2,
+  'К2766-26':1, 'К2767-26':1, 'К2768-26':2,
+  'К2769-26':1, 'К2770-26':1, 'К2771-26':2,
+};
+/** Owner confirmed beginners=SHMI1, continuing=SHMI2 for these nine groups only. */
+export function reviewedStudyYear(schoolSlug: string, groupCode?: string | null): 1 | 2 | undefined {
+  if (schoolSlug === "school-2044" || schoolSlug === "school-1212") return 1;
+  if (schoolSlug === 'school-937' && groupCode && school937Codes.has(groupCode)) return 2;
+  return schoolSlug === 'school-37' && groupCode ? school37Years[groupCode] : undefined;
 }
 
 /** Owner confirmation, 2026-09-09. Annual groups only; historical shifts are untouched. */
-export function reviewedTeacher(schoolSlug: string, studyYear?: number | null): string | undefined {
+export function reviewedTeacher(schoolSlug: string, studyYear?: number | null, groupCode?: string | null): string | undefined {
+  if (schoolSlug === 'school-937' && groupCode && school937Codes.has(groupCode)) return 'Локтеева Ирина Дмитриевна';
+  if (schoolSlug === 'school-37' && groupCode && school37Years[groupCode]) return 'Кузнецова Ольга Максимовна';
   if (schoolSlug === "school-1212" || (schoolSlug === "school-17" && studyYear === 2)) {
     return "Толмачева Василиса Владимировна";
   }
   if (schoolSlug === "school-17" && studyYear === 1) return "Мартынова Анна Александровна";
   return undefined;
+}
+
+const school937Codes = new Set(['К2215-26','К2216-26','К2217-26','К2218-26']);
+/** Owner-confirmed range, not the portal's administrative 6–18 age band. */
+export function reviewedAges(schoolSlug: string, groupCode?: string | null) {
+  return schoolSlug === 'school-937' ? reviewedAnnualAge(groupCode, undefined) : undefined;
 }
 
 /** Missing CSV codes resolved by unique listing, matching campus and weekly slot.

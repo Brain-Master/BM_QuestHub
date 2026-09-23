@@ -24,7 +24,7 @@ const venueByGroup = Object.fromEntries(source.groups.map(g=>{
   return [g.id,venue.slug];
 }));
 const studyYearByGroup=Object.fromEntries(source.groups.map(g=>[g.id,
-  reviewedStudyYear(annualLocations.find(l=>l.sourceId===g.locationId)!.schoolScopeSlug) ?? annualProgrammeName(registry.groups[g.id]?.title ?? g.title).studyYear]));
+  reviewedStudyYear(annualLocations.find(l=>l.sourceId===g.locationId)!.schoolScopeSlug, g.groupCode) ?? annualProgrammeName(registry.groups[g.id]?.title ?? g.title).studyYear]));
 const c = activeS3Credentials();
 if (!c.accessKeyId || !c.secretAccessKey) throw Error("ANNUAL_BASELINE_CREDENTIALS_MISSING");
 const client = new S3Client({ endpoint: c.endpoint, region: c.region, forcePathStyle: true,

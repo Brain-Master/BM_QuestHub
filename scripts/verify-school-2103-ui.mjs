@@ -27,7 +27,7 @@ try{
    await expect(slot.getByRole('link',{name:/Записаться на mos.ru/})).toBeVisible();
    assert.ok(!(await slot.innerText()).includes('888'));
  }}
- await go('/agenda/');await expect(page.getByTestId('finder-count')).toHaveText('60');
+ await go('/agenda/');await expect(page.getByTestId('finder-count')).toHaveText('69');
  await finder.getByRole('combobox',{name:'Площадка',exact:true}).selectOption('school-2103');await correctPrices(9);
  await go('/sites/school-2103/agenda/?view=catalogue');await correctPrices(9);
  await expect(finder.locator('[data-campus]')).toHaveCount(2);
@@ -38,7 +38,7 @@ try{
  await page.reload({waitUntil:'networkidle'});await correctPrices(7);
  await finder.getByRole('combobox',{name:'Программа',exact:true}).selectOption('shmi');
  await finder.getByRole('combobox',{name:'Год обучения',exact:true}).selectOption('2');await correctPrices(3);
- checks.push('Global60; school9; campuses2/7; SHMI2 three groups; reload retains choice; compact price+booking');
+ checks.push('Global69; school9; campuses2/7; SHMI2 three groups; reload retains choice; compact price+booking');
  for(const [campus,n] of [['school-2103-yasenevo',2],['school-2103-golubinskaya-5k4',7]]){
    await go(`/sites/school-2103/campuses/${campus}/agenda/?view=catalogue`);await correctPrices(n);
  }

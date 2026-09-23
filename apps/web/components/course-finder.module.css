@@ -7,6 +7,10 @@
   --accent: #b8ed77;
   --selected: #eff6e7;
   --edge: #345729;
+  --capacity-ink: var(--ink);
+  --capacity-free: var(--edge);
+  --capacity-note: var(--muted);
+  --capacity-full: #a11d32;
   background: var(--paper);
   color: var(--ink);
   border-radius: 24px;
@@ -24,6 +28,7 @@
   --line: #3a4657;
   --selected: #25342c;
   --edge: #b8ed77;
+  --capacity-full: #ffb4b4;
   border: 1px solid var(--line);
 }
 .finder :where(button, a, input, select, summary) { -webkit-tap-highlight-color: transparent; }

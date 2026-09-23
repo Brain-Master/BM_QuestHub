@@ -8,15 +8,18 @@ export const weeklySlotSchema = z.object({
 }).strict().refine(s => s.start < s.end, "Invalid weekly time range");
 const count = z.number().int().nonnegative().nullable();
 /** Only transient transport/partial-read failures may retain a verified booking URL. */
-export function annualBookingNeedsReview(metadata?: {refreshError?: string}): boolean {
-  const error=metadata?.refreshError;
-  return !!error && !/^MOS_(?:HTTP_\d{3}|TIMEOUT|FETCH_FAILED|PARTIAL_FIELDS|NON_JSON|INVALID_RESPONSE|RESPONSE_TOO_LARGE)$/.test(error);
+export function annualBookingNeedsReview(metadata?: {refreshError?: string; availabilityError?: string}): boolean {
+  return [metadata?.refreshError, metadata?.availabilityError].some(error =>
+    !!error && !/^MOS_(?:HTTP_\d{3}|TIMEOUT|FETCH_FAILED|PARTIAL_FIELDS|NON_JSON|INVALID_RESPONSE|RESPONSE_TOO_LARGE|RUN_BUDGET)$/.test(error));
 }
 /** Public, dated source facts; admission is independent of event lifecycle/capacity. */
 export const annualMetadataSchema = z.object({
   sourceTitle: z.string().min(1).optional(),
   studyYear: z.union([z.literal(1), z.literal(2), z.literal(3)]).optional(),
   refreshedAt: z.iso.datetime().optional(),
+  // Client-side merge from the separate availability source. Full-card date stays untouched.
+  availabilityUpdatedAt: z.iso.datetime().optional(),
+  availabilityError: z.string().regex(/^MOS_[A-Z0-9_]+$/).optional(),
   refreshError: z.string().regex(/^[A-Z][A-Z0-9_]+$/).optional(),
   teacherSourceConflict: z.boolean().optional(),
   asOf: z.iso.date(),

@@ -1,10 +1,11 @@
 {
   "version": 1,
-  "sourceSha256": "23b9dbb84ccb2e2eb577efaf94ecdca1c952603ab5ea6ebb9cb5b68d6c594c97",
-  "attemptedAt": "2026-09-09T04:39:35.969Z",
-  "expectedGroups": 60,
-  "verifiedGroups": 42,
+  "sourceSha256": "b31c7abb0ede346497f752b4effa4fa2e6cd7c19ff63cc83cc754881a828e893",
+  "attemptedAt": "2026-09-22T21:52:30.505Z",
+  "expectedGroups": 74,
+  "verifiedGroups": 5,
   "ok": false,
+  "archivedGroups": 0,
   "groups": {
     "К4953-26": {
       "cardId": "1014149",
@@ -209,7 +210,7 @@
       "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 1212\"",
       "teacher": "Васильев Иван Алексеевич",
       "totalSeats": 10,
-      "freeSeats": 7,
+      "freeSeats": 3,
       "ageMin": 6,
       "ageMax": 14,
       "lessonPrice": 1000,
@@ -225,7 +226,7 @@
       ],
       "status": "open",
       "link": "https://www.mos.ru/pgu2/activity/card/985251",
-      "refreshedAt": "2026-09-09T04:39:26.273Z"
+      "refreshedAt": "2026-09-23T17:01:19Z"
     },
     "К4611-26": {
       "cardId": "985173",
@@ -236,7 +237,7 @@
       "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 1212\"",
       "teacher": "Васильев Иван Алексеевич",
       "totalSeats": 10,
-      "freeSeats": 10,
+      "freeSeats": 2,
       "ageMin": 6,
       "ageMax": 14,
       "lessonPrice": 1000,
@@ -252,7 +253,7 @@
       ],
       "status": "open",
       "link": "https://www.mos.ru/pgu2/activity/card/985173",
-      "refreshedAt": "2026-09-09T04:39:27.034Z"
+      "refreshedAt": "2026-09-23T17:01:19Z"
     },
     "К4615-26": {
       "cardId": "985282",
@@ -263,7 +264,7 @@
       "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 1212\"",
       "teacher": "Васильев Иван Алексеевич",
       "totalSeats": 10,
-      "freeSeats": 10,
+      "freeSeats": 4,
       "ageMin": 6,
       "ageMax": 14,
       "lessonPrice": 1000,
@@ -279,7 +280,7 @@
       ],
       "status": "open",
       "link": "https://www.mos.ru/pgu2/activity/card/985282",
-      "refreshedAt": "2026-09-09T04:39:26.959Z"
+      "refreshedAt": "2026-09-23T17:01:19Z"
     },
     "К4617-26": {
       "cardId": "985781",
@@ -289,8 +290,8 @@
       "address": "г. Москва, вн.тер. м.о. Ясенево, Голубинская ул., д. 21, к. 3",
       "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 1212\"",
       "teacher": "Васильев Иван Алексеевич",
-      "totalSeats": 10,
-      "freeSeats": 5,
+      "totalSeats": 15,
+      "freeSeats": 3,
       "ageMin": 6,
       "ageMax": 14,
       "lessonPrice": 1000,
@@ -306,7 +307,7 @@
       ],
       "status": "open",
       "link": "https://www.mos.ru/pgu2/activity/card/985781",
-      "refreshedAt": "2026-09-09T04:39:27.478Z"
+      "refreshedAt": "2026-09-23T17:01:19Z"
     },
     "К4618-26": {
       "cardId": "985925",
@@ -317,7 +318,7 @@
       "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 1212\"",
       "teacher": "Васильев Иван Алексеевич",
       "totalSeats": 10,
-      "freeSeats": 10,
+      "freeSeats": 7,
       "ageMin": 6,
       "ageMax": 14,
       "lessonPrice": 1000,
@@ -333,7 +334,7 @@
       ],
       "status": "open",
       "link": "https://www.mos.ru/pgu2/activity/card/985925",
-      "refreshedAt": "2026-09-09T04:39:27.463Z"
+      "refreshedAt": "2026-09-23T17:01:19Z"
     },
     "К4619-26": {
       "cardId": "985956",
@@ -344,7 +345,7 @@
       "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 1212\"",
       "teacher": "Васильев Иван Алексеевич",
       "totalSeats": 10,
-      "freeSeats": 9,
+      "freeSeats": 7,
       "ageMin": 6,
       "ageMax": 14,
       "lessonPrice": 1000,
@@ -360,7 +361,7 @@
       ],
       "status": "open",
       "link": "https://www.mos.ru/pgu2/activity/card/985956",
-      "refreshedAt": "2026-09-09T04:39:28.124Z"
+      "refreshedAt": "2026-09-23T17:01:19Z"
     },
     "К2371-26": {
       "cardId": "968364",
@@ -639,8 +640,8 @@
       "title": "3ПУ, Школа молодого IT-инженера (1 год обучения), ул. Маршала Тухачевского, д.58, корп.2, Хмельков Д.А.",
       "address": "г. Москва, вн.тер. м.о. Хорошево-Мневники, ул. Маршала Тухачевского, д. 58, к. 2",
       "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 1517\"",
-      "teacher": "Пикуль Наталья Александровна",
-      "totalSeats": 12,
+      "teacher": "Хмельков Даниил Антонович",
+      "totalSeats": 15,
       "freeSeats": 1,
       "ageMin": 6,
       "ageMax": 13,
@@ -657,18 +658,18 @@
       ],
       "status": "open",
       "link": "https://www.mos.ru/pgu2/activity/card/923308",
-      "refreshedAt": "2026-09-09T04:39:30.603Z"
+      "refreshedAt": "2026-09-22T21:52:29.760Z"
     },
     "К7648-26": {
       "cardId": "964768",
       "listingId": "2521004",
       "groupCode": "К7648-26",
-      "title": " Школа молодого IT-инженера (1 год обучения)группа 2. Ул. Маршала Тухачевского 58- 2.Хмельков Д.А.",
+      "title": " 3 ПУ. Школа молодого IT-инженера (1 год обучения)группа 2. Ул. Маршала Тухачевского 58- 2.Хмельков Д.А.",
       "address": "г. Москва, вн.тер. м.о. Хорошево-Мневники, ул. Маршала Тухачевского, д. 58, к. 2",
       "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 1517\"",
-      "teacher": "Лемякина Ольга Владимировна",
-      "totalSeats": 12,
-      "freeSeats": 0,
+      "teacher": "Хмельков Даниил Антонович",
+      "totalSeats": 15,
+      "freeSeats": 4,
       "ageMin": 6,
       "ageMax": 13,
       "lessonPrice": 810,
@@ -682,9 +683,9 @@
           "end": "16:30"
         }
       ],
-      "status": "closed",
+      "status": "open",
       "link": "https://www.mos.ru/pgu2/activity/card/964768",
-      "refreshedAt": "2026-09-09T04:39:31.174Z"
+      "refreshedAt": "2026-09-22T21:52:29.802Z"
     },
     "К7651-26": {
       "cardId": "965306",
@@ -693,9 +694,9 @@
       "title": "3ПУ.  Школа молодого IT-инженера (2 год обучения) 1 группа. Ул. Маршала Тухачевского 58- 2. Хмельков Д.А.",
       "address": "г. Москва, вн.тер. м.о. Хорошево-Мневники, ул. Маршала Тухачевского, д. 58, к. 2",
       "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 1517\"",
-      "teacher": "Лемякина Ольга Владимировна",
-      "totalSeats": 12,
-      "freeSeats": 0,
+      "teacher": "Хмельков Даниил Антонович",
+      "totalSeats": 15,
+      "freeSeats": 1,
       "ageMin": 6,
       "ageMax": 13,
       "lessonPrice": 950,
@@ -709,9 +710,9 @@
           "end": "17:25"
         }
       ],
-      "status": "closed",
+      "status": "open",
       "link": "https://www.mos.ru/pgu2/activity/card/965306",
-      "refreshedAt": "2026-09-09T04:39:31.104Z"
+      "refreshedAt": "2026-09-22T21:52:30.005Z"
     },
     "listing:2542312": {
       "cardId": "1000004",
@@ -721,7 +722,7 @@
       "address": "г. Москва, вн.тер. м.о. Хорошево-Мневники, ул. Маршала Тухачевского, д. 58, к. 2",
       "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 1517\"",
       "teacher": "Хмельков Даниил Антонович",
-      "totalSeats": 12,
+      "totalSeats": 15,
       "freeSeats": 2,
       "ageMin": 7,
       "ageMax": 14,
@@ -736,9 +737,9 @@
           "end": "15:35"
         }
       ],
-      "status": "closed",
+      "status": "open",
       "link": "https://www.mos.ru/pgu2/activity/card/1000004",
-      "refreshedAt": "2026-09-09T04:39:31.762Z"
+      "refreshedAt": "2026-09-22T21:52:30.204Z"
     },
     "К7733-26": {
       "cardId": "1000157",
@@ -748,8 +749,8 @@
       "address": "г. Москва, вн.тер. м.о. Хорошево-Мневники, ул. Маршала Тухачевского, д. 58, к. 2",
       "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 1517\"",
       "teacher": "Хмельков Даниил Антонович",
-      "totalSeats": 12,
-      "freeSeats": 0,
+      "totalSeats": 15,
+      "freeSeats": 2,
       "ageMin": 6,
       "ageMax": 13,
       "lessonPrice": 810,
@@ -763,9 +764,9 @@
           "end": "16:30"
         }
       ],
-      "status": "closed",
+      "status": "open",
       "link": "https://www.mos.ru/pgu2/activity/card/1000157",
-      "refreshedAt": "2026-09-09T04:39:31.788Z"
+      "refreshedAt": "2026-09-22T21:52:30.505Z"
     },
     "К4055-26": {
       "cardId": "1009573",
@@ -1414,6 +1415,384 @@
       "status": "open",
       "link": "https://www.mos.ru/pgu2/activity/card/1029412",
       "refreshedAt": "2026-09-21T12:07:11.930Z"
+    },
+    "К2763-26": {
+      "cardId": "1019233",
+      "listingId": "2553800",
+      "groupCode": "К2763-26",
+      "title": "ШМИ начинающие (СР 14:15-15:00) 2026-2027",
+      "address": "г. Москва, вн.тер. м.о. Раменки, Мичуринский пр-кт, д. 28",
+      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 37\"",
+      "teacher": "Серегина Мария Владимировна",
+      "totalSeats": 12,
+      "freeSeats": 5,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 1375,
+      "coursePrice": 49500,
+      "courseStart": "2026-09-14",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Среда",
+          "start": "14:15",
+          "end": "15:00"
+        }
+      ],
+      "status": "open",
+      "link": "https://www.mos.ru/pgu2/activity/card/1019233",
+      "refreshedAt": "2026-09-22T19:33:23.062Z"
+    },
+    "К2764-26": {
+      "cardId": "1019236",
+      "listingId": "2553800",
+      "groupCode": "К2764-26",
+      "title": "ШМИ начинающие (СР 15:15-16:00) 2026-2027",
+      "address": "г. Москва, вн.тер. м.о. Раменки, Мичуринский пр-кт, д. 28",
+      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 37\"",
+      "teacher": "Серегина Мария Владимировна",
+      "totalSeats": 12,
+      "freeSeats": 8,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 1375,
+      "coursePrice": 49500,
+      "courseStart": "2026-09-14",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Среда",
+          "start": "15:15",
+          "end": "16:00"
+        }
+      ],
+      "status": "open",
+      "link": "https://www.mos.ru/pgu2/activity/card/1019236",
+      "refreshedAt": "2026-09-22T19:33:24.255Z"
+    },
+    "К2765-26": {
+      "cardId": "1019244",
+      "listingId": "2553800",
+      "groupCode": "К2765-26",
+      "title": "ШМИ продолжающие (СР 16:15-17:00) 2026-2027",
+      "address": "г. Москва, вн.тер. м.о. Раменки, Мичуринский пр-кт, д. 28",
+      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 37\"",
+      "teacher": "Серегина Мария Владимировна",
+      "totalSeats": 12,
+      "freeSeats": 9,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 1375,
+      "coursePrice": 49500,
+      "courseStart": "2026-09-14",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Среда",
+          "start": "16:15",
+          "end": "17:00"
+        }
+      ],
+      "status": "open",
+      "link": "https://www.mos.ru/pgu2/activity/card/1019244",
+      "refreshedAt": "2026-09-22T19:33:24.476Z"
+    },
+    "К2766-26": {
+      "cardId": "1019286",
+      "listingId": "2553800",
+      "groupCode": "К2766-26",
+      "title": "ШМИ начинающие (ЧТ 14:15-15:00) 2026-2027",
+      "address": "г. Москва, вн.тер. м.о. Раменки, Мичуринский пр-кт, д. 28",
+      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 37\"",
+      "teacher": "Серегина Мария Владимировна",
+      "totalSeats": 12,
+      "freeSeats": 9,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 1375,
+      "coursePrice": 49500,
+      "courseStart": "2026-09-14",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Четверг",
+          "start": "14:15",
+          "end": "15:00"
+        }
+      ],
+      "status": "open",
+      "link": "https://www.mos.ru/pgu2/activity/card/1019286",
+      "refreshedAt": "2026-09-22T19:33:24.702Z"
+    },
+    "К2767-26": {
+      "cardId": "1019288",
+      "listingId": "2553800",
+      "groupCode": "К2767-26",
+      "title": "ШМИ начинающие (ЧТ 15:15-16:00) 2026-2027",
+      "address": "г. Москва, вн.тер. м.о. Раменки, Мичуринский пр-кт, д. 28",
+      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 37\"",
+      "teacher": "Серегина Мария Владимировна",
+      "totalSeats": 12,
+      "freeSeats": 11,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 1375,
+      "coursePrice": 49500,
+      "courseStart": "2026-09-14",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Четверг",
+          "start": "15:15",
+          "end": "16:00"
+        }
+      ],
+      "status": "open",
+      "link": "https://www.mos.ru/pgu2/activity/card/1019288",
+      "refreshedAt": "2026-09-22T19:33:24.972Z"
+    },
+    "К2768-26": {
+      "cardId": "1019293",
+      "listingId": "2553800",
+      "groupCode": "К2768-26",
+      "title": "ШМИ продолжающие (ЧТ 16:15-17:00) 2026-2027",
+      "address": "г. Москва, вн.тер. м.о. Раменки, Мичуринский пр-кт, д. 28",
+      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 37\"",
+      "teacher": "Серегина Мария Владимировна",
+      "totalSeats": 12,
+      "freeSeats": 8,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 1375,
+      "coursePrice": 49500,
+      "courseStart": "2026-09-14",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Четверг",
+          "start": "16:15",
+          "end": "17:00"
+        }
+      ],
+      "status": "open",
+      "link": "https://www.mos.ru/pgu2/activity/card/1019293",
+      "refreshedAt": "2026-09-22T19:33:25.158Z"
+    },
+    "К2769-26": {
+      "cardId": "1019299",
+      "listingId": "2553800",
+      "groupCode": "К2769-26",
+      "title": "ШМИ начинающие (ПТ 14:15-15:00) 2026-2027",
+      "address": "г. Москва, вн.тер. м.о. Раменки, Мичуринский пр-кт, д. 28",
+      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 37\"",
+      "teacher": "Серегина Мария Владимировна",
+      "totalSeats": 12,
+      "freeSeats": 9,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 1375,
+      "coursePrice": 49500,
+      "courseStart": "2026-09-14",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Пятница",
+          "start": "14:15",
+          "end": "15:00"
+        }
+      ],
+      "status": "open",
+      "link": "https://www.mos.ru/pgu2/activity/card/1019299",
+      "refreshedAt": "2026-09-22T19:33:25.376Z"
+    },
+    "К2770-26": {
+      "cardId": "1019455",
+      "listingId": "2553800",
+      "groupCode": "К2770-26",
+      "title": "ШМИ начинающие (ПТ 15:15-16:00) 2026-2027",
+      "address": "г. Москва, вн.тер. м.о. Раменки, Мичуринский пр-кт, д. 28",
+      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 37\"",
+      "teacher": "Серегина Мария Владимировна",
+      "totalSeats": 12,
+      "freeSeats": 9,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 1375,
+      "coursePrice": 49500,
+      "courseStart": "2026-09-14",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Пятница",
+          "start": "15:15",
+          "end": "16:00"
+        }
+      ],
+      "status": "open",
+      "link": "https://www.mos.ru/pgu2/activity/card/1019455",
+      "refreshedAt": "2026-09-22T19:33:25.685Z"
+    },
+    "К2771-26": {
+      "cardId": "1019466",
+      "listingId": "2553800",
+      "groupCode": "К2771-26",
+      "title": "ШМИ продолжающие (ПТ 16:15-17:00) 2026-2027",
+      "address": "г. Москва, вн.тер. м.о. Раменки, Мичуринский пр-кт, д. 28",
+      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 37\"",
+      "teacher": "Серегина Мария Владимировна",
+      "totalSeats": 12,
+      "freeSeats": 6,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 1375,
+      "coursePrice": 49500,
+      "courseStart": "2026-09-14",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Пятница",
+          "start": "16:15",
+          "end": "17:00"
+        }
+      ],
+      "status": "open",
+      "link": "https://www.mos.ru/pgu2/activity/card/1019466",
+      "refreshedAt": "2026-09-22T19:33:25.908Z"
+    },
+    "К4609-26": {
+      "cardId": "984756",
+      "listingId": "2533333",
+      "groupCode": "К4609-26",
+      "title": "Школа Молодого IT-Инженера 1 для 1-х классов",
+      "address": "г. Москва, вн.тер. м.о. Ясенево, Вильнюсская ул., д. 14",
+      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 1212\"",
+      "teacher": "Васильев Иван Алексеевич",
+      "totalSeats": 20,
+      "freeSeats": 14,
+      "ageMin": 6,
+      "ageMax": 8,
+      "lessonPrice": 1000,
+      "coursePrice": 45000,
+      "courseStart": "2026-09-01",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Четверг",
+          "start": "13:30",
+          "end": "14:15"
+        }
+      ],
+      "status": "open",
+      "link": "https://www.mos.ru/pgu2/activity/card/984756",
+      "refreshedAt": "2026-09-23T17:01:19Z"
+    },
+    "К2215-26": {
+      "cardId": "1049854",
+      "listingId": "2573579",
+      "groupCode": "К2215-26",
+      "title": "Группа 1. 6-13 лет. Локтеева И. Д. Маршала Захарова, 25.",
+      "address": "г. Москва, вн.тер. м.о. Орехово-Борисово Северное, ул. Маршала Захарова, д. 25",
+      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 937 имени Героя Российской Федерации А.В. Перова\"",
+      "teacher": "Балукова Мария Михайловна",
+      "totalSeats": 12,
+      "freeSeats": 9,
+      "ageMin": 6,
+      "ageMax": 18,
+      "lessonPrice": 1000,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-28",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Пятница",
+          "start": "14:00",
+          "end": "14:45"
+        }
+      ],
+      "status": "open",
+      "link": "https://www.mos.ru/pgu2/activity/card/1049854",
+      "refreshedAt": "2026-09-22T08:58:08.000Z"
+    },
+    "К2216-26": {
+      "cardId": "1049859",
+      "listingId": "2573583",
+      "groupCode": "К2216-26",
+      "title": "Группа 2. 6-13 лет. Локтеева И. Д. Маршала Захарова, 25.",
+      "address": "г. Москва, вн.тер. м.о. Орехово-Борисово Северное, ул. Маршала Захарова, д. 25",
+      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 937 имени Героя Российской Федерации А.В. Перова\"",
+      "teacher": "Балукова Мария Михайловна",
+      "totalSeats": 12,
+      "freeSeats": 11,
+      "ageMin": 6,
+      "ageMax": 18,
+      "lessonPrice": 1000,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-28",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Пятница",
+          "start": "15:00",
+          "end": "15:45"
+        }
+      ],
+      "status": "open",
+      "link": "https://www.mos.ru/pgu2/activity/card/1049859",
+      "refreshedAt": "2026-09-22T08:58:08.000Z"
+    },
+    "К2217-26": {
+      "cardId": "1049862",
+      "listingId": "2573587",
+      "groupCode": "К2217-26",
+      "title": "Группа 3. 6-13 лет. Локтеева И. Д. Маршала Захарова, 25.",
+      "address": "г. Москва, вн.тер. м.о. Орехово-Борисово Северное, ул. Маршала Захарова, д. 25",
+      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 937 имени Героя Российской Федерации А.В. Перова\"",
+      "teacher": "Балукова Мария Михайловна",
+      "totalSeats": 12,
+      "freeSeats": 12,
+      "ageMin": 6,
+      "ageMax": 18,
+      "lessonPrice": 1000,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-28",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Пятница",
+          "start": "16:00",
+          "end": "16:45"
+        }
+      ],
+      "status": "open",
+      "link": "https://www.mos.ru/pgu2/activity/card/1049862",
+      "refreshedAt": "2026-09-22T08:58:08.000Z"
+    },
+    "К2218-26": {
+      "cardId": "1049865",
+      "listingId": "2573589",
+      "groupCode": "К2218-26",
+      "title": "Группа 4. 6-13 лет. Локтеева И. Д. Маршала Захарова, 25.",
+      "address": "г. Москва, вн.тер. м.о. Орехово-Борисово Северное, ул. Маршала Захарова, д. 25",
+      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 937 имени Героя Российской Федерации А.В. Перова\"",
+      "teacher": "Балукова Мария Михайловна",
+      "totalSeats": 12,
+      "freeSeats": 11,
+      "ageMin": 6,
+      "ageMax": 18,
+      "lessonPrice": 1000,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-28",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Пятница",
+          "start": "17:00",
+          "end": "17:45"
+        }
+      ],
+      "status": "open",
+      "link": "https://www.mos.ru/pgu2/activity/card/1049865",
+      "refreshedAt": "2026-09-22T08:58:08.000Z"
     }
   },
   "candidates": {

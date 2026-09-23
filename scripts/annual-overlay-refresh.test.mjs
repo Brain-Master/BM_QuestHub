@@ -38,10 +38,23 @@ test('undefined profile fields preserve existing context; explicit recovery rest
 test('owner teacher assignments survive later portal refresh facts and repeated compilation',t=>{
  const f=fixture(t),hot=f.read('offers-snapshot.json');
  const rows=hot.offersByQuest.shmi.filter(o=>o.venueSlug.startsWith('school-1212-'));
- assert.equal(rows.length,6);
- for(const row of rows){row.annual.teacher='Portal placeholder';row.scheduleCard.teacherName='Portal placeholder';row.annual.refreshedAt='2026-09-10T12:00:00.000Z';}
+ assert.equal(rows.length,7);
+ for(const row of rows){row.annual.teacher='Portal placeholder';row.scheduleCard.teacherName='Portal placeholder';row.annual.refreshedAt='2026-09-24T12:00:00.000Z';}
  f.write('offers-snapshot.json',hot);
- for(let i=0;i<2;i++){const r=f.compile('hot');assert.equal(r.status,0,r.stderr);for(const row of f.read('offers-snapshot.json').offersByQuest.shmi.filter(o=>o.venueSlug.startsWith('school-1212-'))){assert.equal(row.annual.teacher,'Толмачева Василиса Владимировна');assert.equal(row.scheduleCard.teacherName,row.annual.teacher);assert.equal(row.annual.refreshedAt,'2026-09-10T12:00:00.000Z');}}
+ for(let i=0;i<2;i++){const r=f.compile('hot');assert.equal(r.status,0,r.stderr);for(const row of f.read('offers-snapshot.json').offersByQuest.shmi.filter(o=>o.venueSlug.startsWith('school-1212-'))){assert.equal(row.annual.teacher,'Толмачева Василиса Владимировна');assert.equal(row.scheduleCard.teacherName,row.annual.teacher);assert.equal(row.annual.refreshedAt,'2026-09-24T12:00:00.000Z');}}
+});
+test('school37 teacher and years survive newer published facts, portal placeholders and repeat compilation',t=>{
+  const f=fixture(t),hot=f.read('offers-snapshot.json');
+  const rows=hot.offersByQuest.shmi.filter(o=>o.venueSlug==='school-37-michurinsky-28');
+  assert.equal(rows.length,9);
+  for(const row of rows){row.annual.teacher='Portal placeholder';row.scheduleCard.teacherName='Portal placeholder';row.annual.refreshedAt='2026-09-24T12:00:00.000Z';row.annual.freeSeats=1;}
+  f.write('offers-snapshot.json',hot);
+  for(let i=0;i<2;i++){
+    const r=f.compile('hot');assert.equal(r.status,0,r.stderr);
+    const next=f.read('offers-snapshot.json').offersByQuest.shmi.filter(o=>o.venueSlug==='school-37-michurinsky-28');
+    assert.deepEqual([1,2].map(y=>next.filter(o=>o.annual.studyYear===y).length),[6,3]);
+    for(const row of next){assert.equal(row.annual.teacher,'Кузнецова Ольга Максимовна');assert.equal(row.scheduleCard.teacherName,row.annual.teacher);assert.equal(row.annual.freeSeats,1);assert.equal(row.annual.refreshedAt,'2026-09-24T12:00:00.000Z');}
+  }
 });
 test('school2103 compiler reapplies owner1000 after newer raw price recovery, without contaminating the raw fact',t=>{
   const f=fixture(t),hot=f.read('offers-snapshot.json');
@@ -69,7 +82,7 @@ test('real hot compiler preserves updated/deleted legacy rows, new annual IDs an
   assert.deepEqual(after.offersByQuest[legacy],hot.offersByQuest[legacy]);
   assert.equal(after.generatedAt,hot.generatedAt);
   assert.deepEqual(after.offersByQuest.shmi.find(o=>o.id===extra.id),extra);
-  assert.equal(after.offersByQuest.shmi.length,61);
+  assert.equal(after.offersByQuest.shmi.length,75);
   for(const [key,bytes] of Object.entries(before))if(key!=='offers-snapshot.json')assert.equal(f.contents()[key],bytes,key);
   const frozen=f.contents();assert.equal(f.compile('hot').status,0);assert.deepEqual(f.contents(),frozen);assert.equal(f.compile('hot',true).status,0);
 });
@@ -85,7 +98,7 @@ test('real cold compiler restores annual catalogue after refresh, keeps each new
   assert.equal(f.contents()['offers-snapshot.json'],before['offers-snapshot.json']);
   assert.deepEqual(f.read('v2/catalog-snapshot.json').courses[0],catalog.courses[0]);
   assert.equal(f.read('v2/catalog-snapshot.json').courses.length,9);
-  assert.equal(f.read('v2/map-snapshot.json').venues.length,17);
+  assert.equal(f.read('v2/map-snapshot.json').venues.length,19);
   assert.equal(f.read('v2/catalog-snapshot.json').generatedAt,catalog.generatedAt);
   assert.equal(f.read('v2/map-snapshot.json').generatedAt,map.generatedAt);
   assert.equal(f.read('v2/site-manifest.json').generatedAt,manifest.generatedAt);
@@ -120,6 +133,15 @@ test('direct compiler preserves newer same-source card facts and refuses a moved
   const moved=f.read('offers-snapshot.json');moved.offersByQuest.shmi.find(o=>o.id===row.id).venueSlug='school-2044-dmitrovskoe-169b';
   f.write('offers-snapshot.json',moved);const before=f.contents();
   const fail=f.compile('hot');assert.notEqual(fail.status,0);assert.match(fail.stderr,/VENUE_MISMATCH/);assert.deepEqual(f.contents(),before);
+});
+
+test('standalone937 campus rejects a collision with another school before writes',t=>{
+  const f=fixture(t),map=f.read('v2/map-snapshot.json');
+  map.venues.find(v=>v.slug==='school-937-marshala-zakharova-25').schoolScopeSlug='school-37';
+  f.write('v2/map-snapshot.json',map);
+  const before=f.contents(),r=f.compile('cold');
+  assert.notEqual(r.status,0);assert.match(r.stderr,/Existing venue mismatch/);
+  assert.deepEqual(f.contents(),before);
 });
 
 test('unknown annual IDs with an incompatible revision fail before any output write',t=>{

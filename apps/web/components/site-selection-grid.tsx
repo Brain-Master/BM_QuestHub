@@ -391,7 +391,7 @@ function SiteStats({ site }: { site: SiteScopeCard }) {
           {site.shiftCount}
         </p>
         <p className="mt-0.5 text-muted-foreground text-xs sm:mt-1">групп</p>
-        <p className="text-muted-foreground/80 text-[11px]">открыто</p>
+        <p className="text-muted-foreground/80 text-[11px]">в расписании</p>
       </div>
     </div>
   );
@@ -400,7 +400,7 @@ function SiteStats({ site }: { site: SiteScopeCard }) {
 function SiteListStats({ site }: { site: SiteScopeCard }) {
   const stats = [
     { value: site.courseCount, label: "курсов", hint: "проводится" },
-    { value: site.shiftCount, label: "групп", hint: "открыто" },
+    { value: site.shiftCount, label: "групп", hint: "в расписании" },
   ];
 
   return (

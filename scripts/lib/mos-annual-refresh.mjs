@@ -1,12 +1,16 @@
 import { fetchMosCard, validateProjectedMosCard } from "./mos-annual-cards.mjs";
 import { groupLifecycle, moscowDate } from "./mos-group-lifecycle.mjs";
+import { isRetiredAnnualGroup } from "../../apps/web/content/annual-retirements.mjs";
+
+const lifecycleFor = (group, today) => isRetiredAnnualGroup(group)
+  ? {state:"archived",reason:"MOS_OWNER_RETIRED"} : groupLifecycle(group,today);
 
 /** Refresh only pre-verified card identities; preserve last known facts on failure. */
 export async function refreshAnnualCards(registry, { fetchCard = fetchMosCard, now = () => new Date().toISOString(), concurrency = 2, sourceGroups = {} } = {}) {
   if (registry?.version !== 1 || !registry.groups || !Number.isInteger(registry.expectedGroups)) throw Error("ANNUAL_REGISTRY_INVALID");
   const groups = structuredClone(registry.groups), today = moscowDate(now());
   const allGroups = {...sourceGroups, ...registry.groups};
-  const lifecycle = new Map(Object.entries(allGroups).map(([id, group])=>[id, groupLifecycle(group, today)]));
+  const lifecycle = new Map(Object.entries(allGroups).map(([id, group])=>[id, lifecycleFor(group, today)]));
   const archivedIds = new Set([...lifecycle].filter(([,g])=>g.state==="archived").map(([id])=>id));
   const entries = Object.entries(registry.groups).filter(([id])=>["current","future"].includes(lifecycle.get(id).state));
   const errors = [];
@@ -16,7 +20,7 @@ export async function refreshAnnualCards(registry, { fetchCard = fetchMosCard, n
   const size = Math.max(1, Math.min(4, Math.floor(concurrency)));
   for (let offset = 0; offset < entries.length; offset += size) {
     await Promise.all(entries.slice(offset, offset + size).map(async ([id, previous]) => {
-      const current = groupLifecycle(previous, moscowDate(now()));
+      const current = lifecycleFor(previous, moscowDate(now()));
       lifecycle.set(id,current);
       if (current.state === "archived") { archivedIds.add(id); return; }
       if (current.state === "unknown") { errors.push({groupId:id,phase:"lifecycle",code:current.reason}); return; }

@@ -1,0 +1,213 @@
+{
+  "version": 1,
+  "reviewedAt": "2026-09-23",
+  "baseSourceSha256": "a4ab9b9c82b4e99b57c6dab369be6cd03091e2dcc44240364b48a4fc7b3b6794",
+  "provenance": "Owner-supplied MOS card extracts, received 2026-09-23; not an automatic API refresh. Existing per-group card IDs retained from verified registry.",
+  "sourceLinks": [
+    "https://www.mos.ru/pgu2/activity/card/984756",
+    "https://www.mos.ru/pgu2/activity/card/985956",
+    "https://www.mos.ru/pgu2/activity/card/985282"
+  ],
+  "ownerContext": {
+    "studyYear": 1,
+    "teacher": "Толмачева Василиса Владимировна"
+  },
+  "groups": [
+    {
+      "locationId": "LOC-003",
+      "cardId": "984756",
+      "listingId": "2533333",
+      "groupCode": "К4609-26",
+      "title": "Школа Молодого IT-Инженера 1 для 1-х классов",
+      "address": "г. Москва, вн.тер. м.о. Ясенево, Вильнюсская ул., д. 14",
+      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 1212\"",
+      "teacher": "Васильев Иван Алексеевич",
+      "totalSeats": 20,
+      "freeSeats": 14,
+      "ageMin": 6,
+      "ageMax": 8,
+      "lessonPrice": 1000,
+      "coursePrice": 45000,
+      "courseStart": "2026-09-01",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Четверг",
+          "start": "13:30",
+          "end": "14:15"
+        }
+      ],
+      "status": "open",
+      "link": "https://www.mos.ru/pgu2/activity/card/984756",
+      "refreshedAt": "2026-09-23T17:01:19Z"
+    },
+    {
+      "locationId": "LOC-003",
+      "cardId": "985251",
+      "listingId": "2533414",
+      "groupCode": "К4613-26",
+      "title": " Школа Молодого IT-Инженера 1-2/1 (1-6 классы)",
+      "address": "г. Москва, вн.тер. м.о. Ясенево, Вильнюсская ул., д. 14",
+      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 1212\"",
+      "teacher": "Васильев Иван Алексеевич",
+      "totalSeats": 10,
+      "freeSeats": 3,
+      "ageMin": 6,
+      "ageMax": 14,
+      "lessonPrice": 1000,
+      "coursePrice": 45000,
+      "courseStart": "2026-09-01",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Четверг",
+          "start": "14:30",
+          "end": "15:15"
+        }
+      ],
+      "status": "open",
+      "link": "https://www.mos.ru/pgu2/activity/card/985251",
+      "refreshedAt": "2026-09-23T17:01:19Z"
+    },
+    {
+      "locationId": "LOC-003",
+      "cardId": "985173",
+      "listingId": "2533414",
+      "groupCode": "К4611-26",
+      "title": "Школа Молодого IT-Инженера 1-2/2 (1-6 классы)",
+      "address": "г. Москва, вн.тер. м.о. Ясенево, Вильнюсская ул., д. 14",
+      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 1212\"",
+      "teacher": "Васильев Иван Алексеевич",
+      "totalSeats": 10,
+      "freeSeats": 2,
+      "ageMin": 6,
+      "ageMax": 14,
+      "lessonPrice": 1000,
+      "coursePrice": 45000,
+      "courseStart": "2026-09-01",
+      "courseEnd": "2027-03-31",
+      "slots": [
+        {
+          "weekday": "Четверг",
+          "start": "15:30",
+          "end": "16:15"
+        }
+      ],
+      "status": "open",
+      "link": "https://www.mos.ru/pgu2/activity/card/985173",
+      "refreshedAt": "2026-09-23T17:01:19Z"
+    },
+    {
+      "locationId": "LOC-003",
+      "cardId": "985282",
+      "listingId": "2533414",
+      "groupCode": "К4615-26",
+      "title": " Школа Молодого IT-Инженера 1-2/3 (1-6 классы)",
+      "address": "г. Москва, вн.тер. м.о. Ясенево, Вильнюсская ул., д. 14",
+      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 1212\"",
+      "teacher": "Васильев Иван Алексеевич",
+      "totalSeats": 10,
+      "freeSeats": 4,
+      "ageMin": 6,
+      "ageMax": 14,
+      "lessonPrice": 1000,
+      "coursePrice": 45000,
+      "courseStart": "2026-09-01",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Четверг",
+          "start": "16:30",
+          "end": "17:15"
+        }
+      ],
+      "status": "open",
+      "link": "https://www.mos.ru/pgu2/activity/card/985282",
+      "refreshedAt": "2026-09-23T17:01:19Z"
+    },
+    {
+      "locationId": "LOC-004",
+      "cardId": "985781",
+      "listingId": "2533899",
+      "groupCode": "К4617-26",
+      "title": " Школа Молодого IT-Инженера 3/1 (1-6 классы)",
+      "address": "г. Москва, вн.тер. м.о. Ясенево, Голубинская ул., д. 21, к. 3",
+      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 1212\"",
+      "teacher": "Васильев Иван Алексеевич",
+      "totalSeats": 15,
+      "freeSeats": 3,
+      "ageMin": 6,
+      "ageMax": 14,
+      "lessonPrice": 1000,
+      "coursePrice": 45000,
+      "courseStart": "2026-09-01",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Понедельник",
+          "start": "14:20",
+          "end": "15:05"
+        }
+      ],
+      "status": "open",
+      "link": "https://www.mos.ru/pgu2/activity/card/985781",
+      "refreshedAt": "2026-09-23T17:01:19Z"
+    },
+    {
+      "locationId": "LOC-004",
+      "cardId": "985925",
+      "listingId": "2533899",
+      "groupCode": "К4618-26",
+      "title": "Школа Молодого IT-Инженера 3/2 (1-6 классы) ",
+      "address": "г. Москва, вн.тер. м.о. Ясенево, Голубинская ул., д. 21, к. 3",
+      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 1212\"",
+      "teacher": "Васильев Иван Алексеевич",
+      "totalSeats": 10,
+      "freeSeats": 7,
+      "ageMin": 6,
+      "ageMax": 14,
+      "lessonPrice": 1000,
+      "coursePrice": 45000,
+      "courseStart": "2026-09-01",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Понедельник",
+          "start": "15:20",
+          "end": "16:05"
+        }
+      ],
+      "status": "open",
+      "link": "https://www.mos.ru/pgu2/activity/card/985925",
+      "refreshedAt": "2026-09-23T17:01:19Z"
+    },
+    {
+      "locationId": "LOC-004",
+      "cardId": "985956",
+      "listingId": "2533899",
+      "groupCode": "К4619-26",
+      "title": "Школа Молодого IT-Инженера 3/3 (1-6 классы)",
+      "address": "г. Москва, вн.тер. м.о. Ясенево, Голубинская ул., д. 21, к. 3",
+      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 1212\"",
+      "teacher": "Васильев Иван Алексеевич",
+      "totalSeats": 10,
+      "freeSeats": 7,
+      "ageMin": 6,
+      "ageMax": 14,
+      "lessonPrice": 1000,
+      "coursePrice": 45000,
+      "courseStart": "2026-09-01",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Понедельник",
+          "start": "16:20",
+          "end": "17:05"
+        }
+      ],
+      "status": "open",
+      "link": "https://www.mos.ru/pgu2/activity/card/985956",
+      "refreshedAt": "2026-09-23T17:01:19Z"
+    }
+  ]
+}
