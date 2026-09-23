@@ -13,6 +13,7 @@ const addition=read('content/annual-additions/school-2103.json');
 const snapshot=parseOffersSnapshot(read('data/offers-snapshot.json'));
 const addedIds=new Set<string>(addition.groups.map((g:{groupCode:string})=>`year:${g.groupCode}`));
 const added=snapshot.offersByQuest.shmi.filter(o=>addedIds.has(o.id));
+const laterIds=new Set<string>(['year:К4609-26','year:К2215-26','year:К2216-26','year:К2217-26','year:К2218-26',...read('content/annual-additions/school-37.json').groups.map((g:{groupCode:string})=>`year:${g.groupCode}`)]);
 test('all nine supplied identities get exact campus/year/slot/booking and owner price',()=>{
   assert.equal(added.length,9);assert.equal(new Set(added.map(o=>o.mosBookingUrl)).size,9);
   assert.deepEqual([1,2,3].map(y=>added.filter(o=>o.annual?.studyYear===y).length),[4,3,2]);
@@ -31,9 +32,9 @@ test('all nine supplied identities get exact campus/year/slot/booking and owner 
   }
 });
 test('original 51 offers survive byte-equivalent JSON except explicit revision migration',()=>{
-  const existing=snapshot.offersByQuest.shmi.filter(o=>!addedIds.has(o.id));assert.equal(existing.length,51);
+  const existing=snapshot.offersByQuest.shmi.filter(o=>!addedIds.has(o.id)&&!laterIds.has(o.id));assert.equal(existing.length,51);
   // Hash raw serialized records, not Zod-normalized output.
-  const raw=read('data/offers-snapshot.json').offersByQuest.shmi.filter((o:{id:string})=>!addedIds.has(o.id));
+  const raw=read('../../scripts/fixtures/annual-69-before-1517/offers.json').offersByQuest.shmi.filter((o:{id:string})=>!addedIds.has(o.id)&&!laterIds.has(o.id));
   for(const o of raw)delete o.annual.sourceSha256;
   assert.equal(crypto.createHash('sha256').update(JSON.stringify(raw)).digest('hex'),'538c6f668471025fe9cd4a4bb29d84257c9926228af23012564084eb809dcd9c');
   assert.equal(snapshot.offersByQuest.shmi.filter(o=>o.annual?.refreshError==='MOS_GROUP_NOT_FOUND').length,8);
@@ -46,5 +47,5 @@ test('price override is identity scoped; annual table uses the same effective nu
   const quests=questSchema.array().parse(read('data/v2/catalog-snapshot.json').courses.map((q:{slug:string})=>({...q,offers:snapshot.offersByQuest[q.slug]??[]})));
   const view=projectAnnualWorkspace(quests,venues);
   for(const g of view.groups.filter(g=>addedIds.has(`year:${g.id}`)))assert.equal(g.lessonPrice,1000);
-  assert.equal(view.groups.length,60);assert.equal(view.locations.length,10);
+  assert.equal(view.groups.length,70);assert.equal(view.locations.length,12);
 });

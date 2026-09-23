@@ -1,7 +1,7 @@
 {
   "version": 1,
   "asOf": "2026-09-08",
-  "sourceSha256": "23b9dbb84ccb2e2eb577efaf94ecdca1c952603ab5ea6ebb9cb5b68d6c594c97",
+  "sourceSha256": "b31c7abb0ede346497f752b4effa4fa2e6cd7c19ff63cc83cc754881a828e893",
   "locations": [
     {
       "id": "LOC-001",
@@ -62,6 +62,18 @@
       "school": "Школа № 2103",
       "address": "г. Москва, вн.тер. м.о. Ясенево, Голубинская ул., д. 5, к. 4",
       "metro": "Ясенево"
+    },
+    {
+      "id": "LOC-012",
+      "school": "Школа № 37",
+      "address": "г. Москва, вн.тер. м.о. Раменки, Мичуринский пр-кт, д. 28",
+      "metro": "Раменки"
+    },
+    {
+      "id": "LOC-011",
+      "school": "Школа № 937 имени Героя Российской Федерации А. В. Перова",
+      "address": "г. Москва, вн.тер. м.о. Орехово-Борисово Северное, ул. Маршала Захарова, д. 25",
+      "metro": "Орехово"
     }
   ],
   "groups": [
@@ -1747,6 +1759,398 @@
         }
       ],
       "link": "https://www.mos.ru/pgu2/activity/card/1029412",
+      "linkKind": "card",
+      "limitedSource": false
+    },
+    {
+      "id": "К2763-26",
+      "groupCode": "К2763-26",
+      "listingId": "2553800",
+      "programme": "shmi",
+      "title": "ШМИ начинающие (СР 14:15-15:00) 2026-2027",
+      "locationId": "LOC-012",
+      "teacher": "Серегина Мария Владимировна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 5,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 1375,
+      "coursePrice": 49500,
+      "courseStart": "2026-09-14",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Среда",
+          "start": "14:15",
+          "end": "15:00"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/card/1019233",
+      "linkKind": "card",
+      "limitedSource": false
+    },
+    {
+      "id": "К2764-26",
+      "groupCode": "К2764-26",
+      "listingId": "2553800",
+      "programme": "shmi",
+      "title": "ШМИ начинающие (СР 15:15-16:00) 2026-2027",
+      "locationId": "LOC-012",
+      "teacher": "Серегина Мария Владимировна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 8,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 1375,
+      "coursePrice": 49500,
+      "courseStart": "2026-09-14",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Среда",
+          "start": "15:15",
+          "end": "16:00"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/card/1019236",
+      "linkKind": "card",
+      "limitedSource": false
+    },
+    {
+      "id": "К2765-26",
+      "groupCode": "К2765-26",
+      "listingId": "2553800",
+      "programme": "shmi",
+      "title": "ШМИ продолжающие (СР 16:15-17:00) 2026-2027",
+      "locationId": "LOC-012",
+      "teacher": "Серегина Мария Владимировна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 9,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 1375,
+      "coursePrice": 49500,
+      "courseStart": "2026-09-14",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Среда",
+          "start": "16:15",
+          "end": "17:00"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/card/1019244",
+      "linkKind": "card",
+      "limitedSource": false
+    },
+    {
+      "id": "К2766-26",
+      "groupCode": "К2766-26",
+      "listingId": "2553800",
+      "programme": "shmi",
+      "title": "ШМИ начинающие (ЧТ 14:15-15:00) 2026-2027",
+      "locationId": "LOC-012",
+      "teacher": "Серегина Мария Владимировна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 9,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 1375,
+      "coursePrice": 49500,
+      "courseStart": "2026-09-14",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Четверг",
+          "start": "14:15",
+          "end": "15:00"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/card/1019286",
+      "linkKind": "card",
+      "limitedSource": false
+    },
+    {
+      "id": "К2767-26",
+      "groupCode": "К2767-26",
+      "listingId": "2553800",
+      "programme": "shmi",
+      "title": "ШМИ начинающие (ЧТ 15:15-16:00) 2026-2027",
+      "locationId": "LOC-012",
+      "teacher": "Серегина Мария Владимировна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 11,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 1375,
+      "coursePrice": 49500,
+      "courseStart": "2026-09-14",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Четверг",
+          "start": "15:15",
+          "end": "16:00"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/card/1019288",
+      "linkKind": "card",
+      "limitedSource": false
+    },
+    {
+      "id": "К2768-26",
+      "groupCode": "К2768-26",
+      "listingId": "2553800",
+      "programme": "shmi",
+      "title": "ШМИ продолжающие (ЧТ 16:15-17:00) 2026-2027",
+      "locationId": "LOC-012",
+      "teacher": "Серегина Мария Владимировна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 8,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 1375,
+      "coursePrice": 49500,
+      "courseStart": "2026-09-14",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Четверг",
+          "start": "16:15",
+          "end": "17:00"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/card/1019293",
+      "linkKind": "card",
+      "limitedSource": false
+    },
+    {
+      "id": "К2769-26",
+      "groupCode": "К2769-26",
+      "listingId": "2553800",
+      "programme": "shmi",
+      "title": "ШМИ начинающие (ПТ 14:15-15:00) 2026-2027",
+      "locationId": "LOC-012",
+      "teacher": "Серегина Мария Владимировна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 9,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 1375,
+      "coursePrice": 49500,
+      "courseStart": "2026-09-14",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Пятница",
+          "start": "14:15",
+          "end": "15:00"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/card/1019299",
+      "linkKind": "card",
+      "limitedSource": false
+    },
+    {
+      "id": "К2770-26",
+      "groupCode": "К2770-26",
+      "listingId": "2553800",
+      "programme": "shmi",
+      "title": "ШМИ начинающие (ПТ 15:15-16:00) 2026-2027",
+      "locationId": "LOC-012",
+      "teacher": "Серегина Мария Владимировна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 9,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 1375,
+      "coursePrice": 49500,
+      "courseStart": "2026-09-14",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Пятница",
+          "start": "15:15",
+          "end": "16:00"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/card/1019455",
+      "linkKind": "card",
+      "limitedSource": false
+    },
+    {
+      "id": "К2771-26",
+      "groupCode": "К2771-26",
+      "listingId": "2553800",
+      "programme": "shmi",
+      "title": "ШМИ продолжающие (ПТ 16:15-17:00) 2026-2027",
+      "locationId": "LOC-012",
+      "teacher": "Серегина Мария Владимировна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 6,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 1375,
+      "coursePrice": 49500,
+      "courseStart": "2026-09-14",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Пятница",
+          "start": "16:15",
+          "end": "17:00"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/card/1019466",
+      "linkKind": "card",
+      "limitedSource": false
+    },
+    {
+      "id": "К4609-26",
+      "groupCode": "К4609-26",
+      "listingId": "2533333",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера 1 для 1-х классов",
+      "locationId": "LOC-003",
+      "teacher": "Васильев Иван Алексеевич",
+      "status": "open",
+      "totalSeats": 20,
+      "freeSeats": 14,
+      "ageMin": 6,
+      "ageMax": 8,
+      "lessonPrice": 1000,
+      "coursePrice": 45000,
+      "courseStart": "2026-09-01",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Четверг",
+          "start": "13:30",
+          "end": "14:15"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/card/984756",
+      "linkKind": "card",
+      "limitedSource": false
+    },
+    {
+      "id": "К2215-26",
+      "groupCode": "К2215-26",
+      "listingId": "2573579",
+      "programme": "shmi",
+      "title": "Группа 1. 6-13 лет. Локтеева И. Д. Маршала Захарова, 25.",
+      "locationId": "LOC-011",
+      "teacher": "Балукова Мария Михайловна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 9,
+      "ageMin": 6,
+      "ageMax": 18,
+      "lessonPrice": 1000,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-28",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Пятница",
+          "start": "14:00",
+          "end": "14:45"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/card/1049854",
+      "linkKind": "card",
+      "limitedSource": false
+    },
+    {
+      "id": "К2216-26",
+      "groupCode": "К2216-26",
+      "listingId": "2573583",
+      "programme": "shmi",
+      "title": "Группа 2. 6-13 лет. Локтеева И. Д. Маршала Захарова, 25.",
+      "locationId": "LOC-011",
+      "teacher": "Балукова Мария Михайловна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 11,
+      "ageMin": 6,
+      "ageMax": 18,
+      "lessonPrice": 1000,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-28",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Пятница",
+          "start": "15:00",
+          "end": "15:45"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/card/1049859",
+      "linkKind": "card",
+      "limitedSource": false
+    },
+    {
+      "id": "К2217-26",
+      "groupCode": "К2217-26",
+      "listingId": "2573587",
+      "programme": "shmi",
+      "title": "Группа 3. 6-13 лет. Локтеева И. Д. Маршала Захарова, 25.",
+      "locationId": "LOC-011",
+      "teacher": "Балукова Мария Михайловна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 12,
+      "ageMin": 6,
+      "ageMax": 18,
+      "lessonPrice": 1000,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-28",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Пятница",
+          "start": "16:00",
+          "end": "16:45"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/card/1049862",
+      "linkKind": "card",
+      "limitedSource": false
+    },
+    {
+      "id": "К2218-26",
+      "groupCode": "К2218-26",
+      "listingId": "2573589",
+      "programme": "shmi",
+      "title": "Группа 4. 6-13 лет. Локтеева И. Д. Маршала Захарова, 25.",
+      "locationId": "LOC-011",
+      "teacher": "Балукова Мария Михайловна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 11,
+      "ageMin": 6,
+      "ageMax": 18,
+      "lessonPrice": 1000,
+      "coursePrice": 36000,
+      "courseStart": "2026-09-28",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Пятница",
+          "start": "17:00",
+          "end": "17:45"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/card/1049865",
       "linkKind": "card",
       "limitedSource": false
     }

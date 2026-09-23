@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { reviewedTeacher } from "@/content/annual-group-overrides";
 import { OfferBookingAction } from "@/components/offer-booking-action";
+import { ScheduleCapacityIndicator } from "@/components/schedule-capacity-indicator";
 import { finderAgeLabel, groupFinderWeek, itemSchool, itemStudyYear, type FinderState } from "@/lib/offers/course-finder";
 import type { ScheduleBoardItem } from "@/lib/offers/schedule-board";
 import s from "./course-finder.module.css";
@@ -47,6 +48,9 @@ export function CourseFinderResults({ items, state, onShare }: {
               </span>
               <span className={s.slotStatus}>{item.status.label}</span>
             </div>
+            <div className="px-4 py-2"><ScheduleCapacityIndicator capacity={item.capacity} compact showUnknown archived={item.status.isArchivedState}
+              checkedAt={metadata?.availabilityUpdatedAt??metadata?.refreshedAt} sourceDate={metadata?.asOf}
+              failed={!!(metadata?.availabilityError??metadata?.refreshError)} /></div>
             <div className={s.compactActions}>{item.variants.map(variant => <div key={variant.id} className={s.tariff} data-booking-variant={variant.id}>
               <span><strong>{variant.priceLabel}</strong>{item.variants.length > 1 && <small>{variant.type}</small>}</span>
               <OfferBookingAction quest={item.quest} offer={item.offer} venue={item.venue}
@@ -59,8 +63,8 @@ export function CourseFinderResults({ items, state, onShare }: {
               <p>Все занятия этой группы: {item.offer.weeklySlots?.length ? item.offer.weeklySlots.map(slot => `${slot.weekday}, ${slot.start}–${slot.end}`).join("; ") : "дни и время уточняются"}.</p>
               {(item.offer.weeklySlots?.length ?? 0) > 1 && <p>Это одна группа с занятиями в несколько дней, не разные варианты на выбор.</p>}
               <p>Преподаватель: {metadata?.teacher ?? "уточняется"}</p>
-              {metadata?.teacher && metadata.teacher === reviewedTeacher(itemSchool(item), year) ? <p className={s.muted}>Преподаватель подтверждён командой BrainMaster. Служебные поля mos.ru могут отличаться.</p> : metadata?.teacherSourceConflict && <p className={s.muted}>В описании и служебных полях mos.ru указаны разные сотрудники. Преподаватель приведён по описанию группы; уточните его у школы.</p>}
-              <p>Места на дату среза: {metadata?.freeSeats ?? "не указаны"}{metadata?.totalSeats != null ? ` из ${metadata.totalSeats}` : ""}. Актуальное наличие проверьте на mos.ru.</p>
+              {metadata?.teacher && metadata.teacher === reviewedTeacher(itemSchool(item), year, metadata.groupCode) ? <p className={s.muted}>Преподаватель подтверждён командой BrainMaster. Служебные поля mos.ru могут отличаться.</p> : metadata?.teacherSourceConflict && <p className={s.muted}>В описании и служебных полях mos.ru указаны разные сотрудники. Преподаватель приведён по описанию группы; уточните его у школы.</p>}
+              <p>Свободные места по последней проверке: {metadata?.freeSeats ?? "не указаны"}{metadata?.totalSeats != null ? ` из ${metadata.totalSeats}` : ""}. Занятые места отражают данные mos.ru, а не подтверждённое посещение занятия.</p>
               {metadata?.asOf && <p className={s.muted}>Источник: mos.ru, {metadata.refreshedAt ? `карточка проверена ${new Date(metadata.refreshedAt).toLocaleString("ru-RU", {timeZone:"Europe/Moscow"})} (МСК)` : `срез от ${metadata.asOf}`}. {metadata.linkKind === "search" ? "Ссылка ведёт в поиск mos.ru — сверяйте код группы и адрес." : "Перед записью сверяйте карточку и адрес."}</p>}
               {metadata?.refreshError && <p role="note">Последняя проверка этой карточки не удалась. Показаны последние подтверждённые сведения.</p>}
               <div className={s.actions}>

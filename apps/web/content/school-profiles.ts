@@ -1,7 +1,16 @@
 /** Reviewed public profiles. Stable school/campus IDs are not presentation names. */
-type CampusProfile = {address:string; latitude:number; longitude:number; metro?:string; district?:string; mapUrl:string; photoUrl?:string; photoAlt?:string};
-type SchoolProfile = {name:string; website?:string; telegram?:string; logoUrl:string; description:string; verifiedAt:string; nameSource:string; preparing?:boolean; campuses:Record<string,CampusProfile>};
+type CampusProfile = {address:string; latitude:number; longitude:number; metro?:string; district?:string; mapUrl:string; photoUrl?:string; photoAlt?:string; photoSource?:string; entranceNote?:string; directions?:string[]; contactNote?:string};
+type SchoolProfile = {name:string; website?:string; telegram?:string; logoUrl:string; logoAlt?:string; description:string; verifiedAt:string; nameSource:string; preparing?:boolean; campuses:Record<string,CampusProfile>};
 export const schoolProfiles: Record<string,SchoolProfile> = {
+  "school-37": {
+    name:"ГБОУ города Москвы «Школа № 37»",website:"https://sch37.mskobr.ru/",logoUrl:"/sites/school-37/venue-avatar-original.jpg",logoAlt:"Здание школы № 37 на Мичуринском проспекте, 28",
+    description:"Школа Молодого IT-Инженера BrainMaster в Раменках, на Мичуринском проспекте, 28. По средам, четвергам и пятницам: ШМИ-1 в 14:15 и 15:15, ШМИ-2 в 16:15. Каждая группа занимается один раз в неделю, занятие длится 45 минут. Преподаватель — Кузнецова Ольга Максимовна. Возраст 6–13 лет; стоимость — 1 375 ₽ за занятие. Выберите подходящий день и время в расписании.",
+    verifiedAt:"2026-09-22",nameSource:"https://www.mos.ru/pgu2/activity/card/1019466",
+    campuses:{"school-37-michurinsky-28":{address:"Мичуринский проспект, 28",latitude:55.702891,longitude:37.502471,metro:"Раменки",district:"Раменки",mapUrl:"https://yandex.com/maps/213/moscow/house/michurinskiy_prospekt_28/Z04YcwdiTUIGQFtvfXtxc3RqZQ==/",photoUrl:"/sites/school-37/michurinsky-28-original.jpg",photoAlt:"Фасад школы № 37: Мичуринский проспект, 28",photoSource:"https://yandex.com/maps/org/shkola_37_shkolny_korpus/1318471492/",
+      entranceNote:"Занятия проходят в школьном здании на Мичуринском проспекте, 28. Точка на карте обозначает здание, не согласованный вход на занятие.",
+      directions:["Откройте маршрут до Мичуринского проспекта, 28; ближайшая станция метро — «Раменки».","Перед первым занятием уточните у BrainMaster кабинет, вход и порядок прохода ребёнка и сопровождающего."],
+      contactNote:"Преподаватель всех девяти групп — Кузнецова Ольга Максимовна. Назначение подтверждено BrainMaster; техническое поле mos.ru может содержать другое имя."}},
+  },
   "bm-base-moscow": {
     name:"Мехвариум — база BrainMaster",logoUrl:"/sites/bm-base-moscow/mechvarium-mark.svg",preparing:true,
     description:"Готовим к открытию собственную базу BrainMaster «Мехвариум» на Рязанском проспекте, 38. Сейчас идёт ремонт и подготовка пространства. Площадка ещё не открыта, занятия и набор пока не проводятся. О начале работы сообщим отдельно.",
@@ -28,10 +37,17 @@ export const schoolProfiles: Record<string,SchoolProfile> = {
       "school-2103-golubinskaya-5k4":{address:"Голубинская ул., 5, корп. 4",latitude:55.604812,longitude:37.517989,metro:"Ясенево",district:"Ясенево",mapUrl:"https://yandex.com/maps/org/shkola_2103_shkolnoye_otdeleniye_korpus_3/1379658584/"}},
   },
   "school-937": {
-    name:"ГБОУ города Москвы «Школа № 937 имени Героя Российской Федерации А. В. Перова»",logoUrl:"/sites/school-937/logo-original.jpg",
-    description:"Школа носит имя своего выпускника, Героя Российской Федерации Александра Валентиновича Перова. Представленный корпус находится на улице Маршала Захарова, 25, корп. 2. Сохранённая страница и QR-ссылка ведут к этой площадке; актуальные группы показываются в расписании при их наличии.",
-    verifiedAt:"2026-09-09",nameSource:"https://qr.gbumac.ru/qr-person/perov-shkola-937",
-    campuses:{"school-937-orekhovo":{address:"ул. Маршала Захарова, 25, корп. 2",latitude:55.619313,longitude:37.701485,metro:"Орехово",mapUrl:"https://yandex.com/maps/org/shkola_937_imeni_geroya_rossiyskoy_federatsii_a_v_perova_korpus_3/123788032512/",photoUrl:"/sites/school-937/zakharova-25k2-original.jpg"}},
+    name:"ГБОУ города Москвы «Школа № 937 имени Героя Российской Федерации А. В. Перова»",website:"https://sch937u.mskobr.ru/",logoUrl:"/sites/school-937/logo-original.jpg",
+    description:"ШМИ-2 — второй год Школы Молодого IT-Инженера — на улице Маршала Захарова, 25. Четыре группы по пятницам: 14:00, 15:00, 16:00 и 17:00; занятие длится 45 минут и стоит 1 000 ₽. Каждая группа занимается один раз в неделю. Для детей 6–13 лет, преподаватель — Локтеева Ирина Дмитриевна. Не перепутайте: дом 25 и дом 25, корпус 2 — разные здания.",
+    verifiedAt:"2026-09-22",nameSource:"https://www.mos.ru/pgu2/activity/card/1049854",
+    campuses:{
+      "school-937-marshala-zakharova-25":{address:"ул. Маршала Захарова, 25",latitude:55.619040,longitude:37.699562,metro:"Орехово",district:"Орехово-Борисово Северное",mapUrl:"https://yandex.com/maps/213/moscow/house/ulitsa_marshala_zakharova_25/Z04YcA5pTEMFQFtvfXpweHxnZA==/",photoUrl:"/sites/school-937/zakharova-25-original.jpg",photoAlt:"Здание школы № 937: ул. Маршала Захарова, 25 — не корпус 2",photoSource:"https://yandex.com/maps/org/shkola_937_imeni_geroya_rossiyskoy_federatsii_a_v_perova_zdaniye_1/1349921670/",
+        entranceNote:"ШМИ-2 проходит в доме 25, кабинет 103. Не выбирайте в навигаторе соседний дом 25, корпус 2.",
+        directions:["Постройте маршрут до ул. Маршала Захарова, 25; ближайшее метро — «Орехово».","Кабинет 103 указан организатором. Перед первым визитом уточните у BrainMaster вход и правила прохода."],
+        contactNote:"Преподаватель — Локтеева Ирина Дмитриевна. Возраст 6–13 лет и преподаватель подтверждены BrainMaster; технические поля mos.ru могут отличаться."},
+      "school-937-orekhovo":{address:"ул. Маршала Захарова, 25, корп. 2",latitude:55.619313,longitude:37.701485,metro:"Орехово",district:"Орехово-Борисово Северное",mapUrl:"https://yandex.com/maps/org/shkola_937_imeni_geroya_rossiyskoy_federatsii_a_v_perova_korpus_3/123788032512/",photoUrl:"/sites/school-937/zakharova-25k2-original.jpg",photoAlt:"Другой корпус школы № 937: ул. Маршала Захарова, 25, корп. 2",
+        entranceNote:"Этот корпус сохранён в каталоге площадки. Четыре пятничные группы ШМИ-2 относятся к дому 25 без корпуса.",
+        directions:["Для пятничных занятий ШМИ-2 выберите адрес «ул. Маршала Захарова, 25».","Наличие других занятий в этом корпусе проверяйте по расписанию."]}},
   },
   "mduc-ekt": {
     name:"Московский детско-юношеский центр экологии, краеведения и туризма",website:"https://mducekt.mskobr.ru/",logoUrl:"/sites/mduc-ekt/logo-original.jpg",
@@ -111,8 +127,8 @@ export function reviewedCampusProfile(schoolSlug: string, campusSlug: string) {
     ...(campus.district === undefined ? {} : {district:campus.district}),
     latitude: campus.latitude, longitude: campus.longitude,
     ...(campus.photoUrl ? {photos:[{ url: campus.photoUrl, alt: campus.photoAlt ?? `${school.name}. ${campus.address}` }]} : school.preparing ? {photos:[]} : {}),
-    entranceNote: school.preparing ? "Площадка ещё не открыта: идёт ремонт. Занятий пока нет, посещение не предусмотрено." : "Точка на карте показывает расположение здания. Перед первым занятием уточните у организатора вход и кабинет.",
-    directions: school.preparing ? ["Следите за объявлением об открытии Мехвариума в каналах BrainMaster."] : ["Выберите корпус и откройте маршрут по его адресу.", "Уточните вход и кабинет у организатора перед первым занятием."],
-    ...(school.preparing ? {contactNote:"О дате открытия и начале занятий сообщим отдельно."} : {}),
+    entranceNote: school.preparing ? "Площадка ещё не открыта: идёт ремонт. Занятий пока нет, посещение не предусмотрено." : campus.entranceNote ?? "Точка на карте показывает расположение здания. Перед первым занятием уточните у организатора вход и кабинет.",
+    directions: school.preparing ? ["Следите за объявлением об открытии Мехвариума в каналах BrainMaster."] : campus.directions ?? ["Выберите корпус и откройте маршрут по его адресу.", "Уточните вход и кабинет у организатора перед первым занятием."],
+    ...(school.preparing ? {contactNote:"О дате открытия и начале занятий сообщим отдельно."} : campus.contactNote ? {contactNote:campus.contactNote} : {}),
   };
 }

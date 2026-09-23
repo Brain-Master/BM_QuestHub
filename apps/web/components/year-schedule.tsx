@@ -61,9 +61,9 @@ export function YearSchedule({baseQuests,venues}:{baseQuests:Quest[];venues:Venu
         <div><dt>Возраст</dt><dd>{g.ageMin===null||g.ageMax===null?"Уточните у школы":`${g.ageMin}–${g.ageMax} лет`}</dd></div>
         <div><dt>Педагог</dt><dd>{g.teacher||"Уточните у школы"}</dd></div>
         <div><dt>Стоимость</dt><dd>{g.lessonPrice===null?"За занятие — уточните у школы":`${rub(g.lessonPrice)} / занятие`}{g.coursePrice!==null&&<span className="ys-secondary">{rub(g.coursePrice)} за курс по карточке</span>}</dd></div>
-        <div><dt>Свободно</dt><dd>{g.freeSeats===null||g.totalSeats===null?"Количество мест не подтверждено":`${g.freeSeats} из ${g.totalSeats} на ${dateLabel(data.asOf)}`}</dd></div></dl>
+        <div><dt>Свободно</dt><dd>{g.freeSeats===null||g.totalSeats===null?"Количество мест не подтверждено":`${g.freeSeats} из ${g.totalSeats}`}<span className="ys-secondary">{g.availabilityUpdatedAt||g.refreshedAt?`Проверено ${new Date(g.availabilityUpdatedAt??g.refreshedAt!).toLocaleString('ru-RU',{timeZone:'Europe/Moscow'})} МСК`:`Данные от ${dateLabel(data.asOf)}`}</span></dd></div></dl>
         {g.limitedSource&&<p className="ys-limited">Данные группы неполные. Возраст, педагога, стоимость и вместимость уточните у школы.</p>}
-        {g.refreshError&&<p>Последняя проверка карточки не удалась. Показаны последние подтверждённые сведения.</p>}
+        {(g.refreshError||g.availabilityError)&&<p>Последняя проверка карточки или мест не удалась. Показаны последние подтверждённые сведения.</p>}
         <div className="ys-card-bottom"><p>Номер занятия: {g.listingId}{g.groupCode&&<span className="ys-secondary">Группа: {g.groupCode}</span>}</p>{annualBookingNeedsReview(g)?<span className="ys-secondary">Прямая карточка группы пока не подтверждена</span>:<a className="ys-action" href={g.link} target="_blank" rel="noopener noreferrer" onClick={notify} onAuxClick={e=>{if(e.button===1)notify();}}>{g.linkKind==="card"?"Карточка на mos.ru":"Найти на mos.ru"} <span aria-hidden>↗</span><span className="sr-only"> — {g.listingId}, новое окно</span></a>}</div>
       </article>;
     })}</div>}

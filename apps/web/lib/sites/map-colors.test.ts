@@ -11,10 +11,10 @@ const catalog=read('data/v2/catalog-snapshot.json'),hot=read('data/offers-snapsh
 const venues=venueSchema.array().parse(read('data/v2/map-snapshot.json').venues);
 const quests=questSchema.array().parse(catalog.courses.map((q:{slug:string})=>({...q,offers:hot.offersByQuest[q.slug]??[]})));
 const params={venues,quests,worlds:worldSchema.array().parse(catalog.worlds),scopes:getSchoolScopes(venues)};
-test('directory retains inactive identities, while school2103 becomes the seventh selectable school',()=>{
+test('directory retains inactive campuses;37 and937 are selectable',()=>{
  const all=buildSiteScopeCards({...params,includeInactive:true}).filter(s=>s.listedOnSites);
- assert.equal(all.length,10);assert.equal(all.filter(s=>s.shiftCount===0).length,3);
- assert.equal(buildSiteScopeCards(params).length,7);
+ assert.equal(all.length,11);assert.equal(all.filter(s=>s.shiftCount===0).length,2);
+ assert.equal(buildSiteScopeCards(params).length,9);
  const colors=buildSiteMapColorMap(all);
  for(const site of all){if(site.shiftCount===0){assert.equal(colors.get(site.slug),INACTIVE_MAP_MARKER_COLOR);assert.equal(getSiteMapColor({...site,mapColor:'#ff0000'}),INACTIVE_MAP_MARKER_COLOR);}else assert.notEqual(colors.get(site.slug),INACTIVE_MAP_MARKER_COLOR);}
  assert.equal(all.flatMap(s=>s.campuses.filter(c=>campusHasNoGroups(s,c))).length,7);

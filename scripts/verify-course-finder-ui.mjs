@@ -43,18 +43,18 @@ try {
    a11y.push({label,violations:report.violations,incomplete:report.incomplete.map(item=>({id:item.id,nodes:item.nodes.length}))});
    assert.deepEqual(report.violations.map(v=>({id:v.id,nodes:v.nodes.map(n=>n.target)})),[],label);
  }
- await goto('/agenda/');await count(60);
- assert.equal(await finder.getByRole('combobox',{name:'Площадка',exact:true}).locator('option:not([disabled])').count(),8);
+ await goto('/agenda/');await count(69);
+ assert.equal(await finder.getByRole('combobox',{name:'Площадка',exact:true}).locator('option:not([disabled])').count(),9);
  assert.equal(await finder.getByRole('combobox',{name:'Программа',exact:true}).locator('option:not([disabled])').count(),2);
- assert.equal(await page.locator('[data-campus]').count(),10);
- assert.equal(await page.locator('[data-annual-group]').count(),61);
- assert.equal(new Set(await page.locator('[data-annual-group]').evaluateAll(rows=>rows.map(row=>row.dataset.annualGroup))).size,60);
+ assert.equal(await page.locator('[data-campus]').count(),11);
+ assert.equal(await page.locator('[data-annual-group]').count(),70);
+ assert.equal(new Set(await page.locator('[data-annual-group]').evaluateAll(rows=>rows.map(row=>row.dataset.annualGroup))).size,69);
  await finder.getByRole('button',{name:'По программам',exact:true}).click();
  assert.equal(await page.locator('[data-programme="shmi"]').count(),1);
  assert.equal(await page.locator('[data-weekday]').count(),new Set(annual.flatMap(offer=>offer.weeklySlots.map(slot=>slot.weekday))).size);
  await scan('dark full schedule');
  await page.screenshot({path:output+'/full-desktop.png'});
- checks.push('Real data: 60 unique groups, 61 weekday rows, ten campuses, one canonical SHMI programme');
+ checks.push('Real data: 69 unique groups, 70 weekday rows, eleven campuses, one canonical SHMI programme');
 
  await goto('/agenda/');
  const compact=page.locator('[data-annual-group]').filter({has:page.locator('[data-mos-booking-link]')}).first();
@@ -69,7 +69,7 @@ try {
  await page.reload({waitUntil:'networkidle'});
  const nav=page.getByRole('navigation',{name:'Основная навигация'});
  await expect(nav.getByRole('link',{name:'Расписание',exact:true})).toHaveAttribute('href','/agenda/');
- await nav.getByRole('link',{name:'Расписание',exact:true}).click();await count(60);
+ await nav.getByRole('link',{name:'Расписание',exact:true}).click();await count(69);
  const annualMenu=nav.locator('summary').filter({hasText:'Годовые курсы'});
  await annualMenu.focus();await page.keyboard.press('Enter');
  const shmiMenu=nav.locator('summary').filter({hasText:'Школа Молодого IT-Инженера'});
@@ -244,7 +244,7 @@ try {
  }
  const closed=annual.filter(offer=>offer.annual.admission==='closed');
  for(const offer of closed){await goto(`/agenda/?offer=${encodeURIComponent(offer.id)}`);await expect(page.locator('[data-selected="true"]').first().locator('[data-booking-variant] button').first()).toBeDisabled();}
- checks.push('Booking is mocked only: consent required, exact offer/variant/venue/school payload, pending disabled, 200/400/503/network outcomes truthful, five closed groups disabled, dialog focus returned');
+ checks.push(`Booking is mocked only: consent required, exact offer/variant/venue/school payload, pending disabled, 200/400/503/network outcomes truthful, ${closed.length} closed groups disabled, dialog focus returned`);
 
  await goto('/agenda/');
  const legacy=page.getByTestId('legacy-intensive-schedule');await legacy.locator('summary').click();
@@ -354,7 +354,7 @@ try {
  checks.push('Empty filtered map retains search/reset and recovers without browser Back');
  for(const view of ['grid','list']){
    await page.goto(base+`/sites/?view=${view}`,{waitUntil:'networkidle'});
-   await expect(page.locator('article[data-site]')).toHaveCount(10);
+   await expect(page.locator('article[data-site]')).toHaveCount(11);
    const inactive=page.locator('article[data-site][data-inactive="true"]');await expect(inactive).toHaveCount(3);
    await expect(page.locator('article[data-site="school-2103"]')).toHaveCount(1);
    await expect(page.locator('article[data-site="school-2103"][data-inactive="true"]')).toHaveCount(0);
@@ -405,7 +405,7 @@ try {
  await page.getByRole('searchbox').fill('zz-no-group-match');
  assert.equal(await page.getByRole('combobox',{name:'Адрес',exact:true}).locator('option:not([disabled])').count(),1);
  await page.getByRole('button',{name:'Сбросить фильтры',exact:true}).click();
- assert.equal(await page.locator('[data-group-id]').count(),60);
+ assert.equal(await page.locator('[data-group-id]').count(),69);
  checks.push('Annual table facets honor school/search; only two 2044 addresses and zero irrelevant options under empty search');
  await page.goto(base+'/catalog/?school=school-2044',{waitUntil:'networkidle'});
  const formatFilter=page.getByTestId('catalog-format-filter');

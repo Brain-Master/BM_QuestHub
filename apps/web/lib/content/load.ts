@@ -129,8 +129,11 @@ export async function loadQuestsShell(): Promise<Quest[]> {
   if (process.env.NODE_ENV === "development") {
     return loadQuests();
   }
-  const bodies = await loadQuestBodies();
-  return bodies.map((q) => ({ ...q, offers: [] }));
+  // Annual source revisions carry reviewed curriculum and campus identity.
+  // Keep their validated build baseline so an older hot release cannot erase
+  // newly integrated groups. Legacy schedules still load as a thin live shell.
+  const quests = await loadQuests();
+  return quests.map((q) => q.format === 'year' ? q : { ...q, offers: [] });
 }
 
 /** Hot schedule snapshot time for ops links (`?datastamp=1`) and SSR fallback. */

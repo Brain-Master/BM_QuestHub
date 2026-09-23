@@ -1,4 +1,5 @@
 /** Restore only newer, validated, same-identity facts before a Sheets/CSV rebuild. */
+import {reviewedAnnualAge} from '../../apps/web/content/annual-owner-ages.mjs';
 export function restorePublishedAnnual(registry, offers, {asOf, venueByGroup, studyYearByGroup = {}, preserveUnknown = false}) {
   if (!asOf || !venueByGroup) throw Error("ANNUAL_REVIEWED_MAPPING_REQUIRED");
   const next = structuredClone(registry), seen = new Set();
@@ -24,6 +25,7 @@ export function restorePublishedAnnual(registry, offers, {asOf, venueByGroup, st
     // The public teacher is editorially reconciled, not the API's persons field.
     // Identity, location, source title and original API teacher stay in the registry.
     for (const key of ["ageMin", "ageMax", "totalSeats", "freeSeats", "lessonPrice", "coursePrice"]) {
+      if ((key==='ageMin'||key==='ageMax') && reviewedAnnualAge(previous.groupCode, previous.listingId)) continue;
       // Editorial prices are not portal facts. Preserve an explicit raw unknown too.
       if (key === 'lessonPrice' && a.lessonPriceSource) {
         if (!Object.hasOwn(a,'sourceLessonPrice')) throw Error('ANNUAL_SOURCE_PRICE_MISSING');

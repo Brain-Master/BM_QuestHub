@@ -15,6 +15,7 @@ import {
 } from "@aws-sdk/client-s3";
 
 import { S3_YC_ENDPOINT, S3_YC_REGION } from "./lib/s3-storage.mjs";
+import { AVAILABILITY_KEY, LEASE_KEY } from "./lib/mos-live-capacity-store.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const WEB = path.join(ROOT, "apps", "web");
@@ -157,6 +158,7 @@ async function syncDirectory(client, bucket, name, config) {
   for (const file of files) {
     const rel = path.relative(local, file).split(path.sep).join("/");
     const key = prefix ? `${prefix}${rel}` : rel;
+    if ([AVAILABILITY_KEY, LEASE_KEY].includes(key)) continue;
     const body = fs.readFileSync(file);
     await client.send(
       new PutObjectCommand({
@@ -174,6 +176,7 @@ async function syncDirectory(client, bucket, name, config) {
 
   const remote = await listRemoteKeys(client, bucket, prefix);
   for (const key of remote) {
+    if ([AVAILABILITY_KEY, LEASE_KEY].includes(key)) continue;
     if (!key.startsWith(prefix) && prefix) continue;
     if (!uploaded.has(key)) {
       await client.send(new DeleteObjectCommand({ Bucket: bucket, Key: key }));

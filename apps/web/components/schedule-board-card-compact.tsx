@@ -181,6 +181,9 @@ export function ScheduleBoardCardCompact({
               <ScheduleCapacityIndicator
                 capacity={item.capacity}
                 archived={item.status.isArchivedState}
+                checkedAt={item.offer.annual?.availabilityUpdatedAt??item.offer.annual?.refreshedAt}
+                sourceDate={item.offer.annual?.asOf}
+                failed={!!(item.offer.annual?.availabilityError??item.offer.annual?.refreshError)}
                 compact
               />
             </div>

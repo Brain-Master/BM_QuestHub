@@ -1,4 +1,5 @@
 import type { EventStatusV2 } from "@/lib/data/v2/entities";
+import { isRetiredAnnualGroup } from "../../content/annual-retirements.mjs";
 import { annualBookingNeedsReview } from "./annual-schedule";
 import type { AgendaOfferItem } from "@/lib/offers/agenda";
 import {
@@ -148,25 +149,18 @@ export function getOfferEnrolledTotal(
 }
 
 export function getScheduleCapacity(
-  offer: Pick<VenueOffer, "enrolled" | "maxCapacity" | "scheduleCard">,
+  offer: Pick<VenueOffer, "enrolled" | "maxCapacity" | "scheduleCard" | "annual">,
 ): ScheduleCapacityView {
-  if (typeof offer.maxCapacity !== "number") {
+  const total = offer.annual ? offer.annual.totalSeats : offer.maxCapacity;
+  if (typeof total !== "number" || !Number.isSafeInteger(total) || total <= 0) {
     return null;
   }
 
-  const total = offer.maxCapacity;
-  const enrolled = getOfferEnrolledTotal(offer);
-
-  if (typeof enrolled !== "number") {
-    return {
-      total,
-      booked: 0,
-      left: total,
-      percent: 0,
-      isLow: false,
-      isSoldOut: false,
-      label: `${CAPACITY_LABELS.remainingPrefix} ${formatPlaces(total)}`,
-    };
+  const enrolled = offer.annual
+    ? offer.annual.freeSeats === null ? undefined : total - offer.annual.freeSeats
+    : getOfferEnrolledTotal(offer);
+  if (typeof enrolled !== "number" || !Number.isSafeInteger(enrolled) || enrolled < 0 || enrolled > total) {
+    return null;
   }
 
   const booked = Math.min(enrolled, total);
@@ -192,6 +186,7 @@ export function resolveScheduleStatusKey(
   offer: VenueOffer,
   now = new Date(),
 ): EventStatusV2 {
+  if (isRetiredAnnualGroup(offer)) return "cancelled";
   const rawStatus = offer.scheduleCard?.status ?? offer.sheetStatus ?? "";
   const mapped = rawSheetStatusToKey(rawStatus);
   const cancelledLabel = eventStatusLabel("cancelled");
@@ -224,6 +219,7 @@ export function getScheduleDisplayStatus(
   offer: VenueOffer,
   now = new Date(),
 ): ScheduleDisplayStatus {
+  if (isRetiredAnnualGroup(offer)) return eventStatusLabel("cancelled") as ScheduleDisplayStatus;
   if (offer.annual?.admission === "closed" && !isOfferAutoArchived(offer, now)) return "Приём закрыт";
   return eventStatusLabel(resolveScheduleStatusKey(offer, now)) as ScheduleDisplayStatus;
 }
@@ -232,6 +228,7 @@ export function getScheduleStatusVariant(
   offer: VenueOffer,
   now = new Date(),
 ): ScheduleStatusVariant {
+  if (isRetiredAnnualGroup(offer)) return eventStatusVariant("cancelled");
   if (offer.annual?.admission === "closed") return "default";
   return eventStatusVariant(resolveScheduleStatusKey(offer, now));
 }
@@ -241,6 +238,7 @@ export function getScheduleBookingMode(
   status: ScheduleDisplayStatus,
   variant?: Pick<ScheduleVariant, "mosBookingUrl">,
 ): ScheduleBookingMode {
+  if (isRetiredAnnualGroup(offer)) return { kind: "disabled", label: SCHEDULE_CTA.cancelledDisabled };
   if (annualBookingNeedsReview(offer.annual)) return { kind: "disabled", label: "Карточка на проверке" };
   if (offer.annual?.admission === "closed") return { kind: "disabled", label: "Приём закрыт" };
   const statusKey = resolveScheduleStatusKey(offer);

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generatedAt": "2026-09-21T12:07:11.930Z",
+  "generatedAt": "2026-09-23T17:01:19Z",
   "source": "annual-csv-integration",
   "snapshots": {
     "site": {
@@ -15,7 +15,7 @@
     },
     "map": {
       "path": "data/v2/map-snapshot.json",
-      "contentHash": "sha256:44a5a0a934fcd5d66a9db75c617cfd68094e17ee2133b37ff5c3193b8d5bab46"
+      "contentHash": "sha256:341b57bacaea5cbbc7986da0961b01018485c5170716ef24849a9e0e63a5ef31"
     }
   }
 }
