@@ -19,6 +19,7 @@ type Props = {
     name: string;
   };
   title?: string;
+  heading?: "h1" | "h2";
   emptyMessage?: string;
 };
 
@@ -28,6 +29,7 @@ export function CatalogPageClient({
   worlds,
   fixedSchool,
   title = "Курсы BrainMaster",
+  heading: Heading = "h2",
   emptyMessage = "Ничего не найдено — ослабьте фильтры или сбросьте выбор школы.",
 }: Props) {
   const searchParams = useSearchParams();
@@ -61,9 +63,9 @@ export function CatalogPageClient({
       <section className="space-y-8">
         <div className="flex flex-wrap items-end justify-between gap-4 border-b border-white/10 pb-4">
           <div>
-            <h2 className="font-heading text-2xl font-semibold tracking-tight">
+            <Heading className="font-heading text-2xl font-semibold tracking-tight">
               {title}
-            </h2>
+            </Heading>
             <p className="mt-1 text-muted-foreground text-sm">
               Показано курсов:{" "}
               <span className="font-medium text-foreground">{filtered.length}</span>
@@ -89,12 +91,15 @@ export function CatalogPageClient({
             </p>
           </div>
         ) : (
+          <div>
+          {Heading === "h1" && <h2 className="sr-only">Программы по выбранным условиям</h2>}
           <QuestGrid
             quests={filtered}
             worldNames={worldNames}
             worlds={worlds}
             schoolSlug={school}
           />
+          </div>
         )}
       </section>
     </>

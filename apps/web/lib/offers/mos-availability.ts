@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { isRetiredAnnualGroup } from "../../content/annual-retirements.mjs";
 import type { Quest, VenueOffer } from "../schemas";
+import { retainMosReviewError } from './annual-schedule';
 
 const bindingSchema = z.object({
   sourceSha256: z.string().regex(/^[a-f0-9]{64}$/),
@@ -80,6 +81,11 @@ export function reconcileMosAvailability(previous: MosAvailability | undefined, 
   const result=structuredClone(incoming);
   for(const [id,entry] of Object.entries(result.entries)){
     const old=previous?.entries[id];
+    if (old && sameMosBinding(old.binding,entry.binding) && entry.error) {
+      entry.error=retainMosReviewError(old.error,entry.error);
+      const error=result.errors.find(item=>item.offerId===id);
+      if(error)error.code=entry.error;
+    }
     if(old&&sameMosBinding(old.binding,entry.binding)&&old.availability&&
       (!entry.availability||entry.availability.checkedAt<old.availability.checkedAt)){
       if(!entry.error)throw Error('MOS_AVAILABILITY_STALE_RESPONSE');

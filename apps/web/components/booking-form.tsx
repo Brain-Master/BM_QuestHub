@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { Controller, useForm } from "react-hook-form";
+import { useEffect, useRef } from "react";
 
 import { BookingSubmitError } from "@/components/booking-submit-error";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -94,6 +95,8 @@ export function BookingForm({
   onSuccess,
   onSubmitFailed,
 }: Props) {
+  const mounted = useRef(false);
+  useEffect(() => { mounted.current = true; return () => { mounted.current = false; }; }, []);
   const resolvedSubmitLabel =
     submitLabel ?? flowContext?.submitLabel ?? "Забронировать место";
   const form = useForm<LeadFormInput, unknown, LeadPayload>({
@@ -117,6 +120,7 @@ export function BookingForm({
       policyVersion: PERSONAL_DATA_POLICY_VERSION,
       consentAt: new Date().toISOString(),
     });
+    if (!mounted.current) return;
     if (!res.ok) {
       if (onSubmitFailed) {
         onSubmitFailed();
@@ -149,7 +153,7 @@ export function BookingForm({
   const isSubmitting = form.formState.isSubmitting;
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className="@container grid gap-4">
+    <form onSubmit={event => { void form.handleSubmit(onSubmit)(event); }} className="@container grid gap-4">
       {summary ? <BookingSummaryCard summary={summary} /> : null}
 
       {flowContext ? (

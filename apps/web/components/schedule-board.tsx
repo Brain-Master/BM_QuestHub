@@ -1,4 +1,6 @@
 "use client";
+import { canonicalAnnualOfferId } from "@/content/annual-retirements.mjs";
+import { useScheduleClock } from "@/lib/offers/use-schedule-clock";
 
 import Link from "next/link";
 import * as React from "react";
@@ -200,19 +202,20 @@ export function ScheduleBoard({
   );
   const queryParams = React.useMemo(() => new URLSearchParams(currentSearch), [currentSearch]);
   const querySchoolSlug = queryParams.get("school")?.trim() || undefined;
-  const queryOfferId = queryParams.get("offer")?.trim() || undefined;
+  const queryOfferId = canonicalAnnualOfferId(queryParams.get("offer")?.trim() || "") || undefined;
   const highlightedOfferId = queryOfferId ?? rememberedHighlightedOfferId;
   const isQuestDisplay = displayMode === "quest";
   const effectiveViewMode = isQuestDisplay ? "quest" : isDesktopLayout ? viewMode : "mobile";
 
+  const clock = useScheduleClock();
   const boardItems = React.useMemo(
     () =>
       groups.flatMap((group) =>
         group.items.map((item) =>
-          buildScheduleBoardItem(item, schoolSlug ?? querySchoolSlug),
+          buildScheduleBoardItem(item, schoolSlug ?? querySchoolSlug, new Date(clock || 0)),
         ),
       ),
-    [groups, querySchoolSlug, schoolSlug],
+    [groups, querySchoolSlug, schoolSlug, clock],
   );
 
   const querySite = React.useMemo(() => {

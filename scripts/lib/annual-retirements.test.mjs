@@ -24,10 +24,10 @@ test('full refresh skips all four, retains historical records and checks school8
  assert.deepEqual(calls,['871045']);assert.equal(result.archivedGroups,4);assert.equal(result.verifiedGroups,1);assert.equal(result.ok,true);
  for(const [id,g]of Object.entries(selected))if(isRetiredAnnualGroup(g))assert.deepEqual(result.groups[id],g);
 });
-test('capacity refresh skips retired old-hot offers without archive flags or codes as identity',async()=>{
+test('capacity refresh skips four retired and eight explicitly superseded old-hot offers without archive flags',async()=>{
  const offers=snapshot.offersByQuest.shmi.filter(isRetiredAnnualGroup).map((o,i)=>({...o,id:`renamed:${i}`,scheduleCard:{...o.scheduleCard,isArchived:false}}));
- assert.equal(offers.length,4);
+ assert.equal(offers.length,12);
  const before=JSON.stringify(offers);
  const result=await refreshMosAvailability({...snapshot,offersByQuest:{shmi:offers}},registry.groups,undefined,{now,fetchCard:()=>assert.fail('retired MOS card requested')});
- assert.equal(result.archived,4);assert.equal(result.expected,0);assert.equal(result.verified,0);assert.deepEqual(result.errors,[]);assert.deepEqual(result.entries,{});assert.equal(JSON.stringify(offers),before);
+ assert.equal(result.archived,12);assert.equal(result.expected,0);assert.equal(result.verified,0);assert.deepEqual(result.errors,[]);assert.deepEqual(result.entries,{});assert.equal(JSON.stringify(offers),before);
 });

@@ -13,6 +13,7 @@ type Props = {
     name: string;
   };
   title?: string;
+  heading?: "h1" | "h2";
   emptyMessage?: string;
 };
 
@@ -22,6 +23,7 @@ export function LiveCatalog({
   worlds,
   fixedSchool,
   title,
+  heading,
   emptyMessage,
 }: Props) {
   const { quests, status } = useLiveSchedule(baseQuests);
@@ -44,6 +46,7 @@ export function LiveCatalog({
         worlds={worlds}
         fixedSchool={fixedSchool}
         title={title}
+        heading={heading}
         emptyMessage={status === "loading" ? "Проверяем наличие групп…" : status === "error" ? "Источник расписания недоступен. Попробуйте обновить страницу." : emptyMessage}
       />
     </div>

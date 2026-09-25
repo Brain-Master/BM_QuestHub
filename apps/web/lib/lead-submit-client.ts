@@ -1,5 +1,6 @@
 import siteConfig from "@/data/v2/site-config.json";
 import type { LeadPayload } from "@/lib/schemas";
+import { confirmLeadDelivery, LeadDeliveryError } from "./lead-delivery";
 
 export type SubmitLeadResult =
   | { ok: true }
@@ -54,6 +55,7 @@ function reportClientLeadFailure({
 
   void fetch(opsReportUrl, {
     method: "POST",
+    signal: AbortSignal.timeout(10_000),
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       event: "lead.client_submit_failed",
@@ -83,33 +85,20 @@ export async function submitLeadToYandex(
   }
 
   try {
-    const res = await fetch(leadSubmitUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
+    await confirmLeadDelivery(leadSubmitUrl, {
         ...data,
         submittedAt: new Date().toISOString(),
         source: "bm-questhub-static",
-      }),
     });
-
-    if (!res.ok) {
-      reportClientLeadFailure({
-        errorCode: "delivery_failed",
-        errorMessage: "Сервис заявок временно недоступен",
-        httpStatus: res.status,
-        data,
-      });
-      return { ok: false, error: "Сервис заявок временно недоступен" };
-    }
 
     return { ok: true };
-  } catch {
+  } catch (error) {
     reportClientLeadFailure({
-      errorCode: "network",
-      errorMessage: "Не удалось отправить заявку. Попробуйте ещё раз.",
+      errorCode: error instanceof LeadDeliveryError ? error.errorCode : "network",
+      httpStatus: error instanceof LeadDeliveryError ? error.httpStatus : 0,
+      errorMessage: "Не удалось подтвердить отправку. Заявка могла поступить. Свяжитесь с нами для проверки.",
       data,
     });
-    return { ok: false, error: "Не удалось отправить заявку. Попробуйте ещё раз." };
+    return { ok: false, error: "Не удалось подтвердить отправку. Заявка могла поступить. Свяжитесь с нами для проверки — контакты ниже. Введённые данные сохранены в форме." };
   }
 }

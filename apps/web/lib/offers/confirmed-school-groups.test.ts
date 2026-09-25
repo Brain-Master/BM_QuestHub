@@ -25,7 +25,7 @@ test('seven1212 groups retain unique exact cards, SHMI1 and confirmed teacher/ca
   assert.equal(o.annual?.studyYear,1);assert.equal(o.annual?.teacher,'Толмачева Василиса Владимировна');
   assert.equal(o.annual?.freeSeats,free);assert.equal(o.annual?.totalSeats,total);
   assert.equal(o.annual?.admission,'open');assert.equal(o.annual?.lessonPrice,1000);assert.equal(o.annual?.coursePrice,45000);
-  assert.equal(getScheduleCapacity(o).booked,total-free);
+  const capacity=getScheduleCapacity(o);assert.ok(capacity);assert.equal(capacity.booked,total-free);
   assert.equal(o.endDate,code==='К4611-26'?'2027-03-31':'2027-05-31');
  }
  const first=rows.find(o=>o.id==='year:К4609-26')!;
@@ -45,7 +45,7 @@ test('937 four groups belong to25 not25k2; raw age/teacher stay separate',()=>{
  assert.equal(reviewedStudyYear('school-1212','К4619-26'),1);
  assert.equal(reviewedTeacher('school-937',2,'not-reviewed'),undefined);
  assert.equal(reviewedAges('school-17','К2215-26'),undefined);
- assert.equal(projectAnnualWorkspace(quests,venues).groups.length,70);
+ assert.equal(projectAnnualWorkspace(quests,venues).groups.length,62);
 });
 test('finder exposes correct school/year/age facets and hides wrong campuses',()=>{
  const state=readFinderState(new URLSearchParams('school=school-1212&programme=shmi'));

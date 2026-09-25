@@ -6,6 +6,7 @@ import Link from "next/link";
 
 import { OfferAgenda } from "@/components/offer-agenda";
 import { CourseFinder } from "@/components/course-finder";
+import { StaticAgenda } from "@/components/static-course-content";
 import { buildAgendaItems, groupAgendaItems, resolveSchoolScope } from "@/lib/offers/agenda";
 import { isSnapshotStampVisible } from "@/lib/offers/snapshot-stamp";
 import { useLiveSchedule } from "@/lib/offers/use-live-schedule";
@@ -130,7 +131,7 @@ function LiveAgendaInner({
 
 export function LiveAgenda(props: Props) {
   return (
-    <Suspense fallback={null}>
+    <Suspense fallback={<StaticAgenda quests={props.baseQuests} venues={props.venues} school={props.schoolSlug} campus={props.venueSlug} embedded={props.embedded} />}>
       <LiveAgendaInner {...props} />
     </Suspense>
   );

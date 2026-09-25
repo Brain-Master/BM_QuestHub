@@ -163,7 +163,7 @@ function OfferBookingActionContent({
         setOpen(true);
       }}
       onAuxClick={(event) => { if (event.button === 1) trackMosOpen(); }}>
-      <span className="relative z-10">{MOS_BOOKING_COPY.directLabel} ↗</span>
+      <span className="relative z-10">{action.label} ↗</span>
     </a>
   ) : null;
 
