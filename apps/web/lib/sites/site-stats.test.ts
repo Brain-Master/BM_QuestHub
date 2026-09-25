@@ -16,17 +16,18 @@ test('scheduled count includes closed/sold-out groups; admission and capacity do
   const shmi=quests[0];
   shmi.offers=shmi.offers.filter(o=>o.venueSlug==='school-1517-narodnoe-opolchenie');
   assert.equal(shmi.offers.length,5);
-  for(const offer of shmi.offers){offer.endDate='2099-05-31';offer.annual!.admission='closed';offer.annual!.freeSeats=2;offer.enrolled=13;offer.maxCapacity=15;}
+  const now=new Date('2026-09-25T12:00:00Z');
+  for(const offer of shmi.offers){offer.endDate='2099-05-31';offer.annual!.admission='closed';offer.annual!.freeSeats=2;offer.annual!.refreshedAt=now.toISOString();delete offer.annual!.refreshError;delete offer.annual!.availabilityError;offer.enrolled=13;offer.maxCapacity=15;}
   const params={scopes:getSchoolScopes(venues),venues,quests,worlds:worldSchema.array().parse(catalog.worlds),includeInactive:true};
   let card=buildSiteScopeCards(params).find(s=>s.slug==='school-1517')!;
   assert.equal(card.shiftCount,5);assert.equal(card.campuses[0].shiftCount,5);
   assert.notEqual(getSiteMapColor(card),INACTIVE_MAP_MARKER_COLOR);
   for(const offer of shmi.offers){
-    assert.equal(getScheduleDisplayStatus(offer,new Date('2026-09-23T12:00:00Z')),'Приём закрыт');
-    assert.deepEqual(getScheduleBookingMode(offer,'Приём закрыт'),{kind:'disabled',label:'Приём закрыт'});
+    assert.equal(getScheduleDisplayStatus(offer,now),'Приём закрыт');
+    assert.deepEqual(getScheduleBookingMode(offer,'Приём закрыт',undefined,now),{kind:'disabled',label:'Приём закрыт'});
     offer.annual!.admission='open';offer.annual!.freeSeats=0;offer.enrolled=15;
-    assert.equal(getScheduleDisplayStatus(offer,new Date('2026-09-23T12:00:00Z')),'Мест нет');
-    assert.equal(getScheduleBookingMode(offer,'Мест нет').kind,'disabled');
+    assert.equal(getScheduleDisplayStatus(offer,now),'Мест нет');
+    assert.equal(getScheduleBookingMode(offer,'Мест нет',undefined,now).kind,'disabled');
   }
   card=buildSiteScopeCards(params).find(s=>s.slug==='school-1517')!;
   assert.equal(card.shiftCount,5);assert.notEqual(getSiteMapColor(card),INACTIVE_MAP_MARKER_COLOR);

@@ -3,6 +3,8 @@
  * TypeScript mirror: apps/web/lib/host-scope.ts
  */
 
+import {isRetiredSchool} from '../apps/web/content/retired-schools.mjs';
+
 export const DEFAULT_BASE_DOMAIN = "b-master.pro";
 export const DEFAULT_PORTAL_ORIGIN = "https://quest.b-master.pro";
 
@@ -41,7 +43,7 @@ export function buildSchoolScopesFromVenues(venues) {
   const byScope = new Map();
 
   for (const venue of venues) {
-    if (!venue.schoolScopeSlug) continue;
+    if (!venue.schoolScopeSlug || isRetiredSchool(venue)) continue;
     const scopeSlug = venue.schoolScopeSlug;
     const current = byScope.get(scopeSlug);
     if (current) {
@@ -116,7 +118,7 @@ export function parseSchoolHost(hostname, aliases) {
   if (!label || label.includes(".")) return null;
   if (aliases.reserved.includes(label)) return null;
   const school = aliases.schools[label];
-  if (!school) return null;
+  if (!school || isRetiredSchool(school.scopeSlug) || isRetiredSchool(school.routeSlug) || isRetiredSchool(label)) return null;
   return { hostLabel: label, ...school };
 }
 
@@ -132,7 +134,7 @@ export function isUnknownSchoolHost(hostname, aliases) {
   const label = host.slice(0, -(base.length + 1));
   if (!label || label.includes(".")) return false;
   if (aliases.reserved.includes(label)) return false;
-  return !(label in aliases.schools);
+  return parseSchoolHost(hostname, aliases) === null;
 }
 
 /**

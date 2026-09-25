@@ -1,3 +1,5 @@
+import {isRetiredSchool} from "../content/retired-schools.mjs";
+
 export type PreferredSchool = {
   slug: string;
   name: string;
@@ -9,7 +11,7 @@ export function parsePreferredSchool(raw: string | null): PreferredSchool | null
   if (!raw) return null;
   try {
     const data = JSON.parse(raw) as Partial<PreferredSchool>;
-    if (!data.slug || !data.name) return null;
+    if (!data.slug || !data.name || isRetiredSchool(String(data.slug))) return null;
     return {
       slug: String(data.slug),
       name: String(data.name),

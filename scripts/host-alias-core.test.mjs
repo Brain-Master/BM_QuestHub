@@ -23,6 +23,15 @@ const sampleAliases = buildHostAliasesDocument([
 ]);
 
 describe("parseSchoolHost", () => {
+  it('excludes withdrawn875 from new and cached aliases, keeping8750',()=>{
+    const venues=['875','8750'].map(n=>({slug:`school-${n}-campus`,name:`Школа ${n}`,schoolScopeSlug:`school-${n}`}));
+    const aliases=buildHostAliasesDocument(venues);
+    assert.equal(aliases.schools['875'],undefined);assert.ok(aliases.schools['8750']);
+    aliases.schools['875']={scopeSlug:'school-875',routeSlug:'875',name:'Школа875'};
+    assert.equal(parseSchoolHost('875.b-master.pro',aliases),null);
+    assert.equal(isUnknownSchoolHost('875.b-master.pro',aliases),true);
+    assert.ok(parseSchoolHost('8750.b-master.pro',aliases));
+  });
   it("resolves numeric school subdomain", () => {
     const parsed = parseSchoolHost("1517.b-master.pro", sampleAliases);
     assert.equal(parsed?.routeSlug, "1517");

@@ -13,11 +13,11 @@ const quests=questSchema.array().parse(catalog.courses.map((q:{slug:string})=>({
 const params={venues,quests,worlds:worldSchema.array().parse(catalog.worlds),scopes:getSchoolScopes(venues)};
 test('directory retains inactive campuses;37 and937 are selectable',()=>{
  const all=buildSiteScopeCards({...params,includeInactive:true}).filter(s=>s.listedOnSites);
- assert.equal(all.length,11);assert.equal(all.filter(s=>s.shiftCount===0).length,2);
- assert.equal(buildSiteScopeCards(params).length,9);
+ assert.equal(all.length,10);assert.equal(all.filter(s=>s.shiftCount===0).length,2);
+ assert.equal(buildSiteScopeCards(params).length,8);
  const colors=buildSiteMapColorMap(all);
  for(const site of all){if(site.shiftCount===0){assert.equal(colors.get(site.slug),INACTIVE_MAP_MARKER_COLOR);assert.equal(getSiteMapColor({...site,mapColor:'#ff0000'}),INACTIVE_MAP_MARKER_COLOR);}else assert.notEqual(colors.get(site.slug),INACTIVE_MAP_MARKER_COLOR);}
- assert.equal(all.flatMap(s=>s.campuses.filter(c=>campusHasNoGroups(s,c))).length,7);
+ assert.equal(all.flatMap(s=>s.campuses.filter(c=>campusHasNoGroups(s,c))).length,6);
  const newSchool=all.find(s=>s.slug==='school-2103')!;
  assert.equal(newSchool.shiftCount,9);assert.equal(newSchool.campuses.length,2);
  assert.ok(newSchool.campuses.every(c=>!campusHasNoGroups(newSchool,c)));

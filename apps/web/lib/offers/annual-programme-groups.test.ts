@@ -15,10 +15,10 @@ test("school source names collapse into one programme, not 74 course cards",()=>
  const groups=groupAnnualProgrammes(items);
  assert.equal(groups.length,1);assert.equal(groups[0].slug,"shmi");
  assert.equal(groups[0].title,"Школа Молодого IT-Инженера");
- assert.equal(groups[0].campuses.length,12);
+ assert.equal(groups[0].campuses.length,11);
  const rows=groups.flatMap(g=>g.campuses.flatMap(c=>c.items));
- assert.equal(rows.length,74);assert.equal(new Set(rows.map(r=>r.offer.id)).size,74);
- assert.equal(rows.flatMap(r=>r.offer.weeklySlots??[]).length,75);
+ assert.equal(rows.length,73);assert.equal(new Set(rows.map(r=>r.offer.id)).size,73);
+ assert.equal(rows.flatMap(r=>r.offer.weeklySlots??[]).length,73);
  for(const r of rows){assert.ok(r.offer.mosBookingUrl);assert.equal(r.programFilterLabel,"Школа Молодого IT-Инженера");assert.ok(!r.displayTitle.includes("(платно)"));}
 });
 test("four canonical programmes remain distinct even with identical presentation titles",()=>{

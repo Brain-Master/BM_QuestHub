@@ -3,6 +3,8 @@
  * Build output: public/host-aliases.json (see scripts/generate-host-aliases.mjs).
  */
 
+import {isRetiredSchool} from '../content/retired-schools.mjs';
+
 export const DEFAULT_BASE_DOMAIN = "b-master.pro";
 export const DEFAULT_PORTAL_ORIGIN = "https://quest.b-master.pro";
 
@@ -48,7 +50,7 @@ export function parseSchoolHost(
   if (!label || label.includes(".")) return null;
   if (aliases.reserved.includes(label)) return null;
   const school = aliases.schools[label];
-  if (!school) return null;
+  if (!school || isRetiredSchool(school.scopeSlug) || isRetiredSchool(school.routeSlug) || isRetiredSchool(label)) return null;
   return { hostLabel: label, ...school };
 }
 
@@ -63,7 +65,7 @@ export function isUnknownSchoolHost(
   const label = host.slice(0, -(base.length + 1));
   if (!label || label.includes(".")) return false;
   if (aliases.reserved.includes(label)) return false;
-  return !(label in aliases.schools);
+  return parseSchoolHost(hostname, aliases) === null;
 }
 
 export function normalizePathname(pathname: string): string {
