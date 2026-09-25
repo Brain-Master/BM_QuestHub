@@ -27,11 +27,11 @@ test('all eight reviewed replacements are exact; history and unrelated identitie
     assert.equal(new URLSearchParams(finderQuery(state,'school-2044')).get('offer'),replacement.id);
     assert.equal(isRetiredAnnualGroup({...old,annual:{...old.annual,listingId:'999'}}),false);
   }
-  for (const code of ['К4045-26','К4069-26','К4070-26','К1981-26']) {
+  for (const code of ['К4045-26','К4069-26','К4070-26']) {
     const offer=offers.find(o=>o.id===`year:${code}`);assert.ok(offer);assert.equal(isRetiredAnnualGroup(offer),false);
   }
   for(const id of ['year:constructor','year:toString','year:unknown','unrelated'])assert.equal(canonicalAnnualOfferId(id),id);
-  const current=offers.filter(o=>!isRetiredAnnualGroup(o));assert.equal(current.length,62);
+  const current=offers.filter(o=>!isRetiredAnnualGroup(o));assert.equal(current.length,61);
   assert.equal(current.filter(o=>o.venueSlug.startsWith('school-2044-')).length,11);
 });
 

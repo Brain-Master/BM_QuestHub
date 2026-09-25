@@ -67,9 +67,9 @@ test("reviewed profiles retain context;937 district is clarified from its exact 
 
 test("shared catalogue projects all annual groups and exact campuses", () => {
   const view = projectAnnualWorkspace(quests, venues);
-  assert.equal(view.groups.length,62);
-  assert.equal(view.groups.flatMap(g=>g.slots).length,63);
-  assert.equal(view.locations.length,12);
+  assert.equal(view.groups.length,61);
+  assert.equal(view.groups.flatMap(g=>g.slots).length,61);
+  assert.equal(view.locations.length,11);
   const registry=annualMosRefreshSchema.parse(read('content/annual-mos-refresh.generated.json'));
   assert.deepEqual(view.groups.filter(g=>g.status==="closed").map(g=>g.id).sort(),
     Object.entries(registry.groups).filter(([,g])=>g.status==='closed').map(([id])=>id).sort());
@@ -132,7 +132,7 @@ test("negative boundary: malformed slots and orphan campus fail", () => {
 test("shared site/map selectors include all twelve campuses and closed groups cannot book", () => {
   const cards=buildSiteScopeCards({scopes:getSchoolScopes(venues),quests,venues,worlds:worldSchema.array().parse(read("data/v2/catalog-snapshot.json").worlds)});
   const annual=projectAnnualWorkspace(quests,venues);
-  assert.equal(new Set(annual.locations.map(l=>l.schoolScopeSlug)).size,9);
+  assert.equal(new Set(annual.locations.map(l=>l.schoolScopeSlug)).size,8);
   for(const location of annual.locations) {
     const card=cards.find(c=>c.slug===location.schoolScopeSlug);
     assert.ok(card);

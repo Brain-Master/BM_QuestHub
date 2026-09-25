@@ -1,4 +1,5 @@
 import "server-only";
+import { isRetiredSchool } from '@/content/retired-schools.mjs';
 
 import fs from "node:fs/promises";
 import path from "node:path";
@@ -89,13 +90,13 @@ export async function loadWorlds(): Promise<World[]> {
 
 export async function loadVenues(): Promise<Venue[]> {
   const map = await loadMapSnapshot();
-  if (map?.venues.length) return map.venues;
+  if (map?.venues.length) return map.venues.filter(venue => !isRetiredSchool(venue));
   if (isStrictRemoteCatalogLoad()) {
     throw new Error(
       "[loadVenues] SITE_SNAPSHOT_STRICT: map snapshot missing or empty",
     );
   }
-  return loadVenuesFromYaml();
+  return (await loadVenuesFromYaml()).filter(venue => !isRetiredSchool(venue));
 }
 
 async function loadQuestBodies(): Promise<Omit<Quest, "offers">[]> {

@@ -36,7 +36,8 @@ export async function runAvailabilityJob({store,refresh,now=()=>new Date(),runId
     return report;
   }finally{
     // Do not mask the primary failure or release someone else's renewed lease.
-    const owner=await store.read(LEASE_KEY).catch(()=>null);
+    try {
+    const owner=await store.read(LEASE_KEY);
     if(owner?.etag===acquired && owner?.data.runId===runId){
       const finished=now();
       await store.put(LEASE_KEY,{...lease,leaseUntil:finished.toISOString(),
@@ -45,7 +46,15 @@ export async function runAvailabilityJob({store,refresh,now=()=>new Date(),runId
         lastAttemptAt:started.toISOString(),lastCompletedAt:report?.completedAt??null,
         ...(report?.complete?{lastSuccessAt:report.completedAt}:state?.data.lastSuccessAt?{lastSuccessAt:state.data.lastSuccessAt}:{}),
         published:report?.published??false,verified:report?.verified??0,errors:report?.errors??null,
-      },acquired).catch(()=>{});
+      },acquired);
+      if(report)report.leaseReleased=true;
+    }else if(report){
+      throw Error('MOS_LEASE_RELEASE_FAILED');
+    }
+    }catch{
+      if(report){report.leaseReleased=false;report.cleanupError='MOS_LEASE_RELEASE_FAILED';}
+      // A cleanup error must remain observable even when the primary refresh failed.
+      console.warn(JSON.stringify({phase:'mos_lease_cleanup',error:'MOS_LEASE_RELEASE_FAILED'}));
     }
   }
 }

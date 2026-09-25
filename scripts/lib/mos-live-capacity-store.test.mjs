@@ -1,6 +1,21 @@
 import {test} from 'node:test';import assert from 'node:assert/strict';
 import {runAvailabilityJob,AVAILABILITY_KEY,LEASE_KEY,OFFERS_KEY,INTERVAL_MS} from './mos-live-capacity-store.mjs';
 const now=()=>new Date('2026-09-24T10:00:00.000Z');
+test('release failures are visible without masking the primary error',async(t)=>{
+ const warn=t.mock.method(console,'warn',()=>{});
+ for(const primaryFailure of [false,true]){
+  const f=fixture(),put=f.store.put;
+  f.store.put=async(key,data,etag)=>{
+    if(key===LEASE_KEY&&data.lastAttemptAt)throw Error('sensitive storage detail');
+    return put(key,data,etag);
+  };
+  const run=runAvailabilityJob({...f,now,refresh:async()=>{if(primaryFailure)throw Error('PRIMARY');return result;}});
+  if(primaryFailure)await assert.rejects(run,/PRIMARY/);
+  else{const r=await run;assert.equal(r.published,true);assert.equal(r.leaseReleased,false);assert.equal(r.cleanupError,'MOS_LEASE_RELEASE_FAILED');}
+ }
+ assert.equal(warn.mock.callCount(),2);
+ assert.ok(warn.mock.calls.every(c=>!JSON.stringify(c.arguments).includes('sensitive')));
+});
 const result={expected:2,verified:1,errors:[{offerId:'b',code:'MOS_TIMEOUT'}],completedAt:now().toISOString()};
 function fixture(){let n=1;const rows=new Map([[OFFERS_KEY,{data:{offers:'baseline'},etag:'v1'}]]);const writes=[];
  const store={async read(key){return structuredClone(rows.get(key)??null);},async put(key,data,etag){

@@ -45,7 +45,7 @@ test('937 four groups belong to25 not25k2; raw age/teacher stay separate',()=>{
  assert.equal(reviewedStudyYear('school-1212','К4619-26'),1);
  assert.equal(reviewedTeacher('school-937',2,'not-reviewed'),undefined);
  assert.equal(reviewedAges('school-17','К2215-26'),undefined);
- assert.equal(projectAnnualWorkspace(quests,venues).groups.length,62);
+ assert.equal(projectAnnualWorkspace(quests,venues).groups.length,61);
 });
 test('finder exposes correct school/year/age facets and hides wrong campuses',()=>{
  const state=readFinderState(new URLSearchParams('school=school-1212&programme=shmi'));

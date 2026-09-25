@@ -2175,7 +2175,7 @@
             "Срез 2026-09-08"
           ],
           "ageLabel": "6–8 лет",
-          "isArchived": false,
+          "isArchived": true,
           "allowWaitlistWhenSoldOut": false,
           "registrationChannel": "mos_ru",
           "allowPreliminaryRegistration": false,

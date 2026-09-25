@@ -1,6 +1,7 @@
 import type { Quest, Venue, VenueOffer, World } from "@/lib/schemas";
 import { venueWithScheduleAddress } from "@/lib/offers/schedule-location";
 import { venueVisibleForSchoolScope } from "@/lib/school-scope";
+import { isRetiredSchool } from '@/content/retired-schools.mjs';
 
 export type AgendaOfferItem = {
   offer: VenueOffer;
@@ -98,7 +99,7 @@ export function buildAgendaItems(params: {
 
     for (const offer of quest.offers) {
       const venue = venueBySlug.get(offer.venueSlug);
-      if (!venue) continue;
+      if (!venue || isRetiredSchool(venue)) continue;
       if (!venueVisibleForSchoolScope(venue, params.schoolSlug)) continue;
 
       items.push({
@@ -155,6 +156,7 @@ export function getSchoolScopes(venues: Venue[]): SchoolScope[] {
   const byScope = new Map<string, SchoolScope>();
 
   for (const venue of venues) {
+    if (isRetiredSchool(venue)) continue;
     const scopeSlug = venue.schoolScopeSlug ?? venue.slug;
     const current = byScope.get(scopeSlug);
     if (current) {
