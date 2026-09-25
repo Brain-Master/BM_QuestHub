@@ -1,4 +1,5 @@
 import { annualProgrammeName } from "./annual-programme-name";
+import { canonicalAnnualOfferId } from "../../content/annual-retirements.mjs";
 import { weekdays } from "./annual-schedule";
 import type { ScheduleBoardItem } from "./schedule-board";
 
@@ -36,7 +37,7 @@ export function readFinderState(query: Query, routeSchool?: string, initialVenue
     day: /^[1-7]$/.test(query.get("day") ?? "") ? query.get("day") ?? "all" : "all",
     view, step, method: query.get("method") === "age" ? "age" : "programme",
     grouping: query.get("grouping") === "programmes" ? "programmes" : "venues",
-    offer: bounded(query.get("offer"), ""),
+    offer: canonicalAnnualOfferId(bounded(query.get("offer"), "")),
     completed: query.get("completed") === "yes" || !!query.get("offer") || (view === "wizard" && step === "results") ? "yes" : "no",
   };
 }

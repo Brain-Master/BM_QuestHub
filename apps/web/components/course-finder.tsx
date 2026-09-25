@@ -10,6 +10,8 @@ import { changeFinderState, finderChoices, finderChoiceCount, finderItemMatches,
 import { weekdays } from "@/lib/offers/annual-schedule";
 import type { Quest, Venue } from "@/lib/schemas";
 import s from "./course-finder.module.css";
+import { annualAvailabilityStale } from "@/lib/offers/annual-freshness";
+import { useScheduleClock } from "@/lib/offers/use-schedule-clock";
 
 type Props = {
   items: AgendaOfferItem[]; quests: Quest[]; venues: Venue[];
@@ -29,6 +31,7 @@ export function CourseFinder({ items: agendaItems, quests, venues, schoolSlug, v
   const query = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
+  const clock = useScheduleClock();
   const schools = useMemo(() => getSchoolScopes(venues), [venues]);
   const rawState = readFinderState(query, schoolSlug, venueSlug, embedded);
   const state = { ...rawState, school: resolveSchoolScope(venues, rawState.school)?.slug ?? rawState.school };
@@ -36,7 +39,7 @@ export function CourseFinder({ items: agendaItems, quests, venues, schoolSlug, v
   const campuses = school?.venues ?? (state.school === "all" ? venues : []);
   const programmes = quests.filter(quest => quest.format === "year");
   const items = useMemo(() => agendaItems.filter(item => item.quest.format === "year")
-    .map(item => buildScheduleBoardItem(item, item.venue.schoolScopeSlug ?? item.venue.slug)), [agendaItems]);
+    .map(item => buildScheduleBoardItem(item, item.venue.schoolScopeSlug ?? item.venue.slug, clock ? new Date(clock) : undefined)), [agendaItems, clock]);
   const availableSchools = schools.filter(entry => finderChoiceCount(items, state, "school", entry.slug) > 0);
   const availableCampuses = campuses.filter(venue => finderChoiceCount(items, state, "venue", venue.slug) > 0);
   const availableProgrammes = programmes.filter(quest => finderChoiceCount(items, state, "programme", quest.slug) > 0);
@@ -113,6 +116,7 @@ export function CourseFinder({ items: agendaItems, quests, venues, schoolSlug, v
   const campusName = campuses.find(venue => venue.slug === state.venue)?.address ?? (state.venue === "all" ? "Все корпуса" : "Адрес не найден");
   const programmeName = programmes.find(quest => quest.slug === state.programme)?.title ?? (state.programme === "all" ? "Все программы" : "Программа не найдена");
   const total = new Set(results.map(item => item.offer.id)).size;
+  const stalePlaces = results.some(item => !item.status.isArchivedState && annualAvailabilityStale(item.offer.annual, clock));
   const sourceNotice = <div className={s.source} role="status">{status === "error" ? items.length ? "Не удалось обновить расписание. Показываем сохранённые данные; они могут быть устаревшими." : "Источник расписания недоступен. Мы пока не можем проверить наличие групп." : status === "loading" ? "Загружаем расписание…" : isValidating ? "Обновляем расписание…" : "Расписание — по загруженному срезу. Места и приём уточняйте на mos.ru."}
     <button type="button" onClick={onRefresh} disabled={isValidating}>{status === "error" ? "Повторить загрузку" : "Обновить расписание"}</button>
   </div>;
@@ -195,9 +199,10 @@ export function CourseFinder({ items: agendaItems, quests, venues, schoolSlug, v
       </div> : <>
         <div className={s.conditions}><button type="button" onClick={() => setFiltersOpen(!filtersOpen)} aria-expanded={filtersOpen} aria-controls="finder-filters">{school?.name ?? "Все площадки"} · {campusName} · {programmeName}{state.level !== "all" ? ` · ${state.level}-й год` : ""}{state.age !== "all" ? ` · ${state.age} лет` : ""}{state.day !== "all" ? ` · ${weekdays[Number(state.day) - 1]}` : ""}<strong>Изменить условия ↓</strong></button></div>
         <div className={s.workspace}>
-          <aside id="finder-filters" className={s.filterPanel} data-open={filtersOpen} onFocusCapture={() => setFiltersOpen(true)}><h2>Ваши условия</h2>{filters}</aside>
+          <section id="finder-filters" aria-label="Условия подбора" className={s.filterPanel} data-open={filtersOpen} onFocusCapture={() => setFiltersOpen(true)}><h2>Ваши условия</h2>{filters}</section>
           <div className={s.schedule}>
             <div className={s.resultsBar}><h2 aria-live="polite" aria-atomic="true">Найдено групп: <span data-testid="finder-count">{total}</span></h2><button type="button" onClick={() => void share()}>Поделиться</button></div>
+            {stalePlaces && <div role="status" data-testid="availability-notice" className={s.source}><p><strong>Наличие мест требует проверки</strong><br />В части групп показаны последние известные данные. Актуальные места и приём смотрите в карточке mos.ru.</p><button type="button" onClick={onRefresh} disabled={isValidating}>Проверить обновления</button></div>}
             <div className={s.segment} role="group" aria-label="Группировка расписания"><button type="button" aria-pressed={state.grouping === "venues"} onClick={() => update({ grouping: "venues" })}>По площадкам</button><button type="button" aria-pressed={state.grouping === "programmes"} onClick={() => update({ grouping: "programmes" })}>По программам</button></div>
             {school && availableCampuses.length > 1 && <div className={s.campusSwitch} role="group" aria-label="Быстрое переключение корпуса"><button type="button" aria-pressed={state.venue === "all"} onClick={() => update({ venue: "all" })}>Все корпуса</button>{availableCampuses.map(venue => <button type="button" key={venue.slug} aria-pressed={state.venue === venue.slug} onClick={() => update({ venue: venue.slug })}>{venue.address}</button>)}</div>}
             {invalid || selectedMissing ? <div className={s.empty} role="alert"><h3>{selectedMissing ? "Группа из ссылки не найдена" : "Условия из ссылки не найдены"}</h3><p>Ссылка могла устареть или указывать на другой корпус. Мы не подменяем выбранную группу похожей.</p><button type="button" onClick={reset}>Показать расписание площадки</button></div> : null}

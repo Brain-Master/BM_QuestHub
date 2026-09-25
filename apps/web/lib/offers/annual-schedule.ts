@@ -12,6 +12,12 @@ export function annualBookingNeedsReview(metadata?: {refreshError?: string; avai
   return [metadata?.refreshError, metadata?.availabilityError].some(error =>
     !!error && !/^MOS_(?:HTTP_\d{3}|TIMEOUT|FETCH_FAILED|PARTIAL_FIELDS|NON_JSON|INVALID_RESPONSE|RESPONSE_TOO_LARGE|RUN_BUDGET)$/.test(error));
 }
+/** A failed transport cannot resolve a previously observed identity/schedule conflict.
+ * Call only for a failed check of the exact same binding; successful validation clears it.
+ */
+export function retainMosReviewError(previous: string | undefined, incoming: string): string {
+  return previous && annualBookingNeedsReview({availabilityError: previous}) ? previous : incoming;
+}
 /** Public, dated source facts; admission is independent of event lifecycle/capacity. */
 export const annualMetadataSchema = z.object({
   sourceTitle: z.string().min(1).optional(),

@@ -4,9 +4,10 @@ import { Suspense } from "react";
 
 import { CommunityConnectPanel } from "@/components/community-connect-panel";
 import { LiveCatalog } from "@/components/live-catalog";
+import { StaticCatalog } from "@/components/static-course-content";
 import { RememberSchoolOnVisit } from "@/components/remember-school-on-visit";
 import { communityConnectCopy } from "@/lib/community-connect-copy";
-import { loadQuestsShell, loadVenues, loadWorlds } from "@/lib/content/load";
+import { loadQuests, loadVenues, loadWorlds } from "@/lib/content/load";
 import { getSchoolScopes, resolveSchoolScope } from "@/lib/offers/agenda";
 
 type Props = {
@@ -34,7 +35,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function SchoolCatalogPage({ params }: Props) {
   const { school: schoolSlug } = await params;
   const [baseQuests, venues, worlds] = await Promise.all([
-    loadQuestsShell(),
+    loadQuests(),
     loadVenues(),
     loadWorlds(),
   ]);
@@ -47,7 +48,7 @@ export default async function SchoolCatalogPage({ params }: Props) {
 
       <Suspense
         fallback={
-          <div className="mb-10 h-28 animate-pulse rounded-2xl bg-white/5" />
+          <StaticCatalog quests={baseQuests} venues={venues} school={school.slug} />
         }
       >
         <LiveCatalog
@@ -56,6 +57,7 @@ export default async function SchoolCatalogPage({ params }: Props) {
           worlds={worlds}
           fixedSchool={{ slug: school.slug, name: school.name }}
           title="Курсы площадки"
+          heading="h1"
           emptyMessage="Для этой площадки пока нет активных миссий."
         />
       </Suspense>

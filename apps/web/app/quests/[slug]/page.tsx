@@ -70,7 +70,7 @@ export default async function QuestPage({ params }: Props) {
   const world = await loadWorldBySlug(quest.worldSlug);
 
   return (
-    <article
+    <main
       className="mx-auto w-full max-w-6xl flex-1 px-3 py-8 sm:px-4 sm:py-10"
       data-world={world?.themeKey ?? "portal"}
     >
@@ -140,6 +140,6 @@ export default async function QuestPage({ params }: Props) {
           initialSnapshotGeneratedAt={initialSnapshotGeneratedAt}
         />
       </section>
-    </article>
+    </main>
   );
 }

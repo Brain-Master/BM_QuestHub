@@ -1,6 +1,7 @@
 import type { EventStatusV2 } from "@/lib/data/v2/entities";
 import { isRetiredAnnualGroup } from "../../content/annual-retirements.mjs";
 import { annualBookingNeedsReview } from "./annual-schedule";
+import { annualAvailabilityStale } from "./annual-freshness";
 import type { AgendaOfferItem } from "@/lib/offers/agenda";
 import {
   CAPACITY_LABELS,
@@ -37,7 +38,8 @@ export type ScheduleDisplayStatus =
   | "Мест нет"
   | "Завершено"
   | "Отменено"
-  | "Приём закрыт";
+  | "Приём закрыт"
+  | "Приём уточняется";
 // Admission is a dated source fact, separate from lifecycle status.
 
 export type ScheduleBookingMode =
@@ -219,7 +221,9 @@ export function getScheduleDisplayStatus(
   offer: VenueOffer,
   now = new Date(),
 ): ScheduleDisplayStatus {
-  if (isRetiredAnnualGroup(offer)) return eventStatusLabel("cancelled") as ScheduleDisplayStatus;
+  const statusKey = resolveScheduleStatusKey(offer, now);
+  if (statusKey === "cancelled" || statusKey === "finished") return eventStatusLabel(statusKey) as ScheduleDisplayStatus;
+  if (offer.annual && !offer.scheduleCard?.isArchived && !isOfferAutoArchived(offer, now) && annualAvailabilityStale(offer.annual, now.getTime())) return "Приём уточняется";
   if (offer.annual?.admission === "closed" && !isOfferAutoArchived(offer, now)) return "Приём закрыт";
   return eventStatusLabel(resolveScheduleStatusKey(offer, now)) as ScheduleDisplayStatus;
 }
@@ -228,7 +232,9 @@ export function getScheduleStatusVariant(
   offer: VenueOffer,
   now = new Date(),
 ): ScheduleStatusVariant {
-  if (isRetiredAnnualGroup(offer)) return eventStatusVariant("cancelled");
+  const statusKey = resolveScheduleStatusKey(offer, now);
+  if (statusKey === "cancelled" || statusKey === "finished") return eventStatusVariant(statusKey);
+  if (annualAvailabilityStale(offer.annual, now.getTime())) return "default";
   if (offer.annual?.admission === "closed") return "default";
   return eventStatusVariant(resolveScheduleStatusKey(offer, now));
 }
@@ -237,11 +243,20 @@ export function getScheduleBookingMode(
   offer: VenueOffer,
   status: ScheduleDisplayStatus,
   variant?: Pick<ScheduleVariant, "mosBookingUrl">,
+  now = new Date(),
 ): ScheduleBookingMode {
   if (isRetiredAnnualGroup(offer)) return { kind: "disabled", label: SCHEDULE_CTA.cancelledDisabled };
   if (annualBookingNeedsReview(offer.annual)) return { kind: "disabled", label: "Карточка на проверке" };
+  // Old closed/full readings must not lock parents out of the verified source.
+  // This only opens mos.ru; it neither asserts admission nor submits a booking.
+  const directUrl = variant?.mosBookingUrl ?? offer.mosBookingUrl;
+  if (offer.annual && annualAvailabilityStale(offer.annual, now.getTime()) &&
+      !offer.scheduleCard?.isArchived && !["finished", "cancelled"].includes(resolveScheduleStatusKey(offer, now)) &&
+      directUrl && /^https:\/\/www\.mos\.ru\/pgu2\/activity\/card\/\d+$/.test(directUrl)) {
+    return { kind: "mos", label: "Проверить на mos.ru", url: directUrl };
+  }
   if (offer.annual?.admission === "closed") return { kind: "disabled", label: "Приём закрыт" };
-  const statusKey = resolveScheduleStatusKey(offer);
+  const statusKey = resolveScheduleStatusKey(offer, now);
   const cta = SCHEDULE_CTA;
 
   if (statusKey === "cancelled") {
@@ -342,6 +357,7 @@ function normalizeVariants(
   offer: VenueOffer,
   statusKey: EventStatusV2,
   statusLabel: ScheduleDisplayStatus,
+  now: Date,
 ): ScheduleBoardVariant[] {
   const fallbackTime = formatVariantTimeLabel(
     offer.startDate,
@@ -385,7 +401,7 @@ function normalizeVariants(
       offer,
       statusKey,
     ),
-    bookingMode: getScheduleBookingMode(offer, statusLabel, variant),
+    bookingMode: getScheduleBookingMode(offer, statusLabel, variant, now),
   }));
 }
 
@@ -413,7 +429,7 @@ export function buildScheduleBoardItem(
   const statusKey = resolveScheduleStatusKey(offer, now);
   const statusLabel = getScheduleDisplayStatus(offer, now);
   const capacity = getScheduleCapacity(offer);
-  const variants = normalizeVariants(offer, statusKey, statusLabel);
+  const variants = normalizeVariants(offer, statusKey, statusLabel, now);
   const commonAgeLabel = getCommonAgeLabel(variants, card?.ageLabel ?? quest.ageLabel);
   const questHeroFallback = questHeroMediaImage(quest);
   const hero = resolveMedia(
@@ -472,7 +488,7 @@ export function buildScheduleBoardItem(
       isCancelled: statusKey === "cancelled",
     },
     capacity,
-    bookingMode: primaryVariant?.bookingMode ?? getScheduleBookingMode(offer, statusLabel),
+    bookingMode: primaryVariant?.bookingMode ?? getScheduleBookingMode(offer, statusLabel, undefined, now),
     questHref,
   };
 }

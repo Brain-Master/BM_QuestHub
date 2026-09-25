@@ -31,7 +31,6 @@ import {
 import { resolvePublicMediaUrl } from "@/lib/media/public-media-url";
 import { getSchoolScopes, resolveSchoolScope } from "@/lib/offers/agenda";
 import { buildSiteScopeCards, type SiteCampus } from "@/lib/sites/scope-card";
-import { filterQuestsForSchool } from "@/lib/school-scope";
 import {
   buildYandexMapsHref,
   buildYandexMapWidgetSrc,
@@ -39,6 +38,7 @@ import {
 import { cn } from "@/lib/utils";
 import { BRAINMASTER_SUPPORT_PHONE, BRAINMASTER_SUPPORT_PHONE_HREF, BRAINMASTER_SUPPORT_TELEGRAM_URL } from "@/lib/site-contact";
 import { getSchoolProfile } from "@/content/school-profiles";
+import { pluralizeRu } from "@/lib/i18n/pluralize-ru";
 
 type Props = {
   params: Promise<{ school: string }>;
@@ -132,7 +132,7 @@ export default async function SchoolPage({ params }: Props) {
     siteName: site.name,
     campuses: site.campuses,
   });
-  const siteQuests = filterQuestsForSchool(quests, venues, school.slug);
+  const siteQuests = quests.filter(quest => site.courseSlugs.includes(quest.slug));
   const profile = getSchoolProfile(school.slug);
   const profileOrder = Object.keys(profile?.campuses ?? {});
   const sortedCampuses = [...site.campuses].sort((a,b) =>
@@ -169,13 +169,13 @@ export default async function SchoolPage({ params }: Props) {
                   <p className="font-heading text-2xl font-semibold text-white">
                     {site.courseCount}
                   </p>
-                  <p className="text-cyan-50/70 text-xs">курсов</p>
+                  <p className="text-cyan-50/70 text-xs">{pluralizeRu(site.courseCount, ["курс", "курса", "курсов"])}</p>
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-white/[0.06] p-3 text-center">
                   <p className="font-heading text-2xl font-semibold text-white">
                     {site.shiftCount}
                   </p>
-                  <p className="text-cyan-50/70 text-xs">групп</p>
+                  <p className="text-cyan-50/70 text-xs">{pluralizeRu(site.shiftCount, ["группа", "группы", "групп"])}</p>
                 </div>
               </div>
             </div>
@@ -310,7 +310,7 @@ export default async function SchoolPage({ params }: Props) {
           </div>
         </div>
 
-        <aside className="overflow-hidden rounded-[1.5rem] border border-white/10 bg-card/50 shadow-[0_24px_90px_rgba(2,6,23,0.35)] backdrop-blur-md">
+        <section aria-label="Карта площадки" className="overflow-hidden rounded-[1.5rem] border border-white/10 bg-card/50 shadow-[0_24px_90px_rgba(2,6,23,0.35)] backdrop-blur-md">
           <div className="flex items-start gap-3 border-white/10 border-b p-4 sm:p-5">
             <span className="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-cyan-200/10 text-cyan-100">
               <Navigation className="size-5" aria-hidden />
@@ -349,7 +349,7 @@ export default async function SchoolPage({ params }: Props) {
               <ExternalLink className="size-3.5" aria-hidden />
             </Link>
           </div>
-        </aside>
+        </section>
       </section>
 
       <section className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(22rem,26rem)]">
@@ -409,7 +409,7 @@ export default async function SchoolPage({ params }: Props) {
           </div>
         </div>
 
-        <aside id="venue-photos" className="scroll-mt-24 rounded-[1.5rem] border border-white/10 bg-card/50 p-5 shadow-[0_24px_90px_rgba(2,6,23,0.28)] backdrop-blur-md sm:p-6">
+        <section id="venue-photos" aria-label="Фотографии площадки" className="scroll-mt-24 rounded-[1.5rem] border border-white/10 bg-card/50 p-5 shadow-[0_24px_90px_rgba(2,6,23,0.28)] backdrop-blur-md sm:p-6">
           <div className="flex items-start gap-3">
             <span className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-cyan-200/10 text-cyan-100">
               <Camera className="size-5" aria-hidden />
@@ -463,7 +463,7 @@ export default async function SchoolPage({ params }: Props) {
               ориентируйтесь на адрес и карту выше; порядок прохода уточните у организатора.
             </div>
           )}
-        </aside>
+        </section>
       </section>
 
       <section id="venue-schedule" className="mt-6 scroll-mt-24 rounded-[1.5rem] border border-white/10 bg-card/50 p-5 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)] backdrop-blur-md sm:p-6">

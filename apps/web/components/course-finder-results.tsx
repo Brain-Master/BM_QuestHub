@@ -48,7 +48,7 @@ export function CourseFinderResults({ items, state, onShare }: {
               </span>
               <span className={s.slotStatus}>{item.status.label}</span>
             </div>
-            <div className="px-4 py-2"><ScheduleCapacityIndicator capacity={item.capacity} compact showUnknown archived={item.status.isArchivedState}
+            <div className="px-4 py-2"><ScheduleCapacityIndicator capacity={item.capacity} compact showUnknown pageNotice archived={item.status.isArchivedState}
               checkedAt={metadata?.availabilityUpdatedAt??metadata?.refreshedAt} sourceDate={metadata?.asOf}
               failed={!!(metadata?.availabilityError??metadata?.refreshError)} /></div>
             <div className={s.compactActions}>{item.variants.map(variant => <div key={variant.id} className={s.tariff} data-booking-variant={variant.id}>

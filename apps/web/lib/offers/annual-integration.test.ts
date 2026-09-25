@@ -67,8 +67,8 @@ test("reviewed profiles retain context;937 district is clarified from its exact 
 
 test("shared catalogue projects all annual groups and exact campuses", () => {
   const view = projectAnnualWorkspace(quests, venues);
-  assert.equal(view.groups.length,70);
-  assert.equal(view.groups.flatMap(g=>g.slots).length,71);
+  assert.equal(view.groups.length,62);
+  assert.equal(view.groups.flatMap(g=>g.slots).length,63);
   assert.equal(view.locations.length,12);
   const registry=annualMosRefreshSchema.parse(read('content/annual-mos-refresh.generated.json'));
   assert.deepEqual(view.groups.filter(g=>g.status==="closed").map(g=>g.id).sort(),
@@ -102,7 +102,7 @@ test("live registry validates 66 exact distinct identities, preserves 8 unresolv
   assert.equal(annualMetadataSchema.safeParse({...updated[0].annual,ageMin:14,ageMax:7}).success,false);
   const unresolved=snapshot.offersByQuest.shmi.filter(o=>o.annual?.refreshError==='MOS_GROUP_NOT_FOUND');
   assert.equal(unresolved.length,8);
-  for(const o of unresolved)assert.deepEqual(getScheduleBookingMode(o,'Идёт набор'),{kind:'disabled',label:'Карточка на проверке'});
+  for(const o of unresolved){assert.equal(o.scheduleCard?.isArchived,true);assert.equal(getScheduleBookingMode(o,'Идёт набор').kind,'disabled');}
   for(const code of ['MOS_AMBIGUOUS_GROUP','MOS_GROUP_MISMATCH','MOS_CARD_MISMATCH','MOS_LISTING_MISMATCH','MOS_IDENTITY_CHANGED','MOS_LOCATION_REVIEW_REQUIRED','MOS_FUTURE_UNKNOWN_ERROR']){
     assert.equal(annualBookingNeedsReview({refreshError:code}),true);
     const o={...updated[0],annual:{...updated[0].annual!,refreshError:code}};
@@ -141,8 +141,10 @@ test("shared site/map selectors include all twelve campuses and closed groups ca
   }
   for(const offer of snapshot.offersByQuest.shmi) {
     if(offer.annual?.admission==="closed") {
-      assert.equal(getScheduleDisplayStatus(offer,new Date("2026-09-08")),"Приём закрыт");
-      assert.equal(getScheduleBookingMode(offer,"Приём закрыт").kind,"disabled");
+      const fresh={...offer,annual:{...offer.annual,refreshedAt:'2026-09-24T10:00:00.000Z',refreshError:undefined}};
+      const now=new Date('2026-09-24T10:01:00.000Z');
+      assert.equal(getScheduleDisplayStatus(fresh,now),"Приём закрыт");
+      assert.equal(getScheduleBookingMode(fresh,"Приём закрыт",undefined,now).kind,"disabled");
     }
     if(offer.annual?.limitedSource) assert.equal(getScheduleCapacity(offer),null);
   }

@@ -3,7 +3,7 @@ import { isRetiredAnnualGroup } from "../../apps/web/content/annual-retirements.
 import { venueOfferSchema } from "../../apps/web/lib/schemas";
 import { z } from "../../apps/web/node_modules/zod/index.js";
 import { mosAvailabilitySchema, mosAvailabilityBinding, sameMosBinding, type MosAvailability } from "../../apps/web/lib/offers/mos-availability";
-import { annualMosCardSchema } from "../../apps/web/lib/offers/annual-schedule";
+import { annualMosCardSchema, retainMosReviewError } from "../../apps/web/lib/offers/annual-schedule";
 import { fetchMosCard, validateProjectedMosCard } from "./mos-annual-cards.mjs";
 import { groupLifecycle, moscowDate } from "./mos-group-lifecycle.mjs";
 
@@ -39,8 +39,9 @@ export async function refreshMosAvailability(input:unknown, identities:Record<st
     await Promise.all(current.slice(offset,offset+concurrency).map(async offer=>{
       const binding=mosAvailabilityBinding(offer);
       if(!binding){result.errors.push({offerId:offer.id,code:"MOS_DIRECT_CARD_REQUIRED"});return;}
-      const old=previous?.entries[offer.id];
-      const retained=old&&sameMosBinding(old.binding,binding)?old.availability:undefined;
+      const candidate=previous?.entries[offer.id];
+      const old=candidate&&sameMosBinding(candidate.binding,binding)?candidate:undefined;
+      const retained=old?.availability;
       try{
         if(isRetiredAnnualGroup(offer))throw Error("MOS_OWNER_RETIRED");
         if(now().getTime()-start.getTime()>(options.budgetMs??230_000))throw Error("MOS_RUN_BUDGET");
@@ -52,14 +53,16 @@ export async function refreshMosAvailability(input:unknown, identities:Record<st
         if(fresh.cardId!==binding.cardId||fresh.listingId!==binding.listingId||fresh.groupCode!==binding.groupCode)throw Error("MOS_IDENTITY_CHANGED");
         if(fresh.address!==expected.address||fresh.organization!==expected.organization)throw Error("MOS_LOCATION_REVIEW_REQUIRED");
         const slots=fresh.slots.map((s:{weekday:string;start:string;end:string})=>`${s.weekday}|${s.start}|${s.end}`).sort().join(';');
-        if(fresh.courseStart!==binding.startDate||fresh.courseEnd!==binding.endDate||slots!==binding.slots||fresh.title!==expected.title)throw Error("MOS_SCHEDULE_REVIEW_REQUIRED");
+        // MOS may add boundary whitespace without changing the course identity.
+        // Dates, slots and all meaningful title characters remain review gates.
+        if(fresh.courseStart!==binding.startDate||fresh.courseEnd!==binding.endDate||slots!==binding.slots||fresh.title.trim()!==expected.title.trim())throw Error("MOS_SCHEDULE_REVIEW_REQUIRED");
         if(fresh.totalSeats===null||fresh.totalSeats<=0||fresh.freeSeats===null)throw Error("MOS_PARTIAL_FIELDS");
         const checkedAt=now().toISOString();
         if(checkedAt<start.toISOString() || (retained && checkedAt<=retained.checkedAt))throw Error("MOS_CLOCK_STALE");
         result.entries[offer.id]={binding,availability:{checkedAt,totalSeats:fresh.totalSeats,freeSeats:fresh.freeSeats,admission:fresh.status}};
         result.verified++;
       }catch(error){
-        const code=safeMosError(error);result.errors.push({offerId:offer.id,code});
+        const code=retainMosReviewError(old?.error,safeMosError(error));result.errors.push({offerId:offer.id,code});
         result.entries[offer.id]={binding,...(retained?{availability:retained}:{}),error:code};
       }
     }));
