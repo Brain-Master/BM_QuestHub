@@ -67,8 +67,8 @@ test("reviewed profiles retain context;937 district is clarified from its exact 
 
 test("shared catalogue projects all annual groups and exact campuses", () => {
   const view = projectAnnualWorkspace(quests, venues);
-  assert.equal(view.groups.length,61);
-  assert.equal(view.groups.flatMap(g=>g.slots).length,61);
+  assert.equal(view.groups.length,65);
+  assert.equal(view.groups.flatMap(g=>g.slots).length,65);
   assert.equal(view.locations.length,11);
   const registry=annualMosRefreshSchema.parse(read('content/annual-mos-refresh.generated.json'));
   assert.deepEqual(view.groups.filter(g=>g.status==="closed").map(g=>g.id).sort(),
@@ -91,12 +91,12 @@ test("reviewed school2044 identity and both exact campus coordinates survive com
   for(const v of school){assert.match(v.name,/имени Героя Советского Союза А\. М\. Серебрякова/);assert.equal(v.displayName,v.name);assert.equal(v.photos.length,1);assert.equal(v.metro,'Физтех');assert.match(v.logoUrl??'',/school-2044\/logo-original/);}
   assert.deepEqual(school.map(v=>[v.latitude,v.longitude]),[[55.932261,37.541054],[55.927015,37.542641]]);
 });
-test("live registry validates 66 exact distinct identities, preserves 8 unresolved groups without claiming success",()=>{
+test("live registry validates 70 exact distinct identities, preserves 8 unresolved groups without claiming success",()=>{
   const r=annualMosRefreshSchema.parse(read('content/annual-mos-refresh.generated.json'));
-  assert.equal(Object.keys(r.groups).length,66);assert.equal(new Set(Object.values(r.groups).map(g=>g.cardId)).size,66);
-  assert.equal(r.expectedGroups,74);assert.equal(r.ok,false);
+  assert.equal(Object.keys(r.groups).length,70);assert.equal(new Set(Object.values(r.groups).map(g=>g.cardId)).size,70);
+  assert.equal(r.expectedGroups,78);assert.equal(r.ok,false);
   const updated=snapshot.offersByQuest.shmi.filter(o=>o.annual?.refreshedAt);
-  assert.equal(updated.length,66);
+  assert.equal(updated.length,70);
   for(const o of updated){assert.equal(o.annual?.linkKind,'card');assert.match(o.mosBookingUrl??'',/^https:\/\/www\.mos\.ru\/pgu2\/activity\/card\/\d+$/);assert.ok(o.annual?.groupCode);assert.notEqual(o.annual?.lessonPrice,null);}
   assert.equal(annualMosRefreshSchema.safeParse({...r,ok:true}).success,false);
   assert.equal(annualMetadataSchema.safeParse({...updated[0].annual,ageMin:14,ageMax:7}).success,false);

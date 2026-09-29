@@ -1,8 +1,8 @@
 {
   "version": 1,
-  "sourceSha256": "633d56e4a55a8a574fe49f66e144dcde1a2f49087a03a67b6c3578c3c8d8936a",
+  "sourceSha256": "b31c7abb0ede346497f752b4effa4fa2e6cd7c19ff63cc83cc754881a828e893",
   "attemptedAt": "2026-09-22T21:52:30.505Z",
-  "expectedGroups": 78,
+  "expectedGroups": 74,
   "verifiedGroups": 5,
   "ok": false,
   "archivedGroups": 0,
@@ -1695,7 +1695,7 @@
       "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 937 имени Героя Российской Федерации А.В. Перова\"",
       "teacher": "Балукова Мария Михайловна",
       "totalSeats": 12,
-      "freeSeats": 6,
+      "freeSeats": 9,
       "ageMin": 6,
       "ageMax": 18,
       "lessonPrice": 1000,
@@ -1711,7 +1711,7 @@
       ],
       "status": "open",
       "link": "https://www.mos.ru/pgu2/activity/card/1049854",
-      "refreshedAt": "2026-09-28T20:21:56.025Z"
+      "refreshedAt": "2026-09-22T08:58:08.000Z"
     },
     "К2216-26": {
       "cardId": "1049859",
@@ -1722,7 +1722,7 @@
       "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 937 имени Героя Российской Федерации А.В. Перова\"",
       "teacher": "Балукова Мария Михайловна",
       "totalSeats": 12,
-      "freeSeats": 10,
+      "freeSeats": 11,
       "ageMin": 6,
       "ageMax": 18,
       "lessonPrice": 1000,
@@ -1738,7 +1738,7 @@
       ],
       "status": "open",
       "link": "https://www.mos.ru/pgu2/activity/card/1049859",
-      "refreshedAt": "2026-09-28T20:21:56.025Z"
+      "refreshedAt": "2026-09-22T08:58:08.000Z"
     },
     "К2217-26": {
       "cardId": "1049862",
@@ -1765,7 +1765,7 @@
       ],
       "status": "open",
       "link": "https://www.mos.ru/pgu2/activity/card/1049862",
-      "refreshedAt": "2026-09-28T20:21:56.025Z"
+      "refreshedAt": "2026-09-22T08:58:08.000Z"
     },
     "К2218-26": {
       "cardId": "1049865",
@@ -1792,115 +1792,7 @@
       ],
       "status": "open",
       "link": "https://www.mos.ru/pgu2/activity/card/1049865",
-      "refreshedAt": "2026-09-28T20:21:56.025Z"
-    },
-    "К2211-26": {
-      "cardId": "1049842",
-      "listingId": "2573566",
-      "groupCode": "К2211-26",
-      "title": "Группа 1. 6-13 лет. Локтеева И. Д. Маршала Захарова, 25. ",
-      "address": "г. Москва, вн.тер. м.о. Орехово-Борисово Северное, ул. Маршала Захарова, д. 25",
-      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 937 имени Героя Российской Федерации А.В. Перова\"",
-      "teacher": "Балукова Мария Михайловна",
-      "totalSeats": 12,
-      "freeSeats": 7,
-      "ageMin": 6,
-      "ageMax": 18,
-      "lessonPrice": 1000,
-      "coursePrice": 36000,
-      "courseStart": "2026-09-28",
-      "courseEnd": "2027-05-31",
-      "slots": [
-        {
-          "weekday": "Среда",
-          "start": "14:00",
-          "end": "14:45"
-        }
-      ],
-      "status": "open",
-      "link": "https://www.mos.ru/pgu2/activity/card/1049842",
-      "refreshedAt": "2026-09-28T20:21:56.025Z"
-    },
-    "К2212-26": {
-      "cardId": "1049844",
-      "listingId": "2573569",
-      "groupCode": "К2212-26",
-      "title": "Группа 2. 6-13 лет. Локтеева И. Д. Маршала Захарова, 25.",
-      "address": "г. Москва, вн.тер. м.о. Орехово-Борисово Северное, ул. Маршала Захарова, д. 25",
-      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 937 имени Героя Российской Федерации А.В. Перова\"",
-      "teacher": "Балукова Мария Михайловна",
-      "totalSeats": 12,
-      "freeSeats": 11,
-      "ageMin": 6,
-      "ageMax": 18,
-      "lessonPrice": 1000,
-      "coursePrice": 36000,
-      "courseStart": "2026-09-28",
-      "courseEnd": "2027-05-31",
-      "slots": [
-        {
-          "weekday": "Среда",
-          "start": "15:00",
-          "end": "15:45"
-        }
-      ],
-      "status": "open",
-      "link": "https://www.mos.ru/pgu2/activity/card/1049844",
-      "refreshedAt": "2026-09-28T20:21:56.025Z"
-    },
-    "К2213-26": {
-      "cardId": "1049847",
-      "listingId": "2573572",
-      "groupCode": "К2213-26",
-      "title": "Группа 3. 6-13 лет. Локтеева И. Д. Маршала Захарова, 25.",
-      "address": "г. Москва, вн.тер. м.о. Орехово-Борисово Северное, ул. Маршала Захарова, д. 25",
-      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 937 имени Героя Российской Федерации А.В. Перова\"",
-      "teacher": "Балукова Мария Михайловна",
-      "totalSeats": 12,
-      "freeSeats": 12,
-      "ageMin": 6,
-      "ageMax": 18,
-      "lessonPrice": 1000,
-      "coursePrice": 36000,
-      "courseStart": "2026-09-28",
-      "courseEnd": "2027-05-31",
-      "slots": [
-        {
-          "weekday": "Среда",
-          "start": "16:00",
-          "end": "16:45"
-        }
-      ],
-      "status": "open",
-      "link": "https://www.mos.ru/pgu2/activity/card/1049847",
-      "refreshedAt": "2026-09-28T20:21:56.025Z"
-    },
-    "К2214-26": {
-      "cardId": "1049848",
-      "listingId": "2573574",
-      "groupCode": "К2214-26",
-      "title": "Группа 4. 6-13 лет. Локтеева И. Д. Маршала Захарова, 25.",
-      "address": "г. Москва, вн.тер. м.о. Орехово-Борисово Северное, ул. Маршала Захарова, д. 25",
-      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 937 имени Героя Российской Федерации А.В. Перова\"",
-      "teacher": "Балукова Мария Михайловна",
-      "totalSeats": 12,
-      "freeSeats": 8,
-      "ageMin": 6,
-      "ageMax": 13,
-      "lessonPrice": 1000,
-      "coursePrice": 36000,
-      "courseStart": "2026-09-28",
-      "courseEnd": "2027-05-31",
-      "slots": [
-        {
-          "weekday": "Среда",
-          "start": "17:00",
-          "end": "17:45"
-        }
-      ],
-      "status": "open",
-      "link": "https://www.mos.ru/pgu2/activity/card/1049848",
-      "refreshedAt": "2026-09-28T20:21:56.025Z"
+      "refreshedAt": "2026-09-22T08:58:08.000Z"
     }
   },
   "candidates": {

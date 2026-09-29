@@ -6,7 +6,7 @@ import {test} from 'node:test';
 import {refreshAnnualSelection, runSelection} from './refresh-annual-selection.mjs';
 import {historical69} from './lib/confirmed-school-source.mjs';
 
-const source = historical69(JSON.parse(fs.readFileSync(new URL('../apps/web/content/year-schedule.generated.json', import.meta.url))));
+const source = historical69(JSON.parse(fs.readFileSync(new URL('./fixtures/annual-74-before-937-year1/source.json', import.meta.url))));
 const baseline = JSON.parse(fs.readFileSync(new URL('./fixtures/annual-69-before-1517/registry.json', import.meta.url)));
 const ids = ['listing:2415012', 'К7648-26', 'К7651-26', 'listing:2542312', 'К7733-26'];
 const seats = [1, 4, 1, 2, 2];

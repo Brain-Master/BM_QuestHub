@@ -18,7 +18,7 @@ test('withdrawal is exact, covers both campuses and future groups; sources remai
  for(const v of [null,{},'school-8750','school-1875'])assert.equal(isRetiredSchool(v),false);
  for(const v of ['875','school-875','school-875-yugo-zapadnaya','school-875-vernadskogo-99k2'])assert.equal(isRetiredSchool(v),true);
  assert.equal(venues.filter(isRetiredSchool).length,2);
- assert.equal(quests.flatMap(q=>q.offers).filter(o=>o.annual).length,74);
+ assert.equal(quests.flatMap(q=>q.offers).filter(o=>o.annual).length,78);
  assert.ok(read('content/annual-mos-refresh.generated.json').groups['К1981-26']);
  assert.equal(isRetiredAnnualGroup({venueSlug:'school-875-new-campus',annual:{listingId:'new'}}),true);
  const scopes=getSchoolScopes(venues);assert.ok(scopes.every(s=>!isRetiredSchool(s.slug)));
@@ -28,6 +28,7 @@ test('withdrawal is exact, covers both campuses and future groups; sources remai
 test('old unarchived hot offer and fresh capacity cannot resurrect display or booking',()=>{
  const quest=quests.find(q=>q.slug==='shmi')!;
  const original=quest.offers.find(o=>o.id==='year:К1981-26')!;assert.ok(original);
+ assert.ok(original.scheduleCard);
  const offer={...original,scheduleCard:{...original.scheduleCard,isArchived:false}};
  const at='2026-09-25T12:00:00.000Z',binding=mosAvailabilityBinding(offer)!;assert.ok(binding);
  const sidecar:MosAvailability={version:1,attemptedAt:at,completedAt:at,expected:1,verified:1,archived:0,errors:[],entries:{[offer.id]:{binding,availability:{checkedAt:at,totalSeats:20,freeSeats:20,admission:'open'}}}};

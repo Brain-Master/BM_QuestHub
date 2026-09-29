@@ -13,7 +13,7 @@ const addition=read('content/annual-additions/school-2103.json');
 const snapshot=parseOffersSnapshot(read('data/offers-snapshot.json'));
 const addedIds=new Set<string>(addition.groups.map((g:{groupCode:string})=>`year:${g.groupCode}`));
 const added=snapshot.offersByQuest.shmi.filter(o=>addedIds.has(o.id));
-const laterIds=new Set<string>(['year:К4609-26','year:К2215-26','year:К2216-26','year:К2217-26','year:К2218-26',...read('content/annual-additions/school-37.json').groups.map((g:{groupCode:string})=>`year:${g.groupCode}`)]);
+const laterIds=new Set<string>(['year:К2211-26','year:К2212-26','year:К2213-26','year:К2214-26','year:К4609-26','year:К2215-26','year:К2216-26','year:К2217-26','year:К2218-26',...read('content/annual-additions/school-37.json').groups.map((g:{groupCode:string})=>`year:${g.groupCode}`)]);
 test('all nine supplied identities get exact campus/year/slot/booking and owner price',()=>{
   assert.equal(added.length,9);assert.equal(new Set(added.map(o=>o.mosBookingUrl)).size,9);
   assert.deepEqual([1,2,3].map(y=>added.filter(o=>o.annual?.studyYear===y).length),[4,3,2]);
@@ -47,5 +47,5 @@ test('price override is identity scoped; annual table uses the same effective nu
   const quests=questSchema.array().parse(read('data/v2/catalog-snapshot.json').courses.map((q:{slug:string})=>({...q,offers:snapshot.offersByQuest[q.slug]??[]})));
   const view=projectAnnualWorkspace(quests,venues);
   for(const g of view.groups.filter(g=>addedIds.has(`year:${g.id}`)))assert.equal(g.lessonPrice,1000);
-  assert.equal(view.groups.length,61);assert.equal(view.locations.length,11);
+  assert.equal(view.groups.length,65);assert.equal(view.locations.length,11);
 });
