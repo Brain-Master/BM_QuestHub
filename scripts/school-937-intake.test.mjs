@@ -32,7 +32,7 @@ test('source conflicts remain explicit; contact is not silently converted into t
  assert.match(addition.programmeTitle,/2-й год/);
 });
 test('confirmed intake participates in the deterministic74 group source',()=>{
- const source=JSON.parse(fs.readFileSync(new URL('../apps/web/content/year-schedule.generated.json',import.meta.url)));
+ const source=JSON.parse(fs.readFileSync(new URL('./fixtures/annual-74-before-937-year1/source.json',import.meta.url)));
  const school1212=JSON.parse(fs.readFileSync(new URL('../apps/web/content/annual-additions/school-1212.json',import.meta.url)));
  const composed=composeConfirmedSchools(historical69(source),school1212,addition);
  assert.equal(source.groups.length,74);assert.deepEqual(JSON.parse(JSON.stringify(composed)),source);

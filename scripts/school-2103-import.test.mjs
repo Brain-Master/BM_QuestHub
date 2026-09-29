@@ -8,7 +8,7 @@ import {school37BaseDigest,school37Identities} from './lib/school-37-source.mjs'
 import {restorePublishedAnnual} from './lib/mos-annual-published.mjs';
 import {refreshAnnualCards} from './lib/mos-annual-refresh.mjs';
 const read=p=>JSON.parse(fs.readFileSync(new URL(p,import.meta.url),'utf8'));
-const current=historical69(read('../apps/web/content/year-schedule.generated.json'));
+const current=historical69(read('./fixtures/annual-74-before-937-year1/source.json'));
 const laterIds=new Set(school37Identities.map(([id])=>id));
 // Reconstruct the immutable historical60 revision; later additions are tested separately.
 const source={...current,sourceSha256:school37BaseDigest,groups:current.groups.filter(g=>!laterIds.has(g.id)),locations:current.locations.filter(l=>l.id!=='LOC-012')};

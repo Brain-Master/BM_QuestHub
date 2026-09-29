@@ -31,7 +31,7 @@ test('all eight reviewed replacements are exact; history and unrelated identitie
     const offer=offers.find(o=>o.id===`year:${code}`);assert.ok(offer);assert.equal(isRetiredAnnualGroup(offer),false);
   }
   for(const id of ['year:constructor','year:toString','year:unknown','unrelated'])assert.equal(canonicalAnnualOfferId(id),id);
-  const current=offers.filter(o=>!isRetiredAnnualGroup(o));assert.equal(current.length,61);
+  const current=offers.filter(o=>!isRetiredAnnualGroup(o));assert.equal(current.length,65);
   assert.equal(current.filter(o=>o.venueSlug.startsWith('school-2044-')).length,11);
 });
 

@@ -32,27 +32,27 @@ test('seven1212 groups retain unique exact cards, SHMI1 and confirmed teacher/ca
  assert.deepEqual(first.weeklySlots,[{weekday:'Четверг',start:'13:30',end:'14:15'}]);
  assert.deepEqual([first.annual?.ageMin,first.annual?.ageMax],[6,8]);assert.equal(first.annual?.listingId,'2533333');
 });
-test('937 four groups belong to25 not25k2; raw age/teacher stay separate',()=>{
+test('937 eight groups belong to25 not25k2; raw age/teacher stay separate',()=>{
  const rows=snapshot.offersByQuest.shmi.filter(o=>o.venueSlug.startsWith('school-937-'));
  const registry=read('content/annual-mos-refresh.generated.json');
- assert.equal(rows.length,4);
+ assert.equal(rows.length,8);
  for(const o of rows){
-  assert.equal(o.venueSlug,'school-937-marshala-zakharova-25');assert.equal(o.annual?.studyYear,2);
+  assert.equal(o.venueSlug,'school-937-marshala-zakharova-25');assert.equal(o.annual?.studyYear,['К2211-26','К2212-26','К2213-26','К2214-26'].includes(o.annual!.groupCode!)?1:2);
   assert.equal(o.annual?.teacher,'Локтеева Ирина Дмитриевна');
   assert.deepEqual([o.annual?.ageMin,o.annual?.ageMax],[6,13]);
-  const raw=registry.groups[o.annual!.groupCode!];assert.equal(raw.ageMax,18);assert.equal(raw.teacher,'Балукова Мария Михайловна');
+  const raw=registry.groups[o.annual!.groupCode!];assert.ok(raw.ageMax===18||raw.ageMax===13);assert.equal(raw.teacher,'Балукова Мария Михайловна');
  }
  assert.equal(reviewedStudyYear('school-1212','К4619-26'),1);
  assert.equal(reviewedTeacher('school-937',2,'not-reviewed'),undefined);
  assert.equal(reviewedAges('school-17','К2215-26'),undefined);
- assert.equal(projectAnnualWorkspace(quests,venues).groups.length,61);
+ assert.equal(projectAnnualWorkspace(quests,venues).groups.length,65);
 });
 test('finder exposes correct school/year/age facets and hides wrong campuses',()=>{
  const state=readFinderState(new URLSearchParams('school=school-1212&programme=shmi'));
  assert.equal(items.filter(i=>finderItemMatches(i,state)).length,7);
  assert.deepEqual(finderChoices(items,state,'level',['1','2','3']),['1']);
  const s937={...state,school:'school-937'};
- assert.equal(items.filter(i=>finderItemMatches(i,s937)).length,4);
+ assert.equal(items.filter(i=>finderItemMatches(i,s937)).length,8);
  assert.equal(items.filter(i=>finderItemMatches(i,{...s937,age:'14'})).length,0);
  assert.equal(items.filter(i=>finderItemMatches(i,{...s937,venue:'school-937-orekhovo'})).length,0);
 });

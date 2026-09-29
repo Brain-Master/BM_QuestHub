@@ -9,7 +9,7 @@ import {restorePublishedAnnual} from './lib/mos-annual-published.mjs';
 import {refreshAnnualCards} from './lib/mos-annual-refresh.mjs';
 const root=new URL('../',import.meta.url).pathname;
 const read=p=>JSON.parse(fs.readFileSync(path.join(root,p),'utf8'));
-const source=read('apps/web/content/year-schedule.generated.json');
+const source=read('scripts/fixtures/annual-74-before-937-year1/source.json');
 const a=read('apps/web/content/annual-additions/school-1212.json'),b=read('apps/web/content/annual-additions/school-937.json');
 test('append five, retain all69 raw records, replay deterministic source and no private fields',()=>{
  const base=historical69(source),composed=composeConfirmedSchools(base,a,b);
@@ -23,8 +23,8 @@ test('append five, retain all69 raw records, replay deterministic source and no 
  const bad=structuredClone(base);bad.groups[0].freeSeats=0;assert.throws(()=>composeConfirmedSchools(bad,a,b),/PREIMAGE/);
 });
 test('public age override never becomes raw portal age on restoration and refresh',async()=>{
- const registry=read('apps/web/content/annual-mos-refresh.generated.json');
- const offers=read('apps/web/data/offers-snapshot.json').offersByQuest.shmi.filter(o=>o.venueSlug==='school-937-marshala-zakharova-25');
+ const registry=read('scripts/fixtures/annual-74-before-937-year1/registry.json');
+ const offers=read('scripts/fixtures/annual-74-before-937-year1/offers.json').offersByQuest.shmi.filter(o=>o.venueSlug==='school-937-marshala-zakharova-25');
  for(const o of offers)o.annual.refreshedAt='2026-09-24T12:00:00.000Z';
  const mapping={asOf:source.asOf,venueByGroup:Object.fromEntries(offers.map(o=>[o.annual.groupCode,o.venueSlug])),studyYearByGroup:Object.fromEntries(offers.map(o=>[o.annual.groupCode,2]))};
  const restored=restorePublishedAnnual(registry,offers,mapping);
@@ -40,6 +40,7 @@ test('completed migration reruns are byte stable and corrupt revisions fail with
  for(const p of ['apps/web/tsconfig.json','scripts/import-confirmed-school-groups.ts'])fs.copyFileSync(path.join(root,p),path.join(dir,p));
  fs.symlinkSync(path.join(root,'apps/web/node_modules'),path.join(dir,'apps/web/node_modules'),'dir');
  const files=['content/year-schedule.generated.json','content/annual-mos-refresh.generated.json','data/offers-snapshot.json'];
+ for(const [i,name] of ['source','registry','offers'].entries())fs.copyFileSync(path.join(root,`scripts/fixtures/annual-74-before-937-year1/${name}.json`),path.join(dir,'apps/web',files[i]));
  const bytes=()=>files.map(p=>fs.readFileSync(path.join(dir,'apps/web',p),'utf8'));
  const run=action=>spawnSync(process.execPath,[path.join(root,'apps/web/node_modules/tsx/dist/cli.mjs'),'--tsconfig',path.join(dir,'apps/web/tsconfig.json'),path.join(dir,'scripts/import-confirmed-school-groups.ts'),action],{cwd:dir,encoding:'utf8'});
  const before=bytes();for(const action of ['--check','--write','--check']){const r=run(action);assert.equal(r.status,0,r.stderr);assert.deepEqual(bytes(),before);}

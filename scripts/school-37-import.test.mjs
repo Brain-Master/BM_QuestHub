@@ -17,7 +17,7 @@ const read=p=>JSON.parse(fs.readFileSync(path.join(root,p),'utf8'));
 // not today's portal facts; the current completed import is checked separately.
 const historicalOffers=read('scripts/fixtures/annual-69-before-1517/offers.json');
 const historicalRegistry=read('scripts/fixtures/annual-69-before-1517/registry.json');
-const source=historical69(read('apps/web/content/year-schedule.generated.json'));
+const source=historical69(read('scripts/fixtures/annual-74-before-937-year1/source.json'));
 const addition=read('apps/web/content/annual-additions/school-37.json');
 const ids=new Set(school37Identities.map(([id])=>id));
 const base={...source,sourceSha256:school37BaseDigest,groups:source.groups.filter(g=>!ids.has(g.id)),locations:source.locations.filter(l=>l.id!=='LOC-012')};
@@ -30,7 +30,7 @@ test('school37 appends exact9 without changing previous60; original CSV chain re
   const csv={...base,sourceSha256:baseSourceDigest,groups:base.groups.filter(g=>!oldIds.has(g.id)),locations:base.locations.filter(l=>!['LOC-009','LOC-010'].includes(l.id))};
   assert.equal(csv.groups.length,51);assert.deepEqual(composeSchool2103(csv,prior),base);
   const r=spawnSync(process.execPath,[path.join(root,'scripts/compose-annual-additions.mjs')],{input:JSON.stringify(csv),encoding:'utf8'});
-  assert.equal(r.status,0,r.stderr);assert.deepEqual(JSON.parse(r.stdout),composeConfirmedSchools(source,read('apps/web/content/annual-additions/school-1212.json'),read('apps/web/content/annual-additions/school-937.json')));
+  assert.equal(r.status,0,r.stderr);assert.deepEqual(JSON.parse(r.stdout),read('apps/web/content/year-schedule.generated.json'));
   assert.ok(!source.locations.some(l=>l.id==='LOC-011'),'unconfirmed937 excluded');
   const previousOffers=structuredClone(historicalOffers.offersByQuest.shmi).filter(o=>!ids.has(o.annual?.groupCode));
   assert.equal(previousOffers.length,60);
@@ -144,6 +144,6 @@ test('historical fixtures retain exact pre-refresh bytes; current complete impor
     ['registry','854b6cb411a2a42908a6ca6e5f470830fbdba25da72affae8d19be10e182d392'],
     ['offers','6ef0df9c9f25b81f15be22c35a1b721bc77c2abe78b861672d6ea51d820e9d26'],
   ])assert.equal(crypto.createHash('sha256').update(fs.readFileSync(path.join(root,`scripts/fixtures/annual-69-before-1517/${file}.json`))).digest('hex'),hash);
-  const r=spawnSync(process.execPath,[path.join(root,'apps/web/node_modules/tsx/dist/cli.mjs'),'--tsconfig',path.join(root,'apps/web/tsconfig.json'),path.join(root,'scripts/import-confirmed-school-groups.ts'),'--check'],{cwd:root,encoding:'utf8'});
+  const r=spawnSync(process.execPath,[path.join(root,'apps/web/node_modules/tsx/dist/cli.mjs'),'--tsconfig',path.join(root,'apps/web/tsconfig.json'),path.join(root,'scripts/import-school-937-year1.ts'),'--check'],{cwd:root,encoding:'utf8'});
   assert.equal(r.status,0,r.stderr);assert.match(r.stdout,/"alreadyImported":true/);
 });
