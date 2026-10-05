@@ -95,6 +95,7 @@ export function itemStudyYear(item: ScheduleBoardItem): number | null {
 }
 
 export function finderAgeLabel(item: ScheduleBoardItem): string {
+  if (item.offer.annual?.audienceLabel) return item.offer.annual.audienceLabel;
   const min = item.offer.annual?.ageMin, max = item.offer.annual?.ageMax;
   if (min != null && max != null) return min === max ? `${min} лет` : `${min}–${max} лет`;
   if (min != null) return `От ${min} лет; верхний возраст уточняется`;

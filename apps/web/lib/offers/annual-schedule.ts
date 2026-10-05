@@ -21,6 +21,11 @@ export function retainMosReviewError(previous: string | undefined, incoming: str
 /** Public, dated source facts; admission is independent of event lifecycle/capacity. */
 export const annualMetadataSchema = z.object({
   sourceTitle: z.string().min(1).optional(),
+  audienceLabel: z.string().min(1).optional(),
+  legacyReservation: z.object({
+    oldGroupCode: z.string().min(1), oldCardId: z.string().regex(/^\d+$/),
+    places: z.number().int().nonnegative(), checkedAt: z.iso.datetime(),
+  }).strict().optional(),
   studyYear: z.union([z.literal(1), z.literal(2), z.literal(3)]).optional(),
   refreshedAt: z.iso.datetime().optional(),
   // Client-side merge from the separate availability source. Full-card date stays untouched.
@@ -75,3 +80,16 @@ export const annualMosRefreshSchema = z.object({
     ctx.addIssue({code:"custom",message:"Inconsistent annual refresh coverage"});
   }
 });
+
+/** Owner-held reserve is independent of portal freshness and raw occupied places.
+ * Never release it on a refresh, cancellation, error or passage of time.
+ */
+export function effectiveAnnualFreeSeats(a: {
+  totalSeats: number | null; freeSeats: number | null;
+  legacyReservation?: {places: number};
+}): number | null {
+  const held=a.legacyReservation?.places ?? 0;
+  if (a.totalSeats === null || a.totalSeats <= 0) return null;
+  if (held >= a.totalSeats) return 0;
+  return a.freeSeats === null ? null : Math.max(0, a.freeSeats-held);
+}

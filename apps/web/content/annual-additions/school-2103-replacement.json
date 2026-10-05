@@ -1,0 +1,392 @@
+{
+  "version": 1,
+  "reviewedAt": "2026-10-05",
+  "baseSourceSha256": "633d56e4a55a8a574fe49f66e144dcde1a2f49087a03a67b6c3578c3c8d8936a",
+  "groups": [
+    {
+      "cardId": "1071988",
+      "listingId": "2586499",
+      "groupCode": "К3128-26",
+      "title": "Школа Молодого IT-Инженера BrainMaster_ШО-4__1й год гр. №1 (26-27 уч.г.)",
+      "address": "г. Москва, вн.тер. м.о. Ясенево, Голубинская ул., д. 13, к. 2",
+      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 2103\"",
+      "teacher": "Матвеева Юлия Константиновна",
+      "totalSeats": 12,
+      "freeSeats": 8,
+      "ageMin": 6,
+      "ageMax": 9,
+      "lessonPrice": 1000,
+      "coursePrice": 40000,
+      "courseStart": "2026-10-05",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Понедельник",
+          "start": "14:00",
+          "end": "14:45"
+        }
+      ],
+      "status": "open",
+      "link": "https://www.mos.ru/pgu2/activity/card/1071988",
+      "refreshedAt": "2026-10-05T20:01:41.509Z",
+      "locationId": "LOC-009",
+      "studyYear": 1
+    },
+    {
+      "cardId": "1071199",
+      "listingId": "2586499",
+      "groupCode": "К3119-26",
+      "title": "Школа Молодого IT-Инженера BrainMaster_ШО-4__1й год гр. №2 (26-27 уч.г.)",
+      "address": "г. Москва, вн.тер. м.о. Ясенево, Голубинская ул., д. 13, к. 2",
+      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 2103\"",
+      "teacher": "Матвеева Юлия Константиновна",
+      "totalSeats": 12,
+      "freeSeats": 3,
+      "ageMin": 6,
+      "ageMax": 9,
+      "lessonPrice": 1000,
+      "coursePrice": 40000,
+      "courseStart": "2026-10-05",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Понедельник",
+          "start": "15:00",
+          "end": "15:45"
+        }
+      ],
+      "status": "open",
+      "link": "https://www.mos.ru/pgu2/activity/card/1071199",
+      "refreshedAt": "2026-10-05T20:01:41.629Z",
+      "locationId": "LOC-009",
+      "studyYear": 1
+    },
+    {
+      "cardId": "1071989",
+      "listingId": "2586499",
+      "groupCode": "К3129-26",
+      "title": "Школа Молодого IT-Инженера BrainMaster_ШО-4__1й год гр. №3 (26-27 уч.г.)",
+      "address": "г. Москва, вн.тер. м.о. Ясенево, Голубинская ул., д. 13, к. 2",
+      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 2103\"",
+      "teacher": "Матвеева Юлия Константиновна",
+      "totalSeats": 12,
+      "freeSeats": 12,
+      "ageMin": 6,
+      "ageMax": 9,
+      "lessonPrice": 1000,
+      "coursePrice": 40000,
+      "courseStart": "2026-10-05",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Понедельник",
+          "start": "16:00",
+          "end": "16:45"
+        }
+      ],
+      "status": "open",
+      "link": "https://www.mos.ru/pgu2/activity/card/1071989",
+      "refreshedAt": "2026-10-05T20:01:40.855Z",
+      "locationId": "LOC-009",
+      "studyYear": 1
+    },
+    {
+      "cardId": "1071202",
+      "listingId": "2586503",
+      "groupCode": "К3120-26",
+      "title": "Школа Молодого IT-Инженера BrainMaster_ШО-3__1й год_1 группа (26-27 уч.г.)",
+      "address": "г. Москва, вн.тер. м.о. Ясенево, Голубинская ул., д. 5, к. 4",
+      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 2103\"",
+      "teacher": "Матвеева Юлия Константиновна",
+      "totalSeats": 12,
+      "freeSeats": 12,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 1000,
+      "coursePrice": 40000,
+      "courseStart": "2026-10-05",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Понедельник",
+          "start": "14:00",
+          "end": "14:45"
+        }
+      ],
+      "status": "open",
+      "link": "https://www.mos.ru/pgu2/activity/card/1071202",
+      "refreshedAt": "2026-10-05T20:01:41.612Z",
+      "locationId": "LOC-010",
+      "studyYear": 1
+    },
+    {
+      "cardId": "1071205",
+      "listingId": "2586503",
+      "groupCode": "К3121-26",
+      "title": "Школа Молодого IT-Инженера BrainMaster_ШО-3__1й год_2 группа (26-27 уч.г.)",
+      "address": "г. Москва, вн.тер. м.о. Ясенево, Голубинская ул., д. 5, к. 4",
+      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 2103\"",
+      "teacher": "Матвеева Юлия Константиновна",
+      "totalSeats": 12,
+      "freeSeats": 12,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 1000,
+      "coursePrice": 40000,
+      "courseStart": "2026-10-05",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Среда",
+          "start": "14:00",
+          "end": "14:45"
+        }
+      ],
+      "status": "open",
+      "link": "https://www.mos.ru/pgu2/activity/card/1071205",
+      "refreshedAt": "2026-10-05T20:01:41.613Z",
+      "locationId": "LOC-010",
+      "studyYear": 1
+    },
+    {
+      "cardId": "1071211",
+      "listingId": "2586507",
+      "groupCode": "К3122-26",
+      "title": "Школа Молодого IT-Инженера BrainMaster_ШО-3__2й год_1 группа (26-27 уч.г.)",
+      "address": "г. Москва, вн.тер. м.о. Ясенево, Голубинская ул., д. 5, к. 4",
+      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 2103\"",
+      "teacher": "Матвеева Юлия Константиновна",
+      "totalSeats": 12,
+      "freeSeats": 12,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 1000,
+      "coursePrice": 40000,
+      "courseStart": "2026-10-05",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Понедельник",
+          "start": "16:00",
+          "end": "16:45"
+        }
+      ],
+      "status": "open",
+      "link": "https://www.mos.ru/pgu2/activity/card/1071211",
+      "refreshedAt": "2026-10-05T20:01:41.584Z",
+      "locationId": "LOC-010",
+      "studyYear": 2
+    },
+    {
+      "cardId": "1071212",
+      "listingId": "2586507",
+      "groupCode": "К3123-26",
+      "title": "Школа Молодого IT-Инженера BrainMaster_ШО-3__2й год_2 группа (26-27 уч.г.)",
+      "address": "г. Москва, вн.тер. м.о. Ясенево, Голубинская ул., д. 5, к. 4",
+      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 2103\"",
+      "teacher": "Матвеева Юлия Константиновна",
+      "totalSeats": 12,
+      "freeSeats": 11,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 1000,
+      "coursePrice": 40000,
+      "courseStart": "2026-10-05",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Вторник",
+          "start": "14:00",
+          "end": "14:45"
+        }
+      ],
+      "status": "open",
+      "link": "https://www.mos.ru/pgu2/activity/card/1071212",
+      "refreshedAt": "2026-10-05T20:01:41.556Z",
+      "locationId": "LOC-010",
+      "studyYear": 2
+    },
+    {
+      "cardId": "1071215",
+      "listingId": "2586507",
+      "groupCode": "К3124-26",
+      "title": "Школа Молодого IT-Инженера BrainMaster_ШО-3__2й год_3 группа (26-27 уч.г.)",
+      "address": "г. Москва, вн.тер. м.о. Ясенево, Голубинская ул., д. 5, к. 4",
+      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 2103\"",
+      "teacher": "Матвеева Юлия Константиновна",
+      "totalSeats": 12,
+      "freeSeats": 6,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 1000,
+      "coursePrice": 40000,
+      "courseStart": "2026-10-05",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Вторник",
+          "start": "15:00",
+          "end": "15:45"
+        }
+      ],
+      "status": "open",
+      "link": "https://www.mos.ru/pgu2/activity/card/1071215",
+      "refreshedAt": "2026-10-05T20:01:41.579Z",
+      "locationId": "LOC-010",
+      "studyYear": 2
+    },
+    {
+      "cardId": "1071219",
+      "listingId": "2586507",
+      "groupCode": "К3125-26",
+      "title": "Школа Молодого IT-Инженера BrainMaster_ШО-3__2й год_4 группа (26-27 уч.г.)",
+      "address": "г. Москва, вн.тер. м.о. Ясенево, Голубинская ул., д. 5, к. 4",
+      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 2103\"",
+      "teacher": "Матвеева Юлия Константиновна",
+      "totalSeats": 12,
+      "freeSeats": 12,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 1000,
+      "coursePrice": 40000,
+      "courseStart": "2026-10-05",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Среда",
+          "start": "15:00",
+          "end": "15:45"
+        }
+      ],
+      "status": "open",
+      "link": "https://www.mos.ru/pgu2/activity/card/1071219",
+      "refreshedAt": "2026-10-05T20:01:41.897Z",
+      "locationId": "LOC-010",
+      "studyYear": 2
+    },
+    {
+      "cardId": "1071224",
+      "listingId": "2586517",
+      "groupCode": "К3126-26",
+      "title": "Школа Молодого IT-Инженера BrainMaster_ШО-3__3-й год_1 группа (26-27 уч.г.)",
+      "address": "г. Москва, вн.тер. м.о. Ясенево, Голубинская ул., д. 5, к. 4",
+      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 2103\"",
+      "teacher": "Матвеева Юлия Константиновна",
+      "totalSeats": 12,
+      "freeSeats": 12,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 1000,
+      "coursePrice": 40000,
+      "courseStart": "2026-10-05",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Понедельник",
+          "start": "15:00",
+          "end": "15:45"
+        }
+      ],
+      "status": "open",
+      "link": "https://www.mos.ru/pgu2/activity/card/1071224",
+      "refreshedAt": "2026-10-05T20:01:41.892Z",
+      "locationId": "LOC-010",
+      "studyYear": 3
+    },
+    {
+      "cardId": "1071227",
+      "listingId": "2586517",
+      "groupCode": "К3127-26",
+      "title": "Школа Молодого IT-Инженера BrainMaster_ШО-3__3-й год_2 группа (26-27 уч.г.)",
+      "address": "г. Москва, вн.тер. м.о. Ясенево, Голубинская ул., д. 5, к. 4",
+      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 2103\"",
+      "teacher": "Матвеева Юлия Константиновна",
+      "totalSeats": 12,
+      "freeSeats": 12,
+      "ageMin": 6,
+      "ageMax": 13,
+      "lessonPrice": 1000,
+      "coursePrice": 40000,
+      "courseStart": "2026-10-05",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Вторник",
+          "start": "16:00",
+          "end": "16:45"
+        }
+      ],
+      "status": "open",
+      "link": "https://www.mos.ru/pgu2/activity/card/1071227",
+      "refreshedAt": "2026-10-05T20:01:41.707Z",
+      "locationId": "LOC-010",
+      "studyYear": 3
+    }
+  ],
+  "legacyOccupancy": [
+    {
+      "oldGroupCode": "К3016-26",
+      "oldCardId": "1029267",
+      "newGroupCode": "К3119-26",
+      "occupied": 2,
+      "checkedAt": "2026-10-02T09:25:34.424Z"
+    },
+    {
+      "oldGroupCode": "К3015-26",
+      "oldCardId": "1029263",
+      "newGroupCode": "К3128-26",
+      "occupied": 1,
+      "checkedAt": "2026-10-02T09:32:37.518Z"
+    },
+    {
+      "oldGroupCode": "К3020-26",
+      "oldCardId": "1029383",
+      "newGroupCode": "К3120-26",
+      "occupied": 3,
+      "checkedAt": "2026-10-02T09:32:45.512Z"
+    },
+    {
+      "oldGroupCode": "К3021-26",
+      "oldCardId": "1029384",
+      "newGroupCode": "К3121-26",
+      "occupied": 5,
+      "checkedAt": "2026-10-02T09:25:34.733Z"
+    },
+    {
+      "oldGroupCode": "К3024-26",
+      "oldCardId": "1029398",
+      "newGroupCode": "К3123-26",
+      "occupied": 12,
+      "checkedAt": "2026-10-02T09:25:36.072Z"
+    },
+    {
+      "oldGroupCode": "К3022-26",
+      "oldCardId": "1029393",
+      "newGroupCode": "К3122-26",
+      "occupied": 5,
+      "checkedAt": "2026-10-02T09:25:34.991Z"
+    },
+    {
+      "oldGroupCode": "К3025-26",
+      "oldCardId": "1029402",
+      "newGroupCode": "К3124-26",
+      "occupied": 10,
+      "checkedAt": "2026-10-02T09:25:36.511Z"
+    },
+    {
+      "oldGroupCode": "К3027-26",
+      "oldCardId": "1029412",
+      "newGroupCode": "К3127-26",
+      "occupied": 7,
+      "checkedAt": "2026-10-02T09:25:36.818Z"
+    },
+    {
+      "oldGroupCode": "К3026-26",
+      "oldCardId": "1029407",
+      "newGroupCode": "К3126-26",
+      "occupied": 6,
+      "checkedAt": "2026-10-02T09:25:36.477Z"
+    }
+  ],
+  "transferPolicy": "hold-old-reserve-until-owner-reconciliation"
+}

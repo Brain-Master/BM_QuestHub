@@ -1,3 +1,4 @@
+import {school2103Replacements,school2103OldListings} from './school-2103-transfer.mjs';
 import { isRetiredSchool } from './retired-schools.mjs';
 /** Owner-confirmed removals, 2026-09-23 and 2026-09-25. Not inferred from admission or HTTP errors.
  * Listing numbers are MOS identities, not school-authored group codes.
@@ -12,6 +13,7 @@ const retired = new Set(retiredAnnualListings);
  * Keep К4045 on listing 2548560 and both groups at 169Б.
  */
 export const supersededAnnualGroups = Object.freeze({
+  ...school2103Replacements,
   'К4046-26': 'К4061-26', 'К4048-26': 'К4062-26',
   'К4049-26': 'К4063-26', 'К4050-26': 'К4064-26',
   'К4051-26': 'К4065-26', 'К4052-26': 'К4066-26',
@@ -34,5 +36,5 @@ export function isRetiredAnnualGroup(group) {
   const listing = annual?.listingId ?? row.listingId;
   const code = annual?.groupCode ?? row.groupCode;
   return typeof listing === 'string' && (retired.has(listing) ||
-    (listing === '2548560' && typeof code === 'string' && Object.hasOwn(supersededAnnualGroups, code)));
+    ((listing === '2548560' || school2103OldListings.includes(listing)) && typeof code === 'string' && Object.hasOwn(supersededAnnualGroups, code)));
 }

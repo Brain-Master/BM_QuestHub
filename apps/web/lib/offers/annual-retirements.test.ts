@@ -14,10 +14,10 @@ const catalogue=read('data/v2/catalog-snapshot.json');
 const quests=questSchema.array().parse(catalogue.courses.map((q:{slug:string})=>({...q,offers:snapshot.offersByQuest[q.slug]??[]})));
 const venues=venueSchema.array().parse(read('data/v2/map-snapshot.json').venues);
 const now=new Date('2026-09-24T10:00:00Z');
-test('five historical removals and eight replacements cannot pollute ordinary facets',()=>{
+test('five historical removals and seventeen replacements cannot pollute ordinary facets',()=>{
  const annual=quests.flatMap(q=>q.offers).filter(o=>o.annual);
- const removed=annual.filter(isRetiredAnnualGroup);assert.equal(annual.length,78);assert.equal(removed.length,13);
- assert.deepEqual([...new Set(removed.map(o=>o.annual!.listingId))].sort(),['2463216','2548560','2548561','2549843','2549844','2549845']);
+ const removed=annual.filter(isRetiredAnnualGroup);assert.equal(annual.length,89);assert.equal(removed.length,22);
+ assert.deepEqual([...new Set(removed.map(o=>o.annual!.listingId))].sort(),['2463216','2548560','2548561','2549843','2549844','2549845','2560824','2560863','2560874','2560883']);
  for(const o of removed)assert.equal(o.scheduleCard?.isArchived,true);
  const old=quests.map(q=>({...q,offers:q.offers.map(o=>isRetiredAnnualGroup(o)?venueOfferSchema.parse({...o,id:`old:${o.id}`,scheduleCard:{...o.scheduleCard,isArchived:false}}):o)}));
  const items=buildAgendaItems({quests:old,venues,worlds:worldSchema.array().parse(catalogue.worlds)}).map(i=>buildScheduleBoardItem(i,undefined,now));
@@ -25,14 +25,14 @@ test('five historical removals and eight replacements cannot pollute ordinary fa
  assert.deepEqual(finderChoices(items,state,'day',['1','2','3','4','5','6','7']),['3']);
  for(const item of items.filter(i=>isRetiredAnnualGroup(i.offer))){
   assert.equal(finderItemMatches(item,readFinderState(new URLSearchParams())),false);
-  assert.equal(finderItemMatches(item,{...state,venue:item.venue.slug,offer:item.offer.id}),true);
+  assert.equal(finderItemMatches(item,{...state,school:"all",venue:item.venue.slug,offer:item.offer.id}),true);
   assert.equal(resolveScheduleStatusKey(item.offer,now),'cancelled');
   assert.ok(item.variants.every(v=>v.bookingMode.kind==='disabled'));
   const conflict={...item.offer,annual:{...item.offer.annual!,admission:'closed' as const,refreshError:'MOS_GROUP_NOT_FOUND'}};
   assert.equal(getScheduleDisplayStatus(conflict,now),'Отменено');
   assert.equal(getScheduleBookingMode(conflict,'Идёт набор').kind,'disabled');
  }
- const view=projectAnnualWorkspace(old,venues);assert.equal(view.groups.length,65);assert.ok(view.groups.every(g=>!isRetiredAnnualGroup(g)));
+ const view=projectAnnualWorkspace(old,venues);assert.equal(view.groups.length,67);assert.ok(view.groups.every(g=>!isRetiredAnnualGroup(g)));
  const school875=annual.find(o=>o.annual?.listingId==='2463216');assert.ok(school875);assert.equal(isRetiredAnnualGroup(school875),true);
  assert.ok(view.groups.every(g=>g.listingId!=='2463216'));
 });

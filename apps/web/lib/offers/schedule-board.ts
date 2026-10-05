@@ -1,6 +1,6 @@
 import type { EventStatusV2 } from "@/lib/data/v2/entities";
 import { isRetiredAnnualGroup } from "../../content/annual-retirements.mjs";
-import { annualBookingNeedsReview } from "./annual-schedule";
+import { annualBookingNeedsReview, effectiveAnnualFreeSeats } from "./annual-schedule";
 import { annualAvailabilityStale } from "./annual-freshness";
 import type { AgendaOfferItem } from "@/lib/offers/agenda";
 import {
@@ -69,6 +69,7 @@ export type ScheduleCapacityView = {
   isLow: boolean;
   isSoldOut: boolean;
   label: string;
+  heldReserve?: number;
 } | null;
 
 export type ScheduleBoardItem = AgendaOfferItem & {
@@ -158,8 +159,9 @@ export function getScheduleCapacity(
     return null;
   }
 
+  const effectiveFree = offer.annual ? effectiveAnnualFreeSeats(offer.annual) : null;
   const enrolled = offer.annual
-    ? offer.annual.freeSeats === null ? undefined : total - offer.annual.freeSeats
+    ? effectiveFree === null ? undefined : total - effectiveFree
     : getOfferEnrolledTotal(offer);
   if (typeof enrolled !== "number" || !Number.isSafeInteger(enrolled) || enrolled < 0 || enrolled > total) {
     return null;
@@ -173,6 +175,7 @@ export function getScheduleCapacity(
 
   return {
     total,
+    ...(offer.annual?.legacyReservation ? {heldReserve:offer.annual.legacyReservation.places} : {}),
     booked,
     left,
     percent,
@@ -200,10 +203,9 @@ export function resolveScheduleStatusKey(
     offer.scheduleCard?.isArchived === true ||
     isOfferAutoArchived(offer, now) ||
     isCancelled;
-  const enrolled = getOfferEnrolledTotal(offer);
   const capacity = getScheduleCapacity(offer);
   const isSoldOut =
-    (typeof enrolled === "number" && capacity?.isSoldOut === true) ||
+    capacity?.isSoldOut === true ||
     mapped === "sold_out" ||
     rawStatus === soldOutLabel ||
     rawStatus === "Мест нет";
@@ -223,6 +225,7 @@ export function getScheduleDisplayStatus(
 ): ScheduleDisplayStatus {
   const statusKey = resolveScheduleStatusKey(offer, now);
   if (statusKey === "cancelled" || statusKey === "finished") return eventStatusLabel(statusKey) as ScheduleDisplayStatus;
+  if (offer.annual?.legacyReservation && getScheduleCapacity(offer)?.isSoldOut) return "Мест нет";
   if (offer.annual && !offer.scheduleCard?.isArchived && !isOfferAutoArchived(offer, now) && annualAvailabilityStale(offer.annual, now.getTime())) return "Приём уточняется";
   if (offer.annual?.admission === "closed" && !isOfferAutoArchived(offer, now)) return "Приём закрыт";
   return eventStatusLabel(resolveScheduleStatusKey(offer, now)) as ScheduleDisplayStatus;
@@ -247,6 +250,8 @@ export function getScheduleBookingMode(
 ): ScheduleBookingMode {
   if (isRetiredAnnualGroup(offer)) return { kind: "disabled", label: SCHEDULE_CTA.cancelledDisabled };
   if (annualBookingNeedsReview(offer.annual)) return { kind: "disabled", label: "Карточка на проверке" };
+  // A deliberately held reserve must not be bypassed by stale portal data.
+  if (offer.annual?.legacyReservation && getScheduleCapacity(offer)?.isSoldOut) return {kind:'disabled',label:SCHEDULE_CTA.soldOutDisabled};
   // Old closed/full readings must not lock parents out of the verified source.
   // This only opens mos.ru; it neither asserts admission nor submits a booking.
   const directUrl = variant?.mosBookingUrl ?? offer.mosBookingUrl;
