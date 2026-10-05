@@ -15,19 +15,19 @@ test('exact MOS listing identities, not group-code/name/capacity guesses',()=>{
  for(const listingId of retiredAnnualListings){assert.equal(isRetiredAnnualGroup({listingId}),true);assert.equal(isRetiredAnnualGroup({annual:{listingId},id:'renamed'}),true);}
  for(const x of [null,{},'2548561',{listingId:'25485610'},{listingId:'2549783',groupCode:'К4055-26',freeSeats:0,status:'closed'}])assert.equal(isRetiredAnnualGroup(x),false);
 });
-test('full refresh retains all five withdrawn-listing records without requesting school875',async()=>{
+test('full refresh retains five withdrawn-listing records and nine replaced2103 cards without requests',async()=>{
  const selected=Object.fromEntries(Object.entries(registry.groups).filter(([,g])=>isRetiredAnnualGroup(g)));
  const calls=[];
- const result=await refreshAnnualCards({version:1,expectedGroups:5,groups:selected,errors:[]},{now:()=>now().toISOString(),fetchCard:async id=>{
+ const result=await refreshAnnualCards({version:1,expectedGroups:14,groups:selected,errors:[]},{now:()=>now().toISOString(),fetchCard:async id=>{
   calls.push(id);assert.fail('retired card fetched');
  }});
- assert.equal(Object.keys(selected).length,5);assert.deepEqual(calls,[]);assert.equal(result.archivedGroups,5);assert.equal(result.verifiedGroups,0);assert.equal(result.ok,true);
+ assert.equal(Object.keys(selected).length,14);assert.deepEqual(calls,[]);assert.equal(result.archivedGroups,14);assert.equal(result.verifiedGroups,0);assert.equal(result.ok,true);
  for(const [id,g]of Object.entries(selected))if(isRetiredAnnualGroup(g))assert.deepEqual(result.groups[id],g);
 });
-test('capacity refresh skips five retired and eight explicitly superseded old-hot offers without archive flags',async()=>{
+test('capacity refresh skips five retired and seventeen explicitly superseded old-hot offers without archive flags',async()=>{
  const offers=snapshot.offersByQuest.shmi.filter(isRetiredAnnualGroup).map((o,i)=>({...o,id:`renamed:${i}`,scheduleCard:{...o.scheduleCard,isArchived:false}}));
- assert.equal(offers.length,13);
+ assert.equal(offers.length,22);
  const before=JSON.stringify(offers);
  const result=await refreshMosAvailability({...snapshot,offersByQuest:{shmi:offers}},registry.groups,undefined,{now,fetchCard:()=>assert.fail('retired MOS card requested')});
- assert.equal(result.archived,13);assert.equal(result.expected,0);assert.equal(result.verified,0);assert.deepEqual(result.errors,[]);assert.deepEqual(result.entries,{});assert.equal(JSON.stringify(offers),before);
+ assert.equal(result.archived,22);assert.equal(result.expected,0);assert.equal(result.verified,0);assert.deepEqual(result.errors,[]);assert.deepEqual(result.entries,{});assert.equal(JSON.stringify(offers),before);
 });

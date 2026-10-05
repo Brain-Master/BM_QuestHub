@@ -30,7 +30,7 @@ test('conflicting base, duplicate identities, wrong cards and wrong addresses ar
     a=>a.locations[0].address='Wrong campus',a=>a.groups[0].organization='Other school',
   ]){const bad=structuredClone(addition);mutate(bad);assert.throws(()=>composeSchool2103(base,bad));}
 });
-test('published owner price never becomes raw mos price after restoration or failed refresh',async()=>{
+test('published owner price never becomes raw mos price after restoration; retired cards are never refreshed',async()=>{
   const full=read('../apps/web/content/annual-mos-refresh.generated.json');
   const id='К3015-26',row=read('../apps/web/data/offers-snapshot.json').offersByQuest.shmi.find(o=>o.id===`year:${id}`);
   const registry={...full,expectedGroups:1,verifiedGroups:1,ok:true,groups:{[id]:full.groups[id]},errors:[]};
@@ -41,8 +41,8 @@ test('published owner price never becomes raw mos price after restoration or fai
     assert.equal(restored.groups[id].lessonPrice,rawPrice);
     const failed=await refreshAnnualCards(restored,{fetchCard:async()=>{throw Error('MOS_TIMEOUT')},now:()=> '2026-09-23T12:00:00.000Z'});
     assert.equal(failed.groups[id].lessonPrice,rawPrice);assert.equal(failed.groups[id].refreshedAt,newer.annual.refreshedAt);
-    const fresh=await refreshAnnualCards(restored,{fetchCard:async()=>({...full.groups[id],lessonPrice:888}),now:()=> '2026-09-23T12:00:00.000Z'});
-    assert.equal(fresh.groups[id].lessonPrice,888);assert.equal(fresh.ok,true);
+    const fresh=await refreshAnnualCards(restored,{fetchCard:async()=>assert.fail('superseded card must not be fetched'),now:()=> '2026-09-23T12:00:00.000Z'});
+    assert.equal(fresh.groups[id].lessonPrice,rawPrice);assert.equal(fresh.ok,true);assert.equal(fresh.archivedGroups,1);
   }
   const broken=structuredClone(row);broken.annual.refreshedAt='2026-09-22T12:00:00.000Z';delete broken.annual.sourceLessonPrice;
   assert.throws(()=>restorePublishedAnnual(registry,[broken],mapping),/SOURCE_PRICE_MISSING/);
