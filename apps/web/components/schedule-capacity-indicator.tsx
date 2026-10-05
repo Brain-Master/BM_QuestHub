@@ -27,6 +27,7 @@ export function ScheduleCapacityIndicator({
 }: Props) {
   const clock=useScheduleClock();
   if (archived || (!capacity && !showUnknown)) return null;
+  const reserved = (capacity?.heldReserve ?? 0) > 0;
   const dated = !!(checkedAt || sourceDate || showUnknown);
   const stale = dated && (failed || !checkedAt || clock <= 0 || !Number.isFinite(Date.parse(checkedAt)) ||
     Date.parse(checkedAt) > clock + 60_000 || clock-Date.parse(checkedAt)>AVAILABILITY_MAX_AGE_MS);
@@ -42,16 +43,17 @@ export function ScheduleCapacityIndicator({
     >
       {capacity ? <>
         <div className={s.numbers}>
-          <strong className={stale?s.stale:capacity.isSoldOut?s.full:s.free}>{stale?`Было свободно ${capacity.left} из ${capacity.total}`:capacity.isSoldOut?"Свободных мест нет":`Свободно ${capacity.left} из ${capacity.total}`}</strong>
-          <span className={s.note}>{stale?"было занято":"занято"} {capacity.booked}</span>
+          <strong className={stale?s.stale:capacity.isSoldOut?s.full:s.free}>{reserved&&capacity.isSoldOut?"Свободных мест нет":stale?`Было свободно ${capacity.left} из ${capacity.total}`:capacity.isSoldOut?"Свободных мест нет":`Свободно ${capacity.left} из ${capacity.total}`}</strong>
+          <span className={s.note}>{reserved?"занято / зарезервировано":stale?"было занято":"занято"} {capacity.booked}</span>
         </div>
-        <div role="meter" aria-label={stale?"Занятые места по последним данным":"Занятые места в группе"} aria-valuemin={0}
+        <div role="meter" aria-label={reserved?"Занятые и зарезервированные места":stale?"Занятые места по последним данным":"Занятые места в группе"} aria-valuemin={0}
           aria-valuemax={capacity.total} aria-valuenow={capacity.booked}
-          aria-valuetext={`Занято ${capacity.booked} из ${capacity.total}, свободно ${capacity.left}`}
+          aria-valuetext={`${reserved?"Занято или зарезервировано":"Занято"} ${capacity.booked} из ${capacity.total}, свободно ${capacity.left}`}
           className={s.track}>
           <span className={stale?s.staleFill:capacity.isSoldOut?s.fullFill:s.fill} style={{width:`${capacity.percent}%`}} />
         </div>
       </> : <span className={s.note}>Количество мест не указано на mos.ru</span>}
+      {reserved && <small className={s.note}>Учтён резерв прежних записей: {capacity?.heldReserve}. Места уточним после перевода.</small>}
       {date && <small className={s.note}>mos.ru · {stale?"последние данные":"проверено"} {date}{checkedAt?" МСК":""}</small>}
       {!pageNotice && (failed||stale) && <small className={s.note}>Наличие мест и приём проверьте на mos.ru.</small>}
     </div>

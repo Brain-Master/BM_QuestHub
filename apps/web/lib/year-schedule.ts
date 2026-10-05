@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { isRetiredAnnualGroup } from "../content/annual-retirements.mjs";
-import { weeklySlotSchema } from "./offers/annual-schedule";
+import { weeklySlotSchema, effectiveAnnualFreeSeats } from "./offers/annual-schedule";
 import { annualProgrammeName } from "./offers/annual-programme-name";
 import type { Quest, Venue } from "@/lib/schemas";
 
@@ -13,6 +13,7 @@ const group = z.object({
   teacher:z.string().nullable(), status:z.enum(["open","closed"]),
   refreshedAt:z.iso.datetime().optional(),refreshError:z.string().regex(/^[A-Z][A-Z0-9_]+$/).optional(),
   availabilityUpdatedAt:z.iso.datetime().optional(),availabilityError:z.string().regex(/^MOS_[A-Z0-9_]+$/).optional(),
+  heldReserve:z.number().int().nonnegative().optional(), capacityNote:z.string().optional(), audienceLabel:z.string().optional(),
   totalSeats:nullableCount,freeSeats:nullableCount,ageMin:nullableCount,ageMax:nullableCount,
   lessonPrice:nullableCount,coursePrice:nullableCount,courseStart:date,courseEnd:date,
   slots:z.array(slot).min(1), link:z.url(),linkKind:z.enum(["card","search"]),limitedSource:z.boolean(),
@@ -52,7 +53,8 @@ export function projectAnnualWorkspace(quests: Quest[], venues: Venue[]): YearSc
       return { id:o.id.startsWith("year:")?o.id.slice(5):o.id,groupCode:a.groupCode,listingId:a.listingId,programme:"shmi",title:annualProgrammeName(sourceTitle,a.studyYear).full,sourceTitle,locationId:o.venueSlug,
         teacher:a.teacher,status:a.admission,refreshedAt:a.refreshedAt,refreshError:a.refreshError,
         availabilityUpdatedAt:a.availabilityUpdatedAt,availabilityError:a.availabilityError,
-        totalSeats:a.totalSeats,freeSeats:a.freeSeats,ageMin:a.ageMin,ageMax:a.ageMax,lessonPrice:a.lessonPrice,coursePrice:a.coursePrice,courseStart:o.startDate,courseEnd:o.endDate,slots:o.weeklySlots,link:o.mosBookingUrl,linkKind:a.linkKind,limitedSource:a.limitedSource };
+        totalSeats:a.totalSeats,freeSeats:effectiveAnnualFreeSeats(a),
+        heldReserve:a.legacyReservation?.places,audienceLabel:a.audienceLabel,capacityNote:a.legacyReservation?`Учтён резерв прежних записей: ${a.legacyReservation.places}. Места уточним после перевода.`:undefined,ageMin:a.ageMin,ageMax:a.ageMax,lessonPrice:a.lessonPrice,coursePrice:a.coursePrice,courseStart:o.startDate,courseEnd:o.endDate,slots:o.weeklySlots,link:o.mosBookingUrl,linkKind:a.linkKind,limitedSource:a.limitedSource };
     }),
   });
 }

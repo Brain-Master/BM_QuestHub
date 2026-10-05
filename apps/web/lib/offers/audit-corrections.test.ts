@@ -11,8 +11,8 @@ const offers = parseOffersSnapshot(JSON.parse(fs.readFileSync('data/offers-snaps
 const now = new Date('2026-09-24T10:01:00Z');
 
 test('all eight reviewed replacements are exact; history and unrelated identities survive', () => {
-  assert.equal(Object.keys(supersededAnnualGroups).length,8);
-  for (const [oldCode,newCode] of Object.entries(supersededAnnualGroups)) {
+  assert.equal(Object.keys(supersededAnnualGroups).length,17);
+  for (const [oldCode,newCode] of Object.entries(supersededAnnualGroups).filter(([code])=>code.startsWith('К40'))) {
     const old=offers.find(o=>o.id===`year:${oldCode}`), replacement=offers.find(o=>o.id===`year:${newCode}`);
     assert.ok(old); assert.ok(replacement);
     assert.equal(old.annual?.listingId,'2548560');
@@ -31,7 +31,7 @@ test('all eight reviewed replacements are exact; history and unrelated identitie
     const offer=offers.find(o=>o.id===`year:${code}`);assert.ok(offer);assert.equal(isRetiredAnnualGroup(offer),false);
   }
   for(const id of ['year:constructor','year:toString','year:unknown','unrelated'])assert.equal(canonicalAnnualOfferId(id),id);
-  const current=offers.filter(o=>!isRetiredAnnualGroup(o));assert.equal(current.length,65);
+  const current=offers.filter(o=>!isRetiredAnnualGroup(o));assert.equal(current.length,67);
   assert.equal(current.filter(o=>o.venueSlug.startsWith('school-2044-')).length,11);
 });
 

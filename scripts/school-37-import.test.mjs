@@ -144,6 +144,6 @@ test('historical fixtures retain exact pre-refresh bytes; current complete impor
     ['registry','854b6cb411a2a42908a6ca6e5f470830fbdba25da72affae8d19be10e182d392'],
     ['offers','6ef0df9c9f25b81f15be22c35a1b721bc77c2abe78b861672d6ea51d820e9d26'],
   ])assert.equal(crypto.createHash('sha256').update(fs.readFileSync(path.join(root,`scripts/fixtures/annual-69-before-1517/${file}.json`))).digest('hex'),hash);
-  const r=spawnSync(process.execPath,[path.join(root,'apps/web/node_modules/tsx/dist/cli.mjs'),'--tsconfig',path.join(root,'apps/web/tsconfig.json'),path.join(root,'scripts/import-school-937-year1.ts'),'--check'],{cwd:root,encoding:'utf8'});
+  const r=spawnSync(process.execPath,[path.join(root,'apps/web/node_modules/tsx/dist/cli.mjs'),'--tsconfig',path.join(root,'apps/web/tsconfig.json'),path.join(root,'scripts/import-school-2103-replacement.ts'),'--check'],{cwd:root,encoding:'utf8'});
   assert.equal(r.status,0,r.stderr);assert.match(r.stdout,/"alreadyImported":true/);
 });

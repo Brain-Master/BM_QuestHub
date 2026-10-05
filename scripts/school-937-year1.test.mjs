@@ -5,7 +5,7 @@ import {composeSchool937Year1,school937Year1Identities} from './lib/school-937-y
 const read=p=>JSON.parse(fs.readFileSync(new URL('../'+p,import.meta.url)));
 const base=read('scripts/fixtures/annual-74-before-937-year1/source.json');
 const addition=read('apps/web/content/annual-additions/school-937-year1.json');
-const current=read('apps/web/content/year-schedule.generated.json');
+const current=read('scripts/fixtures/annual-78-before-2103/source.json');
 test('append four exact Wednesday identities and preserve all74 source records',()=>{
  const composed=composeSchool937Year1(base,addition);
  assert.deepEqual(composed,current);assert.equal(composed.groups.length,78);
@@ -41,6 +41,7 @@ test('compiled eight groups retain owner facts, exact booking identities and zer
  for(const [course,os] of Object.entries(before.offersByQuest))for(const old of os){
   const next=snapshot.offersByQuest[course].find(o=>o.id===old.id);assert.ok(next);
   if(owned.has(old.id))continue;
+  if(['К3015-26','К3016-26','К3020-26','К3021-26','К3022-26','К3024-26','К3025-26','К3026-26','К3027-26'].includes(old.annual?.groupCode))old.scheduleCard.isArchived=true;
   if(old.annual)old.annual.sourceSha256=next.annual.sourceSha256;
   assert.deepEqual(next,old,'unrelated offer changed: '+old.id);
  }

@@ -37,7 +37,7 @@ test('37: pinned editorial overrides cannot bleed into other or future groups; r
     assert.equal(reviewedStudyYear('school-37',code),undefined);
   }
   const registry=annualMosRefreshSchema.parse(read('content/annual-mos-refresh.generated.json'));
-  assert.equal(registry.expectedGroups,78);assert.equal(registry.ok,false);
+  assert.equal(registry.expectedGroups,89);assert.equal(registry.ok,false);
   for(let i=0;i<9;i++)assert.equal(registry.groups[`К${2763+i}-26`].teacher,'Серегина Мария Владимировна');
 });
 test('37: school scope resolves exact campus/map point; absent photo is not fabricated; no private invites',()=>{

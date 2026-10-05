@@ -8,6 +8,7 @@ import { annualLocations, annualWorld, reviewedStandaloneVenues } from "../apps/
 import { getSchoolProfile, reviewedCampusProfile } from "../apps/web/content/school-profiles";
 import { reviewedStudyYear, reviewedGroupCodes, reviewedTeacher, reviewedLessonPrice, reviewedAges } from "../apps/web/content/annual-group-overrides";
 import { isRetiredAnnualGroup } from "../apps/web/content/annual-retirements.mjs";
+import transferSource from "../apps/web/content/annual-additions/school-2103-replacement.json";
 import { annualMosRefreshSchema } from "../apps/web/lib/offers/annual-schedule";
 import { yearPrograms } from "../apps/web/content/year-programs";
 import { projectAnnualWorkspace, yearScheduleSchema } from "../apps/web/lib/year-schedule";
@@ -131,7 +132,8 @@ const annualOffers = source.groups.map(original => {
   const live = refresh?.groups[original.id];
   const location = annualLocations.find(l => l.sourceId === original.locationId);
   if (!location) throw Error(`Unmapped group address ${original.id}`);
-  const parsedYear = annualProgrammeName(live?.title ?? original.title).studyYear;
+  const replacement = transferSource.groups.find(row=>row.groupCode===original.groupCode && row.listingId===original.listingId && row.link===original.link);
+  const parsedYear = replacement?.studyYear ?? annualProgrammeName(live?.title ?? original.title).studyYear;
   const studyYear = reviewedStudyYear(location.schoolScopeSlug, original.groupCode) ?? (parsedYear === 1 || parsedYear === 2 || parsedYear === 3 ? parsedYear : undefined);
   const expectedCode = reviewedGroupCodes[original.id] ?? original.groupCode;
   if (live && (live.listingId !== original.listingId || live.groupCode !== expectedCode)) throw Error(`Annual identity mismatch: ${original.id}`);
@@ -144,10 +146,13 @@ const annualOffers = source.groups.map(original => {
   const effectiveLessonPrice = reviewedPrice?.rubles ?? g.lessonPrice;
   const price = reviewedPrice ? "1 000 ₽ / занятие · 1 акад. час (45 мин)" : g.lessonPrice === null ? "Стоимость уточняется" : `${g.lessonPrice} ₽ / занятие`;
   const name = annualProgrammeName(g.title, studyYear);
+  const reserve = replacement && transferSource.legacyOccupancy.find(row=>row.newGroupCode===g.groupCode);
+  const audienceLabel = replacement ? (replacement.listingId==='2586499' ? 'Только 1 класс' : replacement.studyYear===1 ? '1–6 классы' : `Для выпускников ШМИ-${replacement.studyYear-1}`) : undefined;
+  const legacyReservation = reserve ? {oldGroupCode:reserve.oldGroupCode,oldCardId:reserve.oldCardId,places:reserve.occupied,checkedAt:reserve.checkedAt} : undefined;
   return venueOfferSchema.parse({ id: `year:${g.id}`, venueSlug: location.slug, shiftLabel: name.short,
     startDate: g.courseStart, endDate: g.courseEnd, startTime: g.slots[0].start, endTime: g.slots[0].end,
     dateRange: `${g.courseStart} — ${g.courseEnd}`, daySchedule: weekly, weeklySlots: g.slots, priceLabel: price, mosBookingUrl: g.link,
-    annual: { sourceTitle: original.title, studyYear, refreshedAt: live?.refreshedAt,
+    annual: { sourceTitle: original.title, studyYear, audienceLabel, legacyReservation, refreshedAt: live?.refreshedAt,
       refreshError: refresh?.errors.find(e => e.groupId === original.id)?.code,
       teacherSourceConflict: !!live?.teacher && !!teacher && live.teacher.split(" ")[0] !== teacher.split(" ")[0],
       asOf: source.asOf, sourceSha256: source.sourceSha256, listingId: g.listingId, groupCode: g.groupCode,
@@ -158,7 +163,7 @@ const annualOffers = source.groups.map(original => {
     enrolled: g.totalSeats !== null && g.freeSeats !== null && g.totalSeats > 0 ? g.totalSeats - g.freeSeats : undefined,
     maxCapacity: g.totalSeats !== null && g.totalSeats > 0 ? g.totalSeats : undefined,
     scheduleCard: { displayTitle: name.short, teacherName: g.teacher, description: `Данные mos.ru на ${live?.refreshedAt.slice(0,10) ?? source.asOf}. ${reviewedPrice ? "Стоимость подтверждена BrainMaster: 1 000 ₽ за занятие (1 академический час, 45 минут). " : ""}Условия и наличие мест проверьте перед записью.`,
-      ageLabel: g.ageMin === null || g.ageMax === null ? "Уточните у школы" : `${g.ageMin}–${g.ageMax} лет`,
+      ageLabel: audienceLabel ?? (g.ageMin === null || g.ageMax === null ? "Уточните у школы" : `${g.ageMin}–${g.ageMax} лет`),
       ...(isRetiredAnnualGroup(original) ? { isArchived: true } : {}),
       tags: ["Годовая программа", `Срез ${source.asOf}`], registrationChannel: "mos_ru", allowWaitlistWhenSoldOut: false,
       variants: [{ id: `year:${g.id}:main`, type: "Годовая группа", time: weekly, priceLabel: price }] },
