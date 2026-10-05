@@ -1,3 +1,4 @@
+import { AutumnCamps } from "@/components/autumn-camps";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -144,6 +145,7 @@ export default async function SchoolPage({ params }: Props) {
 
   return (
     <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:py-10">
+      <AutumnCamps schoolSlug={school.slug} />
       <RememberSchoolOnVisit slug={school.slug} name={school.name} />
 
       <PortalHero
