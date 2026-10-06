@@ -34,7 +34,7 @@ export type SchoolScope = {
 };
 
 function compareAgendaItems(a: AgendaOfferItem, b: AgendaOfferItem): number {
-  const date = a.offer.startDate.localeCompare(b.offer.startDate);
+  const date = (a.offer.startDate || "9999").localeCompare(b.offer.startDate || "9999");
   if (date !== 0) return date;
   const time = a.offer.startTime.localeCompare(b.offer.startTime);
   if (time !== 0) return time;
@@ -81,7 +81,7 @@ function parseIsoDate(iso: string): Date | null {
 }
 
 function offerDateFallback(start: string, end: string): string {
-  return start === end ? start : `${start} – ${end}`;
+  return !start && !end ? "Даты уточняются" : start === end ? start : `${start} – ${end}`;
 }
 
 export function buildAgendaItems(params: {
@@ -127,7 +127,7 @@ export function groupAgendaItems(items: AgendaOfferItem[]): AgendaOfferGroup[] {
   const groups = new Map<string, AgendaOfferGroup>();
 
   for (const item of items) {
-    const key = item.offer.startDate;
+    const key = item.offer.startDate || "dates-pending";
     const existing = groups.get(key);
     if (existing) {
       existing.items.push(item);

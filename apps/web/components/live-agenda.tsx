@@ -73,6 +73,7 @@ function LiveAgendaInner({
   const annualItems = useMemo(() => buildAgendaItems({ quests, venues, worlds })
     .filter(item => item.quest.format === "year"), [quests, venues, worlds]);
   const intensiveGroups = useMemo(() => invalidSchoolQuery ? [] : groups.map(group => ({ ...group, items: group.items.filter(item => item.quest.format !== "year") })).filter(group => group.items.length), [groups, invalidSchoolQuery]);
+  const requestedIntensives = searchParams.get("format") === "intensive";
   const selectedIntensive = !invalidSchoolQuery && intensiveGroups.some(group => group.items.some(item => item.offer.id === searchParams.get("offer")));
 
   // The same day/group cards as the agenda, with an H2 and catalogue entry on profiles.
@@ -87,9 +88,9 @@ function LiveAgendaInner({
 
   return (
     <div className="space-y-4">
-      {selectedIntensive ? <header className="space-y-3"><h1 className="font-heading text-3xl font-semibold">Квесты и смены</h1><Link className="inline-flex min-h-11 items-center text-primary underline" href={schoolSlug ? `/sites/${schoolSlug}/agenda/` : "/agenda/"}>Подобрать годовой кружок</Link></header> : <CourseFinder items={annualItems} quests={quests} venues={venues} schoolSlug={schoolSlug} venueSlug={venueSlug}
+      {selectedIntensive || requestedIntensives ? <header className="space-y-3"><h1 className="font-heading text-3xl font-semibold">Квесты и смены</h1><Link className="inline-flex min-h-11 items-center text-primary underline" href={schoolSlug ? `/sites/${schoolSlug}/agenda/` : "/agenda/"}>Подобрать годовой кружок</Link></header> : <CourseFinder items={annualItems} quests={quests} venues={venues} schoolSlug={schoolSlug} venueSlug={venueSlug}
         status={status} isValidating={isValidating} snapshotGeneratedAt={snapshotGeneratedAt} onRefresh={refresh} />}
-      <details className="rounded-2xl border border-white/15 p-4" data-testid="legacy-intensive-schedule" open={selectedIntensive || undefined}>
+      <details className="rounded-2xl border border-white/15 p-4" data-testid="legacy-intensive-schedule" open={selectedIntensive || requestedIntensives || undefined}>
         <summary className="min-h-11 cursor-pointer py-3 font-semibold focus-visible:outline-2">Квесты и смены · расписание и архив</summary>
       {liveEnabled ? (
         <p className="text-muted-foreground text-sm" role="status">

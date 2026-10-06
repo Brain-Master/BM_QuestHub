@@ -109,6 +109,7 @@ export const eventVariantV2Schema = z.object({
 });
 
 export const eventV2Schema = z.object({
+  preliminary: z.literal(true).optional(),
   annual: annualMetadataSchema.optional(),
   id: z.string().min(1),
   slug: z.string().optional(),
@@ -117,8 +118,8 @@ export const eventV2Schema = z.object({
     venueId: z.string().min(1),
   }),
   schedule: z.object({
-    startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-    endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    startDate: z.union([z.string().regex(/^\d{4}-\d{2}-\d{2}$/), z.literal("")]),
+    endDate: z.union([z.string().regex(/^\d{4}-\d{2}-\d{2}$/), z.literal("")]),
     timezone: z.string().min(1),
     slots: z.array(scheduleSlotSchema).default([]),
   }),
@@ -157,7 +158,10 @@ export const eventV2Schema = z.object({
     })
     .optional(),
   variants: z.array(eventVariantV2Schema).default([]),
-});
+}).refine(e => (!e.preliminary || !e.annual) &&
+  (Boolean(e.schedule.startDate) === Boolean(e.schedule.endDate)) &&
+  (e.preliminary || Boolean(e.schedule.startDate && e.schedule.endDate)),
+  "Unknown dates require a nonannual preliminary event");
 
 export type EventStatusV2 = z.infer<typeof eventStatusSchema>;
 export type UniverseV2 = z.infer<typeof universeV2Schema>;

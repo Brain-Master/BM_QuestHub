@@ -19,13 +19,15 @@ const all = readFinderState(new URLSearchParams());
 const annual = items.filter(item => finderItemMatches(item, all));
 
 test("catalogue and site choices require actual nonarchived groups in exact campus scope", () => {
-  assert.deepEqual(filterCatalog(quests,venues,{}).map(q=>q.slug),["shmi"]);
+  assert.deepEqual(filterCatalog(quests,venues,{format:"year"}).map(q=>q.slug),["shmi"]);
   assert.equal(filterCatalog(quests,venues,{school:"missing"}).length,0);
-  assert.equal(filterCatalog(quests,venues,{school:"school-937"})[0].offers.length,8);
-  assert.equal(filterCatalog(quests,venues,{school:"school-2044"})[0].offers.length,11);
+  assert.equal(filterCatalog(quests,venues,{school:"school-937",format:"year"})[0].offers.length,8);
+  assert.equal(filterCatalog(quests,venues,{school:"school-2044",format:"year"})[0].offers.length,11);
   assert.ok(filterCatalog(quests,venues,{status:"archived"}).length>0);
   const cards=buildSiteScopeCards({scopes:getSchoolScopes(venues),quests,venues,worlds:worldSchema.array().parse(catalog.worlds)});
-  assert.equal(cards.length,8);assert.equal(cards.reduce((sum,c)=>sum+c.shiftCount,0),67);
+  assert.equal(cards.length,9);assert.equal(cards.filter(c=>c.courseSlugs.includes("shmi")).length,8);assert.equal(cards.reduce((sum,c)=>sum+c.shiftCount,0),77);
+  assert.equal(cards.reduce((sum,c)=>sum+c.campuses.filter(v=>v.slug.startsWith("autumn-")).length,0),0);
+  assert.equal(filterCatalog(quests,venues,{format:"intensive"}).flatMap(q=>q.offers).length,10);
   assert.ok(cards.every(c=>c.shiftCount>0));
 });
 

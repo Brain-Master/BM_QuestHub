@@ -39,7 +39,7 @@ export default async function HomePage() {
       <section className="my-8 rounded-2xl border border-cyan-400/30 bg-cyan-400/10 p-6">
         <h2 className="text-2xl font-semibold">Осенние лагеря BrainMaster · 2026</h2>
         <p className="mt-2 text-slate-300">Инженерия, творчество и проекты своими руками. Предварительная регистрация уже открыта.</p>
-        <Link href="/camps/" className="mt-4 inline-block rounded-lg bg-cyan-300 px-5 py-3 font-semibold text-slate-950">Выбрать осенний лагерь</Link>
+        <Link href="/agenda/?format=intensive" className="mt-4 inline-block rounded-lg bg-cyan-300 px-5 py-3 font-semibold text-slate-950">Выбрать осенний лагерь</Link>
       </section>
       <YearProgramsSection />
 

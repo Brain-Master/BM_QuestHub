@@ -1,11 +1,76 @@
 {
   "version": 2,
-  "generatedAt": "2026-09-23T17:01:19Z",
+  "generatedAt": "2026-10-06T10:24:00.000Z",
   "source": "annual-csv-integration",
   "integrity": {
-    "contentHash": "sha256:341b57bacaea5cbbc7986da0961b01018485c5170716ef24849a9e0e63a5ef31"
+    "contentHash": "sha256:41a9236a5709df79837b5b6712e83f3ac81ef5981f83442b7dbb55ae535f8777"
   },
   "venues": [
+    {
+      "preliminaryVenue": true,
+      "slug": "autumn-2026-2103-venue",
+      "name": "Школа № 2103",
+      "type": "school",
+      "address": "Корпус уточняется",
+      "city": "moscow",
+      "logoUrl": "/sites/school-2103/logo-original.jpg",
+      "directions": [],
+      "photos": [],
+      "listedOnSites": false,
+      "schoolScopeSlug": "school-2103"
+    },
+    {
+      "preliminaryVenue": true,
+      "slug": "autumn-2026-2044-dolgoprudnaya-16-venue",
+      "name": "Школа № 2044",
+      "type": "school",
+      "address": "Долгопрудная аллея, 16",
+      "city": "moscow",
+      "logoUrl": "/sites/school-2044/logo-original.jpg",
+      "directions": [],
+      "photos": [],
+      "listedOnSites": false,
+      "schoolScopeSlug": "school-2044"
+    },
+    {
+      "preliminaryVenue": true,
+      "slug": "autumn-2026-2044-dmitrovskoe-165e-k6-venue",
+      "name": "Школа № 2044",
+      "type": "school",
+      "address": "Дмитровское шоссе, 165Е, корп. 6",
+      "city": "moscow",
+      "logoUrl": "/sites/school-2044/logo-original.jpg",
+      "directions": [],
+      "photos": [],
+      "listedOnSites": false,
+      "schoolScopeSlug": "school-2044"
+    },
+    {
+      "preliminaryVenue": true,
+      "slug": "autumn-2026-1517-venue",
+      "name": "Школа № 1517",
+      "type": "school",
+      "address": "Корпус уточняется",
+      "city": "moscow",
+      "logoUrl": "/sites/school-1517/logo-original.jpg",
+      "directions": [],
+      "photos": [],
+      "listedOnSites": false,
+      "schoolScopeSlug": "school-1517"
+    },
+    {
+      "preliminaryVenue": true,
+      "slug": "autumn-2026-937-venue",
+      "name": "Школа № 937",
+      "type": "school",
+      "address": "Корпус уточняется",
+      "city": "moscow",
+      "logoUrl": "/sites/school-937/logo-original.jpg",
+      "directions": [],
+      "photos": [],
+      "listedOnSites": false,
+      "schoolScopeSlug": "school-937"
+    },
     {
       "slug": "school-17-vvedenskogo-28s1",
       "name": "ГБОУ города Москвы «Школа № 17»",
