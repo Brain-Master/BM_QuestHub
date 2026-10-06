@@ -1,0 +1,30 @@
+{
+  "version": 2,
+  "generatedAt": "2026-10-06T10:24:00.000Z",
+  "source": "reviewed-autumn-camps",
+  "course": {
+    "slug": "autumn-creative",
+    "worldSlug": "mekhvarium",
+    "title": "Инженерно-творческий интенсив",
+    "tagline": "Создаём проекты своими руками",
+    "ageLabel": "Возраст уточняется по выбранной группе",
+    "format": "intensive",
+    "skills": [
+      "3D-моделирование",
+      "проектная работа",
+      "творчество"
+    ],
+    "activeInCampaign": true,
+    "heroImageUrl": "/editorial/year-courses/project-1280.webp",
+    "catalogImageUrl": "/editorial/year-courses/project-640.webp",
+    "durationLabel": "Продолжительность указана у выбранной группы",
+    "priceHint": "Стоимость и условия уточняются по выбранной группе",
+    "story": "Осенние инженерно-творческие занятия BrainMaster. Программа зависит от школы; смотрите описание выбранной группы.",
+    "skillsParent": "Моделирование, сборка и творческая работа в соответствии с программой площадки.",
+    "loot": "Результат указан в описании выбранной группы.",
+    "approach": "Предварительная регистрация. Условия участия подтверждаем до зачисления."
+  },
+  "integrity": {
+    "contentHash": "sha256:e013cf51da9c5b454de3826d845ccabe2b870af986889f43fdd7038169b1da16"
+  }
+}

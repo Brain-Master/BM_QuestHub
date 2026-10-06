@@ -26,6 +26,8 @@ export async function refreshMosAvailability(input:unknown, identities:Record<st
   const result:MosAvailability={version:1,attemptedAt:start.toISOString(),completedAt:start.toISOString(),expected:0,verified:0,archived:0,errors:[],entries:{}};
   const current:VenueOffer[]=[];
   for(const offer of offers){
+    // Preliminary camps use owner-reviewed facts and BrainMaster registration.
+    if(offer.preliminary)continue;
     if(isRetiredAnnualGroup(offer)){result.archived++;continue;}
     const lifecycle=groupLifecycle({...offer,...offer.scheduleCard},moscowDate(now()));
     if(lifecycle.state==='archived'){result.archived++;continue;}

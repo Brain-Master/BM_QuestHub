@@ -134,7 +134,7 @@ export function isOfferAutoArchived(
   offer: Pick<VenueOffer, "endDate">,
   now = new Date(),
 ): boolean {
-  return now > endOfLocalDate(offer.endDate);
+  return Boolean(offer.endDate) && now > endOfLocalDate(offer.endDate);
 }
 
 export function getOfferEnrolledTotal(
@@ -276,6 +276,7 @@ export function getScheduleBookingMode(
       : { kind: "disabled", label: cta.soldOutDisabled };
   }
 
+  if (offer.preliminary) return {kind: "waitlist", label: cta.preliminary};
   const mosBookingUrl = variant?.mosBookingUrl ?? offer.mosBookingUrl;
   if (mosBookingUrl) {
     return { kind: "mos", label: cta.bookMos, url: mosBookingUrl };
@@ -288,6 +289,7 @@ export function getScheduleBookingMode(
 }
 
 export function formatScheduleDateRange(start: string, end: string): string {
+  if (!start && !end) return "Даты уточняются";
   const startDate = parseIsoDate(start);
   const endDate = parseIsoDate(end);
   if (!startDate || !endDate) return `${start} – ${end}`;

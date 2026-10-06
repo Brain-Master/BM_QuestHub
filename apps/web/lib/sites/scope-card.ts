@@ -89,7 +89,7 @@ export function buildSiteScopeCards(params: {
   const scheduleLoading = params.scheduleLoading ?? false;
   return params.scopes
     .map((scope) => {
-      const primaryVenue = scope.venues[0];
+      const primaryVenue = scope.venues.find(venue => !venue.preliminaryVenue) ?? scope.venues[0];
       const city = primaryVenue?.city ?? DEFAULT_CITY;
       const scopeVenues = new Set(scope.venues.map(v=>v.slug));
       const scopedAgendaItems = buildAgendaItems({
@@ -98,7 +98,7 @@ export function buildSiteScopeCards(params: {
         worlds: params.worlds,
       }).filter(item=>scopeVenues.has(item.venue.slug) && !["finished","cancelled"].includes(resolveScheduleStatusKey(item.offer)));
       const scopedQuests = params.quests.filter(q=>scopedAgendaItems.some(item=>item.quest.slug===q.slug));
-      const campuses = scope.venues.map((venue) => ({
+      const campuses = scope.venues.filter(v => !v.preliminaryVenue).map((venue) => ({
         slug: venue.slug,
         shiftCount: scopedAgendaItems.filter(item => item.venue.slug === venue.slug).length,
         name: venue.name,

@@ -48,7 +48,7 @@ function eventToVenueOffer(event: EventV2): VenueOffer {
   const timeRange = slot?.timeRange;
   const { startTime, endTime } = timeRange
     ? parseTimeRange(timeRange.start, timeRange.end)
-    : { startTime: "9:00", endTime: "17:00" };
+    : event.preliminary ? { startTime: "", endTime: "" } : { startTime: "9:00", endTime: "17:00" };
 
   const primaryVariant = event.variants[0];
   const priceLabel = primaryVariant?.price.label ?? "";
@@ -85,11 +85,12 @@ function eventToVenueOffer(event: EventV2): VenueOffer {
     const [y, m, d] = iso.split("-");
     return `${d}.${m}.${y}`;
   };
-  const dateRange = `${fmt(event.schedule.startDate)} — ${fmt(event.schedule.endDate)}`;
+  const dateRange = event.schedule.startDate ? `${fmt(event.schedule.startDate)} — ${fmt(event.schedule.endDate)}` : "Даты уточняются";
   const daySchedule = event.schedule.slots.map(s => s.label ?? (s.timeRange ? `${s.timeRange.start}–${s.timeRange.end}` : "Время уточняется")).join("; ") || `Ежедневно: ${startTime}–${endTime}`;
 
   return {
     id: event.id,
+    preliminary: event.preliminary,
     annual: event.annual,
     weeklySlots: event.schedule.slots.some(s => s.weekday) ? event.schedule.slots.flatMap(s => s.weekday && s.timeRange ? [{ weekday: s.weekday, start: s.timeRange.start, end: s.timeRange.end }] : []) : undefined,
     venueSlug: event.relations.venueId,

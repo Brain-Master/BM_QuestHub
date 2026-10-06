@@ -25,6 +25,7 @@ export const activityGalleryPhotoSchema = venuePhotoSchema.extend({
 export type ActivityGalleryPhoto = z.infer<typeof activityGalleryPhotoSchema>;
 
 export const venueSchema = z.object({
+  preliminaryVenue: z.literal(true).optional(),
   slug: z.string(),
   name: z.string(),
   displayName: z.string().optional(),
@@ -193,15 +194,16 @@ export type ScheduleCard = z.infer<typeof scheduleCardSchema>;
 export type RegistrationChannel = z.infer<typeof registrationChannelSchema>;
 
 export const venueOfferSchema = z.object({
+  preliminary: z.literal(true).optional(),
   weeklySlots: z.array(weeklySlotSchema).min(1).optional(),
   annual: annualMetadataSchema.optional(),
   id: z.string(),
   venueSlug: z.string(),
   shiftLabel: z.string(),
-  startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-  endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-  startTime: z.string().regex(/^\d{1,2}:\d{2}$/),
-  endTime: z.string().regex(/^\d{1,2}:\d{2}$/),
+  startDate: z.union([z.string().regex(/^\d{4}-\d{2}-\d{2}$/), z.literal("")]),
+  endDate: z.union([z.string().regex(/^\d{4}-\d{2}-\d{2}$/), z.literal("")]),
+  startTime: z.union([z.string().regex(/^\d{1,2}:\d{2}$/), z.literal("")]),
+  endTime: z.union([z.string().regex(/^\d{1,2}:\d{2}$/), z.literal("")]),
   dateRange: z.string(),
   daySchedule: z.string(),
   priceLabel: z.string(),
@@ -214,7 +216,11 @@ export const venueOfferSchema = z.object({
   maxCapacity: z.number().int().positive().optional(),
   /** UX/UI payload для новой витрины расписания. Backward-compatible: старые snapshots могут не иметь этого блока. */
   scheduleCard: scheduleCardSchema.optional(),
-});
+}).refine(o => (!o.preliminary || !o.annual) &&
+  (Boolean(o.startDate) === Boolean(o.endDate)) &&
+  (Boolean(o.startTime) === Boolean(o.endTime)) &&
+  (o.preliminary || Boolean(o.startDate && o.endDate && o.startTime && o.endTime)),
+  "Unknown dates/time require a nonannual preliminary offer and paired fields");
 
 export type VenueOffer = z.infer<typeof venueOfferSchema>;
 

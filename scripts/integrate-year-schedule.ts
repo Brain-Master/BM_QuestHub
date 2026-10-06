@@ -116,6 +116,7 @@ for (const campus of reviewedStandaloneVenues) {
 // Reviewed profiles own only explicitly returned presentation/location fields.
 // Existing IDs, routing, colours and unrelated source facts are retained.
 for (const original of map.venues) {
+  if(original.preliminaryVenue)continue;
   const school = original.schoolScopeSlug ?? original.slug;
   if (!getSchoolProfile(school) || venues.some(v=>v.slug===original.slug)) continue;
   const overlay = reviewedCampusProfile(school,original.slug);

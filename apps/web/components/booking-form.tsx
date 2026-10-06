@@ -27,6 +27,7 @@ export type BookingFormSummary = {
   dates: string;
   format: string;
   priceLabel: string;
+  preliminary?: boolean;
 };
 
 type Props = {
@@ -79,7 +80,7 @@ function BookingSummaryCard({ summary }: { summary: BookingFormSummary }) {
           <dd className="text-right font-medium">{summary.format}</dd>
         </div>
         <div className="mt-0.5 flex items-center justify-between gap-3 border-slate-800 border-t pt-1.5">
-          <dt className="text-slate-400">К оплате:</dt>
+          <dt className="text-slate-400">{summary.preliminary ? "Стоимость:" : "К оплате:"}</dt>
           <dd className="font-bold text-white">{summary.priceLabel}</dd>
         </div>
       </dl>

@@ -86,7 +86,7 @@ test("shared catalogue projects all annual groups and exact campuses", () => {
 });
 
 test("reviewed school2044 identity and both exact campus coordinates survive compilation",()=>{
-  const school=venues.filter(v=>v.schoolScopeSlug==='school-2044');
+  const school=venues.filter(v=>v.schoolScopeSlug==='school-2044'&&!v.preliminaryVenue);
   assert.equal(school.length,2);
   for(const v of school){assert.match(v.name,/имени Героя Советского Союза А\. М\. Серебрякова/);assert.equal(v.displayName,v.name);assert.equal(v.photos.length,1);assert.equal(v.metro,'Физтех');assert.match(v.logoUrl??'',/school-2044\/logo-original/);}
   assert.deepEqual(school.map(v=>[v.latitude,v.longitude]),[[55.932261,37.541054],[55.927015,37.542641]]);

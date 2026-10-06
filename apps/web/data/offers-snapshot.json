@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-10-05T20:01:41.897Z",
+  "generatedAt": "2026-10-06T10:24:00.000Z",
   "source": "annual-csv-integration",
   "offersByQuest": {
     "mekhvarium-laboratoriya-kineticheskih-monstrov": [
@@ -412,6 +412,198 @@
               "alt": "Мехвариум: Лаборатория Кинетических Монстров"
             }
           }
+        }
+      },
+      {
+        "preliminary": true,
+        "id": "autumn-2026-2103",
+        "venueSlug": "autumn-2026-2103-venue",
+        "shiftLabel": "Мехвариум · Школа № 2103",
+        "startDate": "",
+        "endDate": "",
+        "startTime": "09:00",
+        "endTime": "12:30",
+        "dateRange": "Даты уточняются",
+        "daySchedule": "09:00–12:30",
+        "priceLabel": "9 000 ₽ · предварительная стоимость",
+        "mosBookingUrl": null,
+        "includedNote": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
+        "sheetStatus": "Скоро старт",
+        "scheduleCard": {
+          "displayTitle": "Мехвариум",
+          "description": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
+          "tags": [
+            "Осень 2026",
+            "Предварительная запись"
+          ],
+          "timelineDate": "Даты уточняются",
+          "shortDate": "Даты уточняются",
+          "programNameH1": "Мехвариум",
+          "programFilterLabel": "Мехвариум",
+          "ageLabel": "Возраст уточняется",
+          "formatType": "Осенний интенсив",
+          "formatTime": "09:00–12:30",
+          "formatNote": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
+          "status": "Скоро старт",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "brainmaster",
+          "allowPreliminaryRegistration": true,
+          "variants": [
+            {
+              "id": "autumn-2026-2103",
+              "type": "Осенний интенсив",
+              "time": "09:00–12:30",
+              "priceLabel": "9 000 ₽ · предварительная стоимость",
+              "note": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
+              "registrationChannel": "brainmaster",
+              "allowPreliminaryRegistration": true
+            }
+          ]
+        }
+      },
+      {
+        "preliminary": true,
+        "id": "autumn-2026-ekt",
+        "venueSlug": "mduc-ekt-mosfilmovskaya",
+        "shiftLabel": "Мехвариум: Лаборатория Инженерных Монстров · МДЮЦ ЭКТ",
+        "startDate": "2026-10-26",
+        "endDate": "2026-10-30",
+        "startTime": "09:00",
+        "endTime": "12:30",
+        "dateRange": "26.10.2026 — 30.10.2026",
+        "daySchedule": "09:00–12:30",
+        "priceLabel": "12 950 ₽",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/1071480",
+        "includedNote": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
+        "sheetStatus": "Скоро старт",
+        "scheduleCard": {
+          "displayTitle": "Мехвариум: Лаборатория Инженерных Монстров",
+          "description": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
+          "tags": [
+            "Осень 2026",
+            "Предварительная запись"
+          ],
+          "timelineDate": "26.10.2026 — 30.10.2026",
+          "shortDate": "26.10.2026 — 30.10.2026",
+          "programNameH1": "Мехвариум: Лаборатория Инженерных Монстров",
+          "programFilterLabel": "Мехвариум: Лаборатория Инженерных Монстров",
+          "ageLabel": "6–13 лет",
+          "formatType": "Осенний интенсив",
+          "formatTime": "09:00–12:30",
+          "formatNote": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
+          "status": "Скоро старт",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "brainmaster",
+          "allowPreliminaryRegistration": true,
+          "variants": [
+            {
+              "id": "autumn-2026-ekt",
+              "type": "Осенний интенсив",
+              "time": "09:00–12:30",
+              "priceLabel": "12 950 ₽",
+              "note": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
+              "registrationChannel": "brainmaster",
+              "allowPreliminaryRegistration": true
+            }
+          ]
+        }
+      },
+      {
+        "preliminary": true,
+        "id": "autumn-2026-1517",
+        "venueSlug": "autumn-2026-1517-venue",
+        "shiftLabel": "Мехвариум · Школа № 1517",
+        "startDate": "",
+        "endDate": "",
+        "startTime": "09:00",
+        "endTime": "12:30",
+        "dateRange": "Даты уточняются",
+        "daySchedule": "09:00–12:30",
+        "priceLabel": "Цена уточняется",
+        "mosBookingUrl": null,
+        "includedNote": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
+        "sheetStatus": "Скоро старт",
+        "scheduleCard": {
+          "displayTitle": "Мехвариум",
+          "description": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
+          "tags": [
+            "Осень 2026",
+            "Предварительная запись"
+          ],
+          "timelineDate": "Даты уточняются",
+          "shortDate": "Даты уточняются",
+          "programNameH1": "Мехвариум",
+          "programFilterLabel": "Мехвариум",
+          "ageLabel": "Возраст уточняется",
+          "formatType": "Осенний интенсив",
+          "formatTime": "09:00–12:30",
+          "formatNote": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
+          "status": "Скоро старт",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "brainmaster",
+          "allowPreliminaryRegistration": true,
+          "variants": [
+            {
+              "id": "autumn-2026-1517",
+              "type": "Осенний интенсив",
+              "time": "09:00–12:30",
+              "priceLabel": "Цена уточняется",
+              "note": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
+              "registrationChannel": "brainmaster",
+              "allowPreliminaryRegistration": true
+            }
+          ]
+        }
+      },
+      {
+        "preliminary": true,
+        "id": "autumn-2026-937",
+        "venueSlug": "autumn-2026-937-venue",
+        "shiftLabel": "Мехвариум · Школа № 937",
+        "startDate": "",
+        "endDate": "",
+        "startTime": "09:00",
+        "endTime": "12:30",
+        "dateRange": "Даты уточняются",
+        "daySchedule": "09:00–12:30",
+        "priceLabel": "9 000 ₽ · предварительная стоимость",
+        "mosBookingUrl": null,
+        "includedNote": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
+        "sheetStatus": "Скоро старт",
+        "scheduleCard": {
+          "displayTitle": "Мехвариум",
+          "description": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
+          "tags": [
+            "Осень 2026",
+            "Предварительная запись"
+          ],
+          "timelineDate": "Даты уточняются",
+          "shortDate": "Даты уточняются",
+          "programNameH1": "Мехвариум",
+          "programFilterLabel": "Мехвариум",
+          "ageLabel": "Возраст уточняется",
+          "formatType": "Осенний интенсив",
+          "formatTime": "09:00–12:30",
+          "formatNote": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
+          "status": "Скоро старт",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "brainmaster",
+          "allowPreliminaryRegistration": true,
+          "variants": [
+            {
+              "id": "autumn-2026-937",
+              "type": "Осенний интенсив",
+              "time": "09:00–12:30",
+              "priceLabel": "9 000 ₽ · предварительная стоимость",
+              "note": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
+              "registrationChannel": "brainmaster",
+              "allowPreliminaryRegistration": true
+            }
+          ]
         }
       }
     ],
@@ -1444,6 +1636,54 @@
               "alt": "КиберРитм + Minecraft: Пробуждение Стража"
             }
           }
+        }
+      },
+      {
+        "preliminary": true,
+        "id": "autumn-2026-1212",
+        "venueSlug": "school-1212-vilnyusskaya-14",
+        "shiftLabel": "КиберРитм: Инженерия звука · Школа № 1212",
+        "startDate": "2026-10-27",
+        "endDate": "2026-10-31",
+        "startTime": "09:00",
+        "endTime": "12:30",
+        "dateRange": "27.10.2026 — 31.10.2026",
+        "daySchedule": "09:00–12:30",
+        "priceLabel": "9 100 ₽",
+        "mosBookingUrl": null,
+        "includedNote": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
+        "sheetStatus": "Скоро старт",
+        "scheduleCard": {
+          "displayTitle": "КиберРитм: Инженерия звука",
+          "description": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
+          "tags": [
+            "Осень 2026",
+            "Предварительная запись"
+          ],
+          "timelineDate": "27.10.2026 — 31.10.2026",
+          "shortDate": "27.10.2026 — 31.10.2026",
+          "programNameH1": "КиберРитм: Инженерия звука",
+          "programFilterLabel": "КиберРитм: Инженерия звука",
+          "ageLabel": "Возраст уточняется",
+          "formatType": "Осенний интенсив",
+          "formatTime": "09:00–12:30",
+          "formatNote": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
+          "status": "Скоро старт",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "brainmaster",
+          "allowPreliminaryRegistration": true,
+          "variants": [
+            {
+              "id": "autumn-2026-1212",
+              "type": "Осенний интенсив",
+              "time": "09:00–12:30",
+              "priceLabel": "9 100 ₽",
+              "note": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
+              "registrationChannel": "brainmaster",
+              "allowPreliminaryRegistration": true
+            }
+          ]
         }
       }
     ],
@@ -7598,6 +7838,248 @@
               "type": "Годовая группа",
               "time": "Вторник: 16:00–16:45",
               "priceLabel": "1000 ₽ / занятие"
+            }
+          ]
+        }
+      }
+    ],
+    "autumn-creative": [
+      {
+        "preliminary": true,
+        "id": "autumn-2026-2044-dolgoprudnaya-16",
+        "venueSlug": "autumn-2026-2044-dolgoprudnaya-16-venue",
+        "shiftLabel": "Инженерно-творческий интенсив · Школа № 2044",
+        "startDate": "",
+        "endDate": "",
+        "startTime": "09:00",
+        "endTime": "12:30",
+        "dateRange": "Даты уточняются",
+        "daySchedule": "09:00–12:30",
+        "priceLabel": "10 500 ₽ · предварительная стоимость",
+        "mosBookingUrl": null,
+        "includedNote": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
+        "sheetStatus": "Скоро старт",
+        "scheduleCard": {
+          "displayTitle": "Инженерно-творческий интенсив",
+          "description": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
+          "tags": [
+            "Осень 2026",
+            "Предварительная запись"
+          ],
+          "timelineDate": "Даты уточняются",
+          "shortDate": "Даты уточняются",
+          "programNameH1": "Инженерно-творческий интенсив",
+          "programFilterLabel": "Инженерно-творческий интенсив",
+          "ageLabel": "Возраст уточняется",
+          "formatType": "Осенний интенсив",
+          "formatTime": "09:00–12:30",
+          "formatNote": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
+          "status": "Скоро старт",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "brainmaster",
+          "allowPreliminaryRegistration": true,
+          "variants": [
+            {
+              "id": "autumn-2026-2044-dolgoprudnaya-16",
+              "type": "Осенний интенсив",
+              "time": "09:00–12:30",
+              "priceLabel": "10 500 ₽ · предварительная стоимость",
+              "note": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
+              "registrationChannel": "brainmaster",
+              "allowPreliminaryRegistration": true
+            }
+          ]
+        }
+      },
+      {
+        "preliminary": true,
+        "id": "autumn-2026-2044-dmitrovskoe-165e-k6",
+        "venueSlug": "autumn-2026-2044-dmitrovskoe-165e-k6-venue",
+        "shiftLabel": "Инженерно-творческий интенсив · Школа № 2044",
+        "startDate": "",
+        "endDate": "",
+        "startTime": "09:00",
+        "endTime": "12:30",
+        "dateRange": "Даты уточняются",
+        "daySchedule": "09:00–12:30",
+        "priceLabel": "10 500 ₽ · предварительная стоимость",
+        "mosBookingUrl": null,
+        "includedNote": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
+        "sheetStatus": "Скоро старт",
+        "scheduleCard": {
+          "displayTitle": "Инженерно-творческий интенсив",
+          "description": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
+          "tags": [
+            "Осень 2026",
+            "Предварительная запись"
+          ],
+          "timelineDate": "Даты уточняются",
+          "shortDate": "Даты уточняются",
+          "programNameH1": "Инженерно-творческий интенсив",
+          "programFilterLabel": "Инженерно-творческий интенсив",
+          "ageLabel": "Возраст уточняется",
+          "formatType": "Осенний интенсив",
+          "formatTime": "09:00–12:30",
+          "formatNote": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
+          "status": "Скоро старт",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "brainmaster",
+          "allowPreliminaryRegistration": true,
+          "variants": [
+            {
+              "id": "autumn-2026-2044-dmitrovskoe-165e-k6",
+              "type": "Осенний интенсив",
+              "time": "09:00–12:30",
+              "priceLabel": "10 500 ₽ · предварительная стоимость",
+              "note": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
+              "registrationChannel": "brainmaster",
+              "allowPreliminaryRegistration": true
+            }
+          ]
+        }
+      },
+      {
+        "preliminary": true,
+        "id": "autumn-2026-2044-dmitrovskoe-169b",
+        "venueSlug": "school-2044-dmitrovskoe-169b",
+        "shiftLabel": "Инженерно-творческий интенсив · Школа № 2044",
+        "startDate": "",
+        "endDate": "",
+        "startTime": "09:00",
+        "endTime": "12:30",
+        "dateRange": "Даты уточняются",
+        "daySchedule": "09:00–12:30",
+        "priceLabel": "10 500 ₽ · предварительная стоимость",
+        "mosBookingUrl": null,
+        "includedNote": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
+        "sheetStatus": "Скоро старт",
+        "scheduleCard": {
+          "displayTitle": "Инженерно-творческий интенсив",
+          "description": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
+          "tags": [
+            "Осень 2026",
+            "Предварительная запись"
+          ],
+          "timelineDate": "Даты уточняются",
+          "shortDate": "Даты уточняются",
+          "programNameH1": "Инженерно-творческий интенсив",
+          "programFilterLabel": "Инженерно-творческий интенсив",
+          "ageLabel": "Возраст уточняется",
+          "formatType": "Осенний интенсив",
+          "formatTime": "09:00–12:30",
+          "formatNote": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
+          "status": "Скоро старт",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "brainmaster",
+          "allowPreliminaryRegistration": true,
+          "variants": [
+            {
+              "id": "autumn-2026-2044-dmitrovskoe-169b",
+              "type": "Осенний интенсив",
+              "time": "09:00–12:30",
+              "priceLabel": "10 500 ₽ · предварительная стоимость",
+              "note": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
+              "registrationChannel": "brainmaster",
+              "allowPreliminaryRegistration": true
+            }
+          ]
+        }
+      },
+      {
+        "preliminary": true,
+        "id": "autumn-2026-37",
+        "venueSlug": "school-37-michurinsky-28",
+        "shiftLabel": "Инженерно-творческий интенсив · Школа № 37",
+        "startDate": "",
+        "endDate": "",
+        "startTime": "09:00",
+        "endTime": "12:30",
+        "dateRange": "Даты уточняются",
+        "daySchedule": "09:00–12:30",
+        "priceLabel": "10 500 ₽",
+        "mosBookingUrl": null,
+        "includedNote": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
+        "sheetStatus": "Скоро старт",
+        "scheduleCard": {
+          "displayTitle": "Инженерно-творческий интенсив",
+          "description": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
+          "tags": [
+            "Осень 2026",
+            "Предварительная запись"
+          ],
+          "timelineDate": "Даты уточняются",
+          "shortDate": "Даты уточняются",
+          "programNameH1": "Инженерно-творческий интенсив",
+          "programFilterLabel": "Инженерно-творческий интенсив",
+          "ageLabel": "Возраст уточняется",
+          "formatType": "Осенний интенсив",
+          "formatTime": "09:00–12:30",
+          "formatNote": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
+          "status": "Скоро старт",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "brainmaster",
+          "allowPreliminaryRegistration": true,
+          "variants": [
+            {
+              "id": "autumn-2026-37",
+              "type": "Осенний интенсив",
+              "time": "09:00–12:30",
+              "priceLabel": "10 500 ₽",
+              "note": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
+              "registrationChannel": "brainmaster",
+              "allowPreliminaryRegistration": true
+            }
+          ]
+        }
+      },
+      {
+        "preliminary": true,
+        "id": "autumn-2026-1383",
+        "venueSlug": "school-1383-verkhnie-likhobory",
+        "shiftLabel": "Создай своего героя или антигероя · Школа № 1383",
+        "startDate": "",
+        "endDate": "",
+        "startTime": "",
+        "endTime": "",
+        "dateRange": "Даты уточняются",
+        "daySchedule": "Понедельник и вторник, по 2 часа. Время уточняется",
+        "priceLabel": "9 500 ₽",
+        "mosBookingUrl": null,
+        "includedNote": "BrainMaster проводит только два занятия в рамках школьного интенсива. Указанная стоимость — 9 500 ₽; состав программы и что входит в стоимость уточняются.",
+        "sheetStatus": "Скоро старт",
+        "scheduleCard": {
+          "displayTitle": "Создай своего героя или антигероя",
+          "description": "За два занятия по два часа: аксессуар в Tinkercad, сборка фигурки из напечатанных на 3D-принтере заготовок, акриловая роспись, наклейки и воздушный пластилин; имя, характер, способности и история героя. Участник забирает фигурку домой.\n\nBrainMaster проводит только два занятия в рамках школьного интенсива. Указанная стоимость — 9 500 ₽; состав программы и что входит в стоимость уточняются.",
+          "tags": [
+            "Осень 2026",
+            "Предварительная запись"
+          ],
+          "timelineDate": "Даты уточняются",
+          "shortDate": "Даты уточняются",
+          "programNameH1": "Создай своего героя или антигероя",
+          "programFilterLabel": "Создай своего героя или антигероя",
+          "ageLabel": "Возраст уточняется",
+          "formatType": "Два занятия по 2 часа",
+          "formatTime": "Понедельник и вторник, по 2 часа. Время уточняется",
+          "formatNote": "BrainMaster проводит только два занятия в рамках школьного интенсива. Указанная стоимость — 9 500 ₽; состав программы и что входит в стоимость уточняются.",
+          "status": "Скоро старт",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "brainmaster",
+          "allowPreliminaryRegistration": true,
+          "variants": [
+            {
+              "id": "autumn-2026-1383",
+              "type": "Два занятия по 2 часа",
+              "time": "Понедельник и вторник, по 2 часа. Время уточняется",
+              "priceLabel": "9 500 ₽",
+              "note": "BrainMaster проводит только два занятия в рамках школьного интенсива. Указанная стоимость — 9 500 ₽; состав программы и что входит в стоимость уточняются.",
+              "registrationChannel": "brainmaster",
+              "allowPreliminaryRegistration": true
             }
           ]
         }

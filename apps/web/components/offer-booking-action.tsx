@@ -209,7 +209,7 @@ function OfferBookingActionContent({
             return destination() ?? false;
           }}
           className={cn(
-            "grid h-[min(92dvh,760px)] grid-rows-[auto,minmax(0,1fr)] gap-0 overflow-hidden border-slate-800 bg-[#0F172A] p-0 text-slate-100 shadow-2xl shadow-black/50 sm:max-w-[410px]",
+            "z-[110] grid h-[min(92dvh,760px)] grid-rows-[auto,minmax(0,1fr)] gap-0 overflow-hidden border-slate-800 bg-[#0F172A] p-0 text-slate-100 shadow-2xl shadow-black/50 sm:max-w-[410px]",
             view === "mos_intro" && "h-auto max-h-[92dvh] sm:max-w-[480px]",
             "[&_[data-slot=dialog-close]]:top-2 [&_[data-slot=dialog-close]]:right-2 [&_[data-slot=dialog-close]]:z-20 [&_[data-slot=dialog-close]]:size-11",
             "[&_[data-slot=dialog-close]]:text-slate-400 [&_[data-slot=dialog-close]]:hover:bg-white/10 [&_[data-slot=dialog-close]]:hover:text-white",
@@ -265,24 +265,25 @@ function OfferBookingActionContent({
               <BookingForm
                 key={session}
                 summary={{
-                  venueName: resolveVenueShortName(venue),
-                  questTitle: quest.title,
+                  venueName: offer.preliminary ? `${resolveVenueShortName(venue)} · ${venue.address}` : resolveVenueShortName(venue),
+                  questTitle: offer.preliminary ? `Осень 2026 · ${offer.scheduleCard?.displayTitle ?? quest.title}` : quest.title,
                   dates: offer.dateRange,
                   format: formatLabel,
                   priceLabel,
+                  preliminary: offer.preliminary,
                 }}
                 defaults={{
                   leadType: flowContext.leadType,
                   registrationChannel: flowContext.registrationChannel,
                   questSlug: quest.slug,
-                  questTitle: quest.title,
+                  questTitle: offer.preliminary ? `Осень 2026 · ${offer.scheduleCard?.displayTitle ?? quest.title}` : quest.title,
                   offerId: offer.id,
                   variantId: variant?.id,
-                  variantTitle: variant
+                  variantTitle: offer.preliminary ? `${offer.dateRange}; ${formatLabel}; ${priceLabel}` : variant
                     ? `${variant.type} · ${variant.time}`
                     : undefined,
                   venueSlug: venue.slug,
-                  venueName: resolveVenueShortName(venue),
+                  venueName: offer.preliminary ? `${resolveVenueShortName(venue)} · ${venue.address}` : resolveVenueShortName(venue),
                   schoolSlug,
                 }}
                 flowContext={flowContext}

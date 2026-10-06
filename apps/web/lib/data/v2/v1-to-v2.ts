@@ -70,6 +70,7 @@ export function venueOfferToEventV2(
 
   return {
     id: offer.id,
+    preliminary: offer.preliminary,
     annual: offer.annual,
     relations: {
       courseId: courseSlug,
@@ -82,7 +83,7 @@ export function venueOfferToEventV2(
       slots: offer.weeklySlots?.map(s => ({ weekday: s.weekday, label: `${s.weekday}: ${s.start}–${s.end}`, timeRange: { start: s.start, end: s.end } })) ?? [
         {
           label: offer.daySchedule,
-          timeRange: { start: offer.startTime, end: offer.endTime },
+          timeRange: offer.startTime && offer.endTime ? { start: offer.startTime, end: offer.endTime } : undefined,
         },
       ],
     },
@@ -103,7 +104,8 @@ export function venueOfferToEventV2(
         offer.mosBookingUrl,
       ),
       allowWaitlist: card?.allowWaitlistWhenSoldOut ?? false,
-      allowBooking: offer.annual?.admission !== "closed",
+      allowBooking: !offer.preliminary && offer.annual?.admission !== "closed",
+      ...(offer.preliminary ? {channel: "brainmaster" as const, allowWaitlist: true} : {}),
     },
     presentation: card
       ? {

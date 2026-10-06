@@ -64,6 +64,12 @@ const result = spawnSync(
 
 if (result.status !== 0) process.exit(result.status ?? 1);
 
+// Restore reviewed preliminary camp source after either Sheets tier.
+const camps = spawnSync(process.execPath, [tsx, "--tsconfig", tsconfig,
+  path.join(ROOT, "scripts", "integrate-autumn-camps.ts"), "--write", `--tier=${tier}`],
+  {cwd: ROOT, stdio: "inherit", env: process.env});
+if(camps.status !== 0)process.exit(camps.status ?? 1);
+
 // Retain the reviewed CSV-backed annual groups/venues after the Sheets refresh.
 // The compiler validates the joined bundle but writes only the selected tier.
 const overlay = spawnSync(process.execPath, [
