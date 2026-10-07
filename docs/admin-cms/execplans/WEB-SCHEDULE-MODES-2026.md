@@ -1,0 +1,30 @@
+# WEB-SCHEDULE-MODES-2026
+Status IMPLEMENTING. Product domain. Owner approved implementation/publication of agreed schedule navigation, short URLs, school/campus scope and camp finder; S3 remains sole live schedule source.
+
+## Task Packet / preflight
+Repository Brain-Master/BM_QuestHub; branch fix/schedule-data-and-venues-2026-09-09; base4905bc4996c81773e6e0632874f73c61289ec0a8. Node22.23.1/npm10.9.8. Root/status/log/diffcheck passed. Preserve 14 unrelated dirty/untracked paths. Existing root AGENTS/PLANS and web AGENTS applied; local Next docs static export/dynamic routes/searchparams inspected. No dependency changes.
+
+## Scope
+Three route families /agenda/, /courses/, /camp/ with all/year/camp modes; static school/campus deep links; shared mode navigation preserves location while clearing incompatible format filters; existing annual finder preserved; camp catalogue/wizard reuses schedule cards and registration. Old /camps and legacy format links redirect client-side with fallback links (static export). School profile shows both formats. SiteHeader schedule disclosure accessible by mouse/touch/keyboard. Unknown dates/age retained as uncertain matches; unknown locations never broaden scoped results. Archive explicit. No private child details in URLs.
+Allowed paths: apps/web/app/{agenda,courses,camp,camps}/**/page.tsx; apps/web/app/page.tsx; apps/web/app/sites/[school]/page.tsx; apps/web/components/{site-header,live-agenda,course-finder,schedule-page,schedule-modes,camp-finder,schedule-redirect}.tsx; apps/web/lib/offers/{schedule-routes,camp-finder}.ts and corresponding .test.ts; apps/web/lib/host-scope.ts and relevant tests if needed; this ExecPlan. Existing school agenda routes preserved. Report/browser helpers in reports/schedule-modes-2026-10-07. Scope may add exact adjacent consumer paths where needed, recorded before edits.
+Protected outputs apps/web/data/**, public generated/**, S3 keys, annual source/registry, credentials, infrastructure/workflows MUST remain unchanged. Build outputs generated only via check, never staged. PA-BUILD-002/003 authorized check outputs. Scoped source commit/push/PRmerge and existing Timeweb autodeploy authorized by owner implementation request. No S3 writes or runtime/timer changes. Credential consumption only existing read-only Timeweb helper; no printing secrets.
+
+## Architecture and UX
+Shared server loader -> LiveAgenda existing S3 hook -> common mode links -> annual CourseFinder or new camp finder -> existing schedule card/booking. Pure route/state functions validate scope, dates and age; URL state only public filters. Native navigation, focusable step headings, labelled controls, visible loading/error/empty/retry, mobile no overflow. Existing UX docs docs/admin-cms/01_ux guide accessibility/visibility; public schedule retains established visual components.
+
+## Validation / gates
+Baseline full web check; targeted unit tests for scope/mode switches, conflicting query, unknown school/campus, uncertain age/date, wizard skip/back URL; existing annual tests unchanged unless justified. Full web check; browser desktop/mobile routes/menu/back/selection/filter/booking mocked POST/error/empty+S3 failure. Data/protected hashes unchanged; two read-only auditors; freeze sortedpathNULbytesNUL SHA256; make secret-scan before explicit staging. Commit feat(web): unify schedule routes and camp selection. Deploy exact merged SHA, live browser verify, completion receipt. Stop on unreviewed mutations/data drift, baseline failure, inaccessible deployment, unrelated changes. No next task.
+
+## Failure and decisions
+Pending implementation validation. Final freeze/receipts external to avoid self-reference.
+
+Audit-driven adjacent scope: scripts/host-alias-core.mjs and scripts/host-alias-core.test.mjs mirror existing client school-host routing for /camp and /courses; no host configuration/data edits. First implementation lint failed React preserve-manual-memoization for derived sorted array; removed unnecessary manual memo, kept direct deterministic projection. Baseline full check PASS before implementation validation.
+
+Adjacent app/layout.tsx passes existing public venues to header for exact legacy-campus normalization; no loader change. Audits fixed unresolved wizard steps, oldcampus header context, annual URL fallback constraints, archive-date options. First newtest write command used apps/web cwd with rootrelative paths and wrote no files; repeated from root, verified named newtests exist. Protected sources unchanged.
+
+Validation: full check PASS;118 offer tests PASS including8new route/camp tests; browser1440/390 PASS all3modes,exactcorpus/foreignquery,legacyredirect,wizard/back/reload,headeroldcampus,preliminaryform503retry,nooverflow. Audit finaladjacent correction preserves legacy campus query alias inheader as well asvenue. Source/JSON hashes19 unchanged, no S3 writes.
+
+Visual review found existing DetailedTariffRow hides lesson time belowlg; camp catalogue now uses detailedcards onmobile. Authorized adjacent path apps/web/components/schedule-tariff-list.tsx makes time visible onallwidths (no data/booking change); browser mustassert visible09:00–12:30.
+
+## Final validation and freeze
+Status FROZEN. Full web check PASS on finalimplementation;118 offer tests PASS. Desktop1440/mobile390 fullflow browserPASS; supplemental browserPASS keyboardEnter/Escape focus, legacy campusalias, mobiletimevisible, archive35, refreshedS3fixture10→9, source503visible. Mocked all writes; no realleads. Visually inspected mobilecampcards; corrected timevisibility as recorded above. Exactchangedpaths+sortedpathNULbytesNUL SHA256 external reports/schedule-modes-2026-10-07/freeze.json; exclusion of priorreceipt/unrelateddirtyfiles verified. Secret scan/review/deploy receipts external; finalstatus there avoids self-referential hash. No S3/runtime publication required; Timeweb configbaseline read only, currentmain bf770901fe9ca2a25780f01c42038d2c6a5f8c95. Commit/push/merge/publication authorized by owner's 'Приступай'.

@@ -10,10 +10,14 @@ import { yearPrograms } from "@/content/year-programs";
 import { normalizePathname } from "@/lib/host-scope";
 import { useHostScope } from "@/lib/use-host-scope";
 import type { NavigationConfig } from "@/lib/data/v2/site-config";
-import type { Quest, World } from "@/lib/schemas";
+import type { Quest, World, Venue } from "@/lib/schemas";
 import { useLiveSchedule } from "@/lib/offers/use-live-schedule";
 import { resolveScheduleStatusKey } from "@/lib/offers/schedule-board";
+import { scheduleHref } from "@/lib/offers/schedule-routes";
 import { cn } from "@/lib/utils";
+
+const subscribeSearch = (notify:()=>void) => {window.addEventListener("popstate",notify);return ()=>window.removeEventListener("popstate",notify);};
+const getSearch = () => window.location.search;
 
 const navLink = "flex min-h-11 items-center rounded-xl px-3 py-2 text-sm text-muted-foreground hover:bg-white/10 hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary";
 
@@ -43,17 +47,27 @@ function NavDisclosure({ label, children, mobile = false }: { label: string; chi
   </details>;
 }
 
-export function SiteHeader({ worlds, navigation, baseQuests, scopeByVenue, schoolAliases }: { worlds: World[]; navigation: NavigationConfig; baseQuests:Quest[]; scopeByVenue:Record<string,string>; schoolAliases:Record<string,string> }) {
+export function SiteHeader({ worlds, navigation, baseQuests, scopeByVenue, schoolAliases, venues }: { worlds: World[]; navigation: NavigationConfig; baseQuests:Quest[]; scopeByVenue:Record<string,string>; schoolAliases:Record<string,string>; venues:Venue[] }) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = React.useState(false);
   const { school: hostSchool } = useHostScope();
-  const pathSchoolSlug = pathname.match(/^\/sites\/([^/]+)/)?.[1] ?? null;
+  const pathSchoolSlug = pathname.match(/^\/(?:sites|agenda|courses|camp)\/([^/]+)/)?.[1] ?? null;
   // Only explicit route/hostname context scopes navigation. A remembered school is not a filter.
-  const schoolSlug = pathSchoolSlug ?? hostSchool?.routeSlug;
+  const search = React.useSyncExternalStore(subscribeSearch, getSearch, () => "");
+  const query = new URLSearchParams(search);
+  const schoolSlug = pathSchoolSlug ?? hostSchool?.routeSlug ?? (query.get("school") === "all" ? undefined : query.get("school") ?? undefined);
   const { quests } = useLiveSchedule(baseQuests);
   const canonicalSchool = schoolSlug ? schoolAliases[schoolSlug] ?? schoolSlug : null;
   const availableLevels = [1,2,3].filter(level=>quests.some(q=>q.slug==="shmi"&&q.offers.some(o=>o.annual?.studyYear===level&&(!canonicalSchool||scopeByVenue[o.venueSlug]===canonicalSchool)&&!["finished","cancelled"].includes(resolveScheduleStatusKey(o)))));
-  const agendaHref = hostSchool ? "/agenda/" : schoolSlug ? `/sites/${schoolSlug}/agenda/` : "/agenda/";
+  const queryVenue = query.get("venue") ?? query.get("campus");
+  const legacyCampus = pathname.match(/^\/sites\/[^/]+\/campuses\/([^/]+)/)?.[1];
+  const shortScope = schoolSlug ? schoolSlug.replace(/^school-/, "") + "/" : "";
+  const campus = pathname.match(/^\/(?:agenda|courses|camp)\/[^/]+\/([^/]+)/)?.[1];
+  const scheduleSuffix = shortScope + (campus ? campus + "/" : "");
+  const exactVenue = legacyCampus ?? (campus ? undefined : queryVenue);
+  const coursesHref = exactVenue ? scheduleHref("year",schoolSlug,exactVenue,venues) : `/courses/${scheduleSuffix}`;
+  const campHref = exactVenue ? scheduleHref("camp",schoolSlug,exactVenue,venues) : `/camp/${scheduleSuffix}`;
+  const allHref = exactVenue ? scheduleHref("all",schoolSlug,exactVenue,venues) : `/agenda/${scheduleSuffix}`;
   const catalogHref = hostSchool ? "/catalog/" : schoolSlug ? `/sites/${schoolSlug}/catalog/` : "/catalog/";
   const sitesHref = hostSchool ? `/sites/${hostSchool.routeSlug}/` : "/sites/";
   const worldGroups = navigation.worldGroups.filter(group => worlds.some(world => world.slug === group.slug));
@@ -67,14 +81,18 @@ export function SiteHeader({ worlds, navigation, baseQuests, scopeByVenue, schoo
   function links(mobile: boolean) {
     const close = () => setMenuOpen(false);
     return <>
-      <Link className={navLink} href={agendaHref} aria-current={normalizedPath.endsWith("/agenda/") ? "page" : undefined} onClick={close}>Расписание</Link>
+      <NavDisclosure label="Расписание" mobile={mobile}>
+        <Link className={navLink} href={allHref} aria-current={normalizedPath.startsWith("/agenda/") ? "page" : undefined} onClick={close}>Всё расписание</Link>
+        <Link className={navLink} href={coursesHref} aria-current={normalizedPath.startsWith("/courses/") ? "page" : undefined} onClick={close}>Годовые курсы</Link>
+        <Link className={navLink} href={campHref} aria-current={normalizedPath.startsWith("/camp/") ? "page" : undefined} onClick={close}>Лагерные смены</Link>
+      </NavDisclosure>
       <NavDisclosure label="Годовые курсы" mobile={mobile}>
         <Link className={navLink} href="/year-courses/" onClick={close}>Все годовые курсы</Link>
         {yearPrograms.map(programme => programme.id === "shmi" ? <details key={programme.id} className="min-w-0 rounded-lg border border-white/10">
           <summary className={cn(navLink, "cursor-pointer")}>{programme.title}</summary>
           <div className="grid gap-1 border-l border-white/15 pl-2">
             <Link className={navLink} href="/year-courses/shmi/" onClick={close}>О программе ШМИ</Link>
-            {availableLevels.map(level => <Link key={level} className={navLink} href={`${agendaHref}?programme=shmi&level=${level}`} onClick={close}>ШМИ-{level} · {level}-й год обучения</Link>)}
+            {availableLevels.map(level => <Link key={level} className={navLink} href={`${coursesHref}?programme=shmi&level=${level}`} onClick={close}>ШМИ-{level} · {level}-й год обучения</Link>)}
           </div>
         </details> : <Link key={programme.id} className={navLink} href={`/year-courses/${programme.id}/`} onClick={close}>{programme.title}</Link>)}
       </NavDisclosure>
