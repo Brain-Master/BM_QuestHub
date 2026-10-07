@@ -51,6 +51,8 @@ describe("resolveSchoolSubdomainRedirect", () => {
   it("maps short paths to scoped routes", () => {
     const school = sampleAliases.schools["1517"];
     assert.equal(resolveSchoolSubdomainRedirect("/", school), "/sites/1517/");
+    assert.equal(resolveSchoolSubdomainRedirect("/camp/", school), "/camp/1517/");
+    assert.equal(resolveSchoolSubdomainRedirect("/courses", school), "/courses/1517/");
     assert.equal(
       resolveSchoolSubdomainRedirect("/agenda", school),
       "/sites/1517/agenda/",

@@ -192,7 +192,7 @@ function DetailedTariffRow({ item, variant, schoolSlug }: TariffRowProps) {
         <FormatNote note={variant.note} />
       </div>
 
-      <div className="hidden items-center justify-center border-white/10 border-l pl-4 text-muted-foreground text-xs lg:flex">
+      <div className="flex items-center justify-start text-muted-foreground text-xs lg:justify-center lg:border-white/10 lg:border-l lg:pl-4">
         <TimePill time={variant.time} />
       </div>
 

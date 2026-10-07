@@ -1,139 +1,44 @@
 "use client";
-
-import { Suspense, useMemo } from "react";
-import { useSearchParams } from "next/navigation";
-import Link from "next/link";
-
-import { OfferAgenda } from "@/components/offer-agenda";
-import { CourseFinder } from "@/components/course-finder";
-import { StaticAgenda } from "@/components/static-course-content";
-import { buildAgendaItems, groupAgendaItems, resolveSchoolScope } from "@/lib/offers/agenda";
-import { isSnapshotStampVisible } from "@/lib/offers/snapshot-stamp";
-import { useLiveSchedule } from "@/lib/offers/use-live-schedule";
-import { useScheduleTrafficPulse } from "@/lib/schedule/use-schedule-traffic-pulse";
-import type { Quest, Venue, World } from "@/lib/schemas";
-
-type Props = {
-  baseQuests: Quest[];
-  venues: Venue[];
-  worlds: World[];
-  initialSnapshotGeneratedAt?: string | null;
-  schoolSlug?: string;
-  venueSlug?: string;
-  schoolName?: string;
-  allAgendaHref?: string;
-  sitesHref?: string;
-  hideScheduleTitle?: boolean;
-  hideCommunityPanel?: boolean;
-  embedded?: boolean;
-};
-
-function LiveAgendaInner({
-  baseQuests,
-  venues,
-  worlds,
-  initialSnapshotGeneratedAt = null,
-  schoolSlug,
-  venueSlug,
-  schoolName,
-  allAgendaHref,
-  sitesHref,
-  hideCommunityPanel = false,
-  embedded = false,
-}: Props) {
-  const searchParams = useSearchParams();
-  const showSnapshotTime = isSnapshotStampVisible(searchParams);
-  const querySchool = searchParams.get("school");
-  const resolvedQuerySchool = querySchool ? resolveSchoolScope(venues, querySchool) : undefined;
-  const effectiveSchoolSlug = schoolSlug ?? resolvedQuerySchool?.slug;
-  const invalidSchoolQuery = !schoolSlug && !!querySchool && querySchool !== "all" && !resolvedQuerySchool;
-
-  const { quests, status, isValidating, liveEnabled, snapshotGeneratedAt, refresh } =
-    useLiveSchedule(baseQuests, {
-      refreshInterval: 60_000,
-      initialSnapshotGeneratedAt,
-    });
-
-  useScheduleTrafficPulse({ page: "agenda", enabled: liveEnabled });
-
-  const groups = useMemo(
-    () =>
-      groupAgendaItems(
-        buildAgendaItems({
-          quests,
-          venues,
-          worlds,
-          schoolSlug: effectiveSchoolSlug,
-        }).filter(item=>venueSlug ? item.offer.venueSlug===venueSlug : !schoolSlug || item.quest.format!=="year" || (item.venue.schoolScopeSlug??item.venue.slug)===schoolSlug),
-      ),
-    [quests, venues, worlds, schoolSlug, effectiveSchoolSlug, venueSlug],
-  );
-
-  const showSkeleton = liveEnabled && status === "loading" && groups.length === 0;
-  const annualItems = useMemo(() => buildAgendaItems({ quests, venues, worlds })
-    .filter(item => item.quest.format === "year"), [quests, venues, worlds]);
-  const intensiveGroups = useMemo(() => invalidSchoolQuery ? [] : groups.map(group => ({ ...group, items: group.items.filter(item => item.quest.format !== "year") })).filter(group => group.items.length), [groups, invalidSchoolQuery]);
-  const requestedIntensives = searchParams.get("format") === "intensive";
-  const selectedIntensive = !invalidSchoolQuery && intensiveGroups.some(group => group.items.some(item => item.offer.id === searchParams.get("offer")));
-
-  // The same day/group cards as the agenda, with an H2 and catalogue entry on profiles.
-  if (embedded) return <div className="space-y-4">
-    <Link className="inline-flex min-h-11 items-center text-primary underline" href={`/sites/${schoolSlug}/agenda/`}>Подобрать кружок пошагово →</Link>
-    <CourseFinder embedded items={annualItems} quests={quests} venues={venues} schoolSlug={schoolSlug} venueSlug={venueSlug}
-      status={status} isValidating={isValidating} snapshotGeneratedAt={snapshotGeneratedAt} onRefresh={refresh} />
-    <details><summary className="min-h-11 cursor-pointer py-3">Квесты и смены · расписание и архив</summary><OfferAgenda groups={intensiveGroups} schoolSlug={effectiveSchoolSlug} schoolName={schoolName} allAgendaHref={allAgendaHref} sitesHref={sitesHref}
-      snapshotGeneratedAt={snapshotGeneratedAt} showSnapshotTime={showSnapshotTime} hideTitle hideCommunityPanel={hideCommunityPanel} />
-    </details>
-  </div>;
-
-  return (
-    <div className="space-y-4">
-      {selectedIntensive || requestedIntensives ? <header className="space-y-3"><h1 className="font-heading text-3xl font-semibold">Квесты и смены</h1><Link className="inline-flex min-h-11 items-center text-primary underline" href={schoolSlug ? `/sites/${schoolSlug}/agenda/` : "/agenda/"}>Подобрать годовой кружок</Link></header> : <CourseFinder items={annualItems} quests={quests} venues={venues} schoolSlug={schoolSlug} venueSlug={venueSlug}
-        status={status} isValidating={isValidating} snapshotGeneratedAt={snapshotGeneratedAt} onRefresh={refresh} />}
-      <details className="rounded-2xl border border-white/15 p-4" data-testid="legacy-intensive-schedule" open={selectedIntensive || requestedIntensives || undefined}>
-        <summary className="min-h-11 cursor-pointer py-3 font-semibold focus-visible:outline-2">Квесты и смены · расписание и архив</summary>
-      {liveEnabled ? (
-        <p className="text-muted-foreground text-sm" role="status">
-          {status === "loading"
-            ? "Загружаем расписание…"
-            : status === "error"
-              ? "Расписание временно недоступно — попробуйте обновить страницу."
-              : isValidating
-                ? "Обновляем расписание…"
-                : "Снимок на сайте обновляется каждую минуту; места на mos.ru могут отличаться."}
-        </p>
-      ) : null}
-      {showSkeleton ? (
-        <div className="space-y-4" aria-hidden>
-          {[0, 1, 2].map((i) => (
-            <div
-              key={i}
-              className="h-32 animate-pulse rounded-2xl border border-white/10 bg-white/5"
-            />
-          ))}
-        </div>
-      ) : (
-        <OfferAgenda
-          groups={intensiveGroups}
-          schoolSlug={effectiveSchoolSlug}
-          schoolName={schoolName ?? resolvedQuerySchool?.name}
-          allAgendaHref={allAgendaHref}
-          sitesHref={sitesHref}
-          snapshotGeneratedAt={snapshotGeneratedAt}
-          showSnapshotTime={showSnapshotTime}
-          hideTitle
-          hideCommunityPanel={hideCommunityPanel}
-        />
-      )}
-      </details>
-    </div>
-  );
+import {Suspense,useEffect} from 'react';
+import {usePathname,useRouter,useSearchParams} from 'next/navigation';
+import Link from 'next/link';
+import {CourseFinder} from '@/components/course-finder';
+import {CampFinder} from '@/components/camp-finder';
+import {ScheduleModes} from '@/components/schedule-modes';
+import {buildAgendaItems,getSchoolScopes,resolveSchoolScope} from '@/lib/offers/agenda';
+import {scheduleHref,type ScheduleMode} from '@/lib/offers/schedule-routes';
+import {useLiveSchedule} from '@/lib/offers/use-live-schedule';
+import {useScheduleTrafficPulse} from '@/lib/schedule/use-schedule-traffic-pulse';
+import type {Quest,Venue,World} from '@/lib/schemas';
+type Props={baseQuests:Quest[];venues:Venue[];worlds:World[];initialSnapshotGeneratedAt?:string|null;schoolSlug?:string;venueSlug?:string;schoolName?:string;allAgendaHref?:string;sitesHref?:string;hideScheduleTitle?:boolean;hideCommunityPanel?:boolean;embedded?:boolean;mode?:ScheduleMode};
+function LiveAgendaInner({baseQuests,venues,worlds,initialSnapshotGeneratedAt=null,schoolSlug,venueSlug,schoolName,embedded=false,mode='all'}:Props){
+ const query=useSearchParams(),pathname=usePathname(),router=useRouter();
+ const live=useLiveSchedule(baseQuests,{refreshInterval:60_000,initialSnapshotGeneratedAt});
+ useScheduleTrafficPulse({page:'agenda',enabled:live.liveEnabled});
+ const inputSchool=schoolSlug??query.get('school')??'all',scope=resolveSchoolScope(venues,inputSchool);
+ const school=scope?.slug??inputSchool,venue=venueSlug??query.get('venue')??query.get('campus')??'all';
+ const selected=Object.values(live.quests).flatMap(q=>q.offers.map(o=>({o,format:q.format}))).find(r=>r.o.id===query.get('offer'));
+ const legacyMode:ScheduleMode|undefined=query.get('format')==='intensive'?'camp':query.get('format')==='year'?'year':mode==='all'&&(query.has('programme')||query.has('level'))?'year':mode==='all'&&selected?(selected.format==='year'?'year':'camp'):undefined;
+ const activeMode=embedded?'all':legacyMode??mode;
+ useEffect(()=>{
+  if(embedded||!legacyMode)return;
+  const target=new URL(scheduleHref(legacyMode,school,venue,venues),'https://schedule.invalid');
+  for(const[k,v]of query)if(!['format','school','venue','campus'].includes(k))target.searchParams.set(k,v);
+  const href=target.pathname+target.search;if(href!==pathname+'?'+query)router.replace(href,{scroll:false});
+ },[embedded,legacyMode,school,venue,venues,query,pathname,router]);
+ const invalid=(school!=='all'&&!scope)||(venue!=='all'&&!(scope?.venues??venues).some(v=>v.slug===venue));
+ const allItems=buildAgendaItems({quests:live.quests,venues,worlds});
+ const annual=allItems.filter(i=>i.quest.format==='year');const camps=allItems.filter(i=>i.quest.format!=='year');
+ const Heading=embedded?'h2':'h1';
+ return <div className="space-y-6">
+  {!embedded&&<ScheduleModes mode={activeMode} school={school} venue={venue} venues={venues}/>}
+  {(scope||venue!=='all')&&<div className="rounded-2xl border border-white/15 p-4"><p className="font-semibold">{schoolName??scope?.name??'Площадка не найдена'}</p><p>{venue!=='all'?(venues.find(v=>v.slug===venue)?.address??'Адрес не найден'):'Все корпуса'}</p>{venue!=='all'&&<Link className="inline-flex min-h-11 items-center text-primary underline" href={scheduleHref(activeMode,school,undefined,venues)}>Другие корпуса этой школы →</Link>}</div>}
+  {activeMode==='all'&&<><Heading className="font-heading text-3xl font-semibold">Всё расписание</Heading><div className="grid gap-4 rounded-2xl border border-white/15 p-4 sm:grid-cols-2"><label className="grid gap-2">Площадка<select className="min-h-11 rounded-lg border border-white/20 bg-background px-3" value={school} onChange={e=>router.push(scheduleHref('all',e.target.value,undefined,venues))}><option value="all">Все площадки</option>{getSchoolScopes(venues).map(s=><option key={s.slug} value={s.slug}>{s.name}</option>)}</select></label><label className="grid gap-2">Корпус / адрес<select className="min-h-11 rounded-lg border border-white/20 bg-background px-3" value={venue} onChange={e=>router.push(scheduleHref('all',school,e.target.value,venues))}><option value="all">Все корпуса</option>{(scope?.venues??venues).map(v=><option key={v.slug} value={v.slug}>{v.address}</option>)}</select></label></div></>}
+  {(live.status==='error'||live.status==='loading'||activeMode==='camp')&&<div role="status" className="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-white/5 p-3 text-sm"><p>{live.status==='error'?'Не удалось обновить расписание. Сохранённые данные могут быть устаревшими.':live.status==='loading'?'Загружаем расписание…':live.isValidating?'Обновляем расписание…':'Предварительная заявка не означает зачисление или бронь места. Условия участия подтвердим отдельно.'}</p><button className="min-h-11 text-primary underline" onClick={live.refresh} disabled={live.isValidating}>Обновить расписание</button></div>}
+  {invalid?<div role="status"><p>Указанная площадка или корпус не найдены. Выбор не расширен на другие адреса.</p><Link className="inline-flex min-h-11 items-center text-primary underline" href={scheduleHref(activeMode)}>Открыть всё расписание этого формата →</Link></div>:<>
+   {activeMode!=='camp'&&<section className="space-y-4">{activeMode==='all'&&<div className="flex flex-wrap items-center justify-between gap-3"><h2 className="text-2xl font-semibold">Годовые курсы</h2><Link className="inline-flex min-h-11 items-center text-primary underline" href={scheduleHref('year',school,venue,venues)}>Открыть годовые курсы →</Link></div>}<CourseFinder embedded={embedded||activeMode==='all'} items={annual} quests={live.quests} venues={venues} schoolSlug={scope?.slug} venueSlug={venue==='all'?undefined:venue} status={live.status} isValidating={live.isValidating} snapshotGeneratedAt={live.snapshotGeneratedAt} onRefresh={live.refresh}/></section>}
+   {activeMode!=='year'&&<section className="space-y-4 border-t border-white/15 pt-6">{activeMode==='all'&&<Link className="inline-flex min-h-11 items-center text-primary underline" href={scheduleHref('camp',school,venue,venues)}>Открыть лагерные смены →</Link>}<CampFinder items={camps} venues={venues} schoolSlug={scope?.slug} venueSlug={venue==='all'?undefined:venue} embedded={embedded||activeMode==='all'} status={live.status}/></section>}
+  </>}
+ </div>;
 }
-
-export function LiveAgenda(props: Props) {
-  return (
-    <Suspense fallback={<StaticAgenda quests={props.baseQuests} venues={props.venues} school={props.schoolSlug} campus={props.venueSlug} embedded={props.embedded} />}>
-      <LiveAgendaInner {...props} />
-    </Suspense>
-  );
-}
+export function LiveAgenda(props:Props){return <Suspense fallback={<div role="status" className="min-h-40 py-8">Загружаем расписание…</div>}><LiveAgendaInner {...props}/></Suspense>;}

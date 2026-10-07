@@ -56,7 +56,7 @@ export default async function RootLayout({
         <HostScopeBootstrap />
         <ConsentGatedAnalytics />
         <CookieConsentBanner />
-        <SiteHeader worlds={worlds} navigation={siteConfig.navigation} baseQuests={quests.filter(q=>q.slug==="shmi")} scopeByVenue={scopeByVenue} schoolAliases={schoolAliases} />
+        <SiteHeader venues={venues} worlds={worlds} navigation={siteConfig.navigation} baseQuests={quests.filter(q=>q.slug==="shmi")} scopeByVenue={scopeByVenue} schoolAliases={schoolAliases} />
         <div className="flex flex-1 flex-col">{children}</div>
         <ScrollToTopButton />
         <SiteFooter />

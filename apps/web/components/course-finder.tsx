@@ -10,6 +10,7 @@ import { changeFinderState, finderChoices, finderChoiceCount, finderItemMatches,
 import { weekdays } from "@/lib/offers/annual-schedule";
 import type { Quest, Venue } from "@/lib/schemas";
 import s from "./course-finder.module.css";
+import {scheduleHref} from "@/lib/offers/schedule-routes";
 import { annualAvailabilityStale } from "@/lib/offers/annual-freshness";
 import { useScheduleClock } from "@/lib/offers/use-schedule-clock";
 
@@ -90,10 +91,11 @@ export function CourseFinder({ items: agendaItems, quests, venues, schoolSlug, v
     const next = changeFinderState(state, patch);
     setShareUrl(""); setShareMessage("");
     // Exact-campus routes remain authoritative. Switching address leaves that route explicitly.
-    const nextPath = (schoolSlug && next.school !== schoolSlug) ? "/agenda/" :
-      venueSlug && next.venue !== venueSlug ? `/sites/${schoolSlug}/agenda/` : pathname;
-    const nextRouteSchool = nextPath === "/agenda/" ? undefined : schoolSlug;
-    const compact = finderQuery(next, nextRouteSchool, nextPath === pathname ? venueSlug : undefined, embedded && nextPath === pathname);
+    const target = new URL(scheduleHref("year", next.school, next.venue, venues), "https://schedule.invalid");
+    const nextPath = target.pathname;
+    const routeHasSchool = target.pathname.split("/").filter(Boolean).length >= 2;
+    const routeHasVenue = target.pathname.split("/").filter(Boolean).length >= 3;
+    const compact = finderQuery(next, routeHasSchool ? next.school : undefined, routeHasVenue ? next.venue : undefined);
     const href = `${nextPath}${compact ? `?${compact}` : ""}`;
     if (nextPath !== pathname) {
       try { sessionStorage.setItem("brainmaster:finder-focus", `${nextPath}?${compact}`); } catch { /* Optional focus handoff only. */ }
@@ -106,9 +108,11 @@ export function CourseFinder({ items: agendaItems, quests, venues, schoolSlug, v
   }
   async function share(item?: ScheduleBoardItem) {
     const selection = item ? { ...state, school: itemSchool(item), venue: item.venue.slug, programme: item.quest.slug, offer: item.offer.id, step: "results" as const } : state;
-    const url = `${window.location.origin}/sites/${selection.school === "all" ? "" : `${selection.school}/agenda/`}`;
-    const compact = finderQuery(selection, selection.school === "all" ? undefined : selection.school);
-    const href = `${selection.school === "all" ? `${window.location.origin}/agenda/` : url}${compact ? `?${compact}` : ""}`;
+    const target = new URL(scheduleHref("year",selection.school,selection.venue,venues),window.location.origin);
+    const segments = target.pathname.split("/").filter(Boolean).length;
+    const compact = finderQuery(selection,segments>=2?selection.school:undefined,segments>=3?selection.venue:undefined);
+    target.search = compact;
+    const href = target.href;
     setShareUrl(href);
     try { await navigator.clipboard.writeText(href); setShareMessage("Ссылка скопирована. В ней сохранены адрес, программа и фильтры."); }
     catch { setShareMessage("Скопируйте выделенную ссылку. В ней сохранены ваши условия."); }
