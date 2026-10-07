@@ -8,7 +8,7 @@ export class LeadDeliveryError extends Error {
 
 export async function confirmLeadDelivery(url: string, payload: unknown, {
   fetchImpl = fetch, timeoutMs = 35_000,
-}: { fetchImpl?: typeof fetch; timeoutMs?: number } = {}): Promise<void> {
+}: { fetchImpl?: typeof fetch; timeoutMs?: number } = {}): Promise<{ receiptId?: string }> {
   const controller = new AbortController();
   let timer: ReturnType<typeof setTimeout> | undefined;
   const deadline = new Promise<never>((_, reject) => {
@@ -37,9 +37,10 @@ export async function confirmLeadDelivery(url: string, payload: unknown, {
       text += decoder.decode();
       const result: unknown = JSON.parse(text);
       if (!result || typeof result !== "object" || !("ok" in result) || result.ok !== true) throw Error("LEAD_DELIVERY_UNCONFIRMED");
+      return { receiptId: "receiptId" in result && typeof result.receiptId === "string" && /^[a-f\d-]{36}$/i.test(result.receiptId) ? result.receiptId : undefined };
     } catch { throw new LeadDeliveryError("delivery_failed", response.status); }
     finally { controller.signal.removeEventListener("abort", cancel); cancel(); }
   };
-  try { await Promise.race([request(), deadline]); }
+  try { return await Promise.race([request(), deadline]); }
   finally { clearTimeout(timer); controller.abort(); }
 }

@@ -1,0 +1,25 @@
+'use strict';
+const {_internals:h}=require('../yandex-lead-receiver/index.js');
+function notice(lead){const types={booking:'Новая заявка',waitlist:'Предварительная заявка',mos_assist:'Помощь с записью на mos.ru'};return [types[lead.leadType]||'Новая заявка',`№ ${lead.requestId}`,`Программа: ${lead.questTitle}`,`Площадка: ${lead.venueName}`,`Группа: ${lead.offerId}`,`Родитель: ${lead.parentName}`,`Контакт: ${lead.contact}`,`Ребёнок: ${lead.childName}, ${lead.childAge} лет`,lead.variantTitle,lead.comment?`Комментарий: ${lead.comment}`:''].filter(Boolean).map(s=>s.slice(0,600)).join('\n').slice(0,3900);}
+function configured(channel){if(channel==='max')return !!process.env.MAX_BOT_TOKEN&&/^\d+$/.test(process.env.MAX_ADMIN_USER_ID||'');if(channel==='telegram')return !!process.env.TELEGRAM_BOT_TOKEN&&!!process.env.TELEGRAM_CHAT_ID;return !!process.env.GOOGLE_SERVICE_ACCOUNT_JSON_BASE64&&!!process.env.GOOGLE_SHEETS_SPREADSHEET_ID&&!!process.env.GOOGLE_LEADS_SHEET_RANGE;}
+async function sheetContains(lead,budget){const token=await h.getGoogleAccessToken(budget),range=process.env.GOOGLE_LEADS_SHEET_RANGE;const column=range.includes('!')?range.slice(0,range.lastIndexOf('!'))+'!C:C':'C:C';const url=`https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(process.env.GOOGLE_SHEETS_SPREADSHEET_ID)}/values/${encodeURIComponent(column)}`;const {json}=await h.boundedRequest('sheet_lookup',url,{headers:{authorization:'Bearer '+token}},budget,{maxResponseBytes:4*1024*1024,validate:j=>j&&typeof j==='object'});return (json.values||[]).some(r=>r[0]===lead.requestId);}
+async function deliver(channel,lead){const budget=h.deliveryBudget(lead.requestId,26000),phase=channel==='sheets'?'google_sheets':channel;
+ try{
+  if(channel==='sheets'){
+   if(await sheetContains(lead,budget))return;
+   const token=await h.getGoogleAccessToken(budget);const url=new URL(`https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(process.env.GOOGLE_SHEETS_SPREADSHEET_ID)}/values/${encodeURIComponent(process.env.GOOGLE_LEADS_SHEET_RANGE)}:append`);url.searchParams.set('valueInputOption','RAW');url.searchParams.set('insertDataOption','INSERT_ROWS');
+   await h.boundedRequest(phase,url.toString(),{method:'POST',headers:{authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({values:[h.leadToSheetRow(lead)]})},budget,{validate:j=>j?.updates?.updatedRows===1});
+  }else if(channel==='telegram'){
+   const base=`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}`;
+   await h.boundedRequest('telegram_auth',base+'/getMe',{},budget,{validate:j=>j?.ok===true});
+   await h.boundedRequest(phase,base+'/sendMessage',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:process.env.TELEGRAM_CHAT_ID,text:notice(lead),disable_web_page_preview:true})},budget,{validate:j=>j?.ok===true&&Number.isInteger(j.result?.message_id)});
+  }else if(channel==='max'){
+   const base='https://platform-api2.max.ru',headers={Authorization:process.env.MAX_BOT_TOKEN,'Content-Type':'application/json'};
+   await h.boundedRequest('max_auth',base+'/me',{headers},budget,{validate:j=>j?.is_bot===true});
+   await h.boundedRequest(phase,base+'/messages?user_id='+encodeURIComponent(process.env.MAX_ADMIN_USER_ID),{method:'POST',headers,body:JSON.stringify({text:notice(lead)})},budget,{validate:j=>typeof j?.message?.body?.mid==='string'});
+  }else throw Error('UNKNOWN_CHANNEL');
+ }catch(e){const beforeSend=!budget.progress[phase];throw Object.assign(new Error('CHANNEL_DELIVERY_FAILED'),{safeRetry:beforeSend||[401,403].includes(e.httpStatus),code:typeof e.code==='string'?e.code:'DELIVERY_ERROR'});}
+}
+async function runJob(store,channel,adapter=deliver){store.configured(channel,configured(channel));const job=store.claim(channel);if(!job)return;try{await adapter(channel,job.lead);store.finish(job,'confirmed');}catch(e){store.finish(job,e.safeRetry?'retry':'uncertain',e.code||'DELIVERY_ERROR');}console.info(JSON.stringify({event:'lead.channel_processed',receiptId:job.receipt_id,channel}));}
+function startWorker(store){let stopped=false;const running=new Set();const tick=()=>{for(const channel of ['sheets','telegram','max'])if(!running.has(channel)){running.add(channel);void runJob(store,channel).catch(()=>console.error('WORKER_ERROR')).finally(()=>running.delete(channel));}};tick();const timer=setInterval(tick,1500);let checking=false;const reconciliation=setInterval(()=>{if(checking)return;const job=store.uncertainSheet();if(!job)return;checking=true;void sheetContains(job.lead,h.deliveryBudget(job.receipt_id,20000)).then(found=>store.finish(job,found?'confirmed':'uncertain',found?'':'AWAITING_RECONCILIATION')).catch(()=>store.finish(job,'uncertain','RECONCILIATION_UNAVAILABLE')).finally(()=>{checking=false;});},60000);return async()=>{if(stopped)return;stopped=true;clearInterval(timer);clearInterval(reconciliation);while(running.size||checking)await new Promise(r=>setTimeout(r,50));};}
+module.exports={configured,deliver,notice,runJob,startWorker,sheetContains};

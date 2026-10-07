@@ -1,15 +1,17 @@
 import siteConfig from "@/data/v2/site-config.json";
 import type { LeadPayload } from "@/lib/schemas";
 import { confirmLeadDelivery, LeadDeliveryError } from "./lead-delivery";
+import { resolveLeadEndpoint } from "./lead-endpoint";
+import { leadAttempt } from "./lead-attempt";
 
 export type SubmitLeadResult =
-  | { ok: true }
+  | { ok: true; receiptId?: string }
   | { ok: false; error: string };
 
-const leadSubmitUrl =
+const leadSubmitUrl = resolveLeadEndpoint(
   process.env.NEXT_PUBLIC_LEAD_SUBMIT_URL?.trim() ||
   siteConfig.brand.contacts.leadSubmitUrl?.trim() ||
-  "";
+  "");
 const opsReportUrl =
   process.env.NEXT_PUBLIC_OPS_REPORT_URL?.trim() ||
   siteConfig.brand.contacts.opsReportUrl?.trim() ||
@@ -85,13 +87,14 @@ export async function submitLeadToYandex(
   }
 
   try {
-    await confirmLeadDelivery(leadSubmitUrl, {
+    const confirmation = await confirmLeadDelivery(leadSubmitUrl, {
         ...data,
+        submissionId: await leadAttempt(data),
         submittedAt: new Date().toISOString(),
         source: "bm-questhub-static",
     });
 
-    return { ok: true };
+    return { ok: true, ...confirmation };
   } catch (error) {
     reportClientLeadFailure({
       errorCode: error instanceof LeadDeliveryError ? error.errorCode : "network",

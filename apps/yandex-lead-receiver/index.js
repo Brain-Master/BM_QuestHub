@@ -665,6 +665,7 @@ async function handler(event = {}, context = {}) {
 exports.handler = handler;
 exports._internals = {
   boundedRequest,
+  getGoogleAccessToken,
   deliveryBudget,
   appendLeadToGoogleSheet,
   buildTelegramSpoiler,

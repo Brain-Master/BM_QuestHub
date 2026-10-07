@@ -1,4 +1,5 @@
 import siteConfig from "@/data/v2/site-config.json";
+import { resolveLeadEndpoint } from "./lead-endpoint";
 
 export type MosClickTarget = {
   questSlug: string;
@@ -40,5 +41,5 @@ export function createMosClickNotifier(
 }
 
 export const notifyMosBookingClick = createMosClickNotifier(
-  process.env.NEXT_PUBLIC_LEAD_SUBMIT_URL?.trim() || siteConfig.brand.contacts.leadSubmitUrl?.trim() || "",
+  resolveLeadEndpoint(process.env.NEXT_PUBLIC_LEAD_SUBMIT_URL?.trim() || siteConfig.brand.contacts.leadSubmitUrl?.trim() || ""),
 );

@@ -8,9 +8,10 @@ type Props = {
   title: string;
   text: string;
   onClose: () => void;
+  receiptId?: string;
 };
 
-export function LeadFormSuccess({ title, text, onClose }: Props) {
+export function LeadFormSuccess({ title, text, onClose, receiptId }: Props) {
   return (
     <div className="grid gap-5 px-5 py-5 text-center" data-testid="lead-form-success">
       <div className="mx-auto grid size-12 place-items-center rounded-full border border-cyan-300/30 bg-cyan-400/15 text-cyan-200">
@@ -19,6 +20,7 @@ export function LeadFormSuccess({ title, text, onClose }: Props) {
       <div className="grid gap-2">
         <h3 className="font-heading text-xl font-semibold text-white">{title}</h3>
         <p className="text-slate-300 text-sm leading-relaxed">{text}</p>
+        {receiptId && <p className="break-all text-xs text-slate-400">Заявка сохранена. Номер: {receiptId}</p>}
       </div>
 
       <SupportContactStack />
