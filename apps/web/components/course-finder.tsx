@@ -10,6 +10,7 @@ import { changeFinderState, finderChoices, finderChoiceCount, finderItemMatches,
 import { weekdays } from "@/lib/offers/annual-schedule";
 import type { Quest, Venue } from "@/lib/schemas";
 import s from "./course-finder.module.css";
+import {sharedAgeQuery,wizardHref} from "@/lib/offers/unified-wizard";
 import {scheduleHref} from "@/lib/offers/schedule-routes";
 import { annualAvailabilityStale } from "@/lib/offers/annual-freshness";
 import { useScheduleClock } from "@/lib/offers/use-schedule-clock";
@@ -17,7 +18,7 @@ import { useScheduleClock } from "@/lib/offers/use-schedule-clock";
 type Props = {
   items: AgendaOfferItem[]; quests: Quest[]; venues: Venue[];
   schoolSlug?: string; venueSlug?: string;
-  embedded?: boolean;
+  embedded?: boolean; defaultWizard?: boolean; unified?: boolean;
   status: "idle" | "loading" | "error" | "ready";
   isValidating: boolean; snapshotGeneratedAt: string | null; onRefresh: () => void;
 };
@@ -28,13 +29,15 @@ const programmeCopy: Record<string, string> = {
   projects: "Собственная идея, работа над проектом и его защита.",
 };
 
-export function CourseFinder({ items: agendaItems, quests, venues, schoolSlug, venueSlug, embedded = false, status, isValidating, snapshotGeneratedAt, onRefresh }: Props) {
-  const query = useSearchParams();
+export function CourseFinder({ items: agendaItems, quests, venues, schoolSlug, venueSlug, embedded = false, defaultWizard = false, unified = false, status, isValidating, snapshotGeneratedAt, onRefresh }: Props) {
+  const incomingQuery = useSearchParams();
+  const query = embedded && incomingQuery.get("kind") === "all" ? sharedAgeQuery(incomingQuery) : incomingQuery;
   const pathname = usePathname();
   const router = useRouter();
   const clock = useScheduleClock();
   const schools = useMemo(() => getSchoolScopes(venues), [venues]);
-  const rawState = readFinderState(query, schoolSlug, venueSlug, embedded);
+  const displayQuery=new URLSearchParams(query);if(embedded)displayQuery.set("view","catalogue");
+  const rawState = readFinderState(displayQuery, schoolSlug, venueSlug, embedded, defaultWizard);
   const state = { ...rawState, school: resolveSchoolScope(venues, rawState.school)?.slug ?? rawState.school };
   const school = schools.find(candidate => candidate.slug === state.school);
   const campuses = school?.venues ?? (state.school === "all" ? venues : []);
@@ -91,15 +94,16 @@ export function CourseFinder({ items: agendaItems, quests, venues, schoolSlug, v
     const next = changeFinderState(state, patch);
     setShareUrl(""); setShareMessage("");
     // Exact-campus routes remain authoritative. Switching address leaves that route explicitly.
-    const target = new URL(scheduleHref("year", next.school, next.venue, venues), "https://schedule.invalid");
+    const target = new URL(unified ? wizardHref(next.school,next.venue) : scheduleHref("year", next.school, next.venue, venues), "https://schedule.invalid");
     const nextPath = target.pathname;
-    const routeHasSchool = target.pathname.split("/").filter(Boolean).length >= 2;
-    const routeHasVenue = target.pathname.split("/").filter(Boolean).length >= 3;
-    const compact = finderQuery(next, routeHasSchool ? next.school : undefined, routeHasVenue ? next.venue : undefined);
-    const href = `${nextPath}${compact ? `?${compact}` : ""}`;
+    const routeHasSchool = unified ? nextPath.startsWith('/sites/') : target.pathname.split("/").filter(Boolean).length >= 2;
+    const routeHasVenue = !unified && target.pathname.split("/").filter(Boolean).length >= 3;
+    const compact = finderQuery(next, routeHasSchool ? next.school : undefined, routeHasVenue ? next.venue : undefined, false, defaultWizard);
+    target.search=compact;if(unified)target.searchParams.set('kind','year');
+    const href = target.pathname+target.search;
     if (nextPath !== pathname) {
-      try { sessionStorage.setItem("brainmaster:finder-focus", `${nextPath}?${compact}`); } catch { /* Optional focus handoff only. */ }
-      router.push(href, { scroll: false });
+      try { sessionStorage.setItem("brainmaster:finder-focus", `${target.pathname}?${target.searchParams}`); } catch { /* Optional focus handoff only. */ }
+      if(unified)window.location.assign(href);else router.push(href, { scroll: false });
     }
     else window.history.pushState(null, "", href);
   }
@@ -108,10 +112,10 @@ export function CourseFinder({ items: agendaItems, quests, venues, schoolSlug, v
   }
   async function share(item?: ScheduleBoardItem) {
     const selection = item ? { ...state, school: itemSchool(item), venue: item.venue.slug, programme: item.quest.slug, offer: item.offer.id, step: "results" as const } : state;
-    const target = new URL(scheduleHref("year",selection.school,selection.venue,venues),window.location.origin);
+    const target = new URL(unified?wizardHref(selection.school,selection.venue):scheduleHref("year",selection.school,selection.venue,venues),window.location.origin);
     const segments = target.pathname.split("/").filter(Boolean).length;
-    const compact = finderQuery(selection,segments>=2?selection.school:undefined,segments>=3?selection.venue:undefined);
-    target.search = compact;
+    const compact = finderQuery(selection,(unified?target.pathname.startsWith('/sites/'):segments>=2)?selection.school:undefined,!unified&&segments>=3?selection.venue:undefined, false, defaultWizard);
+    target.search = compact;if(unified)target.searchParams.set('kind','year');
     const href = target.href;
     setShareUrl(href);
     try { await navigator.clipboard.writeText(href); setShareMessage("Ссылка скопирована. В ней сохранены адрес, программа и фильтры."); }

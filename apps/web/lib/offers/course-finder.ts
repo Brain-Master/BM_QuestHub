@@ -22,13 +22,13 @@ type Query = Pick<URLSearchParams, "get" | "has">;
 const bounded = (value: string | null, fallback = "all") => value === null ? fallback : value.slice(0, 160);
 
 /** A route school is authoritative. Unknown entity IDs are retained and fail closed. */
-export function readFinderState(query: Query, routeSchool?: string, initialVenue?: string, embedded = false): FinderState {
+export function readFinderState(query: Query, routeSchool?: string, initialVenue?: string, embedded = false, defaultWizard = false): FinderState {
   const school = routeSchool ?? bounded(query.get("school"));
   const programme = bounded(query.get("programme"));
   const hasSelection = ["venue", "campus", "programme", "age", "level", "day", "offer"].some(key => query.has(key));
-  const view = query.get("view") === "wizard" ? "wizard" : query.get("view") === "catalogue" || embedded || hasSelection || initialVenue || !routeSchool ? "catalogue" : "wizard";
+  const view = query.get("view") === "wizard" ? "wizard" : query.get("view") === "catalogue" || embedded || hasSelection || (!defaultWizard && (initialVenue || !routeSchool)) ? "catalogue" : "wizard";
   const requestedStep = query.get("step");
-  const step = query.get("offer") || view === "catalogue" ? "results" : ["school", "campus", "interest", "results"].includes(requestedStep ?? "") ? requestedStep as FinderState["step"] : school === "all" ? "school" : "campus";
+  const step = query.get("offer") || view === "catalogue" ? "results" : ["school", "campus", "interest", "results"].includes(requestedStep ?? "") ? requestedStep as FinderState["step"] : school === "all" ? "school" : initialVenue && defaultWizard ? "interest" : "campus";
   const age = query.get("age");
   return {
     school, venue: initialVenue ?? bounded(query.get("venue") ?? query.get("campus")), programme,
@@ -54,7 +54,7 @@ export function changeFinderState(state: FinderState, patch: Partial<FinderState
 }
 
 /** Public query only; carries no tracking, credentials or personal child profile. */
-export function finderQuery(state: FinderState, routeSchool?: string, initialVenue?: string, embedded = false): string {
+export function finderQuery(state: FinderState, routeSchool?: string, initialVenue?: string, embedded = false, defaultWizard = false): string {
   const query = new URLSearchParams();
   for (const key of ["school", "venue", "programme", "level", "age", "day"] as const) {
     const value = state[key];
@@ -65,9 +65,9 @@ export function finderQuery(state: FinderState, routeSchool?: string, initialVen
   if (state.method !== "programme") query.set("method", state.method);
   if (state.grouping !== "venues") query.set("grouping", state.grouping);
   // Derive defaults through the parser itself, including the school QR entry screen.
-  if (readFinderState(query, routeSchool, initialVenue, embedded).view !== state.view) query.set("view", state.view);
-  if (readFinderState(query, routeSchool, initialVenue, embedded).step !== state.step) query.set("step", state.step);
-  if (readFinderState(query, routeSchool, initialVenue, embedded).completed !== state.completed) query.set("completed", state.completed);
+  if (readFinderState(query, routeSchool, initialVenue, embedded, defaultWizard).view !== state.view) query.set("view", state.view);
+  if (readFinderState(query, routeSchool, initialVenue, embedded, defaultWizard).step !== state.step) query.set("step", state.step);
+  if (readFinderState(query, routeSchool, initialVenue, embedded, defaultWizard).completed !== state.completed) query.set("completed", state.completed);
   return query.toString();
 }
 

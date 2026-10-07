@@ -85,3 +85,7 @@ describe("unknown host", () => {
     assert.equal(target, "https://quest.b-master.pro/agenda/?foo=1");
   });
 });
+
+it("routes school-host wizard into canonical school wizard",()=>{
+ assert.equal(resolveSchoolSubdomainRedirect('/wizard/',{routeSlug:'school-2044'}),'/sites/school-2044/wizard/');
+});
