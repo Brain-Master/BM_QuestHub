@@ -13,7 +13,8 @@ import type { NavigationConfig } from "@/lib/data/v2/site-config";
 import type { Quest, World, Venue } from "@/lib/schemas";
 import { useLiveSchedule } from "@/lib/offers/use-live-schedule";
 import { resolveScheduleStatusKey } from "@/lib/offers/schedule-board";
-import { scheduleHref } from "@/lib/offers/schedule-routes";
+import {wizardHref} from "@/lib/offers/unified-wizard";
+import { scheduleHref,resolveScheduleRoute } from "@/lib/offers/schedule-routes";
 import { cn } from "@/lib/utils";
 
 const subscribeSearch = (notify:()=>void) => {window.addEventListener("popstate",notify);return ()=>window.removeEventListener("popstate",notify);};
@@ -68,6 +69,7 @@ export function SiteHeader({ worlds, navigation, baseQuests, scopeByVenue, schoo
   const coursesHref = exactVenue ? scheduleHref("year",schoolSlug,exactVenue,venues) : `/courses/${scheduleSuffix}`;
   const campHref = exactVenue ? scheduleHref("camp",schoolSlug,exactVenue,venues) : `/camp/${scheduleSuffix}`;
   const allHref = exactVenue ? scheduleHref("all",schoolSlug,exactVenue,venues) : `/agenda/${scheduleSuffix}`;
+  const unifiedHref=wizardHref(canonicalSchool??schoolSlug,exactVenue??(campus?resolveScheduleRoute(venues,schoolSlug??undefined,campus).venue?.slug:undefined));
   const catalogHref = hostSchool ? "/catalog/" : schoolSlug ? `/sites/${schoolSlug}/catalog/` : "/catalog/";
   const sitesHref = hostSchool ? `/sites/${hostSchool.routeSlug}/` : "/sites/";
   const worldGroups = navigation.worldGroups.filter(group => worlds.some(world => world.slug === group.slug));
@@ -82,6 +84,7 @@ export function SiteHeader({ worlds, navigation, baseQuests, scopeByVenue, schoo
     const close = () => setMenuOpen(false);
     return <>
       <NavDisclosure label="Расписание" mobile={mobile}>
+        <Link className={navLink} href={unifiedHref} onClick={close}>Подобрать занятия</Link>
         <Link className={navLink} href={allHref} aria-current={normalizedPath.startsWith("/agenda/") ? "page" : undefined} onClick={close}>Всё расписание</Link>
         <Link className={navLink} href={coursesHref} aria-current={normalizedPath.startsWith("/courses/") ? "page" : undefined} onClick={close}>Годовые курсы</Link>
         <Link className={navLink} href={campHref} aria-current={normalizedPath.startsWith("/camp/") ? "page" : undefined} onClick={close}>Лагерные смены</Link>

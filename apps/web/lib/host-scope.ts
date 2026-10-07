@@ -73,7 +73,7 @@ export function normalizePathname(pathname: string): string {
   return pathname.endsWith("/") ? pathname : `${pathname}/`;
 }
 
-const SHORT_ALIAS_PATHS = new Set(["/", "/agenda/", "/catalog/", "/camp/", "/courses/"]);
+const SHORT_ALIAS_PATHS = new Set(["/", "/agenda/", "/catalog/", "/camp/", "/courses/", "/wizard/"]);
 
 export function resolveSchoolSubdomainRedirect(
   pathname: string,
@@ -82,6 +82,7 @@ export function resolveSchoolSubdomainRedirect(
   const path = normalizePathname(pathname);
   if (!SHORT_ALIAS_PATHS.has(path)) return null;
   if (path === "/") return `/sites/${school.routeSlug}/`;
+  if (path === "/wizard/") return `/sites/${school.routeSlug}/wizard/`;
   if (path === "/agenda/") return `/sites/${school.routeSlug}/agenda/`;
   if (path === "/camp/" || path === "/courses/") return `${path}${school.routeSlug.replace(/^school-/, "")}/`;
   if (path === "/catalog/") return `/sites/${school.routeSlug}/catalog/`;

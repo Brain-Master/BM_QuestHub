@@ -147,3 +147,20 @@ test("archived annual rows are absent from choices but exact archived offer link
   assert.equal(finderItemMatches(archived,all),false);
   assert.equal(finderItemMatches(archived,{...all,offer:archived.offer.id}),true);
 });
+
+
+test('dedicated annual routes start wizard but saved selections and embedded schedules retain results',()=>{
+ const q=new URLSearchParams();assert.equal(readFinderState(q,undefined,undefined,false,true).view,'wizard');
+ assert.equal(readFinderState(q,'school-2044','school-2044-dmitrovskoe-169b',false,true).step,'interest');
+ assert.equal(readFinderState(new URLSearchParams('age=9'),undefined,undefined,false,true).step,'results');
+ assert.equal(readFinderState(q,undefined,undefined,true,true).view,'catalogue');
+});
+
+test('wizard defaults roundtrip catalogue escape and exact campus interest',()=>{
+ for(const [school,venue] of [[undefined,undefined],['school-2044','school-2044-dmitrovskoe-169b']] as const){
+ const initial=readFinderState(new URLSearchParams(),school,venue,false,true);
+ for(const state of [initial,changeFinderState(initial,{view:'catalogue',step:'results'})]){
+ assert.deepEqual(readFinderState(new URLSearchParams(finderQuery(state,school,venue,false,true)),school,venue,false,true),state);
+ }
+ }
+});
