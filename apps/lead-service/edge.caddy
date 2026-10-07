@@ -1,0 +1,19 @@
+# Exact replacement for the existing BrainMaster publications snippet only.
+# Validate the whole edge config and gracefully reload under .deploy.lock.
+space.b-master.pro, pulse.b-master.pro {
+ log {
+  output discard
+ }
+ header Strict-Transport-Security "max-age=31536000"
+ @leads {
+  host space.b-master.pro
+  path /api/leads
+ }
+ handle @leads {
+  rewrite * /
+  reverse_proxy brainmaster-leads:8080
+ }
+ handle {
+  reverse_proxy brainmaster-publications:8080
+ }
+}

@@ -1,0 +1,35 @@
+name: brainmaster-leads
+services:
+  receiver:
+    image: node@sha256:d649c27dae7ba0137b3cef5dd75baa422c08dc3d9e3fc0c23dfb172dc3cc6436
+    pull_policy: never
+    user: "1000:1000"
+    command: [flock, -n, /data/.service.lock, node, /app/lead-service/server.cjs]
+    restart: unless-stopped
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 192m
+    cpus: 0.5
+    pids_limit: 64
+    stop_grace_period: 40s
+    tmpfs: ["/tmp:size=8m,mode=1777"]
+    environment:
+      NODE_EXTRA_CA_CERTS: /run/secrets/max-ca.pem
+    volumes:
+      - ./app:/app:ro
+      - ./secrets:/run/secrets:ro
+      - ./data:/data
+    networks:
+      edge:
+        aliases: [brainmaster-leads]
+    healthcheck:
+      test: [CMD, node, -e, "fetch('http://127.0.0.1:8080/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    logging:
+      driver: json-file
+      options: {max-size: 5m, max-file: "2"}
+networks:
+  edge: {external: true}

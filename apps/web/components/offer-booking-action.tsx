@@ -72,6 +72,7 @@ function OfferBookingActionContent({
 }: Props) {
   const [open, setOpen] = React.useState(false);
   const [session, setSession] = React.useState(0);
+  const [receiptId, setReceiptId] = React.useState<string>();
   const [view, setView] = React.useState<"mos_intro" | "form" | "mos_success" | "lead_success">(
     "form",
   );
@@ -244,10 +245,12 @@ function OfferBookingActionContent({
                 text={flowContext.successText}
                 onOpenMos={trackMosOpen}
               />
+              {receiptId && <p className="break-all px-5 pb-5 text-center text-xs text-slate-400">Заявка сохранена. Номер: {receiptId}</p>}
             </div>
           ) : view === "lead_success" ? (
             <div className="bm-scrollbar min-h-0 overflow-y-auto overscroll-contain [scrollbar-gutter:stable] [scrollbar-width:thin]">
               <LeadFormSuccess
+                receiptId={receiptId}
                 title={flowContext.successTitle}
                 text={flowContext.successText}
                 onClose={() => setOpen(false)}
@@ -287,8 +290,9 @@ function OfferBookingActionContent({
                   schoolSlug,
                 }}
                 flowContext={flowContext}
-                onSuccess={() => {
+                onSuccess={(_values, savedReceiptId) => {
                   if (session !== formSession.current) return;
+                  setReceiptId(savedReceiptId);
                   if (action.kind === "mos") {
                     setView("mos_success");
                     return;

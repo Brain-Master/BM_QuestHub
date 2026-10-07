@@ -47,7 +47,7 @@ type Props = {
   summary?: BookingFormSummary;
   flowContext?: RegistrationFlowContext;
   submitLabel?: string;
-  onSuccess?: (values: LeadPayload) => void;
+  onSuccess?: (values: LeadPayload, receiptId?: string) => void;
   onSubmitFailed?: () => void;
 };
 
@@ -138,7 +138,7 @@ export function BookingForm({
       leadType: values.leadType,
       registrationChannel: values.registrationChannel,
     });
-    onSuccess?.(values);
+    onSuccess?.(values, res.receiptId);
     form.reset({
       leadType: "booking",
       ...defaults,
