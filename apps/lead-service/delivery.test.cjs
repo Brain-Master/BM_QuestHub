@@ -3,14 +3,14 @@ const {test}=require('node:test');const assert=require('node:assert/strict');con
 const {deliver,sheetContains}=require('./delivery.cjs');const {_internals:h}=require('../yandex-lead-receiver/index.js');
 const lead={requestId:'test-receipt',parentName:'Test',childName:'Test',childAge:'9',questTitle:'Test',venueName:'Test',contact:'example.invalid'};
 test('real channel transport classifies pre-send failure and ambiguous POST separately',async(t)=>{
- Object.assign(process.env,{TELEGRAM_BOT_TOKEN:'test',TELEGRAM_CHAT_ID:'1',MAX_BOT_TOKEN:'test',MAX_ADMIN_USER_ID:'1'});
+ Object.assign(process.env,{TELEGRAM_BOT_TOKEN:'test',TELEGRAM_CHAT_ID:'1',MAX_BOT_TOKEN:'test',MAX_ADMIN_USER_ID:'1',MAX_BOT_ID:'2'});
  for(const channel of ['telegram','max']){
   let posts=0;
   t.mock.method(global,'fetch',async(_url,options)=>{if(options.method==='POST')posts++;throw Error('network');});
   await assert.rejects(deliver(channel,lead),e=>e.safeRetry===true);assert.equal(posts,0);t.mock.restoreAll();
-  t.mock.method(global,'fetch',async(_url,options)=>{if(options.method==='POST'){posts++;throw Error('timeout after possible acceptance');}return Response.json(channel==='telegram'?{ok:true}:{is_bot:true});});
+  t.mock.method(global,'fetch',async(_url,options)=>{if(options.method==='POST'){posts++;throw Error('timeout after possible acceptance');}return Response.json(channel==='telegram'?{ok:true}:{is_bot:true,user_id:2});});
   await assert.rejects(deliver(channel,lead),e=>e.safeRetry===false);assert.equal(posts,1);t.mock.restoreAll();
-  t.mock.method(global,'fetch',async(_url,options)=>Response.json(options.method==='POST'?{}:channel==='telegram'?{ok:true}:{is_bot:true}));
+  t.mock.method(global,'fetch',async(_url,options)=>Response.json(options.method==='POST'?{}:channel==='telegram'?{ok:true}:{is_bot:true,user_id:2}));
   await assert.rejects(deliver(channel,lead),e=>e.safeRetry===false);t.mock.restoreAll();
  }
 });

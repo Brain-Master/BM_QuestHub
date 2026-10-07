@@ -2,7 +2,7 @@
 
 POST https://space.b-master.pro/api/leads saves a receipt and three independent channel jobs in one SQLite transaction. HTTP202 means saved, not delivered to all channels. Existing Yandex URL forwards to this endpoint for open browser tabs. Schedules continue loading from S3 unchanged.
 
-The isolated `brainmaster-leads` Compose project runs Node22 with a persistent private `/home/deploy/brainmaster-leads/data` directory. Source is read-only. Private receiver.json is transferred from the existing receiver config without printing credentials. No host ports or public administration routes. MAX needs MAX_BOT_TOKEN and MAX_ADMIN_USER_ID; pending jobs remain not_configured until supplied.
+The isolated `brainmaster-leads` Compose project runs Node22 with a persistent private `/home/deploy/brainmaster-leads/data` directory. Source is read-only. Private receiver.json is transferred from the existing receiver config without printing credentials. No host ports or public administration routes. MAX needs MAX_BOT_TOKEN, pinned MAX_BOT_ID, MAX_ADMIN_USER_ID and the supplied additional CA certificate; pending jobs remain not_configured until supplied.
 
 Worker states: pending, sending, confirmed, retry (before send or definitive401/403 rejection), uncertain (possibly accepted), not_configured. Sending on restart becomes uncertain. Never blindly reset uncertain jobs: Sheets reads column C to confirm a receipt; absence does not authorize another append. Telegram/MAX uncertainty requires manual reconciliation. `confirmed` means API accepted, not administrator read.
 

@@ -1,7 +1,7 @@
 'use strict';
 const {_internals:h}=require('../yandex-lead-receiver/index.js');
 function notice(lead){const types={booking:'Новая заявка',waitlist:'Предварительная заявка',mos_assist:'Помощь с записью на mos.ru'};return [types[lead.leadType]||'Новая заявка',`№ ${lead.requestId}`,`Программа: ${lead.questTitle}`,`Площадка: ${lead.venueName}`,`Группа: ${lead.offerId}`,`Родитель: ${lead.parentName}`,`Контакт: ${lead.contact}`,`Ребёнок: ${lead.childName}, ${lead.childAge} лет`,lead.variantTitle,lead.comment?`Комментарий: ${lead.comment}`:''].filter(Boolean).map(s=>s.slice(0,600)).join('\n').slice(0,3900);}
-function configured(channel){if(channel==='max')return !!process.env.MAX_BOT_TOKEN&&/^\d+$/.test(process.env.MAX_ADMIN_USER_ID||'');if(channel==='telegram')return !!process.env.TELEGRAM_BOT_TOKEN&&!!process.env.TELEGRAM_CHAT_ID;return !!process.env.GOOGLE_SERVICE_ACCOUNT_JSON_BASE64&&!!process.env.GOOGLE_SHEETS_SPREADSHEET_ID&&!!process.env.GOOGLE_LEADS_SHEET_RANGE;}
+function configured(channel){if(channel==='max')return !!process.env.MAX_BOT_TOKEN&&/^\d+$/.test(process.env.MAX_BOT_ID||'')&&/^\d+$/.test(process.env.MAX_ADMIN_USER_ID||'');if(channel==='telegram')return !!process.env.TELEGRAM_BOT_TOKEN&&!!process.env.TELEGRAM_CHAT_ID;return !!process.env.GOOGLE_SERVICE_ACCOUNT_JSON_BASE64&&!!process.env.GOOGLE_SHEETS_SPREADSHEET_ID&&!!process.env.GOOGLE_LEADS_SHEET_RANGE;}
 async function sheetContains(lead,budget){const token=await h.getGoogleAccessToken(budget),range=process.env.GOOGLE_LEADS_SHEET_RANGE;const column=range.includes('!')?range.slice(0,range.lastIndexOf('!'))+'!C:C':'C:C';const url=`https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(process.env.GOOGLE_SHEETS_SPREADSHEET_ID)}/values/${encodeURIComponent(column)}`;const {json}=await h.boundedRequest('sheet_lookup',url,{headers:{authorization:'Bearer '+token}},budget,{maxResponseBytes:4*1024*1024,validate:j=>j&&typeof j==='object'});return (json.values||[]).some(r=>r[0]===lead.requestId);}
 async function deliver(channel,lead){const budget=h.deliveryBudget(lead.requestId,26000),phase=channel==='sheets'?'google_sheets':channel;
  try{
@@ -15,7 +15,7 @@ async function deliver(channel,lead){const budget=h.deliveryBudget(lead.requestI
    await h.boundedRequest(phase,base+'/sendMessage',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:process.env.TELEGRAM_CHAT_ID,text:notice(lead),disable_web_page_preview:true})},budget,{validate:j=>j?.ok===true&&Number.isInteger(j.result?.message_id)});
   }else if(channel==='max'){
    const base='https://platform-api2.max.ru',headers={Authorization:process.env.MAX_BOT_TOKEN,'Content-Type':'application/json'};
-   await h.boundedRequest('max_auth',base+'/me',{headers},budget,{validate:j=>j?.is_bot===true});
+   await h.boundedRequest('max_auth',base+'/me',{headers},budget,{validate:j=>j?.is_bot===true&&String(j.user_id)===process.env.MAX_BOT_ID});
    await h.boundedRequest(phase,base+'/messages?user_id='+encodeURIComponent(process.env.MAX_ADMIN_USER_ID),{method:'POST',headers,body:JSON.stringify({text:notice(lead)})},budget,{validate:j=>typeof j?.message?.body?.mid==='string'});
   }else throw Error('UNKNOWN_CHANNEL');
  }catch(e){const beforeSend=!budget.progress[phase];throw Object.assign(new Error('CHANNEL_DELIVERY_FAILED'),{safeRetry:beforeSend||[401,403].includes(e.httpStatus),code:typeof e.code==='string'?e.code:'DELIVERY_ERROR'});}
