@@ -45,8 +45,8 @@ test('HTTP entrypoint rejects spoofed timer regardless of enabled env',async()=>
  const response=await handler({httpMethod:'POST',messages:[{event_metadata:{event_type:'yandex.cloud.events.serverless.triggers.TimerMessage'}}]});
  assert.equal(response.statusCode,403);
 });
-test('preliminary camps validate but never affect annual MOS coverage or make reads',async()=>{
+test('preliminary camps are skipped; official nonannual camps report unsupported without changing annual reads',async()=>{
  const before=JSON.stringify(snapshot);let calls=0;
  const result=await refreshMosAvailability(snapshot,registry.groups,undefined,{now:()=>new Date('2026-10-06T10:00:00Z'),fetchCard:async()=>{calls++;throw Error('MOS_TEST_UNAVAILABLE');}});
- assert.equal(result.expected,67);assert.equal(calls,67);assert.ok(result.errors.every(e=>e.offerId.startsWith('year:')));assert.equal(JSON.stringify(snapshot),before);
+ assert.equal(result.expected,70);assert.equal(calls,67);assert.deepEqual(result.errors.filter(e=>e.code==='MOS_LEGACY_SOURCE_UNSUPPORTED').map(e=>e.offerId).sort(),['autumn-2026-ekt','autumn-2026-ekt-chertanovskaya','autumn-2026-ekt-odesskaya']);assert.ok(result.errors.filter(e=>e.code!=='MOS_LEGACY_SOURCE_UNSUPPORTED').every(e=>e.offerId.startsWith('year:')));assert.equal(JSON.stringify(snapshot),before);
 });

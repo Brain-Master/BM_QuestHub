@@ -51,7 +51,7 @@ export const schoolProfiles: Record<string,SchoolProfile> = {
   },
   "mduc-ekt": {
     name:"Московский детско-юношеский центр экологии, краеведения и туризма",website:"https://mducekt.mskobr.ru/",logoUrl:"/sites/mduc-ekt/logo-original.jpg",
-    description:"Центр дополнительного образования Москвы. На странице представлены два разных адреса: эколого-биологический центр на Одесской улице и подразделение «Станция юных туристов» на Мосфильмовской. Перед поездкой обязательно сверьте корпус; наличие групп BrainMaster указано в расписании, а не определяется по профилю учреждения.",
+    description:"Центр дополнительного образования Москвы. На странице представлены площадки на Одесской, Мосфильмовской и Чертановской улицах. Перед поездкой обязательно сверьте корпус; наличие групп BrainMaster указано в расписании, а не определяется по профилю учреждения.",
     verifiedAt:"2026-09-09",nameSource:"https://prodod.moscow/archives/35478",
     campuses:{
       "mduc-ekt-odesskaya":{address:"Одесская ул., 12А",latitude:55.657700,longitude:37.590437,mapUrl:"https://yandex.com/maps/org/moskovskiy_detsko_yunosheskiy_tsentr_ekologii_krayevedeniya_i_turizma/1001378586/",photoUrl:"/sites/mduc-ekt/odesskaya-12a-original.jpg"},

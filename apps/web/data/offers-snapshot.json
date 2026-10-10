@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-10-06T10:24:00.000Z",
+  "generatedAt": "2026-10-10T00:00:00.000Z",
   "source": "annual-csv-integration",
   "offersByQuest": {
     "mekhvarium-laboratoriya-kineticheskih-monstrov": [
@@ -463,7 +463,6 @@
         }
       },
       {
-        "preliminary": true,
         "id": "autumn-2026-ekt",
         "venueSlug": "mduc-ekt-mosfilmovskaya",
         "shiftLabel": "Мехвариум: Лаборатория Инженерных Монстров · МДЮЦ ЭКТ",
@@ -475,14 +474,17 @@
         "daySchedule": "09:00–12:30",
         "priceLabel": "12 950 ₽",
         "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/1071480",
-        "includedNote": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
-        "sheetStatus": "Скоро старт",
+        "includedNote": "Запись и оформление на mos.ru. Код 2586628, группа К7643-26. Стоимость: 2 590 ₽ за занятие, 12 950 ₽ за 5 дней. Места по данным mos.ru на 10.10.2026; актуальное наличие уточняйте в карточке mos.ru.",
+        "sheetStatus": "Идет прием",
+        "enrolled": 0,
+        "maxCapacity": 12,
         "scheduleCard": {
           "displayTitle": "Мехвариум: Лаборатория Инженерных Монстров",
-          "description": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
+          "description": "За 5 дней участники изучат механику, поработают с безопасным паяльным оборудованием, микроконтроллерами и 3D-моделями. Соберут механическую шкатулку с секретом и шагающего робота-монстра, которых заберут домой.\n\nЗапись и оформление на mos.ru. Код 2586628, группа К7643-26. Стоимость: 2 590 ₽ за занятие, 12 950 ₽ за 5 дней. Места по данным mos.ru на 10.10.2026; актуальное наличие уточняйте в карточке mos.ru.",
+          "teacherName": "Куприянова Анна Сергеевна",
           "tags": [
             "Осень 2026",
-            "Предварительная запись"
+            "Запись на mos.ru"
           ],
           "timelineDate": "26.10.2026 — 30.10.2026",
           "shortDate": "26.10.2026 — 30.10.2026",
@@ -491,21 +493,133 @@
           "ageLabel": "6–13 лет",
           "formatType": "Осенний интенсив",
           "formatTime": "09:00–12:30",
-          "formatNote": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
-          "status": "Скоро старт",
+          "formatNote": "Запись и оформление на mos.ru. Код 2586628, группа К7643-26. Стоимость: 2 590 ₽ за занятие, 12 950 ₽ за 5 дней. Места по данным mos.ru на 10.10.2026; актуальное наличие уточняйте в карточке mos.ru.",
+          "mosRuCode": "2586628",
+          "status": "Идет прием",
           "isArchived": false,
           "allowWaitlistWhenSoldOut": false,
-          "registrationChannel": "brainmaster",
-          "allowPreliminaryRegistration": true,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
           "variants": [
             {
               "id": "autumn-2026-ekt",
               "type": "Осенний интенсив",
               "time": "09:00–12:30",
               "priceLabel": "12 950 ₽",
-              "note": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
-              "registrationChannel": "brainmaster",
-              "allowPreliminaryRegistration": true
+              "note": "Запись и оформление на mos.ru. Код 2586628, группа К7643-26. Стоимость: 2 590 ₽ за занятие, 12 950 ₽ за 5 дней. Места по данным mos.ru на 10.10.2026; актуальное наличие уточняйте в карточке mos.ru.",
+              "mosRuCode": "2586628",
+              "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/1071480",
+              "enrolled": 0,
+              "registrationChannel": "mos_ru",
+              "allowPreliminaryRegistration": false
+            }
+          ]
+        }
+      },
+      {
+        "id": "autumn-2026-ekt-odesskaya",
+        "venueSlug": "mduc-ekt-odesskaya",
+        "shiftLabel": "Мехвариум: Лаборатория Инженерных Монстров · МДЮЦ ЭКТ",
+        "startDate": "2026-10-26",
+        "endDate": "2026-10-30",
+        "startTime": "09:00",
+        "endTime": "12:30",
+        "dateRange": "26.10.2026 — 30.10.2026",
+        "daySchedule": "09:00–12:30",
+        "priceLabel": "12 950 ₽",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/1075237",
+        "includedNote": "Запись и оформление на mos.ru. Код 2588749, группа К7662-26. Стоимость: 2 590 ₽ за занятие, 12 950 ₽ за 5 дней. Места по данным mos.ru на 10.10.2026; актуальное наличие уточняйте в карточке mos.ru.",
+        "sheetStatus": "Идет прием",
+        "enrolled": 0,
+        "maxCapacity": 8,
+        "scheduleCard": {
+          "displayTitle": "Мехвариум: Лаборатория Инженерных Монстров",
+          "description": "За 5 дней участники изучат механику, поработают с безопасным паяльным оборудованием, микроконтроллерами и 3D-моделями. Соберут механическую шкатулку с секретом и шагающего робота-монстра, которых заберут домой.\n\nЗапись и оформление на mos.ru. Код 2588749, группа К7662-26. Стоимость: 2 590 ₽ за занятие, 12 950 ₽ за 5 дней. Места по данным mos.ru на 10.10.2026; актуальное наличие уточняйте в карточке mos.ru.",
+          "teacherName": "Филиппова Светлана Викторовна",
+          "tags": [
+            "Осень 2026",
+            "Запись на mos.ru"
+          ],
+          "timelineDate": "26.10.2026 — 30.10.2026",
+          "shortDate": "26.10.2026 — 30.10.2026",
+          "programNameH1": "Мехвариум: Лаборатория Инженерных Монстров",
+          "programFilterLabel": "Мехвариум: Лаборатория Инженерных Монстров",
+          "ageLabel": "6–13 лет",
+          "formatType": "Осенний интенсив",
+          "formatTime": "09:00–12:30",
+          "formatNote": "Запись и оформление на mos.ru. Код 2588749, группа К7662-26. Стоимость: 2 590 ₽ за занятие, 12 950 ₽ за 5 дней. Места по данным mos.ru на 10.10.2026; актуальное наличие уточняйте в карточке mos.ru.",
+          "mosRuCode": "2588749",
+          "status": "Идет прием",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "autumn-2026-ekt-odesskaya",
+              "type": "Осенний интенсив",
+              "time": "09:00–12:30",
+              "priceLabel": "12 950 ₽",
+              "note": "Запись и оформление на mos.ru. Код 2588749, группа К7662-26. Стоимость: 2 590 ₽ за занятие, 12 950 ₽ за 5 дней. Места по данным mos.ru на 10.10.2026; актуальное наличие уточняйте в карточке mos.ru.",
+              "mosRuCode": "2588749",
+              "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/1075237",
+              "enrolled": 0,
+              "registrationChannel": "mos_ru",
+              "allowPreliminaryRegistration": false
+            }
+          ]
+        }
+      },
+      {
+        "id": "autumn-2026-ekt-chertanovskaya",
+        "venueSlug": "mduc-ekt-chertanovskaya",
+        "shiftLabel": "Мехвариум: Лаборатория Инженерных Монстров · МДЮЦ ЭКТ",
+        "startDate": "2026-10-26",
+        "endDate": "2026-10-30",
+        "startTime": "09:00",
+        "endTime": "12:30",
+        "dateRange": "26.10.2026 — 30.10.2026",
+        "daySchedule": "09:00–12:30",
+        "priceLabel": "12 950 ₽",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/1075590",
+        "includedNote": "Запись и оформление на mos.ru. Код 2588951, группа К7663-26. Стоимость: 2 590 ₽ за занятие, 12 950 ₽ за 5 дней. Места по данным mos.ru на 10.10.2026; актуальное наличие уточняйте в карточке mos.ru.",
+        "sheetStatus": "Идет прием",
+        "enrolled": 0,
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "Мехвариум: Лаборатория Инженерных Монстров",
+          "description": "За 5 дней участники изучат механику, поработают с безопасным паяльным оборудованием, микроконтроллерами и 3D-моделями. Соберут механическую шкатулку с секретом и шагающего робота-монстра, которых заберут домой.\n\nЗапись и оформление на mos.ru. Код 2588951, группа К7663-26. Стоимость: 2 590 ₽ за занятие, 12 950 ₽ за 5 дней. Места по данным mos.ru на 10.10.2026; актуальное наличие уточняйте в карточке mos.ru.",
+          "teacherName": "Шестов Михаил Сергеевич",
+          "tags": [
+            "Осень 2026",
+            "Запись на mos.ru"
+          ],
+          "timelineDate": "26.10.2026 — 30.10.2026",
+          "shortDate": "26.10.2026 — 30.10.2026",
+          "programNameH1": "Мехвариум: Лаборатория Инженерных Монстров",
+          "programFilterLabel": "Мехвариум: Лаборатория Инженерных Монстров",
+          "ageLabel": "6–13 лет",
+          "formatType": "Осенний интенсив",
+          "formatTime": "09:00–12:30",
+          "formatNote": "Запись и оформление на mos.ru. Код 2588951, группа К7663-26. Стоимость: 2 590 ₽ за занятие, 12 950 ₽ за 5 дней. Места по данным mos.ru на 10.10.2026; актуальное наличие уточняйте в карточке mos.ru.",
+          "mosRuCode": "2588951",
+          "status": "Идет прием",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "autumn-2026-ekt-chertanovskaya",
+              "type": "Осенний интенсив",
+              "time": "09:00–12:30",
+              "priceLabel": "12 950 ₽",
+              "note": "Запись и оформление на mos.ru. Код 2588951, группа К7663-26. Стоимость: 2 590 ₽ за занятие, 12 950 ₽ за 5 дней. Места по данным mos.ru на 10.10.2026; актуальное наличие уточняйте в карточке mos.ru.",
+              "mosRuCode": "2588951",
+              "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/1075590",
+              "enrolled": 0,
+              "registrationChannel": "mos_ru",
+              "allowPreliminaryRegistration": false
             }
           ]
         }
