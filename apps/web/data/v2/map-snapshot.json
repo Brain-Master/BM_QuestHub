@@ -1,9 +1,9 @@
 {
   "version": 2,
-  "generatedAt": "2026-10-06T10:24:00.000Z",
+  "generatedAt": "2026-10-10T00:00:00.000Z",
   "source": "annual-csv-integration",
   "integrity": {
-    "contentHash": "sha256:41a9236a5709df79837b5b6712e83f3ac81ef5981f83442b7dbb55ae535f8777"
+    "contentHash": "sha256:1f7447c4da86084ea62325949bae97f85e6461365aba137b9fc811cdf07ec1c5"
   },
   "venues": [
     {
@@ -564,6 +564,18 @@
       ],
       "listedOnSites": true,
       "schoolScopeSlug": "school-875"
+    },
+    {
+      "slug": "mduc-ekt-chertanovskaya",
+      "name": "Московский детско-юношеский центр экологии, краеведения и туризма",
+      "type": "school",
+      "address": "Чертановская ул., 58А",
+      "city": "moscow",
+      "logoUrl": "/sites/mduc-ekt/logo-original.jpg",
+      "directions": [],
+      "photos": [],
+      "listedOnSites": true,
+      "schoolScopeSlug": "mduc-ekt"
     }
   ]
 }
