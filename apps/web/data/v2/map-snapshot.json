@@ -1,9 +1,9 @@
 {
   "version": 2,
-  "generatedAt": "2026-10-10T00:00:00.000Z",
+  "generatedAt": "2026-10-10T20:01:33.173Z",
   "source": "annual-csv-integration",
   "integrity": {
-    "contentHash": "sha256:1f7447c4da86084ea62325949bae97f85e6461365aba137b9fc811cdf07ec1c5"
+    "contentHash": "sha256:807aec8246bdeb74eca6b73859286f5ae72f9a6022dc0bff90f0c163d8991ce2"
   },
   "venues": [
     {
@@ -18,19 +18,6 @@
       "photos": [],
       "listedOnSites": false,
       "schoolScopeSlug": "school-2103"
-    },
-    {
-      "preliminaryVenue": true,
-      "slug": "autumn-2026-2044-dolgoprudnaya-16-venue",
-      "name": "Школа № 2044",
-      "type": "school",
-      "address": "Долгопрудная аллея, 16",
-      "city": "moscow",
-      "logoUrl": "/sites/school-2044/logo-original.jpg",
-      "directions": [],
-      "photos": [],
-      "listedOnSites": false,
-      "schoolScopeSlug": "school-2044"
     },
     {
       "preliminaryVenue": true,
@@ -70,6 +57,38 @@
       "photos": [],
       "listedOnSites": false,
       "schoolScopeSlug": "school-937"
+    },
+    {
+      "slug": "mduc-ekt-chertanovskaya",
+      "name": "Московский детско-юношеский центр экологии, краеведения и туризма",
+      "type": "school",
+      "address": "Чертановская ул., 58А",
+      "city": "moscow",
+      "logoUrl": "/sites/mduc-ekt/logo-original.jpg",
+      "directions": [],
+      "photos": [],
+      "listedOnSites": true,
+      "schoolScopeSlug": "mduc-ekt"
+    },
+    {
+      "slug": "autumn-2026-2044-dolgoprudnaya-16-venue",
+      "name": "Школа № 2044 имени Героя Советского Союза А. М. Серебрякова",
+      "displayName": "Школа № 2044 имени Героя Советского Союза А. М. Серебрякова",
+      "type": "school",
+      "address": "Долгопрудная аллея, 16",
+      "metro": "Долгопрудная",
+      "city": "moscow",
+      "district": "Северный",
+      "logoUrl": "/sites/school-2044/logo-original.jpg",
+      "directions": [
+        "Выберите корпус и откройте маршрут по его адресу.",
+        "Уточните вход и кабинет у организатора перед первым занятием."
+      ],
+      "entranceNote": "Вход и кабинет уточните у организатора перед первым занятием.",
+      "contactNote": "Преподаватель годовых групп — Локтеева Ирина Дмитриевна. Подтверждено BrainMaster 10.10.2026.",
+      "photos": [],
+      "listedOnSites": true,
+      "schoolScopeSlug": "school-2044"
     },
     {
       "slug": "school-17-vvedenskogo-28s1",
@@ -564,18 +583,6 @@
       ],
       "listedOnSites": true,
       "schoolScopeSlug": "school-875"
-    },
-    {
-      "slug": "mduc-ekt-chertanovskaya",
-      "name": "Московский детско-юношеский центр экологии, краеведения и туризма",
-      "type": "school",
-      "address": "Чертановская ул., 58А",
-      "city": "moscow",
-      "logoUrl": "/sites/mduc-ekt/logo-original.jpg",
-      "directions": [],
-      "photos": [],
-      "listedOnSites": true,
-      "schoolScopeSlug": "mduc-ekt"
     }
   ]
 }

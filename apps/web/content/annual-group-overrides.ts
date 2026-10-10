@@ -14,6 +14,7 @@ export function reviewedStudyYear(schoolSlug: string, groupCode?: string | null)
 
 /** Owner confirmation, 2026-09-09. Annual groups only; historical shifts are untouched. */
 export function reviewedTeacher(schoolSlug: string, studyYear?: number | null, groupCode?: string | null): string | undefined {
+  if (schoolSlug === 'school-2044' && groupCode && ['К4114-26','К4115-26','К4116-26','К4117-26','К4118-26'].includes(groupCode)) return 'Локтеева Ирина Дмитриевна';
   if (schoolSlug === 'school-937' && groupCode && school937Codes.has(groupCode)) return 'Локтеева Ирина Дмитриевна';
   if (schoolSlug === 'school-37' && groupCode && school37Years[groupCode]) return 'Кузнецова Ольга Максимовна';
   if (schoolSlug === "school-1212" || (schoolSlug === "school-17" && studyYear === 2)) {

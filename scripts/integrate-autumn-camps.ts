@@ -15,7 +15,7 @@ const web=path.join(root,'apps/web');
 const encode=(x:unknown)=>JSON.stringify(x,null,2)+'\n';
 const hash=(x:unknown)=>'sha256:'+crypto.createHash('sha256').update(JSON.stringify(x)).digest('hex');
 const read=(p:string)=>JSON.parse(fs.readFileSync(path.join(web,p),'utf8'));
-const known:Record<string,string>={'autumn-2026-1212':'school-1212-vilnyusskaya-14','autumn-2026-1383':'school-1383-verkhnie-likhobory','autumn-2026-ekt':'mduc-ekt-mosfilmovskaya','autumn-2026-ekt-odesskaya':'mduc-ekt-odesskaya','autumn-2026-ekt-chertanovskaya':'mduc-ekt-chertanovskaya','autumn-2026-37':'school-37-michurinsky-28','autumn-2026-2044-dmitrovskoe-169b':'school-2044-dmitrovskoe-169b'};
+const known:Record<string,string>={'autumn-2026-2044-dolgoprudnaya-16':'autumn-2026-2044-dolgoprudnaya-16-venue','autumn-2026-1212':'school-1212-vilnyusskaya-14','autumn-2026-1383':'school-1383-verkhnie-likhobory','autumn-2026-ekt':'mduc-ekt-mosfilmovskaya','autumn-2026-ekt-odesskaya':'mduc-ekt-odesskaya','autumn-2026-ekt-chertanovskaya':'mduc-ekt-chertanovskaya','autumn-2026-37':'school-37-michurinsky-28','autumn-2026-2044-dmitrovskoe-169b':'school-2044-dmitrovskoe-169b'};
 const creative='autumn-creative';
 export function compileAutumnCamps(input:{offers:ReturnType<typeof read>;catalog:ReturnType<typeof read>;map:ReturnType<typeof read>;manifest:ReturnType<typeof read>}) {
  const {offers,catalog,map,manifest}=structuredClone(input);
@@ -23,7 +23,7 @@ export function compileAutumnCamps(input:{offers:ReturnType<typeof read>;catalog
  if(parseOffersSnapshot(offers).source==='invalid_file')throw Error('Invalid base offers');
  catalogSnapshotSchema.parse(catalog);mapSnapshotSchema.parse(map);siteManifestV2Schema.parse(manifest);
  const ids=new Set(source.offers.map(o=>o.id));if(ids.size!==12)throw Error('Duplicate autumn ID');
- map.venues=map.venues.filter((v:{slug:string;preliminaryVenue?:boolean})=>!(v.preliminaryVenue&&source.offers.some(c=>known[c.id]&&v.slug===`${c.id}-venue`)));
+ map.venues=map.venues.filter((v:{slug:string;preliminaryVenue?:boolean})=>!(v.preliminaryVenue&&source.offers.some(c=>known[c.id]&&known[c.id]!==v.slug&&v.slug===`${c.id}-venue`)));
  const course=questSchema.omit({offers:true}).parse({slug:creative,worldSlug:'mekhvarium',title:'Инженерно-творческий интенсив',heroImageUrl:'/editorial/year-courses/project-1280.webp',catalogImageUrl:'/editorial/year-courses/project-640.webp',tagline:'Создаём проекты своими руками',ageLabel:'Возраст уточняется по выбранной группе',format:'intensive',skills:['3D-моделирование','проектная работа','творчество'],activeInCampaign:true,durationLabel:'Продолжительность указана у выбранной группы',priceHint:'Стоимость и условия уточняются по выбранной группе',story:'Осенние инженерно-творческие занятия BrainMaster. Программа зависит от школы; смотрите описание выбранной группы.',skillsParent:'Моделирование, сборка и творческая работа в соответствии с программой площадки.',loot:'Результат указан в описании выбранной группы.',approach:'Предварительная регистрация. Условия участия подтверждаем до зачисления.'});
  const ci=catalog.courses.findIndex((c:{slug:string})=>c.slug===creative);if(ci<0)catalog.courses.push(course);else catalog.courses[ci]=course;
  for(const rows of Object.values(offers.offersByQuest) as {id:string}[][])for(let i=rows.length-1;i>=0;i--)if(ids.has(rows[i].id))rows.splice(i,1);

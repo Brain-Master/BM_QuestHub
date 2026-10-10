@@ -22,11 +22,11 @@ test("catalogue and site choices require actual nonarchived groups in exact camp
   assert.deepEqual(filterCatalog(quests,venues,{format:"year"}).map(q=>q.slug),["shmi"]);
   assert.equal(filterCatalog(quests,venues,{school:"missing"}).length,0);
   assert.equal(filterCatalog(quests,venues,{school:"school-937",format:"year"})[0].offers.length,8);
-  assert.equal(filterCatalog(quests,venues,{school:"school-2044",format:"year"})[0].offers.length,11);
+  assert.equal(filterCatalog(quests,venues,{school:"school-2044",format:"year"})[0].offers.length,16);
   assert.ok(filterCatalog(quests,venues,{status:"archived"}).length>0);
   const cards=buildSiteScopeCards({scopes:getSchoolScopes(venues),quests,venues,worlds:worldSchema.array().parse(catalog.worlds)});
-  assert.equal(cards.length,9);assert.equal(cards.filter(c=>c.courseSlugs.includes("shmi")).length,8);assert.equal(cards.reduce((sum,c)=>sum+c.shiftCount,0),79);
-  assert.equal(cards.reduce((sum,c)=>sum+c.campuses.filter(v=>v.slug.startsWith("autumn-")).length,0),0);
+  assert.equal(cards.length,9);assert.equal(cards.filter(c=>c.courseSlugs.includes("shmi")).length,8);assert.equal(cards.reduce((sum,c)=>sum+c.shiftCount,0),84);
+  assert.equal(cards.reduce((sum,c)=>sum+c.campuses.filter(v=>v.slug.startsWith("autumn-")).length,0),1);
   assert.equal(filterCatalog(quests,venues,{format:"intensive"}).flatMap(q=>q.offers).length,12);
   assert.ok(cards.every(c=>c.shiftCount>0));
 });
@@ -54,7 +54,7 @@ test("facets hide zero groups, preserve independent conditions and count identit
   }
   const withCampus = { ...state, venue: "school-2044-dmitrovskoe-169b" };
   assert.ok(finderChoiceCount(items, withCampus, "school", "school-1383") > 0);
-  assert.equal(finderChoiceCount([...annual, ...annual], state, "school", "school-2044"), 11);
+  assert.equal(finderChoiceCount([...annual, ...annual], state, "school", "school-2044"), 16);
 });
 
 test("school QR starts at all campuses; general agenda is a full catalogue", () => {
@@ -85,13 +85,13 @@ test("direct offer skips questions; numeric parameters are allowlisted", () => {
   const state = readFinderState(new URLSearchParams("age=-99&day=8&programme=shmi&level=2044"));
   assert.equal(state.age, "all"); assert.equal(state.day, "all"); assert.equal(state.level, "all");
 });
-test("67 current groups expand to 67 weekly slots; removed and replaced groups retain history", () => {
-  assert.equal(annual.length, 67);
+test("72 current groups expand to 72 weekly slots; removed and replaced groups retain history", () => {
+  assert.equal(annual.length, 72);
   const rows = groupFinderWeek(annual).flatMap(day => day.rows);
-  assert.equal(rows.length, 67); assert.equal(new Set(rows.map(row => row.item.offer.id)).size, 67);
-  assert.equal(new Set(rows.map(row => row.key)).size, 67);
+  assert.equal(rows.length, 72); assert.equal(new Set(rows.map(row => row.item.offer.id)).size, 72);
+  assert.equal(new Set(rows.map(row => row.key)).size, 72);
   assert.deepEqual(rows.filter(row => row.item.offer.id === "year:К1981-26").map(row => row.key.split(":").slice(2, 3)[0]), []);
-  assert.equal(new Set(annual.map(item => item.venue.slug)).size, 11);
+  assert.equal(new Set(annual.map(item => item.venue.slug)).size, 12);
   const registry=JSON.parse(fs.readFileSync('content/annual-mos-refresh.generated.json','utf8')) as {groups:Record<string,{status:string}>};
   assert.deepEqual(annual.filter(item => item.offer.annual?.admission === "closed").map(item=>item.offer.id).sort(),
     Object.entries(registry.groups).filter(([,g])=>g.status==='closed').map(([id])=>`year:${id}`).sort());
@@ -100,9 +100,9 @@ test("67 current groups expand to 67 weekly slots; removed and replaced groups r
 test("canonical programme registry includes empty programmes; study years never inferred", () => {
   assert.equal(quests.filter(quest => quest.format === "year").length, 4);
   for (const programme of ["projects", "it-academy", "olympiad-league"]) assert.equal(items.filter(item => finderItemMatches(item, { ...all, programme })).length, 0);
-  // Owner confirms all 11 remaining school2044 groups are first year; exact mos cards
+  // Owner confirms all 16 current school2044 groups are first year; exact mos cards
   // explicitly supply the ten school1383 years. Owner confirmed1212/937; the withdrawn875 ambiguous group is excluded.
-  assert.deepEqual([1, 2, 3, null].map(year => annual.filter(item => itemStudyYear(item) === year).length), [43, 20, 4, 0]);
+  assert.deepEqual([1, 2, 3, null].map(year => annual.filter(item => itemStudyYear(item) === year).length), [48, 20, 4, 0]);
   assert.ok(annual.filter(item=>item.venue.schoolScopeSlug==='school-2044').every(item=>itemStudyYear(item)===1));
   assert.deepEqual(annual.filter(item=>itemStudyYear(item)===3).map(item=>item.offer.id).sort(),['year:К2376-26','year:К2380-26','year:К3126-26','year:К3127-26']);
 });

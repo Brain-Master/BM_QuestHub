@@ -29,11 +29,11 @@ test("school profiles retain exact-campus sourced media; base and2103 await real
       campuses++;const venue=venues.find(v=>v.slug===slug);assert.ok(venue,slug);
       assert.equal(venue.schoolScopeSlug,id);assert.equal(venue.address,campus.address);
       assert.equal(venue.latitude,campus.latitude);assert.equal(venue.longitude,campus.longitude);
-      if(slug==='school-2103-golubinskaya-5k4') assert.equal(venue.photos.length,0,'no invented photo of a different campus');
+      if(['school-2103-golubinskaya-5k4','autumn-2026-2044-dolgoprudnaya-16-venue'].includes(slug)) assert.equal(venue.photos.length,0,'no invented photo of a different campus');
       else {assert.ok(campus.photoUrl&&fs.existsSync(`public${campus.photoUrl}`));assert.equal(venue.photos?.[0]?.url,campus.photoUrl);}
     }
   }
-  assert.equal(campuses,18);
+  assert.equal(campuses,19);
 });
 test('owner-confirmed teachers replace portal placeholders in seven1212 groups and pin school17 by study year',()=>{
   const annual=snapshot.offersByQuest.shmi;
@@ -67,14 +67,15 @@ test("reviewed profiles retain context;937 district is clarified from its exact 
 
 test("shared catalogue projects all annual groups and exact campuses", () => {
   const view = projectAnnualWorkspace(quests, venues);
-  assert.equal(view.groups.length,67);
-  assert.equal(view.groups.flatMap(g=>g.slots).length,67);
-  assert.equal(view.locations.length,11);
+  assert.equal(view.groups.length,72);
+  assert.equal(view.groups.flatMap(g=>g.slots).length,72);
+  assert.equal(view.locations.length,12);
   const registry=annualMosRefreshSchema.parse(read('content/annual-mos-refresh.generated.json'));
   assert.deepEqual(view.groups.filter(g=>g.status==="closed").map(g=>g.id).sort(),
     Object.entries(registry.groups).filter(([,g])=>g.status==='closed').map(([id])=>id).sort());
   assert.equal(quests.filter(q=>q.format==="year").length,4);
   for(const location of view.locations) {
+    if(location.address === "Долгопрудная аллея, 16") {assert.equal(location.latitude,undefined);assert.equal(location.longitude,undefined);continue;}
     assert.ok(location.schoolScopeSlug);
     assert.ok(location.latitude && location.latitude>55 && location.latitude<57);
     assert.ok(location.longitude && location.longitude>37 && location.longitude<39);
@@ -86,17 +87,17 @@ test("shared catalogue projects all annual groups and exact campuses", () => {
 });
 
 test("reviewed school2044 identity and both exact campus coordinates survive compilation",()=>{
-  const school=venues.filter(v=>v.schoolScopeSlug==='school-2044'&&!v.preliminaryVenue);
+  const school=venues.filter(v=>v.schoolScopeSlug==='school-2044'&&v.slug.startsWith('school-2044-dmitrovskoe-'));
   assert.equal(school.length,2);
   for(const v of school){assert.match(v.name,/имени Героя Советского Союза А\. М\. Серебрякова/);assert.equal(v.displayName,v.name);assert.equal(v.photos.length,1);assert.equal(v.metro,'Физтех');assert.match(v.logoUrl??'',/school-2044\/logo-original/);}
   assert.deepEqual(school.map(v=>[v.latitude,v.longitude]),[[55.932261,37.541054],[55.927015,37.542641]]);
 });
-test("live registry validates 81 exact distinct identities, preserves 8 unresolved groups without claiming success",()=>{
+test("live registry validates 86 exact distinct identities, preserves 8 unresolved groups without claiming success",()=>{
   const r=annualMosRefreshSchema.parse(read('content/annual-mos-refresh.generated.json'));
-  assert.equal(Object.keys(r.groups).length,81);assert.equal(new Set(Object.values(r.groups).map(g=>g.cardId)).size,81);
-  assert.equal(r.expectedGroups,89);assert.equal(r.ok,false);
+  assert.equal(Object.keys(r.groups).length,86);assert.equal(new Set(Object.values(r.groups).map(g=>g.cardId)).size,86);
+  assert.equal(r.expectedGroups,94);assert.equal(r.ok,false);
   const updated=snapshot.offersByQuest.shmi.filter(o=>o.annual?.refreshedAt);
-  assert.equal(updated.length,81);
+  assert.equal(updated.length,86);
   for(const o of updated){assert.equal(o.annual?.linkKind,'card');assert.match(o.mosBookingUrl??'',/^https:\/\/www\.mos\.ru\/pgu2\/activity\/card\/\d+$/);assert.ok(o.annual?.groupCode);assert.notEqual(o.annual?.lessonPrice,null);}
   assert.equal(annualMosRefreshSchema.safeParse({...r,ok:true}).success,false);
   assert.equal(annualMetadataSchema.safeParse({...updated[0].annual,ageMin:14,ageMax:7}).success,false);
@@ -137,7 +138,7 @@ test("shared site/map selectors include all twelve campuses and closed groups ca
     const card=cards.find(c=>c.slug===location.schoolScopeSlug);
     assert.ok(card);
     assert.ok(card.courseSlugs.includes("shmi"));
-    assert.ok(card.campuses.some(c=>c.slug===location.id && c.latitude && c.longitude));
+    assert.ok(card.campuses.some(c=>c.slug===location.id && (location.address==="Долгопрудная аллея, 16" ? c.latitude===undefined&&c.longitude===undefined : c.latitude&&c.longitude)));
   }
   for(const offer of snapshot.offersByQuest.shmi) {
     if(offer.annual?.admission==="closed") {
