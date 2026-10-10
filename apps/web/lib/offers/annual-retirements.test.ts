@@ -16,7 +16,7 @@ const venues=venueSchema.array().parse(read('data/v2/map-snapshot.json').venues)
 const now=new Date('2026-09-24T10:00:00Z');
 test('five historical removals and seventeen replacements cannot pollute ordinary facets',()=>{
  const annual=quests.flatMap(q=>q.offers).filter(o=>o.annual);
- const removed=annual.filter(isRetiredAnnualGroup);assert.equal(annual.length,89);assert.equal(removed.length,22);
+ const removed=annual.filter(isRetiredAnnualGroup);assert.equal(annual.length,94);assert.equal(removed.length,22);
  assert.deepEqual([...new Set(removed.map(o=>o.annual!.listingId))].sort(),['2463216','2548560','2548561','2549843','2549844','2549845','2560824','2560863','2560874','2560883']);
  for(const o of removed)assert.equal(o.scheduleCard?.isArchived,true);
  const old=quests.map(q=>({...q,offers:q.offers.map(o=>isRetiredAnnualGroup(o)?venueOfferSchema.parse({...o,id:`old:${o.id}`,scheduleCard:{...o.scheduleCard,isArchived:false}}):o)}));
@@ -32,7 +32,7 @@ test('five historical removals and seventeen replacements cannot pollute ordinar
   assert.equal(getScheduleDisplayStatus(conflict,now),'Отменено');
   assert.equal(getScheduleBookingMode(conflict,'Идёт набор').kind,'disabled');
  }
- const view=projectAnnualWorkspace(old,venues);assert.equal(view.groups.length,67);assert.ok(view.groups.every(g=>!isRetiredAnnualGroup(g)));
+ const view=projectAnnualWorkspace(old,venues);assert.equal(view.groups.length,72);assert.ok(view.groups.every(g=>!isRetiredAnnualGroup(g)));
  const school875=annual.find(o=>o.annual?.listingId==='2463216');assert.ok(school875);assert.equal(isRetiredAnnualGroup(school875),true);
  assert.ok(view.groups.every(g=>g.listingId!=='2463216'));
 });

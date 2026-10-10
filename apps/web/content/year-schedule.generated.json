@@ -1,7 +1,7 @@
 {
   "version": 1,
   "asOf": "2026-09-08",
-  "sourceSha256": "8669e5232d1a943d711f32155f577a5382e15209297d8c03cd1665a053f57f12",
+  "sourceSha256": "4d57eb55f7fce6182b274ef487a0741c0a1a7300c7844e795b45e12e3faface0",
   "locations": [
     {
       "id": "LOC-001",
@@ -74,6 +74,12 @@
       "school": "Школа № 937 имени Героя Российской Федерации А. В. Перова",
       "address": "г. Москва, вн.тер. м.о. Орехово-Борисово Северное, ул. Маршала Захарова, д. 25",
       "metro": "Орехово"
+    },
+    {
+      "id": "LOC-013",
+      "school": "Школа № 2044",
+      "address": "г. Москва, вн.тер. м.о. Северный, Долгопрудная ал., д. 16",
+      "metro": "Долгопрудная"
     }
   ],
   "groups": [
@@ -2571,6 +2577,146 @@
         }
       ],
       "link": "https://www.mos.ru/pgu2/activity/card/1071227",
+      "linkKind": "card",
+      "limitedSource": false
+    },
+    {
+      "id": "К4114-26",
+      "groupCode": "К4114-26",
+      "listingId": "2589337",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера BrainMaster 1 класс. Робототехника.",
+      "locationId": "LOC-013",
+      "teacher": "Киселёв Александр Вячеславович",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 8,
+      "ageMin": 6,
+      "ageMax": 8,
+      "lessonPrice": 1000,
+      "coursePrice": 32000,
+      "courseStart": "2026-10-15",
+      "courseEnd": "2027-05-28",
+      "slots": [
+        {
+          "weekday": "Четверг",
+          "start": "13:00",
+          "end": "13:45"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/card/1076240",
+      "linkKind": "card",
+      "limitedSource": false
+    },
+    {
+      "id": "К4115-26",
+      "groupCode": "К4115-26",
+      "listingId": "2589338",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера BrainMaster 1-3 класс. Робототехника.",
+      "locationId": "LOC-013",
+      "teacher": "Киселёв Александр Вячеславович",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 9,
+      "ageMin": 6,
+      "ageMax": 10,
+      "lessonPrice": 1000,
+      "coursePrice": 32000,
+      "courseStart": "2026-10-15",
+      "courseEnd": "2027-05-28",
+      "slots": [
+        {
+          "weekday": "Четверг",
+          "start": "14:00",
+          "end": "14:45"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/card/1076242",
+      "linkKind": "card",
+      "limitedSource": false
+    },
+    {
+      "id": "К4116-26",
+      "groupCode": "К4116-26",
+      "listingId": "2589339",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера BrainMaster 2-4 класс. Робототехника.",
+      "locationId": "LOC-013",
+      "teacher": "Киселёв Александр Вячеславович",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 6,
+      "ageMin": 7,
+      "ageMax": 11,
+      "lessonPrice": 1000,
+      "coursePrice": 32000,
+      "courseStart": "2026-10-15",
+      "courseEnd": "2027-05-28",
+      "slots": [
+        {
+          "weekday": "Четверг",
+          "start": "15:00",
+          "end": "15:45"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/card/1076241",
+      "linkKind": "card",
+      "limitedSource": false
+    },
+    {
+      "id": "К4117-26",
+      "groupCode": "К4117-26",
+      "listingId": "2589340",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера BrainMaster 2-6 класс. Робототехника.",
+      "locationId": "LOC-013",
+      "teacher": "Киселёв Александр Вячеславович",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 7,
+      "ageMin": 7,
+      "ageMax": 13,
+      "lessonPrice": 1000,
+      "coursePrice": 32000,
+      "courseStart": "2026-10-15",
+      "courseEnd": "2027-05-28",
+      "slots": [
+        {
+          "weekday": "Четверг",
+          "start": "16:00",
+          "end": "16:45"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/card/1076245",
+      "linkKind": "card",
+      "limitedSource": false
+    },
+    {
+      "id": "К4118-26",
+      "groupCode": "К4118-26",
+      "listingId": "2589341",
+      "programme": "shmi",
+      "title": "Школа Молодого IT-Инженера BrainMaster 5-6 класс. Робототехника.",
+      "locationId": "LOC-013",
+      "teacher": "Киселёв Александр Вячеславович",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 12,
+      "ageMin": 10,
+      "ageMax": 13,
+      "lessonPrice": 1000,
+      "coursePrice": 32000,
+      "courseStart": "2026-10-15",
+      "courseEnd": "2027-05-28",
+      "slots": [
+        {
+          "weekday": "Четверг",
+          "start": "17:00",
+          "end": "17:45"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/card/1076244",
       "linkKind": "card",
       "limitedSource": false
     }

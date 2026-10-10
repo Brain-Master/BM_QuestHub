@@ -1,5 +1,5 @@
 /** Reviewed public profiles. Stable school/campus IDs are not presentation names. */
-type CampusProfile = {address:string; latitude:number; longitude:number; metro?:string; district?:string; mapUrl:string; photoUrl?:string; photoAlt?:string; photoSource?:string; entranceNote?:string; directions?:string[]; contactNote?:string};
+type CampusProfile = {address:string; latitude?:number; longitude?:number; metro?:string; district?:string; mapUrl:string; photoUrl?:string; photoAlt?:string; photoSource?:string; entranceNote?:string; directions?:string[]; contactNote?:string};
 type SchoolProfile = {name:string; website?:string; telegram?:string; logoUrl:string; logoAlt?:string; description:string; verifiedAt:string; nameSource:string; preparing?:boolean; campuses:Record<string,CampusProfile>};
 export const schoolProfiles: Record<string,SchoolProfile> = {
   "school-37": {
@@ -95,6 +95,12 @@ export const schoolProfiles: Record<string,SchoolProfile> = {
     verifiedAt: "2026-09-09",
     nameSource: "https://www.mos.ru/upload/documents/files/5016/PRIKAZDLYaPYBLIKACIIPr-848.pdf",
     campuses: {
+      "autumn-2026-2044-dolgoprudnaya-16-venue": {
+        address: "Долгопрудная аллея, 16", metro: "Долгопрудная", district: "Северный",
+        mapUrl: "https://yandex.com/maps/?text=Москва%2C%20Долгопрудная%20аллея%2C%2016",
+        entranceNote: "Вход и кабинет уточните у организатора перед первым занятием.",
+        contactNote: "Преподаватель годовых групп — Локтеева Ирина Дмитриевна. Подтверждено BrainMaster 10.10.2026.",
+      },
       "school-2044-dmitrovskoe-169b": {
         latitude: 55.932261, longitude: 37.541054,
         address: "Дмитровское шоссе, 169Б", metro: "Физтех", district: "Северный",

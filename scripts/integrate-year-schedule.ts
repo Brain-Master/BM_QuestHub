@@ -118,7 +118,7 @@ for (const campus of reviewedStandaloneVenues) {
 for (const original of map.venues) {
   if(original.preliminaryVenue)continue;
   const school = original.schoolScopeSlug ?? original.slug;
-  if (!getSchoolProfile(school) || venues.some(v=>v.slug===original.slug)) continue;
+  if (!getSchoolProfile(school)?.campuses[original.slug] || venues.some(v=>v.slug===original.slug)) continue;
   const overlay = reviewedCampusProfile(school,original.slug);
   const enriched = venueSchema.parse({...original,...overlay});
   for (const [key,value] of Object.entries(original)) if (!(key in overlay) && JSON.stringify(value)!==JSON.stringify(enriched[key as keyof typeof enriched])) throw Error(`Non-profile venue field changed: ${original.slug}.${key}`);

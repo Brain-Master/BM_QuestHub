@@ -71,6 +71,9 @@ test('migration reruns are byte-idempotent and conflicting files reject before w
   for(const rel of ['apps/web/content','apps/web/lib','apps/web/data','scripts/lib'])fs.cpSync(path.join(root,rel),path.join(dir,rel),{recursive:true});
   for(const rel of ['scripts/import-school-37.ts','scripts/integrate-year-schedule.ts','scripts/annual-publish-tier.mjs','apps/web/tsconfig.json'])fs.copyFileSync(path.join(root,rel),path.join(dir,rel));
   fs.symlinkSync(path.join(root,'apps/web/node_modules'),path.join(dir,'apps/web/node_modules'),'dir');
+  // This fixture predates the explicitly appended LOC-013 source transition.
+  const mapping=path.join(dir,'apps/web/content/year-integration.ts');
+  fs.writeFileSync(mapping,fs.readFileSync(mapping,'utf8').split('\n').filter(line=>!line.includes('sourceId: \"LOC-013\"')).join('\n'));
   fs.writeFileSync(path.join(dir,'apps/web/content/year-schedule.generated.json'),JSON.stringify(source,null,2)+'\n');
   fs.writeFileSync(path.join(dir,'apps/web/content/annual-mos-refresh.generated.json'),JSON.stringify(historicalRegistry,null,2)+'\n');
   fs.writeFileSync(path.join(dir,'apps/web/data/offers-snapshot.json'),JSON.stringify(historicalOffers,null,2)+'\n');
@@ -144,6 +147,6 @@ test('historical fixtures retain exact pre-refresh bytes; current complete impor
     ['registry','854b6cb411a2a42908a6ca6e5f470830fbdba25da72affae8d19be10e182d392'],
     ['offers','6ef0df9c9f25b81f15be22c35a1b721bc77c2abe78b861672d6ea51d820e9d26'],
   ])assert.equal(crypto.createHash('sha256').update(fs.readFileSync(path.join(root,`scripts/fixtures/annual-69-before-1517/${file}.json`))).digest('hex'),hash);
-  const r=spawnSync(process.execPath,[path.join(root,'apps/web/node_modules/tsx/dist/cli.mjs'),'--tsconfig',path.join(root,'apps/web/tsconfig.json'),path.join(root,'scripts/import-school-2103-replacement.ts'),'--check'],{cwd:root,encoding:'utf8'});
+  const r=spawnSync(process.execPath,[path.join(root,'apps/web/node_modules/tsx/dist/cli.mjs'),'--tsconfig',path.join(root,'apps/web/tsconfig.json'),path.join(root,'scripts/import-school-2044.ts'),'--check'],{cwd:root,encoding:'utf8'});
   assert.equal(r.status,0,r.stderr);assert.match(r.stdout,/"alreadyImported":true/);
 });
