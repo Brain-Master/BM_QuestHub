@@ -1,24 +1,11 @@
 {
   "version": 2,
-  "generatedAt": "2026-10-10T20:01:33.173Z",
+  "generatedAt": "2026-10-17T00:00:00.000Z",
   "source": "annual-csv-integration",
   "integrity": {
-    "contentHash": "sha256:807aec8246bdeb74eca6b73859286f5ae72f9a6022dc0bff90f0c163d8991ce2"
+    "contentHash": "sha256:7fe6a1dd17645c03f4a6ba5ff6015dea49df3deabe1085c71200abe0e7a4693a"
   },
   "venues": [
-    {
-      "preliminaryVenue": true,
-      "slug": "autumn-2026-2103-venue",
-      "name": "Школа № 2103",
-      "type": "school",
-      "address": "Корпус уточняется",
-      "city": "moscow",
-      "logoUrl": "/sites/school-2103/logo-original.jpg",
-      "directions": [],
-      "photos": [],
-      "listedOnSites": false,
-      "schoolScopeSlug": "school-2103"
-    },
     {
       "preliminaryVenue": true,
       "slug": "autumn-2026-2044-dmitrovskoe-165e-k6-venue",

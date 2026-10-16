@@ -25,9 +25,9 @@ test("catalogue and site choices require actual nonarchived groups in exact camp
   assert.equal(filterCatalog(quests,venues,{school:"school-2044",format:"year"})[0].offers.length,16);
   assert.ok(filterCatalog(quests,venues,{status:"archived"}).length>0);
   const cards=buildSiteScopeCards({scopes:getSchoolScopes(venues),quests,venues,worlds:worldSchema.array().parse(catalog.worlds)});
-  assert.equal(cards.length,9);assert.equal(cards.filter(c=>c.courseSlugs.includes("shmi")).length,8);assert.equal(cards.reduce((sum,c)=>sum+c.shiftCount,0),84);
+  assert.equal(cards.length,9);assert.equal(cards.filter(c=>c.courseSlugs.includes("shmi")).length,8);assert.equal(cards.reduce((sum,c)=>sum+c.shiftCount,0),85);
   assert.equal(cards.reduce((sum,c)=>sum+c.campuses.filter(v=>v.slug.startsWith("autumn-")).length,0),1);
-  assert.equal(filterCatalog(quests,venues,{format:"intensive"}).flatMap(q=>q.offers).length,12);
+  assert.equal(filterCatalog(quests,venues,{format:"intensive"}).flatMap(q=>q.offers).length,13);
   assert.ok(cards.every(c=>c.shiftCount>0));
 });
 
