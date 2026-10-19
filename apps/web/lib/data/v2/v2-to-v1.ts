@@ -92,6 +92,7 @@ function eventToVenueOffer(event: EventV2): VenueOffer {
     id: event.id,
     preliminary: event.preliminary,
     annual: event.annual,
+    localAnnual: event.localAnnual,
     weeklySlots: event.schedule.slots.some(s => s.weekday) ? event.schedule.slots.flatMap(s => s.weekday && s.timeRange ? [{ weekday: s.weekday, start: s.timeRange.start, end: s.timeRange.end }] : []) : undefined,
     venueSlug: event.relations.venueId,
     shiftLabel:

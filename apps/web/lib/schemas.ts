@@ -1,3 +1,4 @@
+import { localAnnualSchema } from "@/lib/offers/local-annual";
 import { z } from "zod";
 import { annualMetadataSchema, weeklySlotSchema } from "@/lib/offers/annual-schedule";
 
@@ -197,6 +198,7 @@ export const venueOfferSchema = z.object({
   preliminary: z.literal(true).optional(),
   weeklySlots: z.array(weeklySlotSchema).min(1).optional(),
   annual: annualMetadataSchema.optional(),
+  localAnnual: localAnnualSchema.optional(),
   id: z.string(),
   venueSlug: z.string(),
   shiftLabel: z.string(),
@@ -219,7 +221,7 @@ export const venueOfferSchema = z.object({
 }).refine(o => (!o.preliminary || !o.annual) &&
   (Boolean(o.startDate) === Boolean(o.endDate)) &&
   (Boolean(o.startTime) === Boolean(o.endTime)) &&
-  (o.preliminary || Boolean(o.startDate && o.endDate && o.startTime && o.endTime)),
+  (o.preliminary || Boolean(o.startDate && o.endDate && o.startTime && o.endTime)) && !(o.annual && o.localAnnual),
   "Unknown dates/time require a nonannual preliminary offer and paired fields");
 
 export type VenueOffer = z.infer<typeof venueOfferSchema>;

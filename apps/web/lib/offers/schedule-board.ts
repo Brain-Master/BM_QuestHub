@@ -152,15 +152,16 @@ export function getOfferEnrolledTotal(
 }
 
 export function getScheduleCapacity(
-  offer: Pick<VenueOffer, "enrolled" | "maxCapacity" | "scheduleCard" | "annual">,
+  offer: Pick<VenueOffer, "enrolled" | "maxCapacity" | "scheduleCard" | "annual" | "localAnnual">,
 ): ScheduleCapacityView {
-  const total = offer.annual ? offer.annual.totalSeats : offer.maxCapacity;
+  if(offer.localAnnual&&!offer.localAnnual.availability)return null;
+  const total = offer.localAnnual?.availability?.total ?? (offer.annual ? offer.annual.totalSeats : offer.maxCapacity);
   if (typeof total !== "number" || !Number.isSafeInteger(total) || total <= 0) {
     return null;
   }
 
   const effectiveFree = offer.annual ? effectiveAnnualFreeSeats(offer.annual) : null;
-  const enrolled = offer.annual
+  const enrolled = offer.localAnnual?.availability ? total-offer.localAnnual.availability.free : offer.annual
     ? effectiveFree === null ? undefined : total - effectiveFree
     : getOfferEnrolledTotal(offer);
   if (typeof enrolled !== "number" || !Number.isSafeInteger(enrolled) || enrolled < 0 || enrolled > total) {
@@ -248,6 +249,7 @@ export function getScheduleBookingMode(
   variant?: Pick<ScheduleVariant, "mosBookingUrl">,
   now = new Date(),
 ): ScheduleBookingMode {
+  if(offer.localAnnual){const a=offer.localAnnual.availability;if(!a)return {kind:"disabled",label:"Проверяем места"};if(!a.open)return {kind:"disabled",label:"Приём закрыт"};if(a.free===0)return {kind:"disabled",label:"Мест нет"};}
   if (isRetiredAnnualGroup(offer)) return { kind: "disabled", label: SCHEDULE_CTA.cancelledDisabled };
   if (annualBookingNeedsReview(offer.annual)) return { kind: "disabled", label: "Карточка на проверке" };
   // A deliberately held reserve must not be bypassed by stale portal data.

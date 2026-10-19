@@ -1,6 +1,8 @@
 "use client";
 
 import * as React from "react";
+import { useSWRConfig } from "swr";
+import {LOCAL_CAPACITY_URL} from "@/lib/offers/local-capacity-client";
 
 import { BookingForm } from "@/components/booking-form";
 import { LeadFormSuccess } from "@/components/lead-form-success";
@@ -53,7 +55,7 @@ type Props = {
 export function OfferBookingAction(props: Props) {
   const action = props.mode ?? props.variant?.bookingMode;
   const target = [props.quest.slug, props.offer.id, props.venue.slug, props.variant?.id,
-    action?.kind, action?.kind === "mos" ? action.url : ""].join("|");
+    props.offer.localAnnual ? "local" : action?.kind, action?.kind === "mos" ? action.url : ""].join("|");
   // A live target/availability change must not inherit another card's timer/form.
   return <OfferBookingActionContent key={target} {...props} />;
 }
@@ -70,6 +72,7 @@ function OfferBookingActionContent({
   mode,
   variant,
 }: Props) {
+  const {mutate}=useSWRConfig();
   const [open, setOpen] = React.useState(false);
   const [session, setSession] = React.useState(0);
   const [receiptId, setReceiptId] = React.useState<string>();
@@ -87,10 +90,11 @@ function OfferBookingActionContent({
     mode ?? variant?.bookingMode ?? { kind: "form", label: buttonLabel };
   const registrationChannel =
     variant?.registrationChannel ?? offer.scheduleCard?.registrationChannel ?? "brainmaster";
-  const flowContext = resolveRegistrationFlow({
+  const originalFlow = resolveRegistrationFlow({
     bookingMode: action,
     registrationChannel,
   });
+  const flowContext=offer.localAnnual?{...originalFlow,title:"Забронировать место",noticeTitle:"Бронь через BrainMaster",noticeText:"После успешной отправки заявки за ребёнком закрепляется одно место. Для отмены брони свяжитесь с нами.",submitLabel:"Забронировать место",successTitle:"Место забронировано",successText:"Мы сохранили заявку и закрепили за ребёнком место в выбранной группе. Свяжемся с вами для уточнения деталей."}:originalFlow;
   const buttonClassName = cn(
     "relative max-w-full overflow-hidden border-white/10 font-semibold text-xs shadow-lg transition-all duration-200 before:absolute before:inset-0 before:bg-white/20 before:opacity-0 before:transition-opacity hover:-translate-y-0.5 hover:before:opacity-100",
     compact ? "h-8 w-full px-3 sm:w-44" : "h-9 w-48 px-3",
@@ -293,6 +297,7 @@ function OfferBookingActionContent({
                 onSuccess={(_values, savedReceiptId) => {
                   if (session !== formSession.current) return;
                   setReceiptId(savedReceiptId);
+                  if(offer.localAnnual)void mutate(LOCAL_CAPACITY_URL);
                   if (action.kind === "mos") {
                     setView("mos_success");
                     return;

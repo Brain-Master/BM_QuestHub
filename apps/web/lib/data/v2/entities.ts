@@ -1,3 +1,4 @@
+import { localAnnualSchema } from "@/lib/offers/local-annual";
 import { z } from "zod";
 import { annualMetadataSchema } from "@/lib/offers/annual-schedule";
 
@@ -111,6 +112,7 @@ export const eventVariantV2Schema = z.object({
 export const eventV2Schema = z.object({
   preliminary: z.literal(true).optional(),
   annual: annualMetadataSchema.optional(),
+  localAnnual: localAnnualSchema.optional(),
   id: z.string().min(1),
   slug: z.string().optional(),
   relations: z.object({
@@ -160,7 +162,7 @@ export const eventV2Schema = z.object({
   variants: z.array(eventVariantV2Schema).default([]),
 }).refine(e => (!e.preliminary || !e.annual) &&
   (Boolean(e.schedule.startDate) === Boolean(e.schedule.endDate)) &&
-  (e.preliminary || Boolean(e.schedule.startDate && e.schedule.endDate)),
+  (e.preliminary || Boolean(e.schedule.startDate && e.schedule.endDate)) && !(e.annual && e.localAnnual),
   "Unknown dates require a nonannual preliminary event");
 
 export type EventStatusV2 = z.infer<typeof eventStatusSchema>;

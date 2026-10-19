@@ -6,9 +6,10 @@ function createReceiver({store,handler,validate,normalize,origins,bodyLimit=6553
  return http.createServer(async(req,res)=>{
   const origin=typeof req.headers.origin==='string'?req.headers.origin:'';
   const headers={'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Vary':'Origin'};
-  if(origins.includes(origin)){headers['Access-Control-Allow-Origin']=origin;headers['Access-Control-Allow-Methods']='POST, OPTIONS';headers['Access-Control-Allow-Headers']='content-type';}
+  if(origins.includes(origin)){headers['Access-Control-Allow-Origin']=origin;headers['Access-Control-Allow-Methods']='GET, POST, OPTIONS';headers['Access-Control-Allow-Headers']='content-type';}
   const reply=(status,data)=>{if(!res.destroyed&&!res.writableEnded){res.writeHead(status,headers);res.end(JSON.stringify(data));}};
   if(req.url==='/health'&&req.method==='GET'){try{store.db.prepare('SELECT 1').get();return reply(200,{ok:true});}catch{return reply(503,{ok:false});}}
+  if(req.url==='/?local-capacity=1'&&req.method==='GET'){try{return reply(200,store.availability());}catch{return reply(503,{ok:false});}}
   if(req.url!=='/')return reply(404,{ok:false});
   if(req.method==='OPTIONS')return reply(origins.includes(origin)?204:403,{});
   if(req.method!=='POST')return reply(405,{ok:false});
@@ -26,7 +27,7 @@ function createReceiver({store,handler,validate,normalize,origins,bodyLimit=6553
    if(payload.submissionId!==undefined&&(typeof payload.submissionId!=='string'||!/^[a-f\d]{8}-(?:[a-f\d]{4}-){3}[a-f\d]{12}$/i.test(payload.submissionId)))return reply(400,{ok:false,error:'Invalid submission ID'});
    const accepted=store.accept(normalize(payload,''),payload.submissionId);
    return reply(202,{ok:true,...accepted,status:'saved'});
-  }catch(e){return reply(e.status===409?409:503,{ok:false,error:e.status===409?'Submission ID conflict':'Unable to save application'});}
+  }catch(e){const code=['GROUP_FULL','GROUP_CLOSED','UNKNOWN_GROUP','INVALID_GROUP','IDEMPOTENCY_CONFLICT'].includes(e.message)?e.message:'SAVE_FAILED';return reply([409,422].includes(e.status)?e.status:503,{ok:false,code,error:'Unable to save application'});}
   finally{active--;}
  });
 }

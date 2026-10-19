@@ -28,3 +28,10 @@ test('safe HTTP classification survives transport boundary without exposing resp
 test('oversized response cannot create false success',async()=>{
   await assert.rejects(confirmLeadDelivery('https://example.invalid',{}, {fetchImpl:async()=>Response.json({ok:true,padding:'x'.repeat(40_000)})}),/UNCONFIRMED/);
 });
+
+test('local booking requires explicit matching reservation; old saved receipt is not a booking',async()=>{
+ const payload={offerId:'local-test'};
+ for(const result of [{ok:true},{ok:true,reservation:{groupId:'local-test',status:'reserved'}},{ok:true,reservation:{groupId:'other',status:'reserved'}}])await assert.rejects(confirmLeadDelivery('https://example.test',payload,{fetchImpl:async()=>new Response(JSON.stringify(result),{status:202,headers:{'Content-Type':'application/json'}})}));
+ await confirmLeadDelivery('https://example.test',payload,{fetchImpl:async()=>new Response(JSON.stringify({ok:true,receiptId:'11111111-1111-4111-8111-111111111111',reservation:{groupId:'local-test',status:'reserved'}}),{status:202,headers:{'Content-Type':'application/json'}})});
+ await assert.rejects(confirmLeadDelivery('https://example.test',payload,{fetchImpl:async()=>new Response(JSON.stringify({ok:false,code:'GROUP_FULL'}),{status:409,headers:{'Content-Type':'application/json'}})}),(e:unknown)=>e instanceof LeadDeliveryError&&e.serverCode==='GROUP_FULL');
+});

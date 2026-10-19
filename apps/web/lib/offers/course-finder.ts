@@ -91,10 +91,12 @@ export function itemSchool(item: ScheduleBoardItem): string {
 
 export function itemStudyYear(item: ScheduleBoardItem): number | null {
   if (item.quest.slug !== "shmi") return null;
+  if(item.offer.localAnnual)return item.offer.localAnnual.studyYear;
   return annualProgrammeName(item.offer.annual?.sourceTitle ?? "", item.offer.annual?.studyYear).studyYear;
 }
 
 export function finderAgeLabel(item: ScheduleBoardItem): string {
+  if(item.offer.localAnnual)return item.offer.localAnnual.audienceLabel;
   if (item.offer.annual?.audienceLabel) return item.offer.annual.audienceLabel;
   const min = item.offer.annual?.ageMin, max = item.offer.annual?.ageMax;
   if (min != null && max != null) return min === max ? `${min} лет` : `${min}–${max} лет`;
