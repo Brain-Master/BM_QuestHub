@@ -1,6 +1,6 @@
 /** Transport confirmation only. No automatic retries: an uncertain POST may have arrived. */
 export class LeadDeliveryError extends Error {
-  constructor(readonly errorCode: "delivery_failed" | "network", readonly httpStatus = 0) {
+  constructor(readonly errorCode: "delivery_failed" | "network", readonly httpStatus = 0, readonly serverCode = "") {
     super("LEAD_DELIVERY_UNCONFIRMED");
     this.name = "LeadDeliveryError";
   }
@@ -21,7 +21,7 @@ export async function confirmLeadDelivery(url: string, payload: unknown, {
       body: JSON.stringify(payload),
     });
     if (controller.signal.aborted) throw new LeadDeliveryError("network");
-    if (!response.ok || !response.headers.get("content-type")?.includes("application/json")) throw new LeadDeliveryError("delivery_failed", response.status);
+    if (!response.headers.get("content-type")?.includes("application/json")) throw new LeadDeliveryError("delivery_failed", response.status);
     const reader = response.body?.getReader();
     if (!reader) throw new LeadDeliveryError("delivery_failed", response.status);
     const cancel = () => { void reader.cancel().catch(() => {}); };
@@ -36,9 +36,15 @@ export async function confirmLeadDelivery(url: string, payload: unknown, {
       }
       text += decoder.decode();
       const result: unknown = JSON.parse(text);
+      if(!response.ok){const code=result&&typeof result==='object'&&'code' in result&&typeof result.code==='string'&&['GROUP_FULL','GROUP_CLOSED','IDEMPOTENCY_CONFLICT'].includes(result.code)?result.code:'';throw new LeadDeliveryError('delivery_failed',response.status,code);}
       if (!result || typeof result !== "object" || !("ok" in result) || result.ok !== true) throw Error("LEAD_DELIVERY_UNCONFIRMED");
+      if(payload && typeof payload==='object' && 'offerId' in payload && typeof payload.offerId==='string' && payload.offerId.startsWith('local-')){
+        const reservation='reservation' in result?result.reservation:null;
+        if(!('receiptId' in result)||typeof result.receiptId!=='string'||!/^[a-f\d]{8}-(?:[a-f\d]{4}-){3}[a-f\d]{12}$/i.test(result.receiptId))throw Error('RESERVATION_UNCONFIRMED');
+        if(!reservation||typeof reservation!=='object'||!('status' in reservation)||reservation.status!=='reserved'||!('groupId' in reservation)||reservation.groupId!==payload.offerId)throw Error('RESERVATION_UNCONFIRMED');
+      }
       return { receiptId: "receiptId" in result && typeof result.receiptId === "string" && /^[a-f\d-]{36}$/i.test(result.receiptId) ? result.receiptId : undefined };
-    } catch { throw new LeadDeliveryError("delivery_failed", response.status); }
+    } catch (error) { if(error instanceof LeadDeliveryError)throw error;throw new LeadDeliveryError("delivery_failed", response.status); }
     finally { controller.signal.removeEventListener("abort", cancel); cancel(); }
   };
   try { return await Promise.race([request(), deadline]); }

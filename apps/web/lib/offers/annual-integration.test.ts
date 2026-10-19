@@ -22,7 +22,7 @@ test("school profiles retain exact-campus sourced media; base and2103 await real
   assert.equal(Object.keys(schoolProfiles).length,11);
   let campuses=0;
   for(const [id,profile] of Object.entries(schoolProfiles)){
-    if(profile.preparing){assert.equal(id,'bm-base-moscow');assert.equal(profile.nameSource,'owner:2026-09-09');continue;}
+    if(id==='bm-base-moscow'){assert.equal(profile.preparing,false);assert.equal(profile.nameSource,'owner:2026-10-18');continue;}
     assert.ok(profile.nameSource.startsWith('https://'));assert.ok(fs.existsSync(`public${profile.logoUrl}`));
     assert.ok(!profile.logoUrl.includes('/venues/logos/'));
     for(const [slug,campus] of Object.entries(profile.campuses)){
@@ -48,8 +48,8 @@ test('owner-confirmed teachers replace portal placeholders in seven1212 groups a
   assert.ok(original.groups.some((g:{teacher:string})=>g.teacher?.includes('Васильев')),'raw source is preserved');
   const base=venues.find(v=>v.slug==='bm-base-moscow');assert.ok(base);
   assert.equal(base.name,'Мехвариум — база BrainMaster');assert.equal(base.address,'Рязанский проспект, 38');
-  assert.match(base.entranceNote??'',/ещё не открыта/);assert.match(base.contactNote??'',/дате открытия/);
-  assert.equal(quests.filter(q=>q.activeInCampaign).flatMap(q=>q.offers).filter(o=>o.venueSlug===base.slug&&!['finished','cancelled'].includes(resolveScheduleStatusKey(o))).length,0);
+  assert.doesNotMatch(base.entranceNote??'',/ещё не открыта/);assert.match(base.contactNote??'',/25 октября 2026/);
+  assert.equal(quests.filter(q=>q.activeInCampaign).flatMap(q=>q.offers).filter(o=>o.venueSlug===base.slug&&!['finished','cancelled'].includes(resolveScheduleStatusKey(o))).length,3);
   assert.equal(base.photos.length,0);assert.equal(base.logoUrl,'/sites/bm-base-moscow/mechvarium-mark.svg');
   const mark=fs.readFileSync(`public${base.logoUrl}`,'utf8');
   assert.match(mark,/viewBox="0 0 160 160"/);assert.match(mark,/Мехвариум/);

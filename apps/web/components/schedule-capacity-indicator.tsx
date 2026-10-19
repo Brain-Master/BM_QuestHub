@@ -8,6 +8,7 @@ import s from "./schedule-capacity-indicator.module.css";
 
 type Props = {
   capacity: ScheduleCapacityView;
+  local?: boolean;
   archived?: boolean;
   compact?: boolean;
   className?: string;
@@ -19,7 +20,7 @@ type Props = {
 };
 
 export function ScheduleCapacityIndicator({
-  capacity,
+  capacity, local=false,
   archived = false,
   compact = false,
   className,
@@ -28,7 +29,7 @@ export function ScheduleCapacityIndicator({
   const clock=useScheduleClock();
   if (archived || (!capacity && !showUnknown)) return null;
   const reserved = (capacity?.heldReserve ?? 0) > 0;
-  const dated = !!(checkedAt || sourceDate || showUnknown);
+  const dated = !local && !!(checkedAt || sourceDate || showUnknown);
   const stale = dated && (failed || !checkedAt || clock <= 0 || !Number.isFinite(Date.parse(checkedAt)) ||
     Date.parse(checkedAt) > clock + 60_000 || clock-Date.parse(checkedAt)>AVAILABILITY_MAX_AGE_MS);
   const date = checkedAt ? new Date(checkedAt).toLocaleString("ru-RU", {
@@ -52,7 +53,7 @@ export function ScheduleCapacityIndicator({
           className={s.track}>
           <span className={stale?s.staleFill:capacity.isSoldOut?s.fullFill:s.fill} style={{width:`${capacity.percent}%`}} />
         </div>
-      </> : <span className={s.note}>Количество мест не указано на mos.ru</span>}
+      </> : <span className={s.note}>{local?"Проверяем свободные места":"Количество мест не указано на mos.ru"}</span>}
       {reserved && <small className={s.note}>Учтён резерв прежних записей: {capacity?.heldReserve}. Места уточним после перевода.</small>}
       {date && <small className={s.note}>mos.ru · {stale?"последние данные":"проверено"} {date}{checkedAt?" МСК":""}</small>}
       {!pageNotice && (failed||stale) && <small className={s.note}>Наличие мест и приём проверьте на mos.ru.</small>}

@@ -7,14 +7,15 @@ export function mergeOffersIntoQuests(
   snapshot: OffersSnapshotV1,
 ): Quest[] {
   return quests.map((q) => {
-    const incoming=snapshot.offersByQuest[q.slug] ?? [];
+    const incoming=[...(snapshot.offersByQuest[q.slug] ?? [])];
+    for(const row of q.offers.filter(o=>o.localAnnual))if(!incoming.some(o=>o.id===row.id))incoming.push(row);
     const localAnnual=q.offers.filter(o=>o.annual);
     const remoteAnnual=incoming.filter(o=>o.annual);
     // An annual revision is a coherent curriculum/address set, not just seat counts.
     // A delayed previous release must not erase newly integrated groups or owner facts.
     const compatible=!localAnnual.length || (remoteAnnual.length===localAnnual.length &&
       localAnnual.every(o=>remoteAnnual.some(r=>r.id===o.id && r.annual?.sourceSha256===o.annual?.sourceSha256 && r.annual?.asOf===o.annual?.asOf)));
-    if(!compatible)return {...q,offers:[...incoming.filter(o=>!o.annual),...localAnnual]};
+    if(!compatible)return {...q,offers:[...incoming.filter(o=>!o.annual&&!o.localAnnual),...localAnnual,...incoming.filter(o=>o.localAnnual)]};
     return {...q,offers:incoming.map(o=>{
       const previous=localAnnual.find(p=>p.id===o.id);
       return previous && (previous.annual?.refreshedAt??'')>(o.annual?.refreshedAt??'') ? previous : o;

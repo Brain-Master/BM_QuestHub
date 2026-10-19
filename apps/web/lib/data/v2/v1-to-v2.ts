@@ -72,6 +72,7 @@ export function venueOfferToEventV2(
     id: offer.id,
     preliminary: offer.preliminary,
     annual: offer.annual,
+    localAnnual: offer.localAnnual,
     relations: {
       courseId: courseSlug,
       venueId: offer.venueSlug,

@@ -8340,6 +8340,129 @@
             }
           ]
         }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Воскресенье",
+            "start": "10:00",
+            "end": "11:30"
+          }
+        ],
+        "localAnnual": {
+          "studyYear": 1,
+          "audienceLabel": "1 класс",
+          "teacher": "Ткаченко Артём Алексеевич",
+          "lessonMinutes": 90,
+          "lessonPrice": 2000
+        },
+        "id": "local-mechvarium-shmi1-2026-1",
+        "venueSlug": "bm-base-moscow",
+        "shiftLabel": "1 класс",
+        "startDate": "2026-10-25",
+        "endDate": "2027-05-31",
+        "startTime": "10:00",
+        "endTime": "11:30",
+        "dateRange": "25.10.2026 — 31.05.2027",
+        "daySchedule": "Воскресенье 10:00–11:30",
+        "priceLabel": "2 000 ₽ за 90 минут (2 ак. ч.)",
+        "mosBookingUrl": null,
+        "includedNote": "Место бронируется после успешной отправки заявки на сайте. Для отмены брони свяжитесь с BrainMaster.",
+        "maxCapacity": 10,
+        "scheduleCard": {
+          "displayTitle": "Школа Молодого IT-Инженера — углублённый уровень (ШМИ-1)",
+          "teacherName": "Ткаченко Артём Алексеевич",
+          "tags": [],
+          "ageLabel": "1 класс",
+          "status": "open",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "brainmaster",
+          "allowPreliminaryRegistration": false,
+          "variants": []
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Воскресенье",
+            "start": "11:45",
+            "end": "13:15"
+          }
+        ],
+        "localAnnual": {
+          "studyYear": 1,
+          "audienceLabel": "2–4 классы",
+          "teacher": "Ткаченко Артём Алексеевич",
+          "lessonMinutes": 90,
+          "lessonPrice": 2000
+        },
+        "id": "local-mechvarium-shmi1-2026-2",
+        "venueSlug": "bm-base-moscow",
+        "shiftLabel": "2–4 классы",
+        "startDate": "2026-10-25",
+        "endDate": "2027-05-31",
+        "startTime": "11:45",
+        "endTime": "13:15",
+        "dateRange": "25.10.2026 — 31.05.2027",
+        "daySchedule": "Воскресенье 11:45–13:15",
+        "priceLabel": "2 000 ₽ за 90 минут (2 ак. ч.)",
+        "mosBookingUrl": null,
+        "includedNote": "Место бронируется после успешной отправки заявки на сайте. Для отмены брони свяжитесь с BrainMaster.",
+        "maxCapacity": 10,
+        "scheduleCard": {
+          "displayTitle": "Школа Молодого IT-Инженера — углублённый уровень (ШМИ-1)",
+          "teacherName": "Ткаченко Артём Алексеевич",
+          "tags": [],
+          "ageLabel": "2–4 классы",
+          "status": "open",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "brainmaster",
+          "allowPreliminaryRegistration": false,
+          "variants": []
+        }
+      },
+      {
+        "weeklySlots": [
+          {
+            "weekday": "Воскресенье",
+            "start": "13:30",
+            "end": "15:00"
+          }
+        ],
+        "localAnnual": {
+          "studyYear": 1,
+          "audienceLabel": "5–6 классы",
+          "teacher": "Ткаченко Артём Алексеевич",
+          "lessonMinutes": 90,
+          "lessonPrice": 2000
+        },
+        "id": "local-mechvarium-shmi1-2026-3",
+        "venueSlug": "bm-base-moscow",
+        "shiftLabel": "5–6 классы",
+        "startDate": "2026-10-25",
+        "endDate": "2027-05-31",
+        "startTime": "13:30",
+        "endTime": "15:00",
+        "dateRange": "25.10.2026 — 31.05.2027",
+        "daySchedule": "Воскресенье 13:30–15:00",
+        "priceLabel": "2 000 ₽ за 90 минут (2 ак. ч.)",
+        "mosBookingUrl": null,
+        "includedNote": "Место бронируется после успешной отправки заявки на сайте. Для отмены брони свяжитесь с BrainMaster.",
+        "maxCapacity": 10,
+        "scheduleCard": {
+          "displayTitle": "Школа Молодого IT-Инженера — углублённый уровень (ШМИ-1)",
+          "teacherName": "Ткаченко Артём Алексеевич",
+          "tags": [],
+          "ageLabel": "5–6 классы",
+          "status": "open",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "brainmaster",
+          "allowPreliminaryRegistration": false,
+          "variants": []
+        }
       }
     ],
     "autumn-creative": [

@@ -1,3 +1,4 @@
+import { overlayLocalAnnual, localAnnualOffers } from "./integrate-local-annual";
 /** Local-only, idempotent annual overlay. Never reads credentials or publishes. */
 import fs from "node:fs";
 import path from "node:path";
@@ -32,7 +33,7 @@ let refresh = fs.existsSync(refreshPath) ? annualMosRefreshSchema.parse(JSON.par
 if (refresh && refresh.sourceSha256 !== source.sourceSha256) throw Error("Annual refresh/source revision mismatch");
 const catalog = read("data/v2/catalog-snapshot.json");
 const map = read("data/v2/map-snapshot.json");
-const offers = read("data/offers-snapshot.json");
+const offers = overlayLocalAnnual(read("data/offers-snapshot.json"));
 const manifest = read("data/v2/site-manifest.json");
 // Validate at the input boundary, retaining original raw records to avoid incidental normalization.
 catalogSnapshotSchema.parse(catalog); mapSnapshotSchema.parse(map); siteManifestV2Schema.parse(manifest);
@@ -178,8 +179,9 @@ for (const offer of offers.offersByQuest.shmi ?? []) {
     throw Error(`Newer or conflicting annual source revision: ${offer.id}`);
   }
 }
+for(const row of localAnnualOffers())ownedOfferIds.add(row.id);
 const retainedShmi = (offers.offersByQuest.shmi ?? []).filter((o: { id: string }) => !ownedOfferIds.has(o.id));
-const offersOut = { ...offers, generatedAt: annualOverlayTimestamp(offers.generatedAt, generatedAt), source: "annual-csv-integration", offersByQuest: { ...offers.offersByQuest, shmi: [...retainedShmi, ...annualOffers] } };
+const offersOut = overlayLocalAnnual({ ...offers, generatedAt: annualOverlayTimestamp(offers.generatedAt, generatedAt), source: "annual-csv-integration", offersByQuest: { ...offers.offersByQuest, shmi: [...retainedShmi, ...annualOffers] } });
 const manifestOut = { ...manifest, ...meta, generatedAt: annualOverlayTimestamp(manifest.generatedAt, generatedAt), snapshots: { ...manifest.snapshots,
   catalog: { path: "data/v2/catalog-snapshot.json", contentHash: catalogOut.integrity.contentHash },
   map: { path: "data/v2/map-snapshot.json", contentHash: mapOut.integrity.contentHash },

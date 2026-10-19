@@ -15,11 +15,11 @@ test("school source names collapse into one programme, not 94 course cards",()=>
  const groups=groupAnnualProgrammes(items);
  assert.equal(groups.length,1);assert.equal(groups[0].slug,"shmi");
  assert.equal(groups[0].title,"Школа Молодого IT-Инженера");
- assert.equal(groups[0].campuses.length,12);
+ assert.equal(groups[0].campuses.length,13);
  const rows=groups.flatMap(g=>g.campuses.flatMap(c=>c.items));
- assert.equal(rows.length,93);assert.equal(new Set(rows.map(r=>r.offer.id)).size,93);
- assert.equal(rows.flatMap(r=>r.offer.weeklySlots??[]).length,93);
- for(const r of rows){assert.ok(r.offer.mosBookingUrl);assert.equal(r.programFilterLabel,"Школа Молодого IT-Инженера");assert.ok(!r.displayTitle.includes("(платно)"));}
+ assert.equal(rows.length,96);assert.equal(new Set(rows.map(r=>r.offer.id)).size,96);
+ assert.equal(rows.flatMap(r=>r.offer.weeklySlots??[]).length,96);
+ for(const r of rows){if(r.offer.localAnnual)assert.equal(r.offer.mosBookingUrl,null);else assert.ok(r.offer.mosBookingUrl);assert.equal(r.programFilterLabel,"Школа Молодого IT-Инженера");assert.ok(!r.displayTitle.includes("(платно)"));}
 });
 test("four canonical programmes remain distinct even with identical presentation titles",()=>{
  const original=items.find(i=>i.quest.slug==="shmi");assert.ok(original);

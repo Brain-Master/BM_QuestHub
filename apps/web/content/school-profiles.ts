@@ -12,10 +12,10 @@ export const schoolProfiles: Record<string,SchoolProfile> = {
       contactNote:"Преподаватель всех девяти групп — Кузнецова Ольга Максимовна. Назначение подтверждено BrainMaster; техническое поле mos.ru может содержать другое имя."}},
   },
   "bm-base-moscow": {
-    name:"Мехвариум — база BrainMaster",logoUrl:"/sites/bm-base-moscow/mechvarium-mark.svg",preparing:true,
-    description:"Готовим к открытию собственную базу BrainMaster «Мехвариум» на Рязанском проспекте, 38. Сейчас идёт ремонт и подготовка пространства. Площадка ещё не открыта, занятия и набор пока не проводятся. О начале работы сообщим отдельно.",
-    verifiedAt:"2026-09-09",nameSource:"owner:2026-09-09",
-    campuses:{"bm-base-moscow":{address:"Рязанский проспект, 38",latitude:55.71729,longitude:37.78857,district:"Рязанский",mapUrl:"https://yandex.ru/maps/?pt=37.78857,55.71729&z=17&l=map"}},
+    name:"Мехвариум — база BrainMaster",logoUrl:"/sites/bm-base-moscow/mechvarium-mark.svg",preparing:false,
+    description:"Мехвариум на Рязанском проспекте, 38. С 25 октября 2026 года — углублённый первый год Школы Молодого IT-Инженера для 1–6 классов. По воскресеньям, 90 минут (2 академических часа), 2 000 ₽ за занятие. Преподаватель — Ткаченко Артём Алексеевич. Запись и бронирование места через сайт.",
+    verifiedAt:"2026-10-18",nameSource:"owner:2026-10-18",
+    campuses:{"bm-base-moscow":{contactNote:"Набор открыт. Первое занятие — 25 октября 2026 года. Бронирование через сайт.",address:"Рязанский проспект, 38",latitude:55.71729,longitude:37.78857,district:"Рязанский",mapUrl:"https://yandex.ru/maps/?pt=37.78857,55.71729&z=17&l=map"}},
   },
   "school-1383": {
     name:"ГБОУ города Москвы «Школа № 1383»",website:"https://sch1383.mskobr.ru/",logoUrl:"/sites/school-1383/logo-original.jpg",

@@ -25,7 +25,7 @@ test("catalogue and site choices require actual nonarchived groups in exact camp
   assert.equal(filterCatalog(quests,venues,{school:"school-2044",format:"year"})[0].offers.length,16);
   assert.ok(filterCatalog(quests,venues,{status:"archived"}).length>0);
   const cards=buildSiteScopeCards({scopes:getSchoolScopes(venues),quests,venues,worlds:worldSchema.array().parse(catalog.worlds)});
-  assert.equal(cards.length,9);assert.equal(cards.filter(c=>c.courseSlugs.includes("shmi")).length,8);assert.equal(cards.reduce((sum,c)=>sum+c.shiftCount,0),85);
+  assert.equal(cards.length,10);assert.equal(cards.filter(c=>c.courseSlugs.includes("shmi")).length,9);assert.equal(cards.reduce((sum,c)=>sum+c.shiftCount,0),88);
   assert.equal(cards.reduce((sum,c)=>sum+c.campuses.filter(v=>v.slug.startsWith("autumn-")).length,0),1);
   assert.equal(filterCatalog(quests,venues,{format:"intensive"}).flatMap(q=>q.offers).length,13);
   assert.ok(cards.every(c=>c.shiftCount>0));
@@ -47,7 +47,7 @@ test("facets hide zero groups, preserve independent conditions and count identit
   const state = { ...all, school: "school-2044", programme: "shmi" };
   assert.deepEqual(finderChoices(items, state, "level", ["1", "2", "3"]), ["1"]);
   assert.ok(finderChoices(items, all, "school", ["school-2044", "school-937"]).includes("school-937"));
-  assert.ok(!finderChoices(items, all, "school", ["bm-base-moscow"]).includes("bm-base-moscow"));
+  assert.ok(finderChoices(items, all, "school", ["bm-base-moscow"]).includes("bm-base-moscow"));
   for (const key of ["school", "venue", "programme", "level", "age", "day"] as const) {
     const candidates = key === "school" ? ["school-2044", "school-1383"] : key === "venue" ? venues.map(v=>v.slug) : key === "programme" ? ["shmi", "projects"] : ["1", "2", "3", "11"];
     for (const value of finderChoices(items, state, key, candidates)) assert.ok(finderChoiceCount(items, state, key, value) > 0);
@@ -85,13 +85,13 @@ test("direct offer skips questions; numeric parameters are allowlisted", () => {
   const state = readFinderState(new URLSearchParams("age=-99&day=8&programme=shmi&level=2044"));
   assert.equal(state.age, "all"); assert.equal(state.day, "all"); assert.equal(state.level, "all");
 });
-test("72 current groups expand to 72 weekly slots; removed and replaced groups retain history", () => {
-  assert.equal(annual.length, 72);
+test("75 current groups expand to 75 weekly slots; removed and replaced groups retain history", () => {
+  assert.equal(annual.length, 75);
   const rows = groupFinderWeek(annual).flatMap(day => day.rows);
-  assert.equal(rows.length, 72); assert.equal(new Set(rows.map(row => row.item.offer.id)).size, 72);
-  assert.equal(new Set(rows.map(row => row.key)).size, 72);
+  assert.equal(rows.length, 75); assert.equal(new Set(rows.map(row => row.item.offer.id)).size, 75);
+  assert.equal(new Set(rows.map(row => row.key)).size, 75);
   assert.deepEqual(rows.filter(row => row.item.offer.id === "year:К1981-26").map(row => row.key.split(":").slice(2, 3)[0]), []);
-  assert.equal(new Set(annual.map(item => item.venue.slug)).size, 12);
+  assert.equal(new Set(annual.map(item => item.venue.slug)).size, 13);
   const registry=JSON.parse(fs.readFileSync('content/annual-mos-refresh.generated.json','utf8')) as {groups:Record<string,{status:string}>};
   assert.deepEqual(annual.filter(item => item.offer.annual?.admission === "closed").map(item=>item.offer.id).sort(),
     Object.entries(registry.groups).filter(([,g])=>g.status==='closed').map(([id])=>`year:${id}`).sort());
@@ -102,7 +102,7 @@ test("canonical programme registry includes empty programmes; study years never 
   for (const programme of ["projects", "it-academy", "olympiad-league"]) assert.equal(items.filter(item => finderItemMatches(item, { ...all, programme })).length, 0);
   // Owner confirms all 16 current school2044 groups are first year; exact mos cards
   // explicitly supply the ten school1383 years. Owner confirmed1212/937; the withdrawn875 ambiguous group is excluded.
-  assert.deepEqual([1, 2, 3, null].map(year => annual.filter(item => itemStudyYear(item) === year).length), [48, 20, 4, 0]);
+  assert.deepEqual([1, 2, 3, null].map(year => annual.filter(item => itemStudyYear(item) === year).length), [51, 20, 4, 0]);
   assert.ok(annual.filter(item=>item.venue.schoolScopeSlug==='school-2044').every(item=>itemStudyYear(item)===1));
   assert.deepEqual(annual.filter(item=>itemStudyYear(item)===3).map(item=>item.offer.id).sort(),['year:К2376-26','year:К2380-26','year:К3126-26','year:К3127-26']);
 });

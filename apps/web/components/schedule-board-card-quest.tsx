@@ -101,7 +101,7 @@ export function ScheduleBoardCardQuest({
             </div>
           </div>
 
-          <ScheduleCapacityIndicator
+          <ScheduleCapacityIndicator local={!!item.offer.localAnnual}
             capacity={item.capacity}
             archived={item.status.isArchivedState}
             checkedAt={item.offer.annual?.availabilityUpdatedAt??item.offer.annual?.refreshedAt}

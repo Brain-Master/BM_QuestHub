@@ -136,7 +136,7 @@ export function ScheduleBoardCardDetailed({
                 Форматы участия
               </h4>
               <div className="flex justify-end">
-                <ScheduleCapacityIndicator
+                <ScheduleCapacityIndicator local={!!item.offer.localAnnual}
                   capacity={item.capacity}
                   archived={item.status.isArchivedState}
                   checkedAt={item.offer.annual?.availabilityUpdatedAt??item.offer.annual?.refreshedAt}

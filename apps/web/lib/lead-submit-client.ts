@@ -96,6 +96,8 @@ export async function submitLeadToYandex(
 
     return { ok: true, ...confirmation };
   } catch (error) {
+    if(error instanceof LeadDeliveryError && ['GROUP_FULL','GROUP_CLOSED'].includes(error.serverCode)){return {ok:false,error:error.serverCode==='GROUP_FULL'?'Свободные места в этой группе закончились. Выберите другую группу.':'Приём в эту группу закрыт. Выберите другую группу.'};}
+
     reportClientLeadFailure({
       errorCode: error instanceof LeadDeliveryError ? error.errorCode : "network",
       httpStatus: error instanceof LeadDeliveryError ? error.httpStatus : 0,

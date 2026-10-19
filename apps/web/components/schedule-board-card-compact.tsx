@@ -178,7 +178,7 @@ export function ScheduleBoardCardCompact({
               ) : null}
             </div>
             <div className="ml-auto flex w-36 shrink-0 justify-end">
-              <ScheduleCapacityIndicator
+              <ScheduleCapacityIndicator local={!!item.offer.localAnnual}
                 capacity={item.capacity}
                 archived={item.status.isArchivedState}
                 checkedAt={item.offer.annual?.availabilityUpdatedAt??item.offer.annual?.refreshedAt}

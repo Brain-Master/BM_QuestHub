@@ -42,13 +42,13 @@ export function CourseFinderResults({ items, state, onShare }: {
             data-selected={selected || undefined}>
             <div className={s.slotSummary}>
               <span className={s.time}>{start ?? "Уточняется"}{end && <small>до {end}</small>}</span>
-              <span className={s.slotName}><strong>{item.quest.slug === "shmi" && year ? `ШМИ-${year} · ${year}-й год` : item.quest.title}</strong>
+              <span className={s.slotName}><strong>{item.quest.slug === "shmi" && year ? `ШМИ-${year} · ${year}-й год${item.offer.localAnnual ? " · Углублённый уровень" : ""}` : item.quest.title}</strong>
                 <span>{finderAgeLabel(item)}{item.quest.slug === "shmi" && !year ? " · Уровень уточняется" : ""}</span>
                 <span>{item.venue.address}</span>
               </span>
               <span className={s.slotStatus}>{item.status.label}</span>
             </div>
-            <div className="px-4 py-2"><ScheduleCapacityIndicator capacity={item.capacity} compact showUnknown pageNotice archived={item.status.isArchivedState}
+            <div className="px-4 py-2"><ScheduleCapacityIndicator local={!!item.offer.localAnnual} capacity={item.capacity} compact showUnknown pageNotice archived={item.status.isArchivedState}
               checkedAt={metadata?.availabilityUpdatedAt??metadata?.refreshedAt} sourceDate={metadata?.asOf}
               failed={!!(metadata?.availabilityError??metadata?.refreshError)} /></div>
             <div className={s.compactActions}>{item.variants.map(variant => <div key={variant.id} className={s.tariff} data-booking-variant={variant.id}>
@@ -59,12 +59,13 @@ export function CourseFinderResults({ items, state, onShare }: {
             <details open={selected || undefined}>
               <summary>Подробнее <span className="sr-only">о группе {metadata?.groupCode ?? metadata?.listingId}, {day.day}, {start}</span></summary>
             <div className={s.slotBody}>
-              <p><strong>Группа {metadata?.groupCode ?? metadata?.listingId ?? item.offer.id}</strong></p>
+              <p><strong>Группа {item.offer.localAnnual ? item.offer.localAnnual.audienceLabel : metadata?.groupCode ?? metadata?.listingId ?? item.offer.id}</strong></p>
+              {item.offer.localAnnual && <p>Начало занятий: {item.offer.dateRange}. Длительность — 90 минут (2 ак. ч.).</p>}
               <p>Все занятия этой группы: {item.offer.weeklySlots?.length ? item.offer.weeklySlots.map(slot => `${slot.weekday}, ${slot.start}–${slot.end}`).join("; ") : "дни и время уточняются"}.</p>
               {(item.offer.weeklySlots?.length ?? 0) > 1 && <p>Это одна группа с занятиями в несколько дней, не разные варианты на выбор.</p>}
-              <p>Преподаватель: {metadata?.teacher ?? "уточняется"}</p>
+              <p>Преподаватель: {item.offer.localAnnual?.teacher ?? metadata?.teacher ?? "уточняется"}</p>
               {metadata?.teacher && metadata.teacher === reviewedTeacher(itemSchool(item), year, metadata.groupCode) ? <p className={s.muted}>Преподаватель подтверждён командой BrainMaster. Служебные поля mos.ru могут отличаться.</p> : metadata?.teacherSourceConflict && <p className={s.muted}>В описании и служебных полях mos.ru указаны разные сотрудники. Преподаватель приведён по описанию группы; уточните его у школы.</p>}
-              <p>Свободные места по последней проверке: {item.capacity?.left ?? "не указаны"}{metadata?.totalSeats != null ? ` из ${metadata.totalSeats}` : ""}. {metadata?.legacyReservation ? "Учтён резерв прежних записей; при переводе возможен временный двойной учёт." : "Занятые места отражают данные mos.ru, а не подтверждённое посещение занятия."}</p>
+              <p>Свободные места по последней проверке: {item.capacity?.left ?? "не указаны"}{metadata?.totalSeats != null ? ` из ${metadata.totalSeats}` : ""}. {item.offer.localAnnual ? "Учтены брони через сайт BrainMaster." : metadata?.legacyReservation ? "Учтён резерв прежних записей; при переводе возможен временный двойной учёт." : "Занятые места отражают данные mos.ru, а не подтверждённое посещение занятия."}</p>
               {metadata?.asOf && <p className={s.muted}>Источник: mos.ru, {metadata.refreshedAt ? `карточка проверена ${new Date(metadata.refreshedAt).toLocaleString("ru-RU", {timeZone:"Europe/Moscow"})} (МСК)` : `срез от ${metadata.asOf}`}. {metadata.linkKind === "search" ? "Ссылка ведёт в поиск mos.ru — сверяйте код группы и адрес." : "Перед записью сверяйте карточку и адрес."}</p>}
               {metadata?.refreshError && <p role="note">Последняя проверка этой карточки не удалась. Показаны последние подтверждённые сведения.</p>}
               <div className={s.actions}>
