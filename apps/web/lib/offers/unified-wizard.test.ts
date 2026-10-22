@@ -6,8 +6,9 @@ test('school categories contain only active offers and exact campus constrains t
  assert.deepEqual(availableCategories(scopedActivities(items,'school-2044','all',now)).map(c=>c.kind),['year','camp']);
  const one=availableCategories(scopedActivities(items,'school-2044','missing-campus',now));
  // Verify using the actual venue id from the existing autumn offer.
- const venue=items.find(i=>i.offer.id==='autumn-2026-2044-dolgoprudnaya-16')!.venue.slug;
+ const venue=items.find(i=>i.offer.id==='autumn-2026-2044-dmitrovskoe-169b')!.venue.slug;
  assert.deepEqual(availableCategories(scopedActivities(items,'school-2044',venue,now)).map(c=>c.kind),['year','camp']);
+ assert.deepEqual(availableCategories(scopedActivities(items,'school-2044','autumn-2026-2044-dolgoprudnaya-16-venue',now)).map(c=>c.kind),['year']);
  assert.equal(one.length,0);assert.deepEqual(availableCategories(scopedActivities(items,'missing','all',now)),[]);
  assert.equal(availableCategories(scopedActivities(items,'all','all',now)).some(c=>c.kind==='other'),false);
 });

@@ -3,22 +3,9 @@
   "generatedAt": "2026-10-17T00:00:00.000Z",
   "source": "annual-csv-integration",
   "integrity": {
-    "contentHash": "sha256:32a1f92eeb29ac0eb7ee4eb2fa3ce7ba77cc7a98175f3c95edce626688745620"
+    "contentHash": "sha256:387ec9b45d900f3b5175ad1c80b77669071ee46f4b0164bdebf368078cdc7c04"
   },
   "venues": [
-    {
-      "preliminaryVenue": true,
-      "slug": "autumn-2026-2044-dmitrovskoe-165e-k6-venue",
-      "name": "Школа № 2044",
-      "type": "school",
-      "address": "Дмитровское шоссе, 165Е, корп. 6",
-      "city": "moscow",
-      "logoUrl": "/sites/school-2044/logo-original.jpg",
-      "directions": [],
-      "photos": [],
-      "listedOnSites": false,
-      "schoolScopeSlug": "school-2044"
-    },
     {
       "preliminaryVenue": true,
       "slug": "autumn-2026-1517-venue",
