@@ -1,0 +1,11 @@
+[Unit]
+Description=BrainMaster booking secure reverse tunnel to Russian edge
+After=network-online.target
+[Service]
+ExecStart=/usr/bin/ssh -NT -o ConnectTimeout=10 -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=/home/deploy/.config/brainmaster-leads-ru/known_hosts -o ExitOnForwardFailure=yes -o ServerAliveInterval=20 -o ServerAliveCountMax=3 -i /home/deploy/.config/brainmaster-leads-ru/tunnel_ed25519 -R 127.0.0.1:18082:127.0.0.1:18082 bm-leads-tunnel@77.87.212.89
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+UMask=0077
+[Install]
+WantedBy=default.target

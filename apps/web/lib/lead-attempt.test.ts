@@ -11,8 +11,10 @@ test("retry identity survives timestamps and storage reload, changes with payloa
   assert.ok([...data.keys()].every(key => /^bm-lead-attempt:[a-f\d]{64}$/.test(key)));
   assert.ok(!JSON.stringify([...data]).includes("example.invalid"));
 });
-test("only legacy/default endpoint migrates; explicit custom endpoint remains", () => {
-  assert.equal(resolveLeadEndpoint("https://functions.yandexcloud.net/d4ellekng389grh5rck4/"), "https://space.b-master.pro/api/leads");
-  assert.equal(resolveLeadEndpoint(""), "https://space.b-master.pro/api/leads");
+test("legacy NL/default endpoint migrates; explicit custom endpoint remains", () => {
+  assert.equal(resolveLeadEndpoint("https://functions.yandexcloud.net/d4ellekng389grh5rck4/"), "https://forms.b-master.pro/api/leads");
+  assert.equal(resolveLeadEndpoint("https://space.b-master.pro/api/leads/"), "https://forms.b-master.pro/api/leads");
+  assert.equal(resolveLeadEndpoint("https://space.b-master.pro/api/leads"), "https://forms.b-master.pro/api/leads");
+  assert.equal(resolveLeadEndpoint(""), "https://forms.b-master.pro/api/leads");
   assert.equal(resolveLeadEndpoint("https://example.invalid/receiver"), "https://example.invalid/receiver");
 });
