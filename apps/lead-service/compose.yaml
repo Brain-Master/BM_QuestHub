@@ -20,6 +20,8 @@ services:
       - ./app:/app:ro
       - ./secrets:/run/secrets:ro
       - ./data:/data
+    ports:
+      - "127.0.0.1:18082:8080"
     networks:
       edge:
         aliases: [brainmaster-leads]

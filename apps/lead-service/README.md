@@ -26,3 +26,21 @@ Rollback must preserve the SQLite store. Restore Caddy snippet only if routing t
 The reviewed public `local-groups.json` is the canonical group configuration (also consumed by the schedule compiler). SQLite `reservations` holds actual places; S3 never owns occupancy for these groups. `GET /?local-capacity=1` returns only aggregate availability, no contact or receipt fields. `POST /` for a local group validates programme/venue/channel and atomically reserves one place with the receipt and delivery jobs. HTTP202 includes matching reservation and receipt. Duplicate submission IDs cannot consume another place; old receipts without a reservation fail closed. GROUP_FULL returns409 without creating jobs. Delivery failures retain the reservation. There is no automatic expiry or public cancellation endpoint. An operator must reconcile cancellation with the parent and apply a backed-up, receipt-scoped database change; deleting jobs or delivery retries must never free a place.
 
 Deploy store/server/registry together only after online SQLite backup; preserve data and all secrets, update only receiver. Once local groups are active, never rollback to capacity-unaware code: close admission in the registry while retaining compatible receiver if needed. Old receipts are preserved by additive table creation. Local integration tests run without delivery workers and never send messages.
+
+## Russian booking edge
+
+Browser booking and live local availability use `https://forms.b-master.pro/api/leads`.
+The RU edge has no database: exact-path Caddy routing forwards through a dedicated
+loopback-only SSH reverse tunnel initiated by the NL deploy user. The existing NL
+receiver remains the sole receipt/reservation writer and delivery worker.
+
+`ru-edge.caddy` overwrites client forwarding headers, preserves query/Origin and
+never retries POSTs. `ru-tunnel.service` uses a separate restricted key/account;
+`ru-tunnel-sshd.conf` permits only RU127.0.0.1:18082. NL Compose exposes8080 only
+on127.0.0.1:18082. Keep this port private. No occupancy fallback to static S3 data.
+
+Validate Caddy/sshd configs before reload, back up SQLite before graceful receiver
+recreation, verify all existing runtime hashes and unrelated containers. Never
+restore an old database backup over newer bookings. Verify RU GET+CORS OPTIONS and
+malformed POST without generating production receipts, then deploy frontend and
+legacy Yandex target. A failed tunnel must yield an error, never false reservation.

@@ -1,6 +1,6 @@
 'use strict';
 // Compatibility for already-open pages. The VPS is the only lead writer.
-const ENDPOINT='https://space.b-master.pro/api/leads';
+const ENDPOINT='https://forms.b-master.pro/api/leads';
 function createForwarder(request=fetch){return async(event)=>{
  const origin=event.headers?.origin||event.headers?.Origin||'';
  const allowed=(process.env.ALLOWED_ORIGINS||'').split(',').map(x=>x.trim()).filter(Boolean);

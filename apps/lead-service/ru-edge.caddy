@@ -1,0 +1,31 @@
+forms.b-master.pro {
+ log {
+  output discard
+ }
+ header {
+  Strict-Transport-Security "max-age=31536000"
+  X-Content-Type-Options nosniff
+  Cache-Control "no-store"
+ }
+ @leads path /api/leads
+ handle @leads {
+  request_body {
+   max_size 64KB
+  }
+  rewrite * /
+  reverse_proxy 127.0.0.1:18082 {
+   # Never replay a potentially accepted booking.
+   lb_try_duration 0s
+   header_up X-Forwarded-For {remote_host}
+   header_up X-Real-IP {remote_host}
+   header_up -Forwarded
+   transport http {
+    dial_timeout 3s
+    response_header_timeout 15s
+   }
+  }
+ }
+ handle {
+  respond 404
+ }
+}
