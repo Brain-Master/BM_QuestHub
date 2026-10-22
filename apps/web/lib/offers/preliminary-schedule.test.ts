@@ -11,8 +11,8 @@ const read=(p:string)=>JSON.parse(fs.readFileSync(new URL('../../data/'+p,import
 const input={offers:read('offers-snapshot.json'),catalog:read('v2/catalog-snapshot.json'),map:read('v2/map-snapshot.json'),manifest:read('v2/site-manifest.json')};
 const rows=Object.values(input.offers.offersByQuest).flat().map(o=>venueOfferSchema.parse(o));
 const camps=rows.filter(o=>o.preliminary);
-test('eight preliminary offers preserve unknowns while confirmed camps open MOS booking',()=>{
- assert.equal(camps.length,8);assert.equal(rows.filter(o=>o.annual).length,94);assert.equal(rows.filter(o=>!o.annual&&!o.localAnnual&&!o.id.startsWith('autumn-2026-')).length,25);
+test('five preliminary offers preserve unknowns while confirmed camps open MOS booking',()=>{
+ assert.equal(camps.length,5);assert.equal(rows.filter(o=>o.annual).length,94);assert.equal(rows.filter(o=>!o.annual&&!o.localAnnual&&!o.id.startsWith('autumn-2026-')).length,25);
  assert.equal(rows.reduce((n,o)=>n+(o.annual?.legacyReservation?.places??0),0),51);
  for(const o of camps){assert.equal(getScheduleBookingMode(o,'Скоро старт').kind,'waitlist');assert.equal(isOfferAutoArchived(o,new Date('2026-10-06')),false);assert.equal(o.enrolled,undefined);}
  const ekt=rows.find(o=>o.id==='autumn-2026-ekt')!;assert.match(ekt.mosBookingUrl!,/1071480$/);
@@ -59,4 +59,23 @@ test('2103 kinetic and17 hydraulic camps have exact scoped MOS booking and corre
   const o=rows.find(r=>r.id===id)!;assert.ok(input.offers.offersByQuest[course].some((r:{id:string})=>r.id===id));assert.equal(o.venueSlug,venue);assert.equal(o.preliminary,undefined);assert.equal(o.maxCapacity,total);assert.equal(o.enrolled,booked);assert.equal(o.scheduleCard?.mosRuCode,listing);assert.equal(o.scheduleCard?.ageLabel,'6–13 лет');assert.equal(o.startDate,'2026-10-26');assert.equal(o.endDate,'2026-10-30');assert.equal(o.startTime,'09:00');assert.equal(o.endTime,'12:30');assert.match(o.priceLabel,/9\s000/);assert.match(o.includedNote!,/1 800 ₽ за занятие, 9 000 ₽/);assert.match(o.includedNote!,/22.10.2026 22:00 МСК/);assert.match(o.includedNote!,/17.10.2026/);assert.doesNotMatch(o.includedNote!,/2 590|12 950/);assert.equal(o.scheduleCard?.allowPreliminaryRegistration,false);assert.deepEqual(getScheduleBookingMode(o,'Идет прием'),{kind:'mos',label:'Записаться (Mos.ru)',url:'https://www.mos.ru/pgu2/activity/card/'+card});
  }
  assert.ok(!input.map.venues.some((v:{slug:string})=>v.slug==='autumn-2026-2103-venue'));
+});
+
+
+test('2044 confirmed camps bind exact owner campuses and retire only the cancelled camp across stale imports',()=>{
+ for(const [suffix,venue,card,listing,code] of [['165e-k6','165e-k8','1085682','2594208','К4133-26'],['169b','169b','1085686','2594211','К4134-26']]){
+  const o=rows.find(r=>r.id==='autumn-2026-2044-dmitrovskoe-'+suffix)!;
+  assert.ok(input.offers.offersByQuest['mekhvarium-laboratoriya-kineticheskih-monstrov'].some((r:{id:string})=>r.id===o.id));
+  assert.equal(o.venueSlug,'school-2044-dmitrovskoe-'+venue);assert.equal(o.preliminary,undefined);assert.equal(o.maxCapacity,12);assert.equal(o.enrolled,0);
+  assert.equal(o.scheduleCard?.mosRuCode,listing);assert.equal(o.scheduleCard?.teacherName,'Любченко Ирина Сергеевна');assert.equal(o.scheduleCard?.ageLabel,'6–13 лет');
+  assert.deepEqual([o.startDate,o.endDate,o.startTime,o.endTime],['2026-10-26','2026-10-30','09:00','12:30']);
+  assert.match(o.priceLabel,/16\s000/);assert.ok(o.includedNote?.includes(code));assert.match(o.includedNote!,/3 200 ₽ за занятие, 16 000 ₽/);assert.match(o.includedNote!,/26.10.2026 10:00 МСК/);assert.match(o.includedNote!,/22.10.2026/);
+  assert.deepEqual(getScheduleBookingMode(o,'Идет прием'),{kind:'mos',label:'Записаться (Mos.ru)',url:'https://www.mos.ru/pgu2/activity/card/'+card});
+ }
+ const retired='autumn-2026-2044-dolgoprudnaya-16';assert.ok(!rows.some(o=>o.id===retired));
+ const stale=structuredClone(input);stale.offers.offersByQuest['autumn-creative'].push({...camps[0],id:retired,venueSlug:retired+'-venue'});
+ const out=compileAutumnCamps(stale);assert.deepEqual(out,compileAutumnCamps(input));
+ assert.deepEqual(out['data/v2/map-snapshot.json'].venues.find((v:{slug:string})=>v.slug===retired+'-venue'),input.map.venues.find((v:{slug:string})=>v.slug===retired+'-venue'));
+ assert.equal(rows.filter(o=>o.annual&&o.venueSlug===retired+'-venue').length,5);
+ assert.ok(!out['data/v2/map-snapshot.json'].venues.some((v:{slug:string})=>v.slug==='autumn-2026-2044-dmitrovskoe-165e-k6-venue'));
 });

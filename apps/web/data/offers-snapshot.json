@@ -469,6 +469,114 @@
         }
       },
       {
+        "id": "autumn-2026-2044-dmitrovskoe-165e-k6",
+        "venueSlug": "school-2044-dmitrovskoe-165e-k8",
+        "shiftLabel": "Мехвариум: Лаборатория Кинетических Монстров · Школа № 2044",
+        "startDate": "2026-10-26",
+        "endDate": "2026-10-30",
+        "startTime": "09:00",
+        "endTime": "12:30",
+        "dateRange": "26.10.2026 — 30.10.2026",
+        "daySchedule": "09:00–12:30",
+        "priceLabel": "16 000 ₽",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/1085682",
+        "includedNote": "Запись и оформление на mos.ru. Код 2594208, группа К4133-26. Стоимость: 3 200 ₽ за занятие, 16 000 ₽ за 5 дней. Приём заявлений до 26.10.2026 10:00 МСК. Места по данным mos.ru на 22.10.2026; актуальное наличие уточняйте в карточке mos.ru.",
+        "sheetStatus": "Идет прием",
+        "enrolled": 0,
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "Мехвариум: Лаборатория Кинетических Монстров",
+          "description": "За 5 дней дети изучат механику, шестерёнки и передачи, создадут механическую шкатулку с секретом и шагающего механического Монстра с кибер-бронёй из 3D-ручки. Много практики, работы с инструментами и испытаний готовых проектов.\n\nЗапись и оформление на mos.ru. Код 2594208, группа К4133-26. Стоимость: 3 200 ₽ за занятие, 16 000 ₽ за 5 дней. Приём заявлений до 26.10.2026 10:00 МСК. Места по данным mos.ru на 22.10.2026; актуальное наличие уточняйте в карточке mos.ru.",
+          "teacherName": "Любченко Ирина Сергеевна",
+          "tags": [
+            "Осень 2026",
+            "Запись на mos.ru"
+          ],
+          "timelineDate": "26.10.2026 — 30.10.2026",
+          "shortDate": "26.10.2026 — 30.10.2026",
+          "programNameH1": "Мехвариум: Лаборатория Кинетических Монстров",
+          "programFilterLabel": "Мехвариум: Лаборатория Кинетических Монстров",
+          "ageLabel": "6–13 лет",
+          "formatType": "Осенний интенсив",
+          "formatTime": "09:00–12:30",
+          "formatNote": "Запись и оформление на mos.ru. Код 2594208, группа К4133-26. Стоимость: 3 200 ₽ за занятие, 16 000 ₽ за 5 дней. Приём заявлений до 26.10.2026 10:00 МСК. Места по данным mos.ru на 22.10.2026; актуальное наличие уточняйте в карточке mos.ru.",
+          "mosRuCode": "2594208",
+          "status": "Идет прием",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "autumn-2026-2044-dmitrovskoe-165e-k6",
+              "type": "Осенний интенсив",
+              "time": "09:00–12:30",
+              "priceLabel": "16 000 ₽",
+              "note": "Запись и оформление на mos.ru. Код 2594208, группа К4133-26. Стоимость: 3 200 ₽ за занятие, 16 000 ₽ за 5 дней. Приём заявлений до 26.10.2026 10:00 МСК. Места по данным mos.ru на 22.10.2026; актуальное наличие уточняйте в карточке mos.ru.",
+              "mosRuCode": "2594208",
+              "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/1085682",
+              "enrolled": 0,
+              "registrationChannel": "mos_ru",
+              "allowPreliminaryRegistration": false
+            }
+          ]
+        }
+      },
+      {
+        "id": "autumn-2026-2044-dmitrovskoe-169b",
+        "venueSlug": "school-2044-dmitrovskoe-169b",
+        "shiftLabel": "Мехвариум: Лаборатория Кинетических Монстров · Школа № 2044",
+        "startDate": "2026-10-26",
+        "endDate": "2026-10-30",
+        "startTime": "09:00",
+        "endTime": "12:30",
+        "dateRange": "26.10.2026 — 30.10.2026",
+        "daySchedule": "09:00–12:30",
+        "priceLabel": "16 000 ₽",
+        "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/1085686",
+        "includedNote": "Запись и оформление на mos.ru. Код 2594211, группа К4134-26. Стоимость: 3 200 ₽ за занятие, 16 000 ₽ за 5 дней. Приём заявлений до 26.10.2026 10:00 МСК. Места по данным mos.ru на 22.10.2026; актуальное наличие уточняйте в карточке mos.ru.",
+        "sheetStatus": "Идет прием",
+        "enrolled": 0,
+        "maxCapacity": 12,
+        "scheduleCard": {
+          "displayTitle": "Мехвариум: Лаборатория Кинетических Монстров",
+          "description": "За 5 дней дети изучат механику, шестерёнки и передачи, создадут механическую шкатулку с секретом и шагающего механического Монстра с кибер-бронёй из 3D-ручки. Много практики, работы с инструментами и испытаний готовых проектов.\n\nЗапись и оформление на mos.ru. Код 2594211, группа К4134-26. Стоимость: 3 200 ₽ за занятие, 16 000 ₽ за 5 дней. Приём заявлений до 26.10.2026 10:00 МСК. Места по данным mos.ru на 22.10.2026; актуальное наличие уточняйте в карточке mos.ru.",
+          "teacherName": "Любченко Ирина Сергеевна",
+          "tags": [
+            "Осень 2026",
+            "Запись на mos.ru"
+          ],
+          "timelineDate": "26.10.2026 — 30.10.2026",
+          "shortDate": "26.10.2026 — 30.10.2026",
+          "programNameH1": "Мехвариум: Лаборатория Кинетических Монстров",
+          "programFilterLabel": "Мехвариум: Лаборатория Кинетических Монстров",
+          "ageLabel": "6–13 лет",
+          "formatType": "Осенний интенсив",
+          "formatTime": "09:00–12:30",
+          "formatNote": "Запись и оформление на mos.ru. Код 2594211, группа К4134-26. Стоимость: 3 200 ₽ за занятие, 16 000 ₽ за 5 дней. Приём заявлений до 26.10.2026 10:00 МСК. Места по данным mos.ru на 22.10.2026; актуальное наличие уточняйте в карточке mos.ru.",
+          "mosRuCode": "2594211",
+          "status": "Идет прием",
+          "isArchived": false,
+          "allowWaitlistWhenSoldOut": false,
+          "registrationChannel": "mos_ru",
+          "allowPreliminaryRegistration": false,
+          "variants": [
+            {
+              "id": "autumn-2026-2044-dmitrovskoe-169b",
+              "type": "Осенний интенсив",
+              "time": "09:00–12:30",
+              "priceLabel": "16 000 ₽",
+              "note": "Запись и оформление на mos.ru. Код 2594211, группа К4134-26. Стоимость: 3 200 ₽ за занятие, 16 000 ₽ за 5 дней. Приём заявлений до 26.10.2026 10:00 МСК. Места по данным mos.ru на 22.10.2026; актуальное наличие уточняйте в карточке mos.ru.",
+              "mosRuCode": "2594211",
+              "mosBookingUrl": "https://www.mos.ru/pgu2/activity/card/1085686",
+              "enrolled": 0,
+              "registrationChannel": "mos_ru",
+              "allowPreliminaryRegistration": false
+            }
+          ]
+        }
+      },
+      {
         "id": "autumn-2026-ekt",
         "venueSlug": "mduc-ekt-mosfilmovskaya",
         "shiftLabel": "Мехвариум: Лаборатория Инженерных Монстров · МДЮЦ ЭКТ",
@@ -8466,150 +8574,6 @@
       }
     ],
     "autumn-creative": [
-      {
-        "preliminary": true,
-        "id": "autumn-2026-2044-dolgoprudnaya-16",
-        "venueSlug": "autumn-2026-2044-dolgoprudnaya-16-venue",
-        "shiftLabel": "Инженерно-творческий интенсив · Школа № 2044",
-        "startDate": "",
-        "endDate": "",
-        "startTime": "09:00",
-        "endTime": "12:30",
-        "dateRange": "Даты уточняются",
-        "daySchedule": "09:00–12:30",
-        "priceLabel": "10 500 ₽ · предварительная стоимость",
-        "mosBookingUrl": null,
-        "includedNote": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
-        "sheetStatus": "Скоро старт",
-        "scheduleCard": {
-          "displayTitle": "Инженерно-творческий интенсив",
-          "description": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
-          "tags": [
-            "Осень 2026",
-            "Предварительная запись"
-          ],
-          "timelineDate": "Даты уточняются",
-          "shortDate": "Даты уточняются",
-          "programNameH1": "Инженерно-творческий интенсив",
-          "programFilterLabel": "Инженерно-творческий интенсив",
-          "ageLabel": "Возраст уточняется",
-          "formatType": "Осенний интенсив",
-          "formatTime": "09:00–12:30",
-          "formatNote": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
-          "status": "Скоро старт",
-          "isArchived": false,
-          "allowWaitlistWhenSoldOut": false,
-          "registrationChannel": "brainmaster",
-          "allowPreliminaryRegistration": true,
-          "variants": [
-            {
-              "id": "autumn-2026-2044-dolgoprudnaya-16",
-              "type": "Осенний интенсив",
-              "time": "09:00–12:30",
-              "priceLabel": "10 500 ₽ · предварительная стоимость",
-              "note": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
-              "registrationChannel": "brainmaster",
-              "allowPreliminaryRegistration": true
-            }
-          ]
-        }
-      },
-      {
-        "preliminary": true,
-        "id": "autumn-2026-2044-dmitrovskoe-165e-k6",
-        "venueSlug": "autumn-2026-2044-dmitrovskoe-165e-k6-venue",
-        "shiftLabel": "Инженерно-творческий интенсив · Школа № 2044",
-        "startDate": "",
-        "endDate": "",
-        "startTime": "09:00",
-        "endTime": "12:30",
-        "dateRange": "Даты уточняются",
-        "daySchedule": "09:00–12:30",
-        "priceLabel": "10 500 ₽ · предварительная стоимость",
-        "mosBookingUrl": null,
-        "includedNote": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
-        "sheetStatus": "Скоро старт",
-        "scheduleCard": {
-          "displayTitle": "Инженерно-творческий интенсив",
-          "description": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
-          "tags": [
-            "Осень 2026",
-            "Предварительная запись"
-          ],
-          "timelineDate": "Даты уточняются",
-          "shortDate": "Даты уточняются",
-          "programNameH1": "Инженерно-творческий интенсив",
-          "programFilterLabel": "Инженерно-творческий интенсив",
-          "ageLabel": "Возраст уточняется",
-          "formatType": "Осенний интенсив",
-          "formatTime": "09:00–12:30",
-          "formatNote": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
-          "status": "Скоро старт",
-          "isArchived": false,
-          "allowWaitlistWhenSoldOut": false,
-          "registrationChannel": "brainmaster",
-          "allowPreliminaryRegistration": true,
-          "variants": [
-            {
-              "id": "autumn-2026-2044-dmitrovskoe-165e-k6",
-              "type": "Осенний интенсив",
-              "time": "09:00–12:30",
-              "priceLabel": "10 500 ₽ · предварительная стоимость",
-              "note": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
-              "registrationChannel": "brainmaster",
-              "allowPreliminaryRegistration": true
-            }
-          ]
-        }
-      },
-      {
-        "preliminary": true,
-        "id": "autumn-2026-2044-dmitrovskoe-169b",
-        "venueSlug": "school-2044-dmitrovskoe-169b",
-        "shiftLabel": "Инженерно-творческий интенсив · Школа № 2044",
-        "startDate": "",
-        "endDate": "",
-        "startTime": "09:00",
-        "endTime": "12:30",
-        "dateRange": "Даты уточняются",
-        "daySchedule": "09:00–12:30",
-        "priceLabel": "10 500 ₽ · предварительная стоимость",
-        "mosBookingUrl": null,
-        "includedNote": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
-        "sheetStatus": "Скоро старт",
-        "scheduleCard": {
-          "displayTitle": "Инженерно-творческий интенсив",
-          "description": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
-          "tags": [
-            "Осень 2026",
-            "Предварительная запись"
-          ],
-          "timelineDate": "Даты уточняются",
-          "shortDate": "Даты уточняются",
-          "programNameH1": "Инженерно-творческий интенсив",
-          "programFilterLabel": "Инженерно-творческий интенсив",
-          "ageLabel": "Возраст уточняется",
-          "formatType": "Осенний интенсив",
-          "formatTime": "09:00–12:30",
-          "formatNote": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
-          "status": "Скоро старт",
-          "isArchived": false,
-          "allowWaitlistWhenSoldOut": false,
-          "registrationChannel": "brainmaster",
-          "allowPreliminaryRegistration": true,
-          "variants": [
-            {
-              "id": "autumn-2026-2044-dmitrovskoe-169b",
-              "type": "Осенний интенсив",
-              "time": "09:00–12:30",
-              "priceLabel": "10 500 ₽ · предварительная стоимость",
-              "note": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
-              "registrationChannel": "brainmaster",
-              "allowPreliminaryRegistration": true
-            }
-          ]
-        }
-      },
       {
         "preliminary": true,
         "id": "autumn-2026-37",
