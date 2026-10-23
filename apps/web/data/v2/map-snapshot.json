@@ -3,7 +3,7 @@
   "generatedAt": "2026-10-17T00:00:00.000Z",
   "source": "annual-csv-integration",
   "integrity": {
-    "contentHash": "sha256:387ec9b45d900f3b5175ad1c80b77669071ee46f4b0164bdebf368078cdc7c04"
+    "contentHash": "sha256:45532b50ca2eb5572775ded4578f86293b7d059a9638cfd7640248b8ae1c5c27"
   },
   "venues": [
     {
@@ -18,19 +18,6 @@
       "photos": [],
       "listedOnSites": false,
       "schoolScopeSlug": "school-1517"
-    },
-    {
-      "preliminaryVenue": true,
-      "slug": "autumn-2026-937-venue",
-      "name": "Школа № 937",
-      "type": "school",
-      "address": "Корпус уточняется",
-      "city": "moscow",
-      "logoUrl": "/sites/school-937/logo-original.jpg",
-      "directions": [],
-      "photos": [],
-      "listedOnSites": false,
-      "schoolScopeSlug": "school-937"
     },
     {
       "slug": "mduc-ekt-chertanovskaya",
