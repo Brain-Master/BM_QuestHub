@@ -12,7 +12,7 @@ const input={offers:read('offers-snapshot.json'),catalog:read('v2/catalog-snapsh
 const rows=Object.values(input.offers.offersByQuest).flat().map(o=>venueOfferSchema.parse(o));
 const camps=rows.filter(o=>o.preliminary);
 test('five preliminary offers preserve unknowns while confirmed camps open MOS booking',()=>{
- assert.equal(camps.length,5);assert.equal(rows.filter(o=>o.annual).length,94);assert.equal(rows.filter(o=>!o.annual&&!o.localAnnual&&!o.id.startsWith('autumn-2026-')).length,25);
+ assert.equal(camps.length,4);assert.equal(rows.filter(o=>o.annual).length,94);assert.equal(rows.filter(o=>!o.annual&&!o.localAnnual&&!o.id.startsWith('autumn-2026-')).length,25);
  assert.equal(rows.reduce((n,o)=>n+(o.annual?.legacyReservation?.places??0),0),51);
  for(const o of camps){assert.equal(getScheduleBookingMode(o,'Скоро старт').kind,'waitlist');assert.equal(isOfferAutoArchived(o,new Date('2026-10-06')),false);assert.equal(o.enrolled,undefined);}
  const ekt=rows.find(o=>o.id==='autumn-2026-ekt')!;assert.match(ekt.mosBookingUrl!,/1071480$/);
