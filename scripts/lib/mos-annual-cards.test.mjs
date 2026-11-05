@@ -78,3 +78,21 @@ test("partial refresh preserves previous facts and timestamp, never reports comp
     assert.equal(invalid.ok,false);assert.equal(invalid.verifiedGroups,0);assert.deepEqual(invalid.groups,registry.groups);
   }
 });
+
+test("new result envelope equals legacy card and rejects ambiguous or malformed responses", async()=>{
+ const read=item=>fetchMosCard("12",expected,{fetchImpl:async()=>reply({item,otherItems:[fixture()]})});
+ assert.deepEqual(await read({result:fixture()}),await read(fixture()));
+ for(const item of [undefined,null,{},[],{result:null},{result:[]},{result:{}},{...fixture(),result:fixture()}])await assert.rejects(read(item),/^Error: MOS_INVALID_RESPONSE$/);
+ for(const wrap of [x=>x,x=>({result:x})]){
+  await assert.rejects(read(wrap({...fixture(),group:{...fixture().group,id:13}})),/^Error: MOS_CARD_MISMATCH$/);
+  await assert.rejects(read(wrap({...fixture(),circle:{...fixture().circle,number:"999"}})),/MISMATCH/);
+  await assert.rejects(read(wrap({...fixture(),group:{...fixture().group,number:"К2-26"}})),/MISMATCH/);
+  await assert.rejects(read(wrap({...fixture(),group:{...fixture().group,freeSpace:99}})),/CAPACITY/);
+ }
+});
+
+test("MOS ISO midnight course dates preserve exact calendar dates",()=>{
+ const item=fixture(); item.group.classStartDate='2026-09-01T00:00:00';item.group.classEndDate='2027-05-31T00:00:00';
+ assert.deepEqual(projectMosCard(item,expected),projectMosCard(fixture(),expected));
+ for(const value of ['2026-02-31T00:00:00','2026-09-01T12:00:00','2026-09-01T00:00:00garbage'])assert.throws(()=>projectMosCard({...item,group:{...item.group,classStartDate:value}},expected),/DATES/);
+});

@@ -55,7 +55,8 @@ export function ScheduleCapacityIndicator({
         </div>
       </> : <span className={s.note}>{local?"Проверяем свободные места":"Количество мест не указано на mos.ru"}</span>}
       {reserved && <small className={s.note}>Учтён резерв прежних записей: {capacity?.heldReserve}. Места уточним после перевода.</small>}
-      {date && <small className={s.note}>mos.ru · {stale?"последние данные":"проверено"} {date}{checkedAt?" МСК":""}</small>}
+      {stale && <small className={s.note}>Не удалось подтвердить актуальность данных. Условия записи проверьте на mos.ru.</small>}
+      {date && <small className={s.note}>mos.ru · {stale?"данные актуальны на":"проверено"} {date}{checkedAt?" МСК":""}</small>}
       {!pageNotice && (failed||stale) && <small className={s.note}>Наличие мест и приём проверьте на mos.ru.</small>}
     </div>
   );

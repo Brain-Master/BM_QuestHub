@@ -46,7 +46,16 @@ test('only a recent successful check establishes admission; unknown is not close
     assert.equal(getScheduleDisplayStatus(stale,now),'Приём уточняется');
     assert.equal(getScheduleBookingMode(stale,'Приём уточняется',undefined,now).kind,'mos');
   }
-  assert.equal(getScheduleBookingMode({...fresh,annual:{...fresh.annual,refreshError:'MOS_IDENTITY_CHANGED'}},'Приём уточняется',undefined,now).kind,'disabled');
+  for(const error of ['MOS_IDENTITY_CHANGED','MOS_CARD_MISMATCH','MOS_INVALID_RESPONSE','MOS_TIMEOUT']){
+    const failed={...fresh,annual:{...fresh.annual,freeSeats:0,refreshError:error}};
+    assert.deepEqual(getScheduleBookingMode(failed,'Приём уточняется',undefined,now),{kind:'mos',label:'Записаться на mos.ru',url:base.mosBookingUrl});
+    const archived={...failed,scheduleCard:{...failed.scheduleCard!,isArchived:true}};
+    assert.equal(getScheduleBookingMode(archived,'Завершено',undefined,now).kind,'disabled');
+    const cancelled={...failed,scheduleCard:{...failed.scheduleCard!,status:'Отменено'}};
+    assert.equal(getScheduleBookingMode(cancelled,'Отменено',undefined,now).kind,'disabled');
+    const held={...failed,annual:{...failed.annual,legacyReservation:{oldGroupCode:'old',oldCardId:'123',places:12,checkedAt:'2026-09-20T00:00:00Z'}}};
+    assert.equal(getScheduleBookingMode(held,'Приём уточняется',undefined,now).kind,'disabled');
+  }
   assert.equal(getScheduleBookingMode({...base,scheduleCard:{...base.scheduleCard!,isArchived:true}},'Завершено',undefined,now).kind,'disabled');
   const cancelled={...base,scheduleCard:{...base.scheduleCard!,status:'Отменено'}};
   assert.equal(getScheduleDisplayStatus(cancelled,now),'Отменено');

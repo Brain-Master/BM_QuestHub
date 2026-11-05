@@ -107,7 +107,7 @@ test("live registry validates 86 exact distinct identities, preserves 8 unresolv
   for(const code of ['MOS_AMBIGUOUS_GROUP','MOS_GROUP_MISMATCH','MOS_CARD_MISMATCH','MOS_LISTING_MISMATCH','MOS_IDENTITY_CHANGED','MOS_LOCATION_REVIEW_REQUIRED','MOS_FUTURE_UNKNOWN_ERROR']){
     assert.equal(annualBookingNeedsReview({refreshError:code}),true);
     const o={...updated[0],annual:{...updated[0].annual!,refreshError:code}};
-    assert.equal(getScheduleBookingMode(o,'Идёт набор').kind,'disabled');
+    assert.deepEqual(getScheduleBookingMode(o,'Идёт набор'),{kind:'mos',label:'Записаться на mos.ru',url:o.mosBookingUrl});
   }
   for(const code of ['MOS_TIMEOUT','MOS_HTTP_503','MOS_PARTIAL_FIELDS'])assert.equal(annualBookingNeedsReview({refreshError:code}),false);
 });
