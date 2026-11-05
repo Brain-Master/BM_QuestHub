@@ -4,7 +4,10 @@ const DAYS = ["Понедельник", "Вторник", "Среда", "Чет�
 const digits = value => /^\d+$/.test(String(value ?? ""));
 const count = value => Number.isSafeInteger(value) && value >= 0 ? value : null;
 const date = value => {
-  const match = String(value ?? "").match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
+  const text = String(value ?? "");
+  const isoMatch = text.match(/^(\d{4}-\d{2}-\d{2})T00:00:00$/);
+  if (isoMatch) return Number.isFinite(Date.parse(isoMatch[1])) && new Date(isoMatch[1]).toISOString().startsWith(isoMatch[1]) ? isoMatch[1] : null;
+  const match = text.match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
   if (!match) return null;
   const iso = `${match[3]}-${match[2]}-${match[1]}`;
   return Number.isFinite(Date.parse(iso)) && new Date(iso).toISOString().startsWith(iso) ? iso : null;
@@ -110,6 +113,14 @@ export function projectMosCard(item, expected) {
 export async function fetchMosCard(cardId, expected, options) {
   if (!digits(cardId)) throw Error("MOS_INVALID_CARD");
   const data = await requestMosJson(`/groups/${cardId}`, undefined, options);
-  if (String(data.item?.group?.id) !== String(cardId)) throw Error("MOS_CARD_MISMATCH");
-  return projectMosCard(data.item, expected);
+  // MOS supports both the original item and the newer item.result envelope.
+  // Never select a sibling card or silently choose between ambiguous payloads.
+  const envelope = data.item;
+  if (!envelope || typeof envelope !== "object" || Array.isArray(envelope)) throw Error("MOS_INVALID_RESPONSE");
+  const wrapped = Object.hasOwn(envelope, "result");
+  if (wrapped && (Object.hasOwn(envelope, "group") || Object.hasOwn(envelope, "circle"))) throw Error("MOS_INVALID_RESPONSE");
+  const item = wrapped ? envelope.result : envelope;
+  if (!item || typeof item !== "object" || Array.isArray(item) || !digits(item.group?.id) || !item.circle) throw Error("MOS_INVALID_RESPONSE");
+  if (String(item.group.id) !== String(cardId)) throw Error("MOS_CARD_MISMATCH");
+  return projectMosCard(item, expected);
 }

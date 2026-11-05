@@ -1,3 +1,5 @@
+import { mock } from 'node:test';
+mock.timers.enable({apis:['Date'],now:new Date('2026-10-23T10:00:00Z').getTime()});
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import { test } from "node:test";

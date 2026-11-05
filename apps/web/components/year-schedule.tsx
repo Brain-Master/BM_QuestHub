@@ -4,8 +4,10 @@ import { useState } from "react";
 import { projectAnnualWorkspace } from "@/lib/year-schedule";
 import type { Quest, Venue } from "@/lib/schemas";
 import { useLiveSchedule } from "@/lib/offers/use-live-schedule";
-import { annualBookingNeedsReview } from "@/lib/offers/annual-schedule";
+import { AVAILABILITY_MAX_AGE_MS } from "@/lib/offers/annual-freshness";
+import { useScheduleClock } from "@/lib/offers/use-schedule-clock";
 import Link from "next/link";
+import { getScheduleBookingMode, getScheduleDisplayStatus } from "@/lib/offers/schedule-board";
 import { notifyMosBookingClick } from "@/lib/mos-booking-click";
 
 const days=["Понедельник","Вторник","Среда","Четверг","Пятница","Суббота","Воскресенье"];
@@ -14,6 +16,7 @@ const rub=(amount:number)=>new Intl.NumberFormat("ru-RU").format(amount)+" ₽";
 
 export function YearSchedule({baseQuests,venues}:{baseQuests:Quest[];venues:Venue[]}) {
   const live=useLiveSchedule(baseQuests);
+  const clock=useScheduleClock();
   const data=projectAnnualWorkspace(live.quests,venues);
   const [school,setSchool]=useState("");
   const [location,setLocation]=useState("");
@@ -50,11 +53,16 @@ export function YearSchedule({baseQuests,venues}:{baseQuests:Quest[];venues:Venu
     {filtered.length===0?<div className="ys-empty"><h3>Таких групп в выгрузке нет</h3><p>Выберите другой день или школу либо сбросьте фильтры.</p><button type="button" className="yc-button" onClick={reset}>Показать все группы</button></div>:
     <div className="ys-grid">{filtered.map(g=>{
       const place=locations.get(g.locationId); if(!place)return null;
+      const checkedAt=g.availabilityUpdatedAt??g.refreshedAt;
+      const checkedMs=Date.parse(checkedAt??"");
+      const stale=!!(g.refreshError||g.availabilityError)||clock<=0||!Number.isFinite(checkedMs)||checkedMs>clock+60000||clock-checkedMs>AVAILABILITY_MAX_AGE_MS;
+      const original=live.quests.flatMap(q=>q.offers).find(o=>o.id===`year:${g.id}`||o.id===g.id);
+      const booking=original?getScheduleBookingMode(original,getScheduleDisplayStatus(original,new Date(clock)),undefined,new Date(clock)):undefined;
       const reserveFull=(g.heldReserve??0)>0 && g.freeSeats===0;
       const sourceQuest=live.quests.find(q=>q.offers.some(o=>o.id===`year:${g.id}`&&o.venueSlug===g.locationId));
       const notify=()=>{if(sourceQuest)notifyMosBookingClick({questSlug:sourceQuest.slug,offerId:`year:${g.id}`,venueSlug:g.locationId});};
       return <article key={g.id} className="ys-card" data-group-id={g.id}>
-        <div className="ys-card-top"><span className={g.status==="open"?"ys-open":"ys-closed"}>{reserveFull?"Мест нет":annualBookingNeedsReview(g)?"Карточка на проверке":g.status==="open"?"Приём открыт":"Приём закрыт"}</span><span className="ys-asof">на {dateLabel(g.refreshedAt?.slice(0,10)??data.asOf)}</span></div>
+        <div className="ys-card-top"><span className={g.status==="open"?"ys-open":"ys-closed"}>{reserveFull?"Мест нет":stale?"Приём уточняется":g.status==="open"?"Приём открыт":"Приём закрыт"}</span><span className="ys-asof">на {dateLabel(g.refreshedAt?.slice(0,10)??data.asOf)}</span></div>
         <p className="yc-label"><Link href={`/sites/${place.schoolScopeSlug}/`}>{place.school} ↗</Link></p><h3>{g.title}</h3>
         <ul className="ys-slots" aria-label="Еженедельные занятия">{g.slots.map(s=><li key={s.weekday+s.start}><span>{s.weekday}</span><strong>{s.start}–{s.end}</strong></li>)}</ul>
         <p className="ys-period">Период обучения: {dateLabel(g.courseStart)} — {dateLabel(g.courseEnd)}</p>
@@ -62,10 +70,10 @@ export function YearSchedule({baseQuests,venues}:{baseQuests:Quest[];venues:Venu
         <div><dt>Возраст</dt><dd>{g.audienceLabel ?? (g.ageMin===null||g.ageMax===null?"Уточните у школы":`${g.ageMin}–${g.ageMax} лет`)}</dd></div>
         <div><dt>Педагог</dt><dd>{g.teacher||"Уточните у школы"}</dd></div>
         <div><dt>Стоимость</dt><dd>{g.lessonPrice===null?"За занятие — уточните у школы":`${rub(g.lessonPrice)} / занятие`}{g.coursePrice!==null&&<span className="ys-secondary">{rub(g.coursePrice)} за курс по карточке</span>}</dd></div>
-        <div><dt>Свободно</dt><dd>{g.freeSeats===null||g.totalSeats===null?"Количество мест не подтверждено":`${g.freeSeats} из ${g.totalSeats}`}<span className="ys-secondary">{g.capacityNote}</span><span className="ys-secondary">{g.availabilityUpdatedAt||g.refreshedAt?`Проверено ${new Date(g.availabilityUpdatedAt??g.refreshedAt!).toLocaleString('ru-RU',{timeZone:'Europe/Moscow'})} МСК`:`Данные от ${dateLabel(data.asOf)}`}</span></dd></div></dl>
+        <div><dt>{stale?"Было свободно":"Свободно"}</dt><dd>{g.freeSeats===null||g.totalSeats===null?"Количество мест не подтверждено":`${g.freeSeats} из ${g.totalSeats}`}<span className="ys-secondary">{g.capacityNote}</span><span className="ys-secondary">{g.availabilityUpdatedAt||g.refreshedAt?`${stale?"Данные актуальны на":"Проверено"} ${new Date(g.availabilityUpdatedAt??g.refreshedAt!).toLocaleString('ru-RU',{timeZone:'Europe/Moscow'})} МСК`:`Данные от ${dateLabel(data.asOf)}`}</span></dd></div></dl>
         {g.limitedSource&&<p className="ys-limited">Данные группы неполные. Возраст, педагога, стоимость и вместимость уточните у школы.</p>}
-        {(g.refreshError||g.availabilityError)&&<p>Последняя проверка карточки или мест не удалась. Показаны последние подтверждённые сведения.</p>}
-        <div className="ys-card-bottom"><p>Номер занятия: {g.listingId}{g.groupCode&&<span className="ys-secondary">Группа: {g.groupCode}</span>}</p>{reserveFull?<span className="ys-secondary">Свободных мест нет</span>:annualBookingNeedsReview(g)?<span className="ys-secondary">Прямая карточка группы пока не подтверждена</span>:<a className="ys-action" href={g.link} target="_blank" rel="noopener noreferrer" onClick={notify} onAuxClick={e=>{if(e.button===1)notify();}}>{g.linkKind==="card"?"Карточка на mos.ru":"Найти на mos.ru"} <span aria-hidden>↗</span><span className="sr-only"> — {g.listingId}, новое окно</span></a>}</div>
+        {stale&&<p>Не удалось подтвердить актуальность данных. Показаны последние подтверждённые сведения. Условия записи проверьте на mos.ru.</p>}
+        <div className="ys-card-bottom"><p>Номер занятия: {g.listingId}{g.groupCode&&<span className="ys-secondary">Группа: {g.groupCode}</span>}</p>{reserveFull?<span className="ys-secondary">Свободных мест нет</span>:booking?.kind!=="mos"?<span className="ys-secondary">{booking?.label??"Запись недоступна"}</span>:<a className="ys-action" href={booking.url} target="_blank" rel="noopener noreferrer" onClick={notify} onAuxClick={e=>{if(e.button===1)notify();}}>{g.linkKind==="card"?"Записаться на mos.ru":"Найти на mos.ru"} <span aria-hidden>↗</span><span className="sr-only"> — {g.listingId}, новое окно</span></a>}</div>
       </article>;
     })}</div>}
     <p className="yc-note">Нет подходящего времени? <Link className="yc-link" href="/year-courses/shmi/">Узнайте больше о ШМИ</Link> или обсудите группу с командой BrainMaster.</p>

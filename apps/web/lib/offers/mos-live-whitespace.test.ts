@@ -46,7 +46,7 @@ test('review blocks survive subsequent transport failures for the same binding, 
     const failed = await refreshMosAvailability(source,registry.groups,conflict,{now:()=>at,fetchCard:async()=>{throw Error('MOS_TIMEOUT');}});
     assert.equal(failed.entries[offer.id].error,conflict.entries[offer.id].error);
     const merged = mergeMosAvailability([quest],failed,at)[0].offers[0];
-    assert.equal(getScheduleBookingMode(merged,getScheduleDisplayStatus(merged,at),undefined,at).kind,'disabled');
+    assert.deepEqual(getScheduleBookingMode(merged,getScheduleDisplayStatus(merged,at),undefined,at),{kind:'mos',label:'Записаться на mos.ru',url:offer.mosBookingUrl});
     // Client also defends against an older publisher that forgets the review cause.
     const transient = structuredClone(failed); transient.errors[0].code='MOS_TIMEOUT'; transient.entries[offer.id].error='MOS_TIMEOUT';
     assert.equal(reconcileMosAvailability(conflict,transient,at).entries[offer.id].error,conflict.entries[offer.id].error);

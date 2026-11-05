@@ -1,6 +1,6 @@
 import type { EventStatusV2 } from "@/lib/data/v2/entities";
 import { isRetiredAnnualGroup } from "../../content/annual-retirements.mjs";
-import { annualBookingNeedsReview, effectiveAnnualFreeSeats } from "./annual-schedule";
+import { effectiveAnnualFreeSeats } from "./annual-schedule";
 import { annualAvailabilityStale } from "./annual-freshness";
 import type { AgendaOfferItem } from "@/lib/offers/agenda";
 import {
@@ -251,7 +251,6 @@ export function getScheduleBookingMode(
 ): ScheduleBookingMode {
   if(offer.localAnnual){const a=offer.localAnnual.availability;if(!a)return {kind:"disabled",label:"Проверяем места"};if(!a.open)return {kind:"disabled",label:"Приём закрыт"};if(a.free===0)return {kind:"disabled",label:"Мест нет"};}
   if (isRetiredAnnualGroup(offer)) return { kind: "disabled", label: SCHEDULE_CTA.cancelledDisabled };
-  if (annualBookingNeedsReview(offer.annual)) return { kind: "disabled", label: "Карточка на проверке" };
   // A deliberately held reserve must not be bypassed by stale portal data.
   if (offer.annual?.legacyReservation && getScheduleCapacity(offer)?.isSoldOut) return {kind:'disabled',label:SCHEDULE_CTA.soldOutDisabled};
   // Old closed/full readings must not lock parents out of the verified source.
@@ -260,7 +259,7 @@ export function getScheduleBookingMode(
   if (offer.annual && annualAvailabilityStale(offer.annual, now.getTime()) &&
       !offer.scheduleCard?.isArchived && !["finished", "cancelled"].includes(resolveScheduleStatusKey(offer, now)) &&
       directUrl && /^https:\/\/www\.mos\.ru\/pgu2\/activity\/card\/\d+$/.test(directUrl)) {
-    return { kind: "mos", label: "Проверить на mos.ru", url: directUrl };
+    return { kind: "mos", label: "Записаться на mos.ru", url: directUrl };
   }
   if (offer.annual?.admission === "closed") return { kind: "disabled", label: "Приём закрыт" };
   const statusKey = resolveScheduleStatusKey(offer, now);
