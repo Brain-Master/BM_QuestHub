@@ -2,6 +2,7 @@ import siteConfig from "@/data/v2/site-config.json";
 import type { LeadPayload } from "@/lib/schemas";
 import { confirmLeadDelivery, LeadDeliveryError } from "./lead-delivery";
 import { resolveLeadEndpoint } from "./lead-endpoint";
+import { probeLeadRoute } from "./lead-route";
 import { leadAttempt } from "./lead-attempt";
 
 export type SubmitLeadResult =
@@ -86,8 +87,11 @@ export async function submitLeadToYandex(
     };
   }
 
+  let endpoint: string;
+  try { endpoint=(await probeLeadRoute(leadSubmitUrl)).endpoint; }
+  catch { return {ok:false,error:"Сервис записи сейчас недоступен. Заявка ещё не отправлена. Попробуйте позже или свяжитесь с нами — введённые данные сохранены в форме."}; }
   try {
-    const confirmation = await confirmLeadDelivery(leadSubmitUrl, {
+    const confirmation = await confirmLeadDelivery(endpoint, {
         ...data,
         submissionId: await leadAttempt(data),
         submittedAt: new Date().toISOString(),

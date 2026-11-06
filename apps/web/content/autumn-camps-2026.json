@@ -290,5 +290,10 @@
   ],
   "retiredOfferIds": [
     "autumn-2026-2044-dolgoprudnaya-16"
+  ],
+  "archivedOfferIds": [
+    "autumn-2026-1383",
+    "autumn-2026-37",
+    "autumn-2026-1517"
   ]
 }
