@@ -752,7 +752,7 @@
         "priceLabel": "Цена уточняется",
         "mosBookingUrl": null,
         "includedNote": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
-        "sheetStatus": "Скоро старт",
+        "sheetStatus": "Завершено",
         "scheduleCard": {
           "displayTitle": "Мехвариум",
           "description": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
@@ -768,11 +768,11 @@
           "formatType": "Осенний интенсив",
           "formatTime": "09:00–12:30",
           "formatNote": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
-          "status": "Скоро старт",
-          "isArchived": false,
+          "status": "Завершено",
+          "isArchived": true,
           "allowWaitlistWhenSoldOut": false,
           "registrationChannel": "brainmaster",
-          "allowPreliminaryRegistration": true,
+          "allowPreliminaryRegistration": false,
           "variants": [
             {
               "id": "autumn-2026-1517",
@@ -781,7 +781,7 @@
               "priceLabel": "Цена уточняется",
               "note": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
               "registrationChannel": "brainmaster",
-              "allowPreliminaryRegistration": true
+              "allowPreliminaryRegistration": false
             }
           ]
         }
@@ -6320,7 +6320,7 @@
         ],
         "annual": {
           "sourceTitle": "ШМИ продолжающие (СР 16:15-17:00) 2026-2027",
-          "studyYear": 2,
+          "studyYear": 1,
           "refreshedAt": "2026-09-22T19:33:24.476Z",
           "teacherSourceConflict": true,
           "asOf": "2026-09-08",
@@ -6340,7 +6340,7 @@
         },
         "id": "year:К2765-26",
         "venueSlug": "school-37-michurinsky-28",
-        "shiftLabel": "ШМИ · 2-й год",
+        "shiftLabel": "ШМИ · 1-й год",
         "startDate": "2026-09-14",
         "endDate": "2027-05-31",
         "startTime": "16:15",
@@ -6353,7 +6353,7 @@
         "enrolled": 3,
         "maxCapacity": 12,
         "scheduleCard": {
-          "displayTitle": "ШМИ · 2-й год",
+          "displayTitle": "ШМИ · 1-й год",
           "description": "Данные mos.ru на 2026-09-22. Условия и наличие мест проверьте перед записью.",
           "teacherName": "Кузнецова Ольга Максимовна",
           "tags": [
@@ -8594,7 +8594,7 @@
         "priceLabel": "10 500 ₽",
         "mosBookingUrl": null,
         "includedNote": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
-        "sheetStatus": "Скоро старт",
+        "sheetStatus": "Завершено",
         "scheduleCard": {
           "displayTitle": "Инженерно-творческий интенсив",
           "description": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
@@ -8610,11 +8610,11 @@
           "formatType": "Осенний интенсив",
           "formatTime": "09:00–12:30",
           "formatNote": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
-          "status": "Скоро старт",
-          "isArchived": false,
+          "status": "Завершено",
+          "isArchived": true,
           "allowWaitlistWhenSoldOut": false,
           "registrationChannel": "brainmaster",
-          "allowPreliminaryRegistration": true,
+          "allowPreliminaryRegistration": false,
           "variants": [
             {
               "id": "autumn-2026-37",
@@ -8623,7 +8623,7 @@
               "priceLabel": "10 500 ₽",
               "note": "Оставьте предварительную заявку BrainMaster. Мы подтвердим даты, площадку и условия. Заявка не означает зачисление или бронь места.",
               "registrationChannel": "brainmaster",
-              "allowPreliminaryRegistration": true
+              "allowPreliminaryRegistration": false
             }
           ]
         }
@@ -8642,7 +8642,7 @@
         "priceLabel": "9 500 ₽",
         "mosBookingUrl": null,
         "includedNote": "BrainMaster проводит только два занятия в рамках школьного интенсива. Указанная стоимость — 9 500 ₽; состав программы и что входит в стоимость уточняются.",
-        "sheetStatus": "Скоро старт",
+        "sheetStatus": "Завершено",
         "scheduleCard": {
           "displayTitle": "Создай своего героя или антигероя",
           "description": "За два занятия по два часа: аксессуар в Tinkercad, сборка фигурки из напечатанных на 3D-принтере заготовок, акриловая роспись, наклейки и воздушный пластилин; имя, характер, способности и история героя. Участник забирает фигурку домой.\n\nBrainMaster проводит только два занятия в рамках школьного интенсива. Указанная стоимость — 9 500 ₽; состав программы и что входит в стоимость уточняются.",
@@ -8658,11 +8658,11 @@
           "formatType": "Два занятия по 2 часа",
           "formatTime": "Понедельник и вторник, по 2 часа. Время уточняется",
           "formatNote": "BrainMaster проводит только два занятия в рамках школьного интенсива. Указанная стоимость — 9 500 ₽; состав программы и что входит в стоимость уточняются.",
-          "status": "Скоро старт",
-          "isArchived": false,
+          "status": "Завершено",
+          "isArchived": true,
           "allowWaitlistWhenSoldOut": false,
           "registrationChannel": "brainmaster",
-          "allowPreliminaryRegistration": true,
+          "allowPreliminaryRegistration": false,
           "variants": [
             {
               "id": "autumn-2026-1383",
@@ -8671,7 +8671,7 @@
               "priceLabel": "9 500 ₽",
               "note": "BrainMaster проводит только два занятия в рамках школьного интенсива. Указанная стоимость — 9 500 ₽; состав программы и что входит в стоимость уточняются.",
               "registrationChannel": "brainmaster",
-              "allowPreliminaryRegistration": true
+              "allowPreliminaryRegistration": false
             }
           ]
         }

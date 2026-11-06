@@ -16,7 +16,7 @@ const camps=rows.filter(o=>o.preliminary);
 test('five preliminary offers preserve unknowns while confirmed camps open MOS booking',()=>{
  assert.equal(camps.length,4);assert.equal(rows.filter(o=>o.annual).length,94);assert.equal(rows.filter(o=>!o.annual&&!o.localAnnual&&!o.id.startsWith('autumn-2026-')).length,25);
  assert.equal(rows.reduce((n,o)=>n+(o.annual?.legacyReservation?.places??0),0),51);
- for(const o of camps){assert.equal(getScheduleBookingMode(o,'Скоро старт').kind,'waitlist');assert.equal(isOfferAutoArchived(o,new Date('2026-10-06')),false);assert.equal(o.enrolled,undefined);}
+ for(const o of camps){assert.equal(getScheduleBookingMode(o,'Скоро старт').kind,o.scheduleCard?.isArchived?'disabled':'waitlist');assert.equal(isOfferAutoArchived(o,new Date('2026-10-06')),false);assert.equal(o.enrolled,undefined);}
  const ekt=rows.find(o=>o.id==='autumn-2026-ekt')!;assert.match(ekt.mosBookingUrl!,/1071480$/);
 });
 test('empty schedule gated to paired nonannual preliminary records',()=>{
@@ -28,7 +28,7 @@ test('empty schedule gated to paired nonannual preliminary records',()=>{
 });
 test('v2 roundtrip never manufactures dates/time or switches preliminary to MOS',()=>{
  for(const o of camps){const event=eventV2Schema.parse(venueOfferToEventV2('camp',o));const out=scheduleV2ToOffersSnapshotV1({version:2,generatedAt:'2026-10-06T00:00:00Z',source:'test',events:[event]}).offersByQuest.camp[0];
-  venueOfferSchema.parse(out);assert.equal(out.preliminary,true);assert.equal(out.startDate,o.startDate);assert.equal(out.startTime,o.startTime);assert.equal(out.endTime,o.endTime);assert.equal(out.scheduleCard?.registrationChannel,'brainmaster');assert.equal(getScheduleBookingMode(out,'Скоро старт').kind,'waitlist');assert.doesNotMatch(out.dateRange,/undefined/);
+  venueOfferSchema.parse(out);assert.equal(out.preliminary,true);assert.equal(out.startDate,o.startDate);assert.equal(out.startTime,o.startTime);assert.equal(out.endTime,o.endTime);assert.equal(out.scheduleCard?.registrationChannel,'brainmaster');assert.equal(getScheduleBookingMode(out,'Скоро старт').kind,o.scheduleCard?.isArchived?'disabled':'waitlist');assert.doesNotMatch(out.dateRange,/undefined/);
  }
 });
 test('compiler restores deleted Sheets camp rows, is idempotent, never rewrites other offers',()=>{
@@ -81,3 +81,5 @@ test('2044 confirmed camps bind exact owner campuses and retire only the cancell
  assert.equal(rows.filter(o=>o.annual&&o.venueSlug===retired+'-venue').length,5);
  assert.ok(!out['data/v2/map-snapshot.json'].venues.some((v:{slug:string})=>v.slug==='autumn-2026-2044-dmitrovskoe-165e-k6-venue'));
 });
+
+test('reviewed undated autumn archives remain stored but cannot accept bookings',()=>{for(const id of ['autumn-2026-1383','autumn-2026-37','autumn-2026-1517']){const o=rows.find(o=>o.id===id)!;assert.ok(o);assert.equal(o.scheduleCard?.isArchived,true);assert.equal(o.scheduleCard?.allowPreliminaryRegistration,false);assert.equal(o.startDate,'');assert.equal(getScheduleBookingMode(o,'Завершено').kind,'disabled');}});

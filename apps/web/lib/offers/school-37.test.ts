@@ -11,12 +11,12 @@ const read=(p:string)=>JSON.parse(fs.readFileSync(p,'utf8'));
 const offers=parseOffersSnapshot(read('data/offers-snapshot.json')).offersByQuest.shmi.filter(o=>o.venueSlug==='school-37-michurinsky-28');
 const venues=venueSchema.array().parse(read('data/v2/map-snapshot.json').venues);
 const cards=['1019233','1019236','1019244','1019286','1019288','1019293','1019299','1019455','1019466'];
-test('37: nine groups, canonical6+3 years, weekly45min, correct prices, age, teacher and exact registration',()=>{
+test('37: nine groups, canonical7+2 years, weekly45min, correct prices, age, teacher and exact registration',()=>{
   assert.equal(offers.length,9);
-  assert.deepEqual([1,2].map(year=>offers.filter(o=>o.annual?.studyYear===year).length),[6,3]);
+  assert.deepEqual([1,2].map(year=>offers.filter(o=>o.annual?.studyYear===year).length),[7,2]);
   for(let i=0;i<9;i++){
     const code=`К${2763+i}-26`,row=offers.find(o=>o.id===`year:${code}`);assert.ok(row);
-    const a=row.annual!;const year=i%3===2?2:1;
+    const a=row.annual!;const year=['К2768-26','К2771-26'].includes(code)?2:1;
     assert.equal(a.studyYear,year);assert.equal(row.shiftLabel,`ШМИ · ${year}-й год`);
     assert.equal(a.teacher,'Кузнецова Ольга Максимовна');assert.equal(row.scheduleCard?.teacherName,a.teacher);assert.equal(a.teacherSourceConflict,true);
     assert.equal(a.lessonPrice,1375);assert.equal(a.coursePrice,49500);assert.equal(a.sourceLessonPrice,undefined);
