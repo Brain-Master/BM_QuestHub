@@ -96,3 +96,7 @@ test("MOS ISO midnight course dates preserve exact calendar dates",()=>{
  assert.deepEqual(projectMosCard(item,expected),projectMosCard(fixture(),expected));
  for(const value of ['2026-02-31T00:00:00','2026-09-01T12:00:00','2026-09-01T00:00:00garbage'])assert.throws(()=>projectMosCard({...item,group:{...item.group,classStartDate:value}},expected),/DATES/);
 });
+
+test('malformed JSON is a semantic response error, not a retryable transport failure',async()=>{
+ await assert.rejects(requestMosJson('/groups/123',undefined,{fetchImpl:async()=>new Response('{broken',{headers:{'content-type':'application/json'}})}),/MOS_INVALID_RESPONSE/);
+});

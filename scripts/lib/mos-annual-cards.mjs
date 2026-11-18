@@ -53,7 +53,8 @@ export async function requestMosJson(route, body, { fetchImpl = fetch, timeoutMs
       chunks.push(value);
     }
   } finally { await reader.cancel(); }
-  const payload = JSON.parse(Buffer.concat(chunks).toString("utf8"));
+  let payload;
+  try { payload = JSON.parse(Buffer.concat(chunks).toString("utf8")); } catch { throw Error("MOS_INVALID_RESPONSE"); }
   if (payload?.status !== "success" || !payload.data || typeof payload.data !== "object") throw Error("MOS_INVALID_RESPONSE");
   return payload.data;
 }
