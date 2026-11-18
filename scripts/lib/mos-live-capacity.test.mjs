@@ -3,7 +3,8 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 process.env.TSX_TSCONFIG_PATH=new URL('../../apps/web/tsconfig.json',import.meta.url).pathname;
 const {require:tsRequire}=await import('tsx/cjs/api');
-const {refreshMosAvailability}=tsRequire('./mos-live-capacity.ts',import.meta.url);
+const {refreshMosAvailability:refreshRaw}=tsRequire('./mos-live-capacity.ts',import.meta.url);
+const refreshMosAvailability=(input,identities,previous,options)=>refreshRaw(input,identities,previous,{minIntervalMs:0,...options});
 const {handler}=tsRequire('./mos-live-capacity-handler.ts',import.meta.url);
 const snapshot=JSON.parse(fs.readFileSync(new URL('../../apps/web/data/offers-snapshot.json',import.meta.url),'utf8'));
 const registry=JSON.parse(fs.readFileSync(new URL('../../apps/web/content/annual-mos-refresh.generated.json',import.meta.url),'utf8'));
@@ -92,4 +93,21 @@ test('only independently reviewed exact title changes accepted; locations and sl
    let calls=0;const r=await refreshMosAvailability(source,registry.groups,undefined,{now,fetchCard:async()=>{calls++;return {...old,...patch};}});assert.equal(r.verified,ok?1:0);assert.equal(calls,1);
   }
  }
+});
+
+test('global pacing spaces first and retry starts, with no catch-up burst after sleep delay',async()=>{
+ const {source,identities}=fixture(6);let at=now().getTime();const starts=[];const calls=[];let sleeps=0;
+ const r=await refreshMosAvailability(source,identities,undefined,{minIntervalMs:1000,now:()=>new Date(at),sleep:async ms=>{at+=ms+(sleeps++===0?5000:0);},fetchCard:async(id,e)=>{starts.push(at);const prior=calls.includes(e.groupCode);calls.push(e.groupCode);if(!prior)throw Error('MOS_HTTP_503');return identities[e.groupCode];}});
+ assert.equal(r.verified,6);assert.equal(starts.length,12);for(let i=1;i<starts.length;i++)assert.ok(starts[i]-starts[i-1]>=1000);assert.equal(new Set(calls.slice(0,6)).size,6);
+});
+test('pacing never reserves or starts beyond the budget',async()=>{
+ const {source,identities}=fixture(6);let at=now().getTime();const starts=[];
+ const r=await refreshMosAvailability(source,identities,undefined,{budgetMs:2500,minIntervalMs:1000,now:()=>new Date(at),sleep:async ms=>{at+=ms;},fetchCard:async(id,e)=>{starts.push(at);return identities[e.groupCode];}});
+ assert.equal(starts.length,3);assert.equal(r.verified,3);assert.equal(r.errors.length,3);assert.ok(r.errors.every(e=>e.code==='MOS_RUN_BUDGET'));
+});
+test('course ending during pacing wait is not fetched',async()=>{
+ const {source,identities}=fixture(2);for(const o of source.offersByQuest.shmi)o.endDate='2026-09-24';for(const c of Object.values(identities))c.courseEnd='2026-09-24';
+ let at=Date.parse('2026-09-24T20:59:59.500Z');let calls=0;
+ const r=await refreshMosAvailability(source,identities,undefined,{minIntervalMs:1000,now:()=>new Date(at),sleep:async ms=>{at+=ms;},fetchCard:async(id,e)=>{calls++;return identities[e.groupCode];}});
+ assert.equal(calls,1);assert.equal(r.errors[0].code,'MOS_COURSE_ENDED');
 });

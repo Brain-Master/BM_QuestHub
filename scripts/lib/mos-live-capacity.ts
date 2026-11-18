@@ -30,7 +30,7 @@ function matchesReviewedTitle(expected:Card,fresh:Card){
 
 /** Public reads only; no credentials, files, Sheets writes, or content compilation. */
 export async function refreshMosAvailability(input:unknown, identities:Record<string,Card>, previous?:MosAvailability, options:{
-  now?:()=>Date; fetchCard?:typeof fetchMosCard; concurrency?:number; budgetMs?:number;
+  now?:()=>Date; fetchCard?:typeof fetchMosCard; concurrency?:number; budgetMs?:number; minIntervalMs?:number; sleep?:(ms:number)=>Promise<void>;
 }={}) {
   const snapshot=snapshotSchema.parse(input);
   const now=options.now??(()=>new Date()); const start=now();
@@ -38,6 +38,9 @@ export async function refreshMosAvailability(input:unknown, identities:Record<st
   const budgetMs=options.budgetMs??230_000;
   if(!Number.isFinite(budgetMs)||budgetMs<=0||budgetMs>230_000)throw Error("MOS_BUDGET_INVALID");
   if(!Number.isInteger(concurrency)||concurrency<1||concurrency>3)throw Error("MOS_CONCURRENCY_INVALID");
+  const minIntervalMs=options.minIntervalMs??1000;
+  if(!Number.isInteger(minIntervalMs)||minIntervalMs<0||minIntervalMs>5000)throw Error("MOS_INTERVAL_INVALID");
+  const sleep=options.sleep??(ms=>new Promise(resolve=>setTimeout(resolve,ms)));
   const offers=Object.values(snapshot.offersByQuest).flat();
   if(offers.length>1000 || new Set(offers.map(o=>o.id)).size!==offers.length)throw Error("MOS_SNAPSHOT_INVALID");
   const result:MosAvailability={version:1,attemptedAt:start.toISOString(),completedAt:start.toISOString(),expected:0,verified:0,archived:0,errors:[],entries:{}};
@@ -62,6 +65,22 @@ export async function refreshMosAvailability(input:unknown, identities:Record<st
   const retry:VenueOffer[]=[];
   const transient=(code:string)=>['MOS_TIMEOUT','MOS_FETCH_FAILED','MOS_HTTP_500','MOS_HTTP_502','MOS_HTTP_503','MOS_HTTP_504'].includes(code);
   const remaining=()=>budgetMs-(now().getTime()-start.getTime());
+  let lastStartedAt=start.getTime()-minIntervalMs;
+  let permit=Promise.resolve();
+  async function pace(startRequest:()=>Promise<Card>){
+    const turn=permit.then(async()=>{
+      const delay=Math.max(0,lastStartedAt+minIntervalMs-now().getTime());
+      if(delay>=remaining())throw Error("MOS_RUN_BUDGET");
+      if(delay>0)await sleep(delay);
+      if(remaining()<=0)throw Error("MOS_RUN_BUDGET");
+      // Use actual start, not a reserved slot: a delayed worker must not cause
+      // several requests to catch up in a burst after the event loop resumes.
+      lastStartedAt=now().getTime();
+      return {request:startRequest()};
+    });
+    permit=turn.then(()=>{},()=>{});
+    const {request}=await turn;return request;
+  }
   async function attempt(offer:VenueOffer,second=false){
       const binding=mosAvailabilityBinding(offer);
       if(!binding){result.errors.push({offerId:offer.id,code:"MOS_DIRECT_CARD_REQUIRED"});return;}
@@ -74,7 +93,10 @@ export async function refreshMosAvailability(input:unknown, identities:Record<st
         if(groupLifecycle(offer,moscowDate(now())).state==='archived')throw Error("MOS_COURSE_ENDED");
         const expected=identities[offer.id.replace(/^year:/,"")];
         if(!expected || expected.cardId!==binding.cardId || expected.listingId!==binding.listingId || expected.groupCode!==binding.groupCode)throw Error("MOS_IDENTITY_REVIEW_REQUIRED");
-        const fresh=await fetchCard(binding.cardId,{listingId:binding.listingId,groupCode:binding.groupCode},{timeoutMs:Math.max(1,Math.min(8000,Math.floor(remaining())))});
+        const fresh=await pace(()=>{
+          if(groupLifecycle(offer,moscowDate(now())).state==='archived')throw Error("MOS_COURSE_ENDED");
+          return fetchCard(binding.cardId,{listingId:binding.listingId,groupCode:binding.groupCode},{timeoutMs:Math.max(1,Math.min(8000,Math.floor(remaining())))});
+        });
         validateProjectedMosCard(fresh);
         if(fresh.cardId!==binding.cardId||fresh.listingId!==binding.listingId||fresh.groupCode!==binding.groupCode)throw Error("MOS_IDENTITY_CHANGED");
         if(fresh.address!==expected.address||fresh.organization!==expected.organization)throw Error("MOS_LOCATION_REVIEW_REQUIRED");
