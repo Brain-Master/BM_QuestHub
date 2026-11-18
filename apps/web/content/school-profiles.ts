@@ -2,6 +2,21 @@
 type CampusProfile = {address:string; latitude?:number; longitude?:number; metro?:string; district?:string; mapUrl:string; photoUrl?:string; photoAlt?:string; photoSource?:string; entranceNote?:string; directions?:string[]; contactNote?:string};
 type SchoolProfile = {name:string; website?:string; telegram?:string; logoUrl:string; logoAlt?:string; description:string; verifiedAt:string; nameSource:string; preparing?:boolean; campuses:Record<string,CampusProfile>};
 export const schoolProfiles: Record<string,SchoolProfile> = {
+  "school-1539": {
+    name:"ГБОУ города Москвы «Школа № 1539»",website:"https://gym1539sv.mskobr.ru/",
+    logoUrl:"/sites/school-1539/malomoskovskaya-7-facade.jpg",logoAlt:"Фасад школы № 1539 на Маломосковской улице, 7",
+    description:"Школа Молодого IT-Инженера BrainMaster в Алексеевском районе Москвы. На площадке открыт набор в четыре группы ШМИ-1 — первого года обучения — для детей 6–14 лет. Занятия по пятницам с декабря 2026 года по май 2027 года. Преподаватель — Тихомирова Марина Дмитриевна. Стоимость: 1 000 ₽ за занятие, 24 000 ₽ за курс. Выберите удобное время и подайте заявку на mos.ru.",
+    verifiedAt:"2026-11-18",nameSource:"https://www.mos.ru/pgu2/activity/card/1098766",
+    campuses:{"school-1539-malomoskovskaya-7":{
+      address:"Маломосковская ул., 7",latitude:55.813850,longitude:37.644522,metro:"Алексеевская",district:"Алексеевский",
+      mapUrl:"https://yandex.com/maps/org/shkola_1539_uchebny_korpus/1400695341/",
+      photoUrl:"/sites/school-1539/malomoskovskaya-7-facade.jpg",photoAlt:"Фасад и территория школы № 1539: Маломосковская улица, 7",
+      photoSource:"https://yandex.com/maps/org/shkola_1539_uchebny_korpus/1400695341/",
+      entranceNote:"Занятия проходят в школьном здании по адресу Маломосковская улица, 7. Дом 7, корпус 1 — другой адрес. Вход и кабинет уточните перед первым занятием.",
+      directions:["Ближайшее метро по карточкам mos.ru — «Алексеевская», ориентировочно 12 минут пешком. Постройте маршрут до Маломосковской улицы, 7.","Перед первым занятием уточните у BrainMaster вход, кабинет и порядок прохода ребёнка и сопровождающего."],
+      contactNote:"Преподаватель BrainMaster — Тихомирова Марина Дмитриевна. Общий телефон школы: +7 (499) 299-15-39. Вопросы о программе и занятиях адресуйте BrainMaster.",
+    }},
+  },
   "school-37": {
     name:"ГБОУ города Москвы «Школа № 37»",website:"https://sch37.mskobr.ru/",logoUrl:"/sites/school-37/venue-avatar-original.jpg",logoAlt:"Здание школы № 37 на Мичуринском проспекте, 28",
     description:"Школа Молодого IT-Инженера BrainMaster в Раменках, на Мичуринском проспекте, 28. По средам, четвергам и пятницам: ШМИ-1 в 14:15 и 15:15, ШМИ-2 в 16:15. Каждая группа занимается один раз в неделю, занятие длится 45 минут. Преподаватель — Кузнецова Ольга Максимовна. Возраст 6–13 лет; стоимость — 1 375 ₽ за занятие. Выберите подходящий день и время в расписании.",

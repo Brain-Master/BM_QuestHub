@@ -6,15 +6,15 @@ const base=read('scripts/fixtures/annual-89-before-2044/source.json'),addition=r
 const source=read('apps/web/content/year-schedule.generated.json'),registry=read('apps/web/content/annual-mos-refresh.generated.json'),snapshot=read('apps/web/data/offers-snapshot.json');
 const all=Object.values(snapshot.offersByQuest).flat();const codes=new Set(school2044Identities.map(r=>r[0]));
 test('append five exact groups and one campus; historical source and identities stay immutable',()=>{
- const out=composeSchool2044(base,addition);assert.deepEqual(out,source);assert.equal(out.groups.length,94);assert.deepEqual(out.groups.slice(0,89),base.groups);assert.deepEqual(out.locations.slice(0,-1),base.locations);
- assert.equal(out.groups.filter(g=>!isRetiredAnnualGroup(g)).length,72);assert.equal(registry.expectedGroups,94);assert.equal(Object.keys(registry.groups).length,86);assert.equal(registry.ok,false);
+ const out=composeSchool2044(base,addition);assert.deepEqual(out,{...source,sourceSha256:out.sourceSha256,groups:source.groups.slice(0,94),locations:source.locations.filter(l=>l.id!=="LOC-014")});assert.equal(out.groups.length,94);assert.deepEqual(out.groups.slice(0,89),base.groups);assert.deepEqual(out.locations.slice(0,-1),base.locations);
+ assert.equal(out.groups.filter(g=>!isRetiredAnnualGroup(g)).length,72);assert.equal(registry.expectedGroups,98);assert.equal(Object.keys(registry.groups).length,90);assert.equal(registry.ok,false);
 });
 test('identity, private fields, wrong campus and schedule are rejected',()=>{
  for(const mutate of [a=>a.groups[0].cardId='1076242',a=>a.groups[0].listingId='2589338',a=>a.groups[0].slots[0].start='14:00',a=>a.groups[0].locationId='LOC-008',a=>a.groups[0].organization='Other school',a=>a.groups[0].phone='PRIVATE',a=>a.groups[0].freeSeats=13,a=>a.locations[0].address='Other campus',a=>a.ownerTeacher='Other teacher']){const a=structuredClone(addition);mutate(a);assert.throws(()=>composeSchool2044(base,a));}
  const b=structuredClone(base);b.groups[0].freeSeats=0;assert.throws(()=>composeSchool2044(b,addition));
 });
 test('public projection uses owner teacher but registry preserves portal provenance; cancelled camp does not remove annual campus',()=>{
- const rows=all.filter(o=>codes.has(o.annual?.groupCode));assert.equal(rows.length,5);assert.equal(all.length,134);
+ const rows=all.filter(o=>codes.has(o.annual?.groupCode));assert.equal(rows.length,5);assert.equal(all.length,138);
  const camp=all.find(o=>o.id==='autumn-2026-2044-dolgoprudnaya-16');assert.equal(camp,undefined);
  for(const [code,card,listing,hour,min,max] of school2044Identities){const o=rows.find(o=>o.annual.groupCode===code);assert.equal(o.venueSlug,'autumn-2026-2044-dolgoprudnaya-16-venue');assert.equal(o.mosBookingUrl,'https://www.mos.ru/pgu2/activity/card/'+card);assert.equal(o.startTime,hour+':00');assert.equal(o.annual.listingId,listing);assert.equal(o.annual.teacher,'Локтеева Ирина Дмитриевна');assert.equal(o.annual.teacherSourceConflict,true);assert.equal(o.annual.studyYear,1);assert.equal(o.annual.ageMin,min);assert.equal(o.annual.ageMax,max);assert.equal(o.annual.lessonPrice,1000);assert.equal(o.annual.coursePrice,32000);assert.equal(registry.groups[code].teacher,'Киселёв Александр Вячеславович');assert.match(registry.groups[code].title,/Халаджан/);assert.equal(o.annual.sourceSha256,source.sourceSha256);}
  assert.equal(all.reduce((n,o)=>n+(o.annual?.legacyReservation?.places??0),0),51);

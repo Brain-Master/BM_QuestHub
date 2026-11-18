@@ -3,6 +3,7 @@
  * Existing two venue identities/coordinates are retained unchanged by the compiler.
  */
 export const annualLocations = [
+  { sourceId: "LOC-014", slug: "school-1539-malomoskovskaya-7", schoolScopeSlug: "school-1539", address: "Маломосковская ул., 7", latitude: 55.813850, longitude: 37.644522, source: "https://yandex.com/maps/213/moscow/house/Z04YcANkTEcFQFtvfXRwcnRmZA==/", existing: false },
   { sourceId: "LOC-013", slug: "autumn-2026-2044-dolgoprudnaya-16-venue", schoolScopeSlug: "school-2044", address: "Долгопрудная аллея, 16", latitude: undefined, longitude: undefined, source: "https://www.mos.ru/pgu2/activity/card/1076240", existing: false },
   { sourceId: "LOC-011", slug: "school-937-marshala-zakharova-25", schoolScopeSlug: "school-937", address: "ул. Маршала Захарова, 25", latitude: 55.619040, longitude: 37.699562, source: "https://yandex.com/maps/org/shkola_937_imeni_geroya_rossiyskoy_federatsii_a_v_perova_zdaniye_1/1349921670/", existing: true },
   { sourceId: "LOC-001", slug: "school-17-vvedenskogo-28s1", schoolScopeSlug: "school-17", address: "ул. Введенского, 28, стр. 1", latitude: 55.6367936, longitude: 37.5315551, source: "https://www.openstreetmap.org/way/336271264", existing: false },

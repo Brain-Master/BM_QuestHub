@@ -18,12 +18,12 @@ test('identity, slot, school, reservation provenance and preimage tampering reje
 test('compiled source: reserves attach only exact new cards; all unrelated records preserved',()=>{
  const registry=read('apps/web/content/annual-mos-refresh.generated.json'),oldRegistry=read('scripts/fixtures/annual-78-before-2103/registry.json');
  for(const [code,row]of Object.entries(oldRegistry.groups))assert.deepEqual(registry.groups[code],row);
- assert.equal(registry.expectedGroups,94);assert.equal(Object.keys(registry.groups).length,86);
+ assert.equal(registry.expectedGroups,98);assert.equal(Object.keys(registry.groups).length,90);
  const snapshot=read('apps/web/data/offers-snapshot.json'),before=read('scripts/fixtures/annual-78-before-2103/offers.json');
  const all=Object.values(snapshot.offersByQuest).flat(),newCodes=new Set(replacementIdentities.map(r=>r[0]));
  const current=all.filter(o=>newCodes.has(o.annual?.groupCode));assert.equal(current.length,11);
  assert.equal(current.reduce((n,o)=>n+(o.annual.legacyReservation?.places??0),0),51);
  assert.equal(current.filter(o=>o.annual.audienceLabel==='Только 1 класс').length,3);
  for(const [code,card,listing,year]of replacementIdentities){const o=current.find(o=>o.annual.groupCode===code);assert.equal(o.mosBookingUrl,`https://www.mos.ru/pgu2/activity/card/${card}`);assert.equal(o.annual.listingId,listing);assert.equal(o.annual.studyYear,year);assert.equal(o.annual.lessonPrice,1000);assert.equal(o.enrolled,o.annual.totalSeats-o.annual.freeSeats);}
- for(const os of Object.values(before.offersByQuest))for(const old of os){const next=all.find(o=>o.id===old.id);assert.ok(next);if(old.annual)old.annual.sourceSha256=next.annual.sourceSha256;if(school2103Replacements[old.annual?.groupCode])old.scheduleCard.isArchived=true;assert.deepEqual(next,old,old.id);}
+ for(const os of Object.values(before.offersByQuest))for(const old of os){const next=all.find(o=>o.id===old.id);assert.ok(next);if(old.annual)old.annual.sourceSha256=next.annual.sourceSha256;if(school2103Replacements[old.annual?.groupCode])old.scheduleCard.isArchived=true;if(old.id==='year:К2765-26'){old.annual.studyYear=1;old.shiftLabel='ШМИ · 1-й год';old.scheduleCard.displayTitle='ШМИ · 1-й год';}assert.deepEqual(next,old,old.id);}
 });

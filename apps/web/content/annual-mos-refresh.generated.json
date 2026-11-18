@@ -1,8 +1,8 @@
 {
   "version": 1,
-  "sourceSha256": "4d57eb55f7fce6182b274ef487a0741c0a1a7300c7844e795b45e12e3faface0",
+  "sourceSha256": "9d307834776b63b209c5e08bdff1a3f81914d4001df39ce8db4f475fe4f8edab",
   "attemptedAt": "2026-09-22T21:52:30.505Z",
-  "expectedGroups": 94,
+  "expectedGroups": 98,
   "verifiedGroups": 5,
   "ok": false,
   "archivedGroups": 0,
@@ -2333,6 +2333,114 @@
       "status": "open",
       "link": "https://www.mos.ru/pgu2/activity/card/1076244",
       "refreshedAt": "2026-10-10T20:01:33.173Z"
+    },
+    "К5359-26": {
+      "cardId": "1098766",
+      "listingId": "2600129",
+      "groupCode": "К5359-26",
+      "title": "26-27_51 Школа Молодого IT-Инженера - 1 группа ПОУ 26-27 уч.год",
+      "address": "г. Москва, вн.тер. м.о. Алексеевский, Маломосковская ул., д. 7",
+      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 1539\"",
+      "teacher": "Варфоломеева Алина Александровна",
+      "totalSeats": 15,
+      "freeSeats": 15,
+      "ageMin": 6,
+      "ageMax": 14,
+      "lessonPrice": 1000,
+      "coursePrice": 24000,
+      "courseStart": "2026-12-01",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Пятница",
+          "start": "14:30",
+          "end": "15:29"
+        }
+      ],
+      "status": "open",
+      "link": "https://www.mos.ru/pgu2/activity/card/1098766",
+      "refreshedAt": "2026-11-18T03:43:09.070Z"
+    },
+    "К5368-26": {
+      "cardId": "1099232",
+      "listingId": "2600434",
+      "groupCode": "К5368-26",
+      "title": "26-27_70 Школа Молодого IT-Инженера - 2 группа ПОУ 26-27 уч.год",
+      "address": "г. Москва, вн.тер. м.о. Алексеевский, Маломосковская ул., д. 7",
+      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 1539\"",
+      "teacher": "Варфоломеева Алина Александровна",
+      "totalSeats": 15,
+      "freeSeats": 15,
+      "ageMin": 6,
+      "ageMax": 14,
+      "lessonPrice": 1000,
+      "coursePrice": 24000,
+      "courseStart": "2026-12-01",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Пятница",
+          "start": "15:30",
+          "end": "16:29"
+        }
+      ],
+      "status": "open",
+      "link": "https://www.mos.ru/pgu2/activity/card/1099232",
+      "refreshedAt": "2026-11-18T03:43:10.931Z"
+    },
+    "К5369-26": {
+      "cardId": "1099240",
+      "listingId": "2600446",
+      "groupCode": "К5369-26",
+      "title": "26-27_81 Школа Молодого IT-Инженера - 3 группа ПОУ 26-27 уч.год",
+      "address": "г. Москва, вн.тер. м.о. Алексеевский, Маломосковская ул., д. 7",
+      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 1539\"",
+      "teacher": "Варфоломеева Алина Александровна",
+      "totalSeats": 15,
+      "freeSeats": 15,
+      "ageMin": 6,
+      "ageMax": 14,
+      "lessonPrice": 1000,
+      "coursePrice": 24000,
+      "courseStart": "2026-12-01",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Пятница",
+          "start": "16:30",
+          "end": "17:29"
+        }
+      ],
+      "status": "open",
+      "link": "https://www.mos.ru/pgu2/activity/card/1099240",
+      "refreshedAt": "2026-11-18T03:43:12.097Z"
+    },
+    "К5370-26": {
+      "cardId": "1099251",
+      "listingId": "2600451",
+      "groupCode": "К5370-26",
+      "title": "26-27_96 Школа Молодого IT-Инженера - 4 группа ПОУ 26-27 уч.год",
+      "address": "г. Москва, вн.тер. м.о. Алексеевский, Маломосковская ул., д. 7",
+      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 1539\"",
+      "teacher": "Варфоломеева Алина Александровна",
+      "totalSeats": 15,
+      "freeSeats": 15,
+      "ageMin": 6,
+      "ageMax": 14,
+      "lessonPrice": 1000,
+      "coursePrice": 24000,
+      "courseStart": "2026-12-01",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Пятница",
+          "start": "17:30",
+          "end": "18:29"
+        }
+      ],
+      "status": "open",
+      "link": "https://www.mos.ru/pgu2/activity/card/1099251",
+      "refreshedAt": "2026-11-18T03:43:12.456Z"
     }
   },
   "candidates": {

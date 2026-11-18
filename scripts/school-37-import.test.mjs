@@ -70,10 +70,12 @@ test('migration reruns are byte-idempotent and conflicting files reject before w
   t.after(()=>fs.rmSync(dir,{recursive:true,force:true}));
   for(const rel of ['apps/web/content','apps/web/lib','apps/web/data','scripts/lib'])fs.cpSync(path.join(root,rel),path.join(dir,rel),{recursive:true});
   for(const rel of ['scripts/import-school-37.ts','scripts/integrate-year-schedule.ts','scripts/annual-publish-tier.mjs','apps/web/tsconfig.json'])fs.copyFileSync(path.join(root,rel),path.join(dir,rel));
+  // Historical migration fixture predates local-only groups; isolate that independent overlay.
+  fs.writeFileSync(path.join(dir,'scripts/integrate-local-annual.ts'),'export const overlayLocalAnnual = x => x; export const localAnnualOffers = () => [];');
   fs.symlinkSync(path.join(root,'apps/web/node_modules'),path.join(dir,'apps/web/node_modules'),'dir');
   // This fixture predates the explicitly appended LOC-013 source transition.
   const mapping=path.join(dir,'apps/web/content/year-integration.ts');
-  fs.writeFileSync(mapping,fs.readFileSync(mapping,'utf8').split('\n').filter(line=>!line.includes('sourceId: \"LOC-013\"')).join('\n'));
+  fs.writeFileSync(mapping,fs.readFileSync(mapping,'utf8').split('\n').filter(line=>!line.includes('sourceId: \"LOC-013\"')&&!line.includes('sourceId: \"LOC-014\"')).join('\n'));
   fs.writeFileSync(path.join(dir,'apps/web/content/year-schedule.generated.json'),JSON.stringify(source,null,2)+'\n');
   fs.writeFileSync(path.join(dir,'apps/web/content/annual-mos-refresh.generated.json'),JSON.stringify(historicalRegistry,null,2)+'\n');
   fs.writeFileSync(path.join(dir,'apps/web/data/offers-snapshot.json'),JSON.stringify(historicalOffers,null,2)+'\n');
@@ -102,6 +104,8 @@ test('migration reruns are byte-idempotent and conflicting files reject before w
     row.annual={sourceTitle:row.annual.sourceTitle,studyYear:1,...row.annual};
     row.shiftLabel='ШМИ · 1-й год';row.scheduleCard.displayTitle='ШМИ · 1-й год';
   }
+  const beginner=expectedAfterCompilation.offersByQuest.shmi.find(o=>o.id==='year:К2765-26');
+  beginner.annual.studyYear=1;beginner.shiftLabel='ШМИ · 1-й год';beginner.scheduleCard.displayTitle='ШМИ · 1-й год';
   assert.equal(compiled.status,0,compiled.stderr);
   assert.deepEqual(bytes(),[original[0],original[1],JSON.stringify(expectedAfterCompilation,null,2)+'\n']);
   assert.equal(run().status,0);
@@ -147,6 +151,6 @@ test('historical fixtures retain exact pre-refresh bytes; current complete impor
     ['registry','854b6cb411a2a42908a6ca6e5f470830fbdba25da72affae8d19be10e182d392'],
     ['offers','6ef0df9c9f25b81f15be22c35a1b721bc77c2abe78b861672d6ea51d820e9d26'],
   ])assert.equal(crypto.createHash('sha256').update(fs.readFileSync(path.join(root,`scripts/fixtures/annual-69-before-1517/${file}.json`))).digest('hex'),hash);
-  const r=spawnSync(process.execPath,[path.join(root,'apps/web/node_modules/tsx/dist/cli.mjs'),'--tsconfig',path.join(root,'apps/web/tsconfig.json'),path.join(root,'scripts/import-school-2044.ts'),'--check'],{cwd:root,encoding:'utf8'});
+  const r=spawnSync(process.execPath,[path.join(root,'apps/web/node_modules/tsx/dist/cli.mjs'),'--tsconfig',path.join(root,'apps/web/tsconfig.json'),path.join(root,'scripts/import-school-1539.ts'),'--check'],{cwd:root,encoding:'utf8'});
   assert.equal(r.status,0,r.stderr);assert.match(r.stdout,/"alreadyImported":true/);
 });

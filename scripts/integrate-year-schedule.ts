@@ -9,6 +9,7 @@ import { annualLocations, annualWorld, reviewedStandaloneVenues } from "../apps/
 import { getSchoolProfile, reviewedCampusProfile } from "../apps/web/content/school-profiles";
 import { reviewedStudyYear, reviewedGroupCodes, reviewedTeacher, reviewedLessonPrice, reviewedAges } from "../apps/web/content/annual-group-overrides";
 import { isRetiredAnnualGroup } from "../apps/web/content/annual-retirements.mjs";
+import school1539Source from "../apps/web/content/annual-additions/school-1539.json";
 import transferSource from "../apps/web/content/annual-additions/school-2103-replacement.json";
 import { annualMosRefreshSchema } from "../apps/web/lib/offers/annual-schedule";
 import { yearPrograms } from "../apps/web/content/year-programs";
@@ -148,6 +149,7 @@ const annualOffers = source.groups.map(original => {
   const effectiveLessonPrice = reviewedPrice?.rubles ?? g.lessonPrice;
   const price = reviewedPrice ? "1 000 ₽ / занятие · 1 акад. час (45 мин)" : g.lessonPrice === null ? "Стоимость уточняется" : `${g.lessonPrice} ₽ / занятие`;
   const name = annualProgrammeName(g.title, studyYear);
+  const admissionDeadline = school1539Source.groups.find(row=>row.groupCode===g.groupCode && row.listingId===g.listingId)?.admissionEnd;
   const reserve = replacement && transferSource.legacyOccupancy.find(row=>row.newGroupCode===g.groupCode);
   const audienceLabel = replacement ? (replacement.listingId==='2586499' ? 'Только 1 класс' : replacement.studyYear===1 ? '1–6 классы' : `Для выпускников ШМИ-${replacement.studyYear-1}`) : undefined;
   const legacyReservation = reserve ? {oldGroupCode:reserve.oldGroupCode,oldCardId:reserve.oldCardId,places:reserve.occupied,checkedAt:reserve.checkedAt} : undefined;
@@ -164,7 +166,7 @@ const annualOffers = source.groups.map(original => {
     sheetStatus: "Идёт набор",
     enrolled: g.totalSeats !== null && g.freeSeats !== null && g.totalSeats > 0 ? g.totalSeats - g.freeSeats : undefined,
     maxCapacity: g.totalSeats !== null && g.totalSeats > 0 ? g.totalSeats : undefined,
-    scheduleCard: { displayTitle: name.short, teacherName: g.teacher, description: `Данные mos.ru на ${live?.refreshedAt.slice(0,10) ?? source.asOf}. ${reviewedPrice ? "Стоимость подтверждена BrainMaster: 1 000 ₽ за занятие (1 академический час, 45 минут). " : ""}Условия и наличие мест проверьте перед записью.`,
+    scheduleCard: { displayTitle: name.short, teacherName: g.teacher, description: `Данные mos.ru на ${live?.refreshedAt.slice(0,10) ?? source.asOf}. ${reviewedPrice ? "Стоимость подтверждена BrainMaster: 1 000 ₽ за занятие (1 академический час, 45 минут). " : ""}Условия и наличие мест проверьте перед записью.${admissionDeadline ? ` Приём заявлений на mos.ru до ${admissionDeadline.split("-").reverse().join(".")}.` : ""}`,
       ageLabel: audienceLabel ?? (g.ageMin === null || g.ageMax === null ? "Уточните у школы" : `${g.ageMin}–${g.ageMax} лет`),
       ...(isRetiredAnnualGroup(original) ? { isArchived: true } : {}),
       tags: ["Годовая программа", `Срез ${source.asOf}`], registrationChannel: "mos_ru", allowWaitlistWhenSoldOut: false,
