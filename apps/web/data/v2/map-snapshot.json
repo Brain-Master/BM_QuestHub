@@ -1,9 +1,9 @@
 {
   "version": 2,
-  "generatedAt": "2026-10-17T00:00:00.000Z",
+  "generatedAt": "2026-11-18T03:43:12.456Z",
   "source": "annual-csv-integration",
   "integrity": {
-    "contentHash": "sha256:45532b50ca2eb5572775ded4578f86293b7d059a9638cfd7640248b8ae1c5c27"
+    "contentHash": "sha256:6e7b39f478ba2537e765be8cba2c0d05399d9a94c7020b25d22f9f89e68ca8c7"
   },
   "venues": [
     {
@@ -30,6 +30,33 @@
       "photos": [],
       "listedOnSites": true,
       "schoolScopeSlug": "mduc-ekt"
+    },
+    {
+      "slug": "school-1539-malomoskovskaya-7",
+      "name": "ГБОУ города Москвы «Школа № 1539»",
+      "displayName": "ГБОУ города Москвы «Школа № 1539»",
+      "type": "school",
+      "address": "Маломосковская ул., 7",
+      "metro": "Алексеевская",
+      "city": "moscow",
+      "district": "Алексеевский",
+      "logoUrl": "/sites/school-1539/malomoskovskaya-7-facade.jpg",
+      "latitude": 55.81385,
+      "longitude": 37.644522,
+      "directions": [
+        "Ближайшее метро по карточкам mos.ru — «Алексеевская», ориентировочно 12 минут пешком. Постройте маршрут до Маломосковской улицы, 7.",
+        "Перед первым занятием уточните у BrainMaster вход, кабинет и порядок прохода ребёнка и сопровождающего."
+      ],
+      "entranceNote": "Занятия проходят в школьном здании по адресу Маломосковская улица, 7. Дом 7, корпус 1 — другой адрес. Вход и кабинет уточните перед первым занятием.",
+      "contactNote": "Преподаватель BrainMaster — Тихомирова Марина Дмитриевна. Общий телефон школы: +7 (499) 299-15-39. Вопросы о программе и занятиях адресуйте BrainMaster.",
+      "photos": [
+        {
+          "url": "/sites/school-1539/malomoskovskaya-7-facade.jpg",
+          "alt": "Фасад и территория школы № 1539: Маломосковская улица, 7"
+        }
+      ],
+      "listedOnSites": true,
+      "schoolScopeSlug": "school-1539"
     },
     {
       "slug": "autumn-2026-2044-dolgoprudnaya-16-venue",

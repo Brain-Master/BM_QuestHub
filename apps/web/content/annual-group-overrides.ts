@@ -1,5 +1,6 @@
 /** Owner-confirmed curriculum facts, 2026-09-09. Not inferred from pupil age. */
 import {reviewedAnnualAge} from './annual-owner-ages.mjs';
+const school1539Codes = new Set(['К5359-26','К5368-26','К5369-26','К5370-26']);
 const school37Years: Record<string, 1 | 2> = {
   'К2763-26':1, 'К2764-26':1, 'К2765-26':1,
   'К2766-26':1, 'К2767-26':1, 'К2768-26':2,
@@ -7,6 +8,7 @@ const school37Years: Record<string, 1 | 2> = {
 };
 /** Owner confirmed К2765-26 changed to beginners/SHMI1 on 2026-11-06; other groups unchanged. */
 export function reviewedStudyYear(schoolSlug: string, groupCode?: string | null): 1 | 2 | undefined {
+  if (schoolSlug === "school-1539" && groupCode && school1539Codes.has(groupCode)) return 1;
   if (schoolSlug === "school-2044" || schoolSlug === "school-1212") return 1;
   if (schoolSlug === 'school-937' && groupCode && school937Codes.has(groupCode)) return ['К2211-26','К2212-26','К2213-26','К2214-26'].includes(groupCode) ? 1 : 2;
   return schoolSlug === 'school-37' && groupCode ? school37Years[groupCode] : undefined;
@@ -14,6 +16,7 @@ export function reviewedStudyYear(schoolSlug: string, groupCode?: string | null)
 
 /** Owner confirmation, 2026-09-09. Annual groups only; historical shifts are untouched. */
 export function reviewedTeacher(schoolSlug: string, studyYear?: number | null, groupCode?: string | null): string | undefined {
+  if (schoolSlug === 'school-1539' && groupCode && school1539Codes.has(groupCode)) return 'Тихомирова Марина Дмитриевна';
   if (schoolSlug === 'school-2044' && groupCode && ['К4114-26','К4115-26','К4116-26','К4117-26','К4118-26'].includes(groupCode)) return 'Локтеева Ирина Дмитриевна';
   if (schoolSlug === 'school-937' && groupCode && school937Codes.has(groupCode)) return 'Локтеева Ирина Дмитриевна';
   if (schoolSlug === 'school-37' && groupCode && school37Years[groupCode]) return 'Кузнецова Ольга Максимовна';

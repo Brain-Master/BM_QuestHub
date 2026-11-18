@@ -18,7 +18,7 @@ test('identity, slot, school, reservation provenance and preimage tampering reje
 test('compiled source: reserves attach only exact new cards; all unrelated records preserved',()=>{
  const registry=read('apps/web/content/annual-mos-refresh.generated.json'),oldRegistry=read('scripts/fixtures/annual-78-before-2103/registry.json');
  for(const [code,row]of Object.entries(oldRegistry.groups))assert.deepEqual(registry.groups[code],row);
- assert.equal(registry.expectedGroups,94);assert.equal(Object.keys(registry.groups).length,86);
+ assert.equal(registry.expectedGroups,98);assert.equal(Object.keys(registry.groups).length,90);
  const snapshot=read('apps/web/data/offers-snapshot.json'),before=read('scripts/fixtures/annual-78-before-2103/offers.json');
  const all=Object.values(snapshot.offersByQuest).flat(),newCodes=new Set(replacementIdentities.map(r=>r[0]));
  const current=all.filter(o=>newCodes.has(o.annual?.groupCode));assert.equal(current.length,11);

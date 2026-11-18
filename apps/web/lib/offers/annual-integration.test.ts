@@ -19,7 +19,7 @@ const snapshot = parseOffersSnapshot(read("data/offers-snapshot.json"));
 const venues = venueSchema.array().parse(read("data/v2/map-snapshot.json").venues);
 const quests = questSchema.array().parse(read("data/v2/catalog-snapshot.json").courses.map((q: {slug:string}) => ({...q, offers:snapshot.offersByQuest[q.slug]??[]})));
 test("school profiles retain exact-campus sourced media; base and2103 await real photos",()=>{
-  assert.equal(Object.keys(schoolProfiles).length,11);
+  assert.equal(Object.keys(schoolProfiles).length,12);
   let campuses=0;
   for(const [id,profile] of Object.entries(schoolProfiles)){
     if(id==='bm-base-moscow'){assert.equal(profile.preparing,false);assert.equal(profile.nameSource,'owner:2026-10-18');continue;}
@@ -33,7 +33,7 @@ test("school profiles retain exact-campus sourced media; base and2103 await real
       else {assert.ok(campus.photoUrl&&fs.existsSync(`public${campus.photoUrl}`));assert.equal(venue.photos?.[0]?.url,campus.photoUrl);}
     }
   }
-  assert.equal(campuses,19);
+  assert.equal(campuses,20);
 });
 test('owner-confirmed teachers replace portal placeholders in seven1212 groups and pin school17 by study year',()=>{
   const annual=snapshot.offersByQuest.shmi;
@@ -67,9 +67,9 @@ test("reviewed profiles retain context;937 district is clarified from its exact 
 
 test("shared catalogue projects all annual groups and exact campuses", () => {
   const view = projectAnnualWorkspace(quests, venues);
-  assert.equal(view.groups.length,72);
-  assert.equal(view.groups.flatMap(g=>g.slots).length,72);
-  assert.equal(view.locations.length,12);
+  assert.equal(view.groups.length,76);
+  assert.equal(view.groups.flatMap(g=>g.slots).length,76);
+  assert.equal(view.locations.length,13);
   const registry=annualMosRefreshSchema.parse(read('content/annual-mos-refresh.generated.json'));
   assert.deepEqual(view.groups.filter(g=>g.status==="closed").map(g=>g.id).sort(),
     Object.entries(registry.groups).filter(([,g])=>g.status==='closed').map(([id])=>id).sort());
@@ -92,12 +92,12 @@ test("reviewed school2044 identity and both exact campus coordinates survive com
   for(const v of school){assert.match(v.name,/имени Героя Советского Союза А\. М\. Серебрякова/);assert.equal(v.displayName,v.name);assert.equal(v.photos.length,1);assert.equal(v.metro,'Физтех');assert.match(v.logoUrl??'',/school-2044\/logo-original/);}
   assert.deepEqual(school.map(v=>[v.latitude,v.longitude]),[[55.932261,37.541054],[55.927015,37.542641]]);
 });
-test("live registry validates 86 exact distinct identities, preserves 8 unresolved groups without claiming success",()=>{
+test("live registry validates 90 exact distinct identities, preserves 8 unresolved groups without claiming success",()=>{
   const r=annualMosRefreshSchema.parse(read('content/annual-mos-refresh.generated.json'));
-  assert.equal(Object.keys(r.groups).length,86);assert.equal(new Set(Object.values(r.groups).map(g=>g.cardId)).size,86);
-  assert.equal(r.expectedGroups,94);assert.equal(r.ok,false);
+  assert.equal(Object.keys(r.groups).length,90);assert.equal(new Set(Object.values(r.groups).map(g=>g.cardId)).size,90);
+  assert.equal(r.expectedGroups,98);assert.equal(r.ok,false);
   const updated=snapshot.offersByQuest.shmi.filter(o=>o.annual?.refreshedAt);
-  assert.equal(updated.length,86);
+  assert.equal(updated.length,90);
   for(const o of updated){assert.equal(o.annual?.linkKind,'card');assert.match(o.mosBookingUrl??'',/^https:\/\/www\.mos\.ru\/pgu2\/activity\/card\/\d+$/);assert.ok(o.annual?.groupCode);assert.notEqual(o.annual?.lessonPrice,null);}
   assert.equal(annualMosRefreshSchema.safeParse({...r,ok:true}).success,false);
   assert.equal(annualMetadataSchema.safeParse({...updated[0].annual,ageMin:14,ageMax:7}).success,false);
@@ -133,7 +133,7 @@ test("negative boundary: malformed slots and orphan campus fail", () => {
 test("shared site/map selectors include all twelve campuses and closed groups cannot book", () => {
   const cards=buildSiteScopeCards({scopes:getSchoolScopes(venues),quests,venues,worlds:worldSchema.array().parse(read("data/v2/catalog-snapshot.json").worlds)});
   const annual=projectAnnualWorkspace(quests,venues);
-  assert.equal(new Set(annual.locations.map(l=>l.schoolScopeSlug)).size,8);
+  assert.equal(new Set(annual.locations.map(l=>l.schoolScopeSlug)).size,9);
   for(const location of annual.locations) {
     const card=cards.find(c=>c.slug===location.schoolScopeSlug);
     assert.ok(card);

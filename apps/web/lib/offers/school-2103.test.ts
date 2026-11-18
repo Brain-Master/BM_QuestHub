@@ -32,7 +32,7 @@ test('nine historical identities keep source facts and owner price but booking i
   }
 });
 test('original 51 offers survive byte-equivalent JSON except explicit revision migration',()=>{
-  const existing=snapshot.offersByQuest.shmi.filter(o=>!o.localAnnual&&!addedIds.has(o.id)&&!laterIds.has(o.id)&&!/^year:К411[4-8]-26$/.test(o.id));assert.equal(existing.length,51);
+  const existing=snapshot.offersByQuest.shmi.filter(o=>!o.localAnnual&&o.venueSlug!=="school-1539-malomoskovskaya-7"&&!addedIds.has(o.id)&&!laterIds.has(o.id)&&!/^year:К411[4-8]-26$/.test(o.id));assert.equal(existing.length,51);
   // Hash raw serialized records, not Zod-normalized output.
   const raw=read('../../scripts/fixtures/annual-69-before-1517/offers.json').offersByQuest.shmi.filter((o:{id:string})=>!addedIds.has(o.id)&&!laterIds.has(o.id)&&!/^year:К411[4-8]-26$/.test(o.id));
   for(const o of raw)delete o.annual.sourceSha256;
@@ -47,5 +47,5 @@ test('price override is identity scoped; annual table uses the same effective nu
   const quests=questSchema.array().parse(read('data/v2/catalog-snapshot.json').courses.map((q:{slug:string})=>({...q,offers:snapshot.offersByQuest[q.slug]??[]})));
   const view=projectAnnualWorkspace(quests,venues);
   assert.equal(view.groups.filter(g=>addedIds.has(`year:${g.id}`)).length,0);
-  assert.equal(view.groups.length,72);assert.equal(view.locations.length,12);
+  assert.equal(view.groups.length,76);assert.equal(view.locations.length,13);
 });
