@@ -48,5 +48,48 @@ test('HTTP entrypoint rejects spoofed timer regardless of enabled env',async()=>
 test('preliminary camps are skipped; official nonannual camps report unsupported without changing annual reads',async()=>{
  const before=JSON.stringify(snapshot);let calls=0;
  const result=await refreshMosAvailability(snapshot,registry.groups,undefined,{now:()=>new Date('2026-10-06T10:00:00Z'),fetchCard:async()=>{calls++;throw Error('MOS_TEST_UNAVAILABLE');}});
- assert.equal(result.expected,83);assert.equal(calls,72);assert.deepEqual(result.errors.filter(e=>e.code==='MOS_LEGACY_SOURCE_UNSUPPORTED').map(e=>e.offerId).sort(),['autumn-2026-17-hydraulics','autumn-2026-2044-dmitrovskoe-165e-k6','autumn-2026-2044-dmitrovskoe-169b','autumn-2026-2103','autumn-2026-937','autumn-2026-ekt','autumn-2026-ekt-chertanovskaya','autumn-2026-ekt-odesskaya','local-mechvarium-shmi1-2026-1','local-mechvarium-shmi1-2026-2','local-mechvarium-shmi1-2026-3']);assert.ok(result.errors.filter(e=>e.code!=='MOS_LEGACY_SOURCE_UNSUPPORTED').every(e=>e.offerId.startsWith('year:')));assert.equal(JSON.stringify(snapshot),before);
+ assert.equal(result.expected,84);assert.equal(calls,76);assert.deepEqual(result.errors.filter(e=>e.code==='MOS_LEGACY_SOURCE_UNSUPPORTED').map(e=>e.offerId).sort(),['autumn-2026-17-hydraulics','autumn-2026-2044-dmitrovskoe-165e-k6','autumn-2026-2044-dmitrovskoe-169b','autumn-2026-2103','autumn-2026-937','autumn-2026-ekt','autumn-2026-ekt-chertanovskaya','autumn-2026-ekt-odesskaya']);assert.ok(result.errors.filter(e=>e.code!=='MOS_LEGACY_SOURCE_UNSUPPORTED').every(e=>e.offerId.startsWith('year:')));assert.equal(JSON.stringify(snapshot),before);
+});
+
+function fixture(count=6){
+ const offers=Array.from({length:count},(_,i)=>({...structuredClone(offer),id:`year:TEST-${i}`,annual:{...offer.annual,groupCode:`TEST-${i}`}}));
+ const identities=Object.fromEntries(offers.map(o=>[o.id.slice(5),{...card,groupCode:o.annual.groupCode}]));
+ return {source:{...one,offersByQuest:{shmi:offers}},identities};
+}
+test('workers keep moving; retries occur only after all first attempts; bounded parallelism',async()=>{
+ const {source,identities}=fixture();const calls=[];let active=0,max=0,release;const slow=new Promise(r=>release=r);
+ const run=refreshMosAvailability(source,identities,undefined,{now,concurrency:2,fetchCard:async(id,e)=>{
+  const n=calls.filter(c=>c===e.groupCode).length;calls.push(e.groupCode);max=Math.max(max,++active);
+  try{if(calls.length===1)await slow;else if(calls.length===6)release();if(!n)throw Error('MOS_HTTP_503');return identities[e.groupCode];}finally{active--;}
+ }});
+ const r=await run;assert.equal(r.verified,6);assert.equal(calls.length,12);assert.equal(new Set(calls.slice(0,6)).size,6);assert.equal(max,2);
+});
+test('budget timeout capped; skipped groups lead next cycle; no retries after exhaustion',async()=>{
+ const {source,identities}=fixture();let at=now().getTime();const calls=[];
+ const options={concurrency:1,budgetMs:10,now:()=>new Date(at),fetchCard:async(id,e,o)=>{calls.push(e.groupCode);assert.ok(o.timeoutMs<=10);at+=o.timeoutMs;throw Error('MOS_TIMEOUT');}};
+ const first=await refreshMosAvailability(source,identities,undefined,options);assert.equal(first.verified,0);assert.equal(calls.length,1);
+ const skipped=Object.entries(first.entries).filter(([,r])=>r.error==='MOS_RUN_BUDGET').map(([id])=>id.slice(5));assert.equal(skipped.length,5);
+ at+=300000;const second=await refreshMosAvailability(source,identities,first,options);assert.equal(calls.length,2);assert.ok(skipped.includes(calls[1]));assert.equal(second.verified,0);
+});
+test('429 and semantic failures are not retried; transient failure gets at most two attempts',async()=>{
+ for(const code of ['MOS_HTTP_429','MOS_INVALID_RESPONSE','MOS_LOCATION_REVIEW_REQUIRED','MOS_HTTP_500','MOS_TIMEOUT']){
+  let calls=0;const r=await refreshMosAvailability(one,registry.groups,undefined,{now,fetchCard:async()=>{calls++;throw Error(code);}});
+  assert.equal(calls,['MOS_HTTP_500','MOS_TIMEOUT'].includes(code)?2:1);assert.equal(r.verified,0);assert.equal(r.errors.length,1);assert.equal(r.entries[offer.id].error,code);
+ }
+});
+test('local annual capacity excluded; no MOS reads or false expected errors',async()=>{
+ const local=Object.values(snapshot.offersByQuest).flat().filter(o=>o.localAnnual);assert.equal(local.length,3);
+ const r=await refreshMosAvailability({...one,offersByQuest:{shmi:local}},registry.groups,undefined,{now,fetchCard:async()=>{throw Error('unexpected');}});
+ assert.equal(r.expected,0);assert.equal(r.errors.length,0);assert.deepEqual(r.entries,{});
+});
+test('budget bounds rejected',async()=>{for(const budgetMs of [0,-1,NaN,Infinity,230001])await assert.rejects(refreshMosAvailability(one,registry.groups,undefined,{budgetMs}),/BUDGET/);});
+
+test('only independently reviewed exact title changes accepted; locations and slots still checked',async()=>{
+ for(const [key,title] of [['listing:2415012','3ПУ, Школа молодого IT-инженера (1 год обучения, 1 группа), ул. Маршала Тухачевского, д.58, корп.2, Хмельков Д.А.'],['К2765-26','ШМИ начинающие (СР 16:15-17:00) 2026-2027']]){
+  const item=Object.values(snapshot.offersByQuest).flat().find(o=>o.id==='year:'+key);assert.ok(item);
+  const source={...one,offersByQuest:{shmi:[item]}};const old=registry.groups[key];
+  for(const [patch,ok] of [[{title},true],[{title:title+' changed'},false],[{title,address:'other'},false],[{title,slots:[{weekday:'Среда',start:'10:00',end:'11:00'}]},false],[{title,listingId:'123'},false]]){
+   let calls=0;const r=await refreshMosAvailability(source,registry.groups,undefined,{now,fetchCard:async()=>{calls++;return {...old,...patch};}});assert.equal(r.verified,ok?1:0);assert.equal(calls,1);
+  }
+ }
 });
