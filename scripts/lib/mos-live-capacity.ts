@@ -16,6 +16,8 @@ export const safeMosError=(error:unknown)=> error instanceof Error && /^MOS_[A-Z
 // Reviewed against direct MOS reads on 2026-11-18; school37 beginner level
 // was explicitly confirmed by the owner. Raw historical registry stays intact.
 const reviewedTitles=[
+ {cardId:'1099851',listingId:'2600825',groupCode:'К2339-26',
+  before:'26/27 Школа молодого инженера. Второй год обучения.',after:'Группа 3. 6-13 лет. Локтеева И. Д. Маршала Захарова, 25.'},
  {cardId:'923308',listingId:'2415012',groupCode:'К7419-26',
   before:'3ПУ, Школа молодого IT-инженера (1 год обучения), ул. Маршала Тухачевского, д.58, корп.2, Хмельков Д.А.',
   after:'3ПУ, Школа молодого IT-инженера (1 год обучения, 1 группа), ул. Маршала Тухачевского, д.58, корп.2, Хмельков Д.А.'},
