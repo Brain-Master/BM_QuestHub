@@ -40,7 +40,7 @@ test('937 eight groups belong to25 not25k2; raw age/teacher stay separate',()=>{
   assert.equal(o.venueSlug,'school-937-marshala-zakharova-25');assert.equal(o.annual?.studyYear,['К2211-26','К2212-26','К2213-26','К2214-26'].includes(o.annual!.groupCode!)?1:2);
   assert.equal(o.annual?.teacher,'Локтеева Ирина Дмитриевна');
   assert.deepEqual([o.annual?.ageMin,o.annual?.ageMax],[6,13]);
-  const raw=registry.groups[o.annual!.groupCode!];assert.ok(raw.ageMax===18||raw.ageMax===13);assert.equal(raw.teacher,'Балукова Мария Михайловна');
+  const raw=registry.groups[o.annual!.groupCode!];if(o.annual!.groupCode==='К2339-26'){assert.equal(raw.ageMax,16);assert.equal(raw.teacher,'Локтеева Ирина Дмитриевна');}else{assert.ok(raw.ageMax===18||raw.ageMax===13);assert.equal(raw.teacher,'Балукова Мария Михайловна');}
  }
  assert.equal(reviewedStudyYear('school-1212','К4619-26'),1);
  assert.equal(reviewedTeacher('school-937',2,'not-reviewed'),undefined);

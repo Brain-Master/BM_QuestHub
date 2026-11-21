@@ -1,7 +1,7 @@
 {
   "version": 1,
   "asOf": "2026-09-08",
-  "sourceSha256": "9d307834776b63b209c5e08bdff1a3f81914d4001df39ce8db4f475fe4f8edab",
+  "sourceSha256": "21002d7a9af5db12a2ab13032038b933d0b3bcedbd6b2f7cea40b0c772073a9d",
   "locations": [
     {
       "id": "LOC-001",
@@ -2223,21 +2223,21 @@
       "limitedSource": false
     },
     {
-      "id": "К2213-26",
-      "groupCode": "К2213-26",
-      "listingId": "2573572",
+      "id": "К2339-26",
+      "groupCode": "К2339-26",
+      "listingId": "2600825",
       "programme": "shmi",
-      "title": "Школа Молодого IT-Инженера — 1-й год обучения",
+      "title": "26/27 Школа молодого инженера. Второй год обучения.",
       "locationId": "LOC-011",
-      "teacher": "Балукова Мария Михайловна",
+      "teacher": "Локтеева Ирина Дмитриевна",
       "status": "open",
       "totalSeats": 12,
       "freeSeats": 12,
       "ageMin": 6,
-      "ageMax": 18,
+      "ageMax": 16,
       "lessonPrice": 1000,
-      "coursePrice": 36000,
-      "courseStart": "2026-09-28",
+      "coursePrice": 28000,
+      "courseStart": "2026-11-25",
       "courseEnd": "2027-05-31",
       "slots": [
         {
@@ -2246,7 +2246,7 @@
           "end": "16:45"
         }
       ],
-      "link": "https://www.mos.ru/pgu2/activity/card/1049847",
+      "link": "https://www.mos.ru/pgu2/activity/card/1099851",
       "linkKind": "card",
       "limitedSource": false
     },

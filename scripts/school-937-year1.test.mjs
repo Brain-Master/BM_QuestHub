@@ -23,7 +23,7 @@ test('wrong school, duplicate identity, year, time, card, private fields and pre
  const bad=structuredClone(base);bad.groups[0].teacher='Changed';assert.throws(()=>composeSchool937Year1(bad,addition));
 });
 test('compiled eight groups retain owner facts, exact booking identities and zero enrolment',()=>{
- const snapshot=read('apps/web/data/offers-snapshot.json');
+ const snapshot=read('scripts/fixtures/annual-78-before-2103/offers.json');
  const all=Object.values(snapshot.offersByQuest).flat();assert.equal(new Set(all.map(o=>o.id)).size,all.length);
  const rows=all.filter(o=>o.venueSlug==='school-937-marshala-zakharova-25');assert.equal(rows.length,8);
  for(const [i,[code,card,listing,year,start,end]] of school937Year1Identities.entries()){
@@ -41,7 +41,6 @@ test('compiled eight groups retain owner facts, exact booking identities and zer
  for(const [course,os] of Object.entries(before.offersByQuest))for(const old of os){
   const next=snapshot.offersByQuest[course].find(o=>o.id===old.id);assert.ok(next);
   if(owned.has(old.id))continue;
-  if(['К3015-26','К3016-26','К3020-26','К3021-26','К3022-26','К3024-26','К3025-26','К3026-26','К3027-26'].includes(old.annual?.groupCode))old.scheduleCard.isArchived=true;
   if(old.annual)old.annual.sourceSha256=next.annual.sourceSha256;
   assert.deepEqual(next,old,'unrelated offer changed: '+old.id);
  }

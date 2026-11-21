@@ -104,7 +104,7 @@ test("canonical programme registry includes empty programmes; study years never 
   for (const programme of ["projects", "it-academy", "olympiad-league"]) assert.equal(items.filter(item => finderItemMatches(item, { ...all, programme })).length, 0);
   // Owner confirms all 16 current school2044 groups are first year; exact mos cards
   // explicitly supply the ten school1383 years. Owner confirmed1212/937; the withdrawn875 ambiguous group is excluded.
-  assert.deepEqual([1, 2, 3, null].map(year => annual.filter(item => itemStudyYear(item) === year).length), [56, 19, 4, 0]);
+  assert.deepEqual([1, 2, 3, null].map(year => annual.filter(item => itemStudyYear(item) === year).length), [55, 20, 4, 0]);
   assert.ok(annual.filter(item=>item.venue.schoolScopeSlug==='school-2044').every(item=>itemStudyYear(item)===1));
   assert.deepEqual(annual.filter(item=>itemStudyYear(item)===3).map(item=>item.offer.id).sort(),['year:К2376-26','year:К2380-26','year:К3126-26','year:К3127-26']);
 });
