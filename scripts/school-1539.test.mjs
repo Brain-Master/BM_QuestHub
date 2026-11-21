@@ -1,7 +1,7 @@
 import fs from 'node:fs';import assert from 'node:assert/strict';import {test} from 'node:test';import {createRequire} from 'node:module';
 import {composeSchool1539,school1539Base,school1539Identities} from './lib/school-1539-source.mjs';
 const read=p=>JSON.parse(fs.readFileSync(new URL('../'+p,import.meta.url)));
-const source=read('apps/web/content/year-schedule.generated.json'),addition=read('apps/web/content/annual-additions/school-1539.json'),registry=read('apps/web/content/annual-mos-refresh.generated.json'),snapshot=read('apps/web/data/offers-snapshot.json');
+const latest=read('apps/web/content/year-schedule.generated.json'),replacement=read('apps/web/content/annual-additions/school-937-replacement.json'),source={...latest,sourceSha256:replacement.baseSourceSha256,groups:latest.groups.map(g=>g.id==='К2339-26'?replacement.retiredGroup:g)},addition=read('apps/web/content/annual-additions/school-1539.json'),registry=read('apps/web/content/annual-mos-refresh.generated.json'),snapshot=read('apps/web/data/offers-snapshot.json');
 const codes=new Set(school1539Identities.map(r=>r[0]));
 const base={...source,sourceSha256:school1539Base,locations:source.locations.filter(l=>l.id!=='LOC-014'),groups:source.groups.filter(g=>!codes.has(g.id))};
 test('school1539 transition appends four exact groups and preserves all previous source records',()=>{assert.equal(base.groups.length,94);assert.deepEqual(composeSchool1539(base,addition),source);assert.equal(source.groups.length,98);assert.deepEqual(source.groups.slice(0,94),base.groups);assert.deepEqual(source.locations.slice(0,-1),base.locations);});

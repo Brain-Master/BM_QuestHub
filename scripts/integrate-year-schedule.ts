@@ -9,6 +9,7 @@ import { annualLocations, annualWorld, reviewedStandaloneVenues } from "../apps/
 import { getSchoolProfile, reviewedCampusProfile } from "../apps/web/content/school-profiles";
 import { reviewedStudyYear, reviewedGroupCodes, reviewedTeacher, reviewedLessonPrice, reviewedAges } from "../apps/web/content/annual-group-overrides";
 import { isRetiredAnnualGroup } from "../apps/web/content/annual-retirements.mjs";
+import school937Replacement from '../apps/web/content/annual-additions/school-937-replacement.json';
 import school1539Source from "../apps/web/content/annual-additions/school-1539.json";
 import transferSource from "../apps/web/content/annual-additions/school-2103-replacement.json";
 import { annualMosRefreshSchema } from "../apps/web/lib/offers/annual-schedule";
@@ -149,7 +150,7 @@ const annualOffers = source.groups.map(original => {
   const effectiveLessonPrice = reviewedPrice?.rubles ?? g.lessonPrice;
   const price = reviewedPrice ? "1 000 ₽ / занятие · 1 акад. час (45 мин)" : g.lessonPrice === null ? "Стоимость уточняется" : `${g.lessonPrice} ₽ / занятие`;
   const name = annualProgrammeName(g.title, studyYear);
-  const admissionDeadline = school1539Source.groups.find(row=>row.groupCode===g.groupCode && row.listingId===g.listingId)?.admissionEnd;
+  const admissionDeadline = g.groupCode==='К2339-26' && g.listingId==='2600825' ? school937Replacement.admissionEnd : school1539Source.groups.find(row=>row.groupCode===g.groupCode && row.listingId===g.listingId)?.admissionEnd;
   const reserve = replacement && transferSource.legacyOccupancy.find(row=>row.newGroupCode===g.groupCode);
   const audienceLabel = replacement ? (replacement.listingId==='2586499' ? 'Только 1 класс' : replacement.studyYear===1 ? '1–6 классы' : `Для выпускников ШМИ-${replacement.studyYear-1}`) : undefined;
   const legacyReservation = reserve ? {oldGroupCode:reserve.oldGroupCode,oldCardId:reserve.oldCardId,places:reserve.occupied,checkedAt:reserve.checkedAt} : undefined;
@@ -173,7 +174,7 @@ const annualOffers = source.groups.map(original => {
       variants: [{ id: `year:${g.id}:main`, type: "Годовая группа", time: weekly, priceLabel: price }] },
   });
 });
-const ownedOfferIds = new Set(annualOffers.map(o => o.id));
+const ownedOfferIds = new Set([...annualOffers.map(o => o.id), 'year:К2213-26']);
 for (const offer of offers.offersByQuest.shmi ?? []) {
   if (!ownedOfferIds.has(offer.id)) continue;
   const incoming = offer.annual;

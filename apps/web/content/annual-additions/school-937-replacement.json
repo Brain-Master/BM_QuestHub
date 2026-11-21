@@ -1,0 +1,66 @@
+{
+  "version": 1,
+  "reviewedAt": "2026-11-21",
+  "baseSourceSha256": "9d307834776b63b209c5e08bdff1a3f81914d4001df39ce8db4f475fe4f8edab",
+  "retiredGroup": {
+    "id": "К2213-26",
+    "groupCode": "К2213-26",
+    "listingId": "2573572",
+    "programme": "shmi",
+    "title": "Школа Молодого IT-Инженера — 1-й год обучения",
+    "locationId": "LOC-011",
+    "teacher": "Балукова Мария Михайловна",
+    "status": "open",
+    "totalSeats": 12,
+    "freeSeats": 12,
+    "ageMin": 6,
+    "ageMax": 18,
+    "lessonPrice": 1000,
+    "coursePrice": 36000,
+    "courseStart": "2026-09-28",
+    "courseEnd": "2027-05-31",
+    "slots": [
+      {
+        "weekday": "Среда",
+        "start": "16:00",
+        "end": "16:45"
+      }
+    ],
+    "link": "https://www.mos.ru/pgu2/activity/card/1049847",
+    "linkKind": "card",
+    "limitedSource": false
+  },
+  "ownerAge": {
+    "ageMin": 6,
+    "ageMax": 13
+  },
+  "admissionStart": "2026-11-18",
+  "admissionEnd": "2027-05-01",
+  "group": {
+    "cardId": "1099851",
+    "listingId": "2600825",
+    "groupCode": "К2339-26",
+    "title": "26/27 Школа молодого инженера. Второй год обучения.",
+    "address": "г. Москва, вн.тер. м.о. Орехово-Борисово Северное, ул. Маршала Захарова, д. 25",
+    "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 937 имени Героя Российской Федерации А.В. Перова\"",
+    "teacher": "Локтеева Ирина Дмитриевна",
+    "totalSeats": 12,
+    "freeSeats": 12,
+    "ageMin": 6,
+    "ageMax": 16,
+    "lessonPrice": 1000,
+    "coursePrice": 28000,
+    "courseStart": "2026-11-25",
+    "courseEnd": "2027-05-31",
+    "slots": [
+      {
+        "weekday": "Среда",
+        "start": "16:00",
+        "end": "16:45"
+      }
+    ],
+    "status": "open",
+    "link": "https://www.mos.ru/pgu2/activity/card/1099851",
+    "refreshedAt": "2026-11-21T00:00:00.000Z"
+  }
+}

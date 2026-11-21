@@ -27,7 +27,7 @@ export function reviewedTeacher(schoolSlug: string, studyYear?: number | null, g
   return undefined;
 }
 
-const school937Codes = new Set(['К2211-26','К2212-26','К2213-26','К2214-26','К2215-26','К2216-26','К2217-26','К2218-26']);
+const school937Codes = new Set(['К2339-26','К2211-26','К2212-26','К2213-26','К2214-26','К2215-26','К2216-26','К2217-26','К2218-26']);
 /** Owner-confirmed range, not the portal's administrative 6–18 age band. */
 export function reviewedAges(schoolSlug: string, groupCode?: string | null) {
   return schoolSlug === 'school-937' ? reviewedAnnualAge(groupCode, undefined) : undefined;

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "sourceSha256": "9d307834776b63b209c5e08bdff1a3f81914d4001df39ce8db4f475fe4f8edab",
+  "sourceSha256": "21002d7a9af5db12a2ab13032038b933d0b3bcedbd6b2f7cea40b0c772073a9d",
   "attemptedAt": "2026-09-22T21:52:30.505Z",
   "expectedGroups": 98,
   "verifiedGroups": 5,
@@ -1848,33 +1848,6 @@
       "link": "https://www.mos.ru/pgu2/activity/card/1049844",
       "refreshedAt": "2026-09-28T20:21:56.025Z"
     },
-    "К2213-26": {
-      "cardId": "1049847",
-      "listingId": "2573572",
-      "groupCode": "К2213-26",
-      "title": "Группа 3. 6-13 лет. Локтеева И. Д. Маршала Захарова, 25.",
-      "address": "г. Москва, вн.тер. м.о. Орехово-Борисово Северное, ул. Маршала Захарова, д. 25",
-      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 937 имени Героя Российской Федерации А.В. Перова\"",
-      "teacher": "Балукова Мария Михайловна",
-      "totalSeats": 12,
-      "freeSeats": 12,
-      "ageMin": 6,
-      "ageMax": 18,
-      "lessonPrice": 1000,
-      "coursePrice": 36000,
-      "courseStart": "2026-09-28",
-      "courseEnd": "2027-05-31",
-      "slots": [
-        {
-          "weekday": "Среда",
-          "start": "16:00",
-          "end": "16:45"
-        }
-      ],
-      "status": "open",
-      "link": "https://www.mos.ru/pgu2/activity/card/1049847",
-      "refreshedAt": "2026-09-28T20:21:56.025Z"
-    },
     "К2214-26": {
       "cardId": "1049848",
       "listingId": "2573574",
@@ -2441,6 +2414,33 @@
       "status": "open",
       "link": "https://www.mos.ru/pgu2/activity/card/1099251",
       "refreshedAt": "2026-11-18T03:43:12.456Z"
+    },
+    "К2339-26": {
+      "cardId": "1099851",
+      "listingId": "2600825",
+      "groupCode": "К2339-26",
+      "title": "26/27 Школа молодого инженера. Второй год обучения.",
+      "address": "г. Москва, вн.тер. м.о. Орехово-Борисово Северное, ул. Маршала Захарова, д. 25",
+      "organization": "Государственное бюджетное общеобразовательное учреждение города Москвы \"Школа № 937 имени Героя Российской Федерации А.В. Перова\"",
+      "teacher": "Локтеева Ирина Дмитриевна",
+      "totalSeats": 12,
+      "freeSeats": 12,
+      "ageMin": 6,
+      "ageMax": 16,
+      "lessonPrice": 1000,
+      "coursePrice": 28000,
+      "courseStart": "2026-11-25",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Среда",
+          "start": "16:00",
+          "end": "16:45"
+        }
+      ],
+      "status": "open",
+      "link": "https://www.mos.ru/pgu2/activity/card/1099851",
+      "refreshedAt": "2026-11-21T00:00:00.000Z"
     }
   },
   "candidates": {
