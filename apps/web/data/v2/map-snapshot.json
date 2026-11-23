@@ -3,7 +3,7 @@
   "generatedAt": "2026-11-21T00:00:00.000Z",
   "source": "annual-csv-integration",
   "integrity": {
-    "contentHash": "sha256:6e7b39f478ba2537e765be8cba2c0d05399d9a94c7020b25d22f9f89e68ca8c7"
+    "contentHash": "sha256:231161a7cf544471297c0da786add4400fb8a6c02cb60820d57c1c47ab48b233"
   },
   "venues": [
     {
@@ -281,6 +281,22 @@
       ],
       "listedOnSites": true,
       "schoolScopeSlug": "school-37"
+    },
+    {
+      "preliminaryVenue": true,
+      "slug": "school-1416",
+      "name": "Школа № 1416 «Лианозово»",
+      "type": "school",
+      "address": "Корпус занятий уточняется",
+      "metro": "Алтуфьево",
+      "city": "moscow",
+      "district": "Лианозово",
+      "logoUrl": "/sites/school-1416/logo.webp",
+      "directions": [],
+      "contactNote": "Корпус и расписание занятий BrainMaster уточняются.",
+      "photos": [],
+      "listedOnSites": true,
+      "schoolScopeSlug": "school-1416"
     },
     {
       "slug": "school-937-marshala-zakharova-25",
