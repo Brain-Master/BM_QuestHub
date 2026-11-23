@@ -109,10 +109,11 @@ for (const campus of reviewedStandaloneVenues) {
   // Preserve all existing compatibility fields if this campus already exists.
   const previous = map.venues.find((v:{slug:string}) => v.slug === campus.slug);
   if (previous && previous.schoolScopeSlug !== campus.schoolScopeSlug) throw Error(`Standalone venue scope mismatch ${campus.slug}`);
-  if (previous) continue; // the ordinary reviewed-profile overlay below owns it
+  if (previous && !("preliminaryVenue" in campus)) continue; // the ordinary profile overlay owns it
   venues.push(venueSchema.parse({
-    slug:campus.slug, schoolScopeSlug:campus.schoolScopeSlug,
     type:"school", city:"moscow", listedOnSites:true, directions:[], photos:[],
+    ...previous,
+    ...campus,
     ...reviewedCampusProfile(campus.schoolScopeSlug,campus.slug),
   }));
 }

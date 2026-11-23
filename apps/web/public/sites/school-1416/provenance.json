@@ -1,0 +1,42 @@
+{
+  "verifiedAt": "2026-11-23",
+  "contentSources": [
+    "https://sch1416sv.mskobr.ru/api/get/addresses.json",
+    "https://api-app.mskobr.ru/api/v3/organization/13816",
+    "https://sch1416sv.mskobr.ru/o-nas/kontakty-podrazdelenij"
+  ],
+  "images": [
+    {
+      "file": "logo.webp",
+      "originalUrl": "https://sch1416sv.mskobr.ru/attach_files/logo/%D0%9B%D0%BE%D0%B3%D0%BE%D1%82%D0%B8%D0%BF-%D0%BA%D0%B2%D0%B0%D0%B4%D1%80%D0%B0%D1%82%20%D0%BA%D0%BE%D0%BF%D0%B8%D1%8F.png",
+      "sourcePage": "https://sch1416sv.mskobr.ru/",
+      "captionEvidence": "Официальный логотип в шапке сайта",
+      "originalSha256": "7660010c6dede3b79ac40281115ba61f1bd3365f378fe67b094f90a7e1dda39f",
+      "webSha256": "b85bdcb4efcb29ad295e49b2c7c5234836bb0e8380addbe474f52cbe4fabfc50"
+    },
+    {
+      "file": "school-facade.webp",
+      "originalUrl": "https://sch1416sv.mskobr.ru/files/%D0%A4%D0%9E%D0%A2%D0%9E%D0%93%D0%A0%D0%90%D0%A4%D0%98%D0%98/photo-output.jpeg?_t=1795091513",
+      "sourcePage": "https://sch1416sv.mskobr.ru/o-nas/photo-i-video/photo",
+      "captionEvidence": "Фото фасада в шапке фотогалереи. Номер дома не указан.",
+      "originalSha256": "74fcd7be597a5c39a2a1b8197e0b4961d62b4561b383afcc40bd766e13046b48",
+      "webSha256": "0521bb0bc137237255f862a803d1f13f4def8f47f8087c4585d0da5680d74367"
+    },
+    {
+      "file": "novgorodskaya-12-sign.webp",
+      "originalUrl": "https://sch1416sv.mskobr.ru/attach_files/gallery/shkolnyie-otdeleniya_40/medium/img-0212.jpeg",
+      "sourcePage": "https://sch1416sv.mskobr.ru/showAlbum/30079/40",
+      "captionEvidence": "На табличке читается Новгородская ул., 12.",
+      "originalSha256": "f6c25b5748069f7e97369fc9336520b5733a767c1fe3af263228497a59e767d9",
+      "webSha256": "355bd2647cd76aa152484cf36b1efc4e65eff305702b5c84f767da040a38eecd"
+    },
+    {
+      "file": "school-entrance.webp",
+      "originalUrl": "https://sch1416sv.mskobr.ru/attach_files/gallery/shkolnyie-otdeleniya_40/medium/8.jpeg",
+      "sourcePage": "https://sch1416sv.mskobr.ru/showAlbum/30079/40",
+      "captionEvidence": "Фото входа из школьного альбома. Номер дома не указан.",
+      "originalSha256": "556a38b7063c6e9fb50502830f0099bd0be505c339b02c80eae9bb4fffc64207",
+      "webSha256": "4078fe0f41d42d7a9eb613b566eba8f47e206d5359940884f7d71451785e33e5"
+    }
+  ]
+}

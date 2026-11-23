@@ -18,6 +18,8 @@ import { CommunityConnectPanel } from "@/components/community-connect-panel";
 import { LiveAgenda } from "@/components/live-agenda";
 import { MetroLabel } from "@/components/metro-label";
 import { PortalHero } from "@/components/portal-hero";
+import { SchoolVenueDirectory } from "@/components/school-venue-directory";
+import { school1416 } from "@/content/school-1416";
 import { RememberSchoolOnVisit } from "@/components/remember-school-on-visit";
 import { buttonVariants } from "@/components/ui/button";
 import { communityConnectCopy } from "@/lib/community-connect-copy";
@@ -97,7 +99,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return {
     title: `Площадка · ${fullName}`,
-    description: `Адрес, карта и расписание BrainMaster для площадки ${school.name}.`,
+    description: school.slug === school1416.slug ? school1416.description : `Адрес, карта и расписание BrainMaster для площадки ${school.name}.`,
     alternates: { canonical: `/sites/${school.slug}/` },
   };
 }
@@ -123,6 +125,7 @@ export default async function SchoolPage({ params }: Props) {
     worlds,
   })[0];
   if (!site) notFound();
+  if (school.slug === school1416.slug && site.shiftCount === 0) return <SchoolVenueDirectory />;
 
   const mapSrc = buildYandexMapWidgetSrc({
     siteName: site.name,

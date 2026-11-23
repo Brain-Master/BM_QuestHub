@@ -1,3 +1,5 @@
+import { school1416Venue } from "./school-1416";
+
 /** Exact address review, 2026-09-08. OSM building centres, not verified entrances.
  * Data © OpenStreetMap contributors, ODbL: https://www.openstreetmap.org/copyright
  * Existing two venue identities/coordinates are retained unchanged by the compiler.
@@ -33,4 +35,5 @@ export const annualWorld = {
  */
 export const reviewedStandaloneVenues = [
   {slug:"school-937-marshala-zakharova-25",schoolScopeSlug:"school-937"},
+  school1416Venue,
 ] as const;
