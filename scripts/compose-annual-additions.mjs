@@ -1,3 +1,4 @@
+import {composeSchool1539Tuesday} from './lib/school-1539-tuesday-source.mjs';
 /** Ordered reviewed additions, including the owner-confirmed1212/937 transition. */
 import fs from 'node:fs';
 import {composeSchool937Replacement} from './lib/school-937-replacement-source.mjs';
@@ -10,4 +11,4 @@ import {composeSchool2044} from './lib/school-2044-source.mjs';
 import {composeSchool1539} from './lib/school-1539-source.mjs';
 const addition=school=>JSON.parse(fs.readFileSync(new URL(`../apps/web/content/annual-additions/school-${school}.json`,import.meta.url),'utf8'));
 const original=JSON.parse(fs.readFileSync(0,'utf8'));
-process.stdout.write(JSON.stringify(composeSchool937Replacement(composeSchool1539(composeSchool2044(composeSchool2103Replacement(composeSchool937Year1(composeConfirmedSchools(composeSchool37(composeSchool2103(original,addition('2103')),addition('37')),addition('1212'),addition('937')),addition('937-year1')),addition('2103-replacement')),addition('2044')),addition('1539')),addition('937-replacement'))));
+process.stdout.write(JSON.stringify(composeSchool1539Tuesday(composeSchool937Replacement(composeSchool1539(composeSchool2044(composeSchool2103Replacement(composeSchool937Year1(composeConfirmedSchools(composeSchool37(composeSchool2103(original,addition('2103')),addition('37')),addition('1212'),addition('937')),addition('937-year1')),addition('2103-replacement')),addition('2044')),addition('1539')),addition('937-replacement')),addition('1539-tuesday'))));

@@ -1,7 +1,7 @@
 {
   "version": 1,
   "asOf": "2026-09-08",
-  "sourceSha256": "21002d7a9af5db12a2ab13032038b933d0b3bcedbd6b2f7cea40b0c772073a9d",
+  "sourceSha256": "69b98107c8603394d147df44ad30c13530879cc3842d191f1eecb236cca2a6cb",
   "locations": [
     {
       "id": "LOC-001",
@@ -2835,6 +2835,118 @@
         }
       ],
       "link": "https://www.mos.ru/pgu2/activity/card/1099251",
+      "linkKind": "card",
+      "limitedSource": false
+    },
+    {
+      "id": "К5384-26",
+      "groupCode": "К5384-26",
+      "listingId": "2603040",
+      "programme": "shmi",
+      "title": "26-27_102 Школа Молодого IT-Инженера - 5 группа М-7 ПОУ 26-27 ",
+      "locationId": "LOC-014",
+      "teacher": "Варфоломеева Алина Александровна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 12,
+      "ageMin": 6,
+      "ageMax": 14,
+      "lessonPrice": 1000,
+      "coursePrice": 24000,
+      "courseStart": "2026-12-01",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Вторник",
+          "start": "14:30",
+          "end": "15:29"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/card/1103584",
+      "linkKind": "card",
+      "limitedSource": false
+    },
+    {
+      "id": "К5385-26",
+      "groupCode": "К5385-26",
+      "listingId": "2603044",
+      "programme": "shmi",
+      "title": " 26-27_122 Школа Молодого IT-Инженера - 6 группа М-7 ПОУ",
+      "locationId": "LOC-014",
+      "teacher": "Варфоломеева Алина Александровна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 12,
+      "ageMin": 6,
+      "ageMax": 14,
+      "lessonPrice": 1000,
+      "coursePrice": 24000,
+      "courseStart": "2026-12-01",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Вторник",
+          "start": "15:30",
+          "end": "16:30"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/card/1103598",
+      "linkKind": "card",
+      "limitedSource": false
+    },
+    {
+      "id": "К5386-26",
+      "groupCode": "К5386-26",
+      "listingId": "2603050",
+      "programme": "shmi",
+      "title": "26-27_130 Школа Молодого IT-Инженера - 7 группа М-7 ПОУ",
+      "locationId": "LOC-014",
+      "teacher": "Варфоломеева Алина Александровна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 12,
+      "ageMin": 6,
+      "ageMax": 14,
+      "lessonPrice": 1000,
+      "coursePrice": 24000,
+      "courseStart": "2026-12-01",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Вторник",
+          "start": "16:30",
+          "end": "17:29"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/card/1103619",
+      "linkKind": "card",
+      "limitedSource": false
+    },
+    {
+      "id": "К5387-26",
+      "groupCode": "К5387-26",
+      "listingId": "2603063",
+      "programme": "shmi",
+      "title": "26-27_156 Школа Молодого IT-Инженера -8 группа М-7 ПОУ",
+      "locationId": "LOC-014",
+      "teacher": "Варфоломеева Алина Александровна",
+      "status": "open",
+      "totalSeats": 12,
+      "freeSeats": 12,
+      "ageMin": 6,
+      "ageMax": 14,
+      "lessonPrice": 1000,
+      "coursePrice": 24000,
+      "courseStart": "2026-12-01",
+      "courseEnd": "2027-05-31",
+      "slots": [
+        {
+          "weekday": "Вторник",
+          "start": "17:30",
+          "end": "18:29"
+        }
+      ],
+      "link": "https://www.mos.ru/pgu2/activity/card/1103630",
       "linkKind": "card",
       "limitedSource": false
     }
