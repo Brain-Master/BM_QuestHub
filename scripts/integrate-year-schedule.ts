@@ -1,3 +1,4 @@
+import school1539Tuesday from '../apps/web/content/annual-additions/school-1539-tuesday.json';
 import { overlayLocalAnnual, localAnnualOffers } from "./integrate-local-annual";
 /** Local-only, idempotent annual overlay. Never reads credentials or publishes. */
 import fs from "node:fs";
@@ -151,7 +152,7 @@ const annualOffers = source.groups.map(original => {
   const effectiveLessonPrice = reviewedPrice?.rubles ?? g.lessonPrice;
   const price = reviewedPrice ? "1 000 ₽ / занятие · 1 акад. час (45 мин)" : g.lessonPrice === null ? "Стоимость уточняется" : `${g.lessonPrice} ₽ / занятие`;
   const name = annualProgrammeName(g.title, studyYear);
-  const admissionDeadline = g.groupCode==='К2339-26' && g.listingId==='2600825' ? school937Replacement.admissionEnd : school1539Source.groups.find(row=>row.groupCode===g.groupCode && row.listingId===g.listingId)?.admissionEnd;
+  const admissionDeadline = g.groupCode==='К2339-26' && g.listingId==='2600825' ? school937Replacement.admissionEnd : [...school1539Source.groups, ...school1539Tuesday.groups].find(row=>row.groupCode===g.groupCode && row.listingId===g.listingId)?.admissionEnd;
   const reserve = replacement && transferSource.legacyOccupancy.find(row=>row.newGroupCode===g.groupCode);
   const audienceLabel = replacement ? (replacement.listingId==='2586499' ? 'Только 1 класс' : replacement.studyYear===1 ? '1–6 классы' : `Для выпускников ШМИ-${replacement.studyYear-1}`) : undefined;
   const legacyReservation = reserve ? {oldGroupCode:reserve.oldGroupCode,oldCardId:reserve.oldCardId,places:reserve.occupied,checkedAt:reserve.checkedAt} : undefined;

@@ -1,6 +1,6 @@
 /** Owner-confirmed curriculum facts, 2026-09-09. Not inferred from pupil age. */
 import {reviewedAnnualAge} from './annual-owner-ages.mjs';
-const school1539Codes = new Set(['К5359-26','К5368-26','К5369-26','К5370-26']);
+const school1539Codes = new Set(['К5359-26','К5368-26','К5369-26','К5370-26','К5384-26','К5385-26','К5386-26','К5387-26']);
 const school37Years: Record<string, 1 | 2> = {
   'К2763-26':1, 'К2764-26':1, 'К2765-26':1,
   'К2766-26':1, 'К2767-26':1, 'К2768-26':2,

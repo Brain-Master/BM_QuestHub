@@ -47,5 +47,5 @@ test('price override is identity scoped; annual table uses the same effective nu
   const quests=questSchema.array().parse(read('data/v2/catalog-snapshot.json').courses.map((q:{slug:string})=>({...q,offers:snapshot.offersByQuest[q.slug]??[]})));
   const view=projectAnnualWorkspace(quests,venues);
   assert.equal(view.groups.filter(g=>addedIds.has(`year:${g.id}`)).length,0);
-  assert.equal(view.groups.length,76);assert.equal(view.locations.length,13);
+  assert.equal(view.groups.length,80);assert.equal(view.locations.length,13);
 });

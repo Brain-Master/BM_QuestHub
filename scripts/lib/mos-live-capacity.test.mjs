@@ -49,7 +49,7 @@ test('HTTP entrypoint rejects spoofed timer regardless of enabled env',async()=>
 test('preliminary camps are skipped; official nonannual camps report unsupported without changing annual reads',async()=>{
  const before=JSON.stringify(snapshot);let calls=0;
  const result=await refreshMosAvailability(snapshot,registry.groups,undefined,{now:()=>new Date('2026-10-06T10:00:00Z'),fetchCard:async()=>{calls++;throw Error('MOS_TEST_UNAVAILABLE');}});
- assert.equal(result.expected,84);assert.equal(calls,76);assert.deepEqual(result.errors.filter(e=>e.code==='MOS_LEGACY_SOURCE_UNSUPPORTED').map(e=>e.offerId).sort(),['autumn-2026-17-hydraulics','autumn-2026-2044-dmitrovskoe-165e-k6','autumn-2026-2044-dmitrovskoe-169b','autumn-2026-2103','autumn-2026-937','autumn-2026-ekt','autumn-2026-ekt-chertanovskaya','autumn-2026-ekt-odesskaya']);assert.ok(result.errors.filter(e=>e.code!=='MOS_LEGACY_SOURCE_UNSUPPORTED').every(e=>e.offerId.startsWith('year:')));assert.equal(JSON.stringify(snapshot),before);
+ assert.equal(result.expected,88);assert.equal(calls,80);assert.deepEqual(result.errors.filter(e=>e.code==='MOS_LEGACY_SOURCE_UNSUPPORTED').map(e=>e.offerId).sort(),['autumn-2026-17-hydraulics','autumn-2026-2044-dmitrovskoe-165e-k6','autumn-2026-2044-dmitrovskoe-169b','autumn-2026-2103','autumn-2026-937','autumn-2026-ekt','autumn-2026-ekt-chertanovskaya','autumn-2026-ekt-odesskaya']);assert.ok(result.errors.filter(e=>e.code!=='MOS_LEGACY_SOURCE_UNSUPPORTED').every(e=>e.offerId.startsWith('year:')));assert.equal(JSON.stringify(snapshot),before);
 });
 
 function fixture(count=6){
