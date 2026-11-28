@@ -1,3 +1,4 @@
+import { MechvariumMothersSchedule } from "@/components/mechvarium-mothers-schedule";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -469,15 +470,6 @@ export default async function SchoolPage({ params }: Props) {
         </section>
       </section>
 
-      {school.slug === "bm-base-moscow" && (
-        <section className="mt-6 rounded-3xl border border-white/10 bg-card/50 p-5 sm:p-6">
-          <p className="text-sm text-muted-foreground">Семейный мастер-класс · 29 ноября 2026 · 14:00–15:30</p>
-          <h2 className="mt-2 font-heading text-2xl font-semibold">Дом, в котором живёт свет</h2>
-          <p className="mt-2">Сделайте домик с подсветкой вместе с ребёнком. 1 490 ₽ за маму и ребёнка.</p>
-          <Link className="mt-3 inline-flex min-h-11 items-center underline" href="/sites/bm-base-moscow/mothers/">Подробнее и запись</Link>
-        </section>
-      )}
-
       <section id="venue-schedule" className="mt-6 scroll-mt-24 rounded-[1.5rem] border border-white/10 bg-card/50 p-5 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)] backdrop-blur-md sm:p-6">
         <div className="flex items-start gap-3">
           <span className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-primary/15 text-primary">
@@ -492,6 +484,8 @@ export default async function SchoolPage({ params }: Props) {
             </p>
           </div>
         </div>
+
+        {school.slug === "bm-base-moscow" && <MechvariumMothersSchedule />}
 
         <Suspense fallback={null}>
           <LiveAgenda

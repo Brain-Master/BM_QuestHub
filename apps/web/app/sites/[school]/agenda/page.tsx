@@ -1,3 +1,4 @@
+import { MechvariumMothersSchedule } from "@/components/mechvarium-mothers-schedule";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
@@ -98,6 +99,8 @@ export default async function SchoolAgendaPage({ params }: Props) {
   return (
     <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:py-10">
       <RememberSchoolOnVisit slug={school.slug} name={school.name} />
+
+      {school.slug === "bm-base-moscow" && <MechvariumMothersSchedule />}
 
       <LiveAgenda
         baseQuests={quests}

@@ -21,6 +21,7 @@ export default function MothersWorkshopPage() {
             <li>Для мам и детей 6–10 лет (1–4 классы)</li>
             <li>«Мехвариум», Рязанский проспект, 38</li>
             <li><strong>1 490 ₽</strong> за маму и ребёнка</li>
+            <li>До 12 пар «мама + ребёнок»</li>
           </ul>
           <a href="https://s.b-master.pro/Mothers" className="mt-6 inline-flex min-h-11 items-center rounded-xl bg-primary px-5 py-2 font-semibold text-primary-foreground">Записаться на мастер-класс</a>
           <p className="mt-4">Вопросы по участию <a className="underline" href="tel:+79859544133">+7 985 954 41 33</a></p>
